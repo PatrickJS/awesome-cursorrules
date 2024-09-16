@@ -135,11 +135,8 @@ Contributions are welcome! If you have a great `.cursorrules` file to share:
 
 Please ensure your contribution is original or properly credited if based on existing work.
 
-## License
-
-This awesome list is released under the [![CC0 License](https://licensebuttons.net/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)
 ---
 
-#### License
+## License
 
 [![CC0](https://licensebuttons.net/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)
