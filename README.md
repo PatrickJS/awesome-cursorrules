@@ -137,4 +137,9 @@ Please ensure your contribution is original or properly credited if based on exi
 
 ## License
 
-This awesome list is released under the [MIT License](./LICENSE).
+This awesome list is released under the [![CC0 License](https://licensebuttons.net/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)
+---
+
+#### License
+
+[![CC0](https://licensebuttons.net/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)
