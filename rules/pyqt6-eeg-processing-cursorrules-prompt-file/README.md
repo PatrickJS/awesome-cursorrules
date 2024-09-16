@@ -1,0 +1,16 @@
+# PyQt6 EEG Processing .cursorrules prompt file
+
+Author: Ernie Pedapati
+
+## What you can build
+EEG Analysis and Visualization App: Develop an application that provides stunning visualizations of EEG data for researchers and neurologists, integrating advanced PyQt6 features for user-friendly controls and interaction.Real-time EEG Monitoring Software: Create software for real-time EEG signal processing and monitoring, with seamless data streaming to healthcare providers, using optimized algorithms and PyQt6 interface for clear data representation.EEG Educational Tool: Design an interactive educational platform that utilizes real EEG data to teach students about neuroscience and signal processing, incorporating engaging PyQt6 UI elements and detailed data visualizations.Remote EEG Collaboration Service: Build a web service that allows teams of researchers to collaborate on EEG datasets in real time, ensuring secure data sharing and integration with existing databases like REDCap.Customizable EEG Analysis Framework: Offer a modular framework for EEG analysis tailored for academia and industry, allowing users to integrate their custom processing algorithms with a powerful PyQt6-based interface.EEG Data Management System: Develop a data management solution that organizes and secures large EEG datasets, featuring intuitive workflows and file handling practices, integrated with cloud services for scalability.Mobile EEG Viewing App: Create a cross-platform mobile application for viewing and interacting with EEG data, utilizing adaptive PyQt6 designs for small screens and ensuring smooth performance on various devices.AI-Powered EEG Assistant: Build an AI assistant that analyzes EEG data to provide diagnostic suggestions and insights, offering an informative interface through advanced PyQt6 graphical components.EEG Workflow Automation Tool: Design a tool that automates common EEG processing tasks to improve research efficiency, featuring custom workflows and automation scripts managed through a PyQt6-designed dashboard.EEG File Format Conversion Utility: Develop a utility that converts EEG data between different standard formats, ensuring compatibility with various software, and featuring an easy-to-use PyQt6 user interface for file operations.
+
+## Benefits
+
+
+## Synopsis
+Developers building advanced EEG processing applications with a focus on elegant UI/UX and backend efficiency would benefit by creating seamlessly integrated systems using PyQt6 and real-time signal processing.
+
+## Overview of .cursorrules prompt
+The .cursorrules file defines the role and responsibilities of an AI system designed to assist or function as a master Python programmer. The focus is on expertise in PyQt6, EEG signal processing, and optimizing workflows. Key responsibilities include creating sophisticated user interfaces with PyQt6, developing algorithms for EEG data processing, optimizing workflow efficiency, and ensuring high code quality through best practices. The file also outlines the necessity for performance optimization, seamless integration with external tools, and robust UI/UX design principles. Additionally, it provides implementation instructions for developing an EEG processing application, emphasizing a clean UI, modular architecture, and comprehensive testing.
+

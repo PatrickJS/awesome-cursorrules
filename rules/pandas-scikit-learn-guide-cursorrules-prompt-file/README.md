@@ -1,0 +1,16 @@
+# Pandas Scikit-Learn Guide .cursorrules prompt file
+
+Author: Championeer
+
+## What you can build
+DataVis Studio: A web app that allows users to upload datasets and automatically generates visualizations using matplotlib and seaborn, with options for customization and accessibility considerations.Notebook Optimizer: A service that analyzes Jupyter Notebooks for performance bottlenecks, suggests code optimizations such as using vectorized operations, and checks adherence to PEP 8 guidelines.Pandas Playground: An interactive platform for learning and experimenting with pandas data manipulation through hands-on tutorials, with instant feedback and visualization of results using matplotlib and seaborn.Data Cleanse Pro: An application that assists users in implementing data validation and cleaning processes, providing automated suggestions for handling missing data and identifying data quality issues.Jupyter Notebook Template Generator: A tool that generates well-structured Jupyter Notebooks based on user-defined data analysis workflows, including sections for markdown documentation and pre-configured plotting functions.Dataset Profiler: A software that quickly provides summary statistics and insights on datasets, enabling users to start their analysis efficiently and understand potential data quality challenges.Visualization Style Guide App: A platform that offers predefined plotting templates and styles adhering to best practices, ensuring consistent aesthetics and accessibility in visualizations.Data Version Control System: A service that integrates with git, allowing users to manage and track changes in datasets and Jupyter Notebooks, facilitating collaboration and reproducibility.Python Performance Profiler: An application that profiles Python data analysis scripts, identifies slow segments, and provides suggestions for performance improvements using numpy and pandas.Dask Integration Dashboard: A tool that aids in setting up and managing Dask environments for handling large datasets, with visual monitoring of resource usage and task performance.
+
+## Benefits
+
+
+## Synopsis
+Data scientists and analysts can use this prompt to create reproducible, high-performance analysis and visualization workflows in Jupyter Notebooks using Python libraries.
+
+## Overview of .cursorrules prompt
+The .cursorrules file outlines best practices and principles for data analysis, visualization, and Jupyter Notebook development with a focus on Python libraries such as pandas, matplotlib, seaborn, and numpy. It emphasizes writing concise and technical responses with accurate Python examples and promotes readability and reproducibility in data analysis workflows. It advocates for functional programming, vectorized operations, and descriptive variable names. The file also provides guidance on data manipulation using pandas, visualization with matplotlib and seaborn, and Jupyter Notebook organization. It includes recommendations for error handling, data validation, and performance optimization, and lists essential dependencies such as pandas, numpy, and scikit-learn. It encourages starting analysis with data exploration and documentation while using version control systems like git.
+

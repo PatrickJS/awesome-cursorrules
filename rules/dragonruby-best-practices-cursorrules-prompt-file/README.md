@@ -1,0 +1,16 @@
+# DragonRuby Best Practices .cursorrules prompt file
+
+Author: Mathias Karstadt
+
+## What you can build
+DragonRuby Game Creator: A tool that assists developers in building 2D and 3D games using the DragonRuby Game Toolkit by offering pre-made templates and code snippets following Ruby's best practices.Ruby Code Snippet Library: A website that provides developers with a library of reusable Ruby code snippets, optimized according to DragonRuby conventions, for common game development tasks.Rubix: Debugging Tool for DragonRuby: An application that integrates with DragonRuby, offering robust error handling and validation features, with user-friendly error messages to streamline debugging in game development.DragonRuby Linter and Formatter: A service that checks Ruby code written for DragonRuby against industry-standard style guides, ensuring that code is clean, formatted, and idiomatic.DragonRuby Game Design Patterns: A website offering resources and tutorials on implementing object-oriented and functional programming patterns in DragonRuby, providing design pattern examples for various game scenarios.DragonRuby Modularization Tool: An app designed to help developers in modularizing and iterating over their game’s codebase, advocating for code reuse and structure optimization.DragonRuby Education Platform: An online learning platform that offers courses on DragonRuby best practices, teaching Ruby programming principles and design patterns through interactive coding exercises and projects.DragonRuby Documentation Enhancement: A tool that augments the official DragonRuby documentation with user-contributed examples, clarifications, and best practices for a community-driven knowledge base.DragonRuby Template Generator: A generator that provides initial project scaffolding for game developers, adhering to DragonRuby and Ruby naming conventions, to kickstart the development process.DragonRuby Error Analysis Dashboard: A web app that aggregates and analyzes errors from DragonRuby projects, providing insights and common solutions based on patterns found in user-submitted data.
+
+## Benefits
+
+
+## Synopsis
+Ruby game developers using DragonRuby Game Toolkit can create scalable, maintainable video game applications by adhering to these coding standards and conventions.
+
+## Overview of .cursorrules prompt
+The .cursorrules file is designed to guide an expert game developer in writing Ruby code using the DragonRuby Game Toolkit. It emphasizes the importance of writing concise and idiomatic Ruby code, adhering to Ruby and DragonRuby conventions, and following best practices. The file outlines code style and structure by recommending object-oriented and functional programming patterns, iteration, modularization, and the use of descriptive variable and method names. It also specifies naming conventions, adhering to snake_case for files, methods, and variables, and CamelCase for classes and modules. Syntax and formatting should follow the Ruby Style Guide, with preferences such as using Ruby's expressive syntax and single quotes for strings without interpolation. Error handling should involve exceptions for exceptional cases and appropriate error logging. Furthermore, the file suggests following the official DragonRuby Game Toolkit guides for best practices in various Rails components.
+

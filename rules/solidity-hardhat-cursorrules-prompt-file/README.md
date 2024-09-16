@@ -1,0 +1,16 @@
+# Solidity Hardhat .cursorrules prompt file
+
+Author: brolag
+
+## What you can build
+Smart Contract Auditing Tool: A web-based platform that allows developers to automatically audit their Solidity smart contracts for security vulnerabilities, utilizing static analysis tools like Slither and Mythril.Upgradeable Smart Contract Framework: A library or service that helps developers easily implement upgradeable contracts using proxy patterns, complete with example contracts and documentation.Gas Optimization Dashboard: An app that analyzes deployed contracts for gas usage efficiency, providing suggestions for optimization based on current best practices and recent innovations.Comprehensive Event Logger: A tool that aggregates and visualizes events emitted by Ethereum smart contracts, providing a dashboard for tracking important state changes in real-time.Reentrancy and Vulnerability Tracker: A service that monitors Ethereum transactions to identify potential reentrancy attacks and other vulnerabilities, alerting developers and users in real-time.Multisig and Timelock Management Platform: A web app that simplifies the creation and management of multisig contracts and timelocks, providing a user-friendly interface for configuring and managing access controls.Gasless Token Integration Service: A service that helps token projects implement gasless transactions via ERC20Permit, including integration guides and sample implementations.Blockchain Interaction Safety Checker: A browser plugin that checks interactions with smart contracts for safety concerns using the OpenZeppelin Address library, warning users of potential issues.Chainlink VRF Integration Wizard: A guided tool for integrating Chainlink's Verifiable Random Function (VRF) into smart contracts for provably random outcomes, including code snippets and testing examples.Custom Error Conversion Tool: A utility that converts standard revert strings in smart contracts to custom errors for improved gas efficiency and error handling, providing before-and-after comparisons.
+
+## Benefits
+
+
+## Synopsis
+Smart contract developers focused on Solidity security can leverage this prompt to create secure, efficient, and well-documented blockchain applications using best practices and tools like OpenZeppelin, slashing vulnerabilities while optimizing performance.
+
+## Overview of .cursorrules prompt
+The .cursorrules file establishes a set of guidelines for developing and securing Solidity smart contracts. It emphasizes concise and accurate code implementations, encourages embracing new technologies, and outlines a variety of best practices for Solidity development. These include using specific coding patterns and tools to enhance the security, readability, and maintainability of smart contracts, such as using explicit function visibility modifiers, implementing events for state changes, and following the Checks-Effects-Interactions pattern. The file also highlights the importance of testing and quality assurance through comprehensive testing strategies and regular security audits. Additionally, it addresses performance optimization for gas efficiency and provides a development workflow incorporating tools like Hardhat. Documentation best practices are advocated, focusing on maintaining clear and current documentation for smart contracts.
+

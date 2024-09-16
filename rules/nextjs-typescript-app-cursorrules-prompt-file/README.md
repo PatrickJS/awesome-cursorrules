@@ -1,0 +1,16 @@
+# Next.js TypeScript App .cursorrules prompt file
+
+Author: autonomys
+
+## What you can build
+Astral Analytics Dashboard: A tool that offers detailed analytics about the Autonomys network, including node performance metrics, transaction history, and usage statistics. The dashboard could integrate machine learning models to predict and visualize network trends.dApp Developer Toolkit: An IDE plugin or standalone desktop application tailored for developing dApps on the Autonomys Network using TypeScript and React. It could provide templates, code snippets, and direct integration with Astral Block Explorer.Autonomys Visualization Library: A standalone library that developers can use to visualize data on the Autonomys network. This could include a set of React components for visualizing blockchain data, smart contract interactions, and network activity.Autonomys Education Platform: An interactive learning tool linked to the Academy that offers courses and activities to teach developers about developing on the Autonomys network, utilizing the block explorer, and understanding decentralization concepts.Distributed Storage Manager: A web application that allows users to manage and visualize their distributed storage usage on the Autonomys network, providing notifications about storage status and offering suggestions for optimization.Autonomys Performance Monitor: A service that tracks the performance and reliability of the deAI Ecosystem, including real-time updates and alerts for network downtime or slow response times.Astral Mobile App: A mobile version of the Astral Block Explorer for users who want to access block data, transaction statuses, and other network functionalities on-the-go.Autonomys Collaborator Platform: A networking tool for developers and stakeholders on the Autonomys network, providing features for collaboration, project management, and peer support.AI-powered Insights for Astral: A plugin using AI to provide deeper insights and offer predictive analytics on transactions, potential bottlenecks in network performance, and other critical data on the Astral Block Explorer.Tailwind Theme Generator: A web-based tool that allows developers to create and customize Tailwind themes specifically designed to be consistent with the Astral Block Explorer's design palette and UI elements.
+
+## Benefits
+
+
+## Synopsis
+This prompt is ideal for developers building a decentralized block explorer application, providing guidelines for using Next.js, TypeScript, and integrating with the Autonomys network.
+
+## Overview of .cursorrules prompt
+The .cursorrules file describes the Astral project, which serves as a Block Explorer for the Autonomys network and is developed using Next.js and TypeScript. It outlines the project's structure, including components like UI elements, app routing, and custom hooks. It provides development guidelines, emphasizing the use of TypeScript, ESLint standards, responsive design, and Tailwind CSS. Important scripts for development and production are specified. The file also includes AI interaction guidelines to ensure the adherence to TypeScript and React best practices, and introduces key terms related to the Autonomys network, emphasizing its decentralized infrastructure for AI-powered applications. Links to additional resources and key URLs are provided for further reference.
+

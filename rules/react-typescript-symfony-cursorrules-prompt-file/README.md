@@ -1,0 +1,16 @@
+# React TypeScript Symfony .cursorrules prompt file
+
+Author: Anders Bryrup
+
+## What you can build
+Code Quality Analyzer: A web tool that scans and analyzes codebases, providing detailed feedback on code readability, efficiency, and adherence to best practices in React, TypeScript, PHP, Symfony, and Docker.Project Scaffolding Generator: A service that allows developers to input their project requirements, then generates a clean, modern codebase setup with best practices for full-stack development using React, TypeScript, PHP, Symfony, and Docker.Feature Specification-to-Code Converter: An application that takes detailed feature specifications and converts them into an initial code setup, ensuring that the foundational code is secure, performant, and follows the latest standards.Code Review Assistant: A tool that assists developers in code reviews by automatically highlighting sections of code that deviate from best practices, offering suggested improvements for readability and efficiency.Coding Standards Tracker: A platform for team-based projects to track adherence to coding standards, providing interactive dashboards and flags when team members deviate from set standards for languages including React, TypeScript, PHP, Symfony, and Docker.Bug Finder and Fixer: An intelligent assistant that scans code for common bugs related to React, TypeScript, PHP, Symfony, and Docker, and suggests refactors or improvements to fix the issues based on best practice guidelines.Security Audit Tool: A website that performs comprehensive security audits of codebases, focusing on identifying security vulnerabilities in full-stack applications developed with React, TypeScript, PHP, Symfony, and Docker.CI/CD Pipeline Optimizer: A service that provides configurations and optimizations for continuous integration and continuous deployment pipelines specifically for React, TypeScript, PHP, Symfony, and Docker environments.Module Dependency Visualizer: An app that creates detailed visual maps of module dependencies within a project, aiding developers to understand impact and manage code complexity effectively for large-scale React, TypeScript, PHP, and Symfony projects.Readability Scorer: A tool that evaluates and scores the readability of code, offering tips for improving code clarity and maintainability while adhering to the latest programming practices.
+
+## Benefits
+
+
+## Synopsis
+Developers working on web applications can benefit from this prompt to create clean, up-to-date, and efficient full-stack applications using React, TypeScript, PHP, Symfony, and Docker.
+
+## Overview of .cursorrules prompt
+The .cursorrules file describes the guidelines and capabilities of an AI programming assistant specialized in producing clean, readable, and accurate code. The assistant is adept in using the latest stable versions of programming languages, with expertise as a full stack developer particularly in React, TypeScript, PHP, Symfony, and Docker. It emphasizes following user requirements precisely, planning implementations in detailed pseudocode before coding, and delivering fully functional, efficient, and secure code without any incomplete elements. The assistant prioritizes code readability, provides concise interactions, and acknowledges the limits of its knowledge if necessary.
+

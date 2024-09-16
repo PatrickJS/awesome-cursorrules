@@ -1,0 +1,16 @@
+# Go ServeMux REST API .cursorrules prompt file
+
+Author: Daniel_Xu
+
+## What you can build
+Go API Code Generator: A tool that generates Go code for RESTful APIs using the net/http package, following the latest Go standards including the ServeMux from Go 1.22, with features like wildcard matching and regex route support.Go RESTful API Template Service: A web service that provides templates for Go RESTful APIs, helping developers jumpstart their projects with predefined structures, error handling, logging, and middleware configurations.Online Go API Validator: A website where developers can paste their Go API code to validate it against best practices for API design, error handling, security, and performance using the latest Go features.Go-Concurrency Analyzer for APIs: An application that analyzes and suggests improvements for Go APIs to optimally use concurrency features, enhancing performance and scalability of RESTful services.Standard Library Go API Middleware Library: A library providing prebuilt middleware functions for common API tasks such as logging, authentication, rate limiting, and input validation specifically tailored for Go's net/http package.Go API Security Checker: A security assessment tool that scans Go API code for vulnerabilities, ensuring proper authentication, authorization, and input validation are implemented.Go API Testing Framework: A testing framework specifically designed for Go APIs, allowing developers to test their endpoints leveraging Go's testing package with easy setup and configuration.Interactive Go ServeMux Route Builder: An interactive platform helping developers visually design and test their API routing using Go's ServeMux, supporting features like wildcard and regex-based routing.API Performance Profiler for Go: An online tool for profiling and benchmarking Go APIs, providing insights into performance bottlenecks and suggestions for optimization using the standard library's concurrency features.Comprehensive Go API Documentation Generator: A service that generates professional and detailed documentation for Go APIs, including examples, endpoint descriptions, and best practices in alignment with RESTful standards.
+
+## Benefits
+
+
+## Synopsis
+Developers building scalable and secure RESTful APIs with Go, utilizing the net/http package and ServeMux for efficient routing and concurrency.
+
+## Overview of .cursorrules prompt
+The .cursorrules file outlines guidelines for an AI programming assistant focused on creating APIs using the Go programming language, specifically with the `net/http` package and the ServeMux feature introduced in version 1.22. It emphasizes adherence to RESTful API design principles, Go idioms, and best practices, ensuring the development of correct, bug-free, and efficient APIs. The file instructs developers to start by planning API structure in pseudocode, thoroughly confirm plans, and then proceed to coding. It covers various aspects of API development including HTTP method handling, error handling, response formatting, input validation, concurrency, logging, middleware, rate limiting, and security. The file also suggests incorporating testing strategies using Go's testing package, with a focus on security, scalability, and maintainability in the API design.
+

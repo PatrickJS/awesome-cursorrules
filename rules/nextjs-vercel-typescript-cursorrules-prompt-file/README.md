@@ -1,0 +1,16 @@
+# Next.js Vercel TypeScript .cursorrules prompt file
+
+Author: Oleksii Bondarenko
+
+## What you can build
+AI-Powered Customer Support Chatbot: Develop a customer support chatbot for websites using ai-sdk-rsc, integrated with Vercel middleware for session management and a KV database to persist conversation state.Real-Time Translation Tool: Create a real-time language translation application utilizing AI SDK RSC for language processing, KV database for user session state, and Vercel middleware for efficient request handling.Interactive Storytelling Platform: Build a platform that uses AI SDK to generate personalized storylines, stores user choices and story progression in a KV database, and renders content dynamically using React Server Components.Personalized News Aggregator: Design a personalized news feed that learns user preferences through AI SDK RSC, stores user data in a KV database, and delivers content based on stored preferences using server-side data fetching.AI-Enhanced Code Collaboration Tool: Develop a coding collaboration tool that leverages AI for code suggestions, session management using Vercel's KV database, and real-time collaboration enabled by ai-sdk-rsc.Dynamic Product Recommendation Engine: Create an e-commerce recommendation system with AI-driven suggestions based on user browsing history, utilizing KV database for storing user interactions and Vercel middleware for efficient processing.Interactive Virtual Tutor: Build a virtual tutoring platform that uses AI SDK for generating real-time educational content, tracks student progress in a KV database, and handles interactions via Vercel middleware.AI-Powered Content Generator for Bloggers: Implement a blogging assistant that provides content suggestions and drafts using AI SDK RSC, with user preferences saved in a KV database, and UI updates handled via React Server Components.Language Learning App with AI Assistance: Develop a language learning application that uses AI for real-time conversation practice, session state managed in a KV database, and streamlined by Vercel middleware for user sessions.Music Composition Assistant: Create an AI-driven tool for musicians that generates composition ideas, stores session data and user patterns in a KV database, and provides interactive feedback through React components and AI SDK integration.
+
+## Benefits
+
+
+## Synopsis
+Developers skilled in Next.js and TypeScript can build scalable, efficient AI-driven interfaces using React Server Components, Vercel middleware, and KV databases.
+
+## Overview of .cursorrules prompt
+The .cursorrules file provides a comprehensive set of guidelines for integrating the `ai-sdk-rsc` library with Vercel middleware and a KV database within a Next.js application. It outlines best practices for utilizing TypeScript, React Server Components, and Shadcn/Radix UI, emphasizing modularity, performance optimization, and styling. The file includes instructions on setting up middleware in `middleware.ts`, managing user sessions with Vercel's KV database, and using AI SDK hooks for generative content streaming. It also covers data fetching strategies, state management, and deployment considerations to ensure a scalable and efficient application.
+
