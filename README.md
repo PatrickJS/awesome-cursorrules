@@ -1,5 +1,11 @@
 # Awesome CursorRules [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
 
+<p align="center">
+  <a href="https://patrickjs.com" target="_blank">
+    <img src="/cursor-ai-logo.png" alt="Awesome CursorRules" />
+  </a>
+</p>
+
 A curated list of awesome .cursorrules files for enhancing your Cursor AI experience.
 
 [Cursor AI](https://cursor.sh/) is an AI-powered code editor. `.cursorrules` files define custom rules for Cursor AI to follow when generating code, allowing you to tailor its behavior to your specific needs and preferences.
