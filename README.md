@@ -30,7 +30,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ## Contents
 
-- [Awesome Cursor Rules](#awesome-cursor-rules)
+- [Awesome CursorRules ](#awesome-cursorrules-)
   - [Why .cursorrules?](#why-cursorrules)
   - [Contents](#contents)
   - [Rules](#rules)
@@ -141,6 +141,12 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules)
 - [WebAssembly (Z80 Cellular Automata)](./rules/webassembly-z80-cellular-automata-cursorrules-prom/.cursorrules)
 - [WordPress (PHP, Guzzle, Gutenberg)](./rules/wordpress-php-guzzle-gutenberg-cursorrules-prompt-/.cursorrules)
+- [React (Redux, TypeScript)](./rules/react-redux-typescript-cursorrules-prompt-file/.cursorrules)
+- [React (GraphQL, Apollo Client)](./rules/react-graphql-apollo-client-cursorrules-prompt-file/.cursorrules)
+- [React (Styled Components)](./rules/react-styled-components-cursorrules-prompt-file/.cursorrules)
+- [React (React Query)](./rules/react-query-cursorrules-prompt-file/.cursorrules)
+- [React (Chakra UI)](./rules/react-chakra-ui-cursorrules-prompt-file/.cursorrules)
+- [React (MobX)](./rules/react-mobx-cursorrules-prompt-file/.cursorrules)
 
 ## How to Use
 
