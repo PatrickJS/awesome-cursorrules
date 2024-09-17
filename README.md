@@ -114,9 +114,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [WordPress (macOS)](./rules/cursorrules-cursor-ai-wordpress-draft-macos-prompt/.cursorrules)
 
 ### Mobile Development
-- [React Native](./rules/react-native-cursorrules-prompt-file/.cursorrules)
 - [React Native Expo](./rules/react-native-expo-cursorrules-prompt-file/.cursorrules)
-- [Flutter](./rules/flutter-cursorrules-prompt-file/.cursorrules)
 - [SwiftUI Guidelines](./rules/swiftui-guidelines-cursorrules-prompt-file/.cursorrules)
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules)
 
@@ -135,17 +133,13 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [React (React Query)](./rules/react-query-cursorrules-prompt-file/.cursorrules)
 
 ### Database and API
-- [Supabase](./rules/supabase-cursorrules-prompt-file/.cursorrules)
 - [GraphQL (Apollo Client)](./rules/react-graphql-apollo-client-cursorrules-prompt-file/.cursorrules)
-- [API](./rules/api-cursorrules-prompt-file/.cursorrules)
 - [TypeScript (Axios)](./rules/typescript-axios-cursorrules-prompt-file/.cursorrules)
 
 ### Testing
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules)
 
 ### Build Tools and Development
-- [Vite](./rules/vite-cursorrules-prompt-file/.cursorrules)
-- [Webpack](./rules/typescript-vite-tailwind-cursorrules-prompt-file/.cursorrules)
 - [Chrome Extension (JavaScript/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules)
 - [GitHub Code Quality](./rules/github-code-quality-cursorrules-prompt-file/.cursorrules)
 - [GitHub Instructions](./rules/github-cursorrules-prompt-file-instructions/.cursorrules)
@@ -158,10 +152,6 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript Code Convention](./rules/typescript-code-convention-cursorrules-prompt-file/.cursorrules)
 
 ### Language-Specific
-- [TypeScript](./rules/typescript-cursorrules-prompt-file/.cursorrules)
-- [Python](./rules/python-cursorrules-prompt-file/.cursorrules)
-- [C#](./rules/csharp-cursorrules-prompt-file/.cursorrules)
-- [Rust](./rules/rust-cursorrules-prompt-file/.cursorrules)
 - [JavaScript/TypeScript Code Quality](./rules/javascript-typescript-code-quality-cursorrules-pro/.cursorrules)
 - [JavaScript (Chrome APIs)](./rules/javascript-chrome-apis-cursorrules-prompt-file/.cursorrules)
 - [Optimize (Rell Blockchain Code)](./rules/optimize-rell-blockchain-code-cursorrules-prompt-f/.cursorrules)
@@ -197,8 +187,6 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file/.cursorrules)
 - [Code Guidelines](./rules/code-guidelines-cursorrules-prompt-file/.cursorrules)
 - [DragonRuby Best Practices](./rules/dragonruby-best-practices-cursorrules-prompt-file/.cursorrules)
-- [Function](./rules/function-cursorrules-prompt-file/.cursorrules)
-- [Game Development](./rules/game-development-cursorrules-prompt-file/.cursorrules)
 - [Graphical Apps Development](./rules/graphical-apps-development-cursorrules-prompt-file/.cursorrules)
 - [Meta-Prompt](./rules/meta-prompt-cursorrules-prompt-file/.cursorrules)
 - [Next.js (Type LLM)](./rules/next-type-llm/.cursorrules)
