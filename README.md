@@ -126,7 +126,6 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript (Next.js, React, Tailwind, Supabase)](./rules/typescript-nextjs-react-tailwind-supabase-cursorru/.cursorrules)
 - [TypeScript (Next.js, Supabase)](./rules/typescript-nextjs-supabase-cursorrules-prompt-file/.cursorrules)
 - [TypeScript (Node.js, Next.js, AI)](./rules/typescript-nodejs-nextjs-ai-cursorrules-prompt-fil/.cursorrules)
-- [TypeScript (Node.js, Next.js App)](./rules/typescript-nodejs-nextjs-app-cursorrules-prompt-fi/.cursorrules)
 - [TypeScript (Node.js, Next.js, React, UI, CSS)](./rules/typescript-nodejs-nextjs-react-ui-css-cursorrules-/.cursorrules)
 - [TypeScript (Node.js, React, Vite)](./rules/typescript-nodejs-react-vite-cursorrules-prompt-fi/.cursorrules)
 - [TypeScript (React, Next.js, Cloudflare)](./rules/typescript-react-nextjs-cloudflare-cursorrules-pro/.cursorrules)
@@ -147,6 +146,16 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [React (React Query)](./rules/react-query-cursorrules-prompt-file/.cursorrules)
 - [React (Chakra UI)](./rules/react-chakra-ui-cursorrules-prompt-file/.cursorrules)
 - [React (MobX)](./rules/react-mobx-cursorrules-prompt-file/.cursorrules)
+- [Qwik (Basic Setup with TypeScript and Vite)](./rules/qwik-basic-cursorrules-prompt-file/.cursorrules)
+- [Qwik (with Tailwind CSS)](./rules/qwik-tailwind-cursorrules-prompt-file/.cursorrules)
+- [Solid.js (Basic Setup)](./rules/solidjs-basic-cursorrules-prompt-file/.cursorrules)
+- [Solid.js (TypeScript)](./rules/solidjs-typescript-cursorrules-prompt-file/.cursorrules)
+- [Solid.js (Tailwind CSS)](./rules/solidjs-tailwind-cursorrules-prompt-file/.cursorrules)
+- [HTMX (Basic Setup)](./rules/htmx-basic-cursorrules-prompt-file/.cursorrules)
+- [HTMX (Flask)](./rules/htmx-flask-cursorrules-prompt-file/.cursorrules)
+- [HTMX (Django)](./rules/htmx-django-cursorrules-prompt-file/.cursorrules)
+- [HTMX (Go Basic Setup)](./rules/htmx-go-basic-cursorrules-prompt-file/.cursorrules)
+- [HTMX (Go with Fiber)](./rules/htmx-go-fiber-cursorrules-prompt-file/.cursorrules)
 
 ## How to Use
 
