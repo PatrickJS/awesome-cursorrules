@@ -207,11 +207,16 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 Contributions are welcome! If you have a great `.cursorrules` file to share:
 
 1. Fork this repository.
-2. Add your `.cursorrules` file to the appropriate folder in the `rules` directory.
-3. Update this README if necessary.
-4. Submit a pull request.
+2. Create a new folder in the `rules` directory. The folder name should follow this pattern:
+   `technology-focus-cursorrules-prompt-file`
+   For example: `react-typescript-cursorrules-prompt-file`
+3. Add your `.cursorrules` file to the new folder.
+4. Optionally, include a README.md in the folder to provide credit and a brief description.
+5. Update the main README.md file, adding your contribution to the appropriate category.
+6. Ensure your contribution follows the guidelines in the [`.cursorrules`](./.cursorrules) file at the root of this repository.
+7. Submit a pull request.
 
-Please ensure your contribution is original or properly credited if based on existing work.
+Please ensure your contribution is original or properly credited if based on existing work. Refer to the `.cursorrules` file in the root of this repository for detailed guidelines on formatting, naming conventions, and best practices for contributions.
 
 ---
 
