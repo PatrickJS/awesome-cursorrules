@@ -66,6 +66,8 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Next.js (TypeScript, Tailwind)](./rules/nextjs-typescript-tailwind-cursorrules-prompt-file/.cursorrules)
 - [Next.js (Vercel, Supabase)](./rules/nextjs-vercel-supabase-cursorrules-prompt-file/.cursorrules)
 - [Next.js (Vercel, TypeScript)](./rules/nextjs-vercel-typescript-cursorrules-prompt-file/.cursorrules)
+- [Next.js (App Router)](./rules/nextjs-app-router-cursorrules-prompt-file/.cursorrules)
+- [Next.js (Material UI, Tailwind CSS)](./rules/nextjs-material-ui-tailwind-css-cursorrules-prompt/.cursorrules)
 - [Qwik (Basic Setup with TypeScript and Vite)](./rules/qwik-basic-cursorrules-prompt-file/.cursorrules)
 - [Qwik (with Tailwind CSS)](./rules/qwik-tailwind-cursorrules-prompt-file/.cursorrules)
 - [React Components Creation](./rules/react-components-creation-cursorrules-prompt-file/.cursorrules)
@@ -81,6 +83,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [SvelteKit (TypeScript Guide)](./rules/sveltekit-typescript-guide-cursorrules-prompt-file/.cursorrules)
 - [Vue 3 (Nuxt 3 Development)](./rules/vue-3-nuxt-3-development-cursorrules-prompt-file/.cursorrules)
 - [Vue 3 (Nuxt 3, TypeScript)](./rules/vue-3-nuxt-3-typescript-cursorrules-prompt-file/.cursorrules)
+- [Vue 3 (Composition API)](./rules/vue3-composition-api-cursorrules-prompt-file/.cursorrules)
 
 ### Backend and Full-Stack
 - [Deno Integration](./rules/deno-integration-techniques-cursorrules-prompt-fil/.cursorrules)
@@ -100,6 +103,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Node.js (MongoDB)](./rules/nodejs-mongodb-cursorrules-prompt-file-tutorial/.cursorrules)
 - [Node.js (MongoDB, JWT, Express, React)](./rules/nodejs-mongodb-jwt-express-react-cursorrules-promp/.cursorrules)
 - [Python (FastAPI)](./rules/py-fast-api/.cursorrules)
+- [Python (FastAPI)](./rules/cursorrules-file-cursor-ai-python-fastapi-api/.cursorrules)
 - [Python 3.12 (FastAPI Best Practices)](./rules/python-312-fastapi-best-practices-cursorrules-prom/.cursorrules)
 - [Python (Django Best Practices)](./rules/python-django-best-practices-cursorrules-prompt-fi/.cursorrules)
 - [Python (FastAPI Best Practices)](./rules/python-fastapi-best-practices-cursorrules-prompt-f/.cursorrules)
@@ -182,6 +186,12 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript (Vue.js)](./rules/typescript-vuejs-cursorrules-prompt-file/.cursorrules)
 - [TypeScript (Zod, Tailwind, Next.js)](./rules/typescript-zod-tailwind-nextjs-cursorrules-prompt-/.cursorrules)
 - [WebAssembly (Z80 Cellular Automata)](./rules/webassembly-z80-cellular-automata-cursorrules-prom/.cursorrules)
+- [TypeScript (Next.js)](./rules/typescript-nextjs-cursorrules-prompt-file/.cursorrules)
+- [TypeScript (Next.js, React)](./rules/typescript-nextjs-react-cursorrules-prompt-file/.cursorrules)
+- [TypeScript (Next.js, React, Tailwind, Supabase)](./rules/typescript-nextjs-react-tailwind-supabase-cursorru/.cursorrules)
+- [TypeScript (Next.js, Supabase)](./rules/typescript-nextjs-supabase-cursorrules-prompt-file/.cursorrules)
+- [TypeScript (Node.js, Next.js App)](./rules/typescript-nodejs-nextjs-app-cursorrules-prompt-fi/.cursorrules)
+- [TypeScript (React)](./rules/typescript-react-cursorrules-prompt-file/.cursorrules)
 
 ### Other
 - [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file/.cursorrules)
