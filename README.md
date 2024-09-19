@@ -44,6 +44,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
     - [Build Tools and Development](#build-tools-and-development)
     - [Language-Specific](#language-specific)
     - [Other](#other)
+  - [Directories](#directories)
   - [How to Use](#how-to-use)
   - [Contributing](#contributing)
   - [License](#license)
@@ -192,6 +193,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Next.js (Type LLM)](./rules/next-type-llm/.cursorrules)
 - [Unity (C#)](./rules/unity-cursor-ai-c-cursorrules-prompt-file/.cursorrules)
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules)
+
+## Directories
+- [CursorList](https://cursorlist.com)
 
 ## How to Use
 
