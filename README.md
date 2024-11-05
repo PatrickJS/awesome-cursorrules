@@ -56,6 +56,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Angular (TypeScript)](./rules/angular-typescript-cursorrules-prompt-file/.cursorrules)
 - [Astro (TypeScript)](./rules/astro-typescript-cursorrules-prompt-file/.cursorrules)
 - [Cursor AI (React, TypeScript, shadcn/ui)](./rules/cursor-ai-react-typescript-shadcn-ui-cursorrules-p/.cursorrules)
+- [Next.js 15 (React 19, Vercel AI, Tailwind)](./rules/nextjs15-react19-vercelai-tailwind-cursorrules-prompt-file/.cursorrules)
 - [Next.js 14 (Tailwind, SEO)](./rules/cursorrules-cursor-ai-nextjs-14-tailwind-seo-setup/.cursorrules)
 - [Next.js (React, Tailwind)](./rules/nextjs-react-tailwind-cursorrules-prompt-file/.cursorrules)
 - [Next.js (React, TypeScript)](./rules/nextjs-react-typescript-cursorrules-prompt-file/.cursorrules)
