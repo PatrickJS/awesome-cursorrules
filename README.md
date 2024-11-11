@@ -202,11 +202,18 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [CursorDirectory](https://cursor.directory/)
 
 ## How to Use
-
+### Method One
 1. Install [Cursor AI](https://cursor.sh/) if you haven't already.
 2. Browse the rules above to find a `.cursorrules` file that suits your needs.
 3. Copy the chosen `.cursorrules` file to your project's root directory.
 4. Customize the rules as needed for your specific project requirements.
+### Method Two
+1. Install [Cursor AI](https://cursor.sh/) if you haven't already.
+2. Install [vscode-cursor-rules](https://marketplace.visualstudio.com/items?itemName=BeilunYang.cursor-rules) extension.
+3. Open the command palette (Cmd+Shift+P or Ctrl+Shift+P) and type `Cursor Rules: Add .cursorrules`.
+4. Select and download the `.cursorrules` file that suits your needs.
+5. Customize the rules as needed for your specific project requirements.
+
 
 ## Contributing
 
