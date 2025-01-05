@@ -12,7 +12,7 @@ charset-normalizer==3.4.1
 click==8.1.8
 coverage==7.6.10
 cryptography==44.0.0
--e git+https://github.com/garotm/awesome-cursorrules-dynamic.git@93b40df6106c32ad02d1c773aac38068330c181b#egg=cursor_rules_dynamic
+-e git+https://github.com/garotm/awesome-cursorrules-dynamic.git@cb9daefd511cf28dba5c6a9d04284cd4a630a16e#egg=cursor_rules_dynamic
 cyclonedx-python-lib==7.6.2
 defusedxml==0.7.1
 dill==0.3.9

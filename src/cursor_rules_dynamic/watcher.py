@@ -1,9 +1,9 @@
 """File system watcher for cursor rules."""
 
 from pathlib import Path
-from typing import Callable, Set, Union
+from typing import Callable, Set
 
-from watchdog.events import DirModifiedEvent, FileModifiedEvent, FileSystemEventHandler
+from watchdog.events import FileSystemEvent, FileSystemEventHandler
 
 
 class ProjectWatcher(FileSystemEventHandler):
@@ -44,14 +44,13 @@ class ProjectWatcher(FileSystemEventHandler):
 
         return True
 
-    def on_modified(self, event: Union[DirModifiedEvent, FileModifiedEvent]) -> None:
+    def on_modified(self, event: FileSystemEvent) -> None:
         """Handle file modification events.
 
         Args:
             event: The file or directory modification event.
         """
-        if isinstance(event, FileModifiedEvent):
-            file_path = Path(str(event.src_path))
-            if self._should_process_file(file_path):
-                self._modified_files.add(file_path)
-                self.callback(file_path)
+        file_path = Path(str(event.src_path))
+        if self._should_process_file(file_path):
+            self._modified_files.add(file_path)
+            self.callback(file_path)
