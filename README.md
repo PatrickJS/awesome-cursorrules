@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/garotm/awesome-cursorrules-dynamic/actions/workflows/ci.yml/badge.svg)](https://github.com/garotm/awesome-cursorrules-dynamic/actions/workflows/ci.yml)
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](http://creativecommons.org/publicdomain/zero/1.0/)
-[![Python Version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.13-blue)](https://www.python.org/downloads/)
 
 <p align="center">
   <a href="https://patrickjs.com" target="_blank">
