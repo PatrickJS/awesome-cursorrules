@@ -1,0 +1,5 @@
+watchdog>=2.1.0
+astroid>=2.14.0
+esprima>=4.0.1
+pathlib>=1.0.1
+typing-extensions>=4.7.1 

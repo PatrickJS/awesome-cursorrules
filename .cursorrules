@@ -1,82 +1,158 @@
-// Awesome CursorRules
-// A curated list of awesome .cursorrules files for enhancing Cursor AI experience
+// Dynamic .cursorrules Analyzer - AI Development Guidelines
+// Author: Garot Conklin (garotm)
 
-// General guidelines
-Always use Markdown for documentation and README files
-Maintain the existing structure of the README.md file
+// What you can build with this ruleset:
+A Python-based dynamic analyzer for .cursorrules files that:
+- Automatically analyzes project codebases for patterns and conventions
+- Generates and updates .cursorrules files based on detected patterns
+- Monitors file changes in real-time to suggest rule updates
+- Manages rule versioning and history
+- Provides an API for IDE integration
+- Implements intelligent rule merging and conflict resolution
+- Offers CLI tools for manual rule generation and validation
 
-// README.md structure
-Maintain the following structure in the README.md file:
-  1. Title and Awesome badge
-  2. Logo
-  3. Short description
-  4. "Why .cursorrules?" section
-  5. Table of Contents
-  6. Rules section
-     - Frontend Frameworks and Libraries
-     - Backend and Full-Stack
-     - Mobile Development
-     - CSS and Styling
-     - State Management
-     - Database and API
-     - Testing
-     - Build Tools and Development
-     - Language-Specific
-     - Other
-  7. How to Use section
-  8. Contributing section
-  9. License section
+// Project Structure
+Follow this directory structure:
+src/
+  cursor_rules_dynamic/
+    __init__.py          # Package initialization and version
+    analyzer.py          # Code analysis engine
+    watcher.py          # File system monitoring
+    rules_manager.py    # Rules management
+    exceptions.py       # Custom exceptions
+tests/
+  __init__.py
+  test_*.py            # Test files matching implementation
+scripts/               # Development and utility scripts
+docs/                 # Documentation
 
-// Organization of rules
-Organize .cursorrules files into the following main categories within the 'rules' directory:
-  - Frontend Frameworks and Libraries
-  - Backend and Full-Stack
-  - Mobile Development
-  - CSS and Styling
-  - State Management
-  - Database and API
-  - Testing
-  - Build Tools and Development
-  - Language-Specific
-  - Other
-Place each .cursorrules file directly in the 'rules' folder
-The folder name for each .cursorrules file should describe the category and content of the file
-Refer to the README in each folder for guidance on naming conventions and descriptions
+// Development Guidelines
+1. Code Quality:
+   - Use Python 3.8+ features
+   - Implement strict type hints
+   - Follow PEP 8 style guide
+   - Maximum line length: 100 characters
+   - Use black for formatting
+   - Use isort for import sorting
+   - Run pylint for linting
 
-// Naming and formatting
-Use descriptive names for .cursorrules files and their folders, following the pattern: 'technology-focus-cursorrules-prompt-file'
-Maintain alphabetical order within each category in the README.md file
-Use consistent formatting for list items in the README.md file
+2. Testing Requirements:
+   - Maintain 90%+ test coverage
+   - Write pytest fixtures
+   - Mock external dependencies
+   - Test both success and failure cases
+   - Include performance tests
+   - Document test scenarios
 
-// Content guidelines
-When creating or editing .cursorrules files, focus on project-specific instructions and best practices
-Include comments in .cursorrules files to explain complex rules or provide context
-Use clear and concise language in all documentation and .cursorrules files
-Provide context on what you're building, style guidelines, or info on commonly-used methods
+3. Documentation Standards:
+   - Use Google-style docstrings
+   - Document all public APIs
+   - Include usage examples
+   - Maintain up-to-date README
+   - Document configuration options
 
-// Optional README for credit and description
-Each .cursorrules file may have an accompanying README.md file in its folder
-Use this README to provide credit to the original author and a brief description of the .cursorrules file's purpose
+4. Error Handling:
+   - Define custom exceptions
+   - Use structured logging
+   - Implement proper cleanup
+   - Handle edge cases
+   - Provide clear error messages
 
-// Maintenance and updates
-Update the README.md file when adding new .cursorrules files, placing them in the correct category
-Ensure all links in the README.md file are relative and correct
-When updating the README.md, ensure the table of contents remains accurate
-When adding new categories, update both the 'Contents' and 'Rules' sections of the README.md
-Regularly review and update categorization as the repository grows
+5. Performance:
+   - Use efficient data structures
+   - Implement debouncing
+   - Optimize file operations
+   - Monitor memory usage
+   - Cache when appropriate
 
-// Best practices
-Maintain consistency in capitalization and punctuation throughout the repository
-When referencing Cursor AI, always use the correct capitalization and spacing
-When adding examples or explanations, focus on practical use cases for Cursor AI users
-If a .cursorrules file fits multiple categories, place it in the most relevant one and cross-reference in others if necessary
-Keep the 'Other' category for .cursorrules files that don't fit neatly into the main categories
+// Code Examples:
 
-// Additional insights
-.cursorrules files are repo-specific "Rules for AI"
-.cursorrules files should be placed in the root of the repository
-The content of .cursorrules files will be appended to the global "Rules for AI" settings in Cursor
-Focus on providing repo-level context and guidelines, not just general coding practices
-.cursorrules can include information about project structure, architectural decisions, and commonly used libraries or methods
-Consider including rules for handling specific file types or coding patterns unique to your project
-Rules can cover both code generation and code understanding aspects for Cursor AI
+1. Class Definition Pattern:
+```python
+from pathlib import Path
+from typing import Dict, List, Optional
+
+class CodeAnalyzer:
+    """Analyzes project code for patterns and conventions.
+
+    Args:
+        project_root: Root directory of the project to analyze.
+        config: Optional configuration dictionary.
+
+    Attributes:
+        patterns: Dictionary of detected code patterns.
+    """
+
+    def __init__(self, project_root: Path, config: Optional[Dict] = None) -> None:
+        self.project_root = project_root
+        self.patterns: Dict[str, List[str]] = {}
+        self._configure(config or {})
+```
+
+2. Error Handling Pattern:
+```python
+class RuleAnalysisError(Exception):
+    """Raised when rule analysis fails."""
+    pass
+
+def analyze_file(self, file_path: Path) -> List[str]:
+    """Analyze a file for patterns.
+    
+    Args:
+        file_path: Path to the file to analyze.
+        
+    Returns:
+        List of detected patterns.
+        
+    Raises:
+        RuleAnalysisError: If analysis fails.
+    """
+    try:
+        # Analysis logic
+        return patterns
+    except Exception as e:
+        raise RuleAnalysisError(f"Failed to analyze {file_path}: {str(e)}")
+```
+
+3. Testing Pattern:
+```python
+import pytest
+from pathlib import Path
+
+@pytest.fixture
+def analyzer():
+    """Create a CodeAnalyzer instance for testing."""
+    return CodeAnalyzer(Path("."))
+
+def test_pattern_detection(analyzer, tmp_path):
+    """Test pattern detection in Python files."""
+    test_file = tmp_path / "test.py"
+    test_file.write_text("class TestClass:\n    pass")
+    
+    patterns = analyzer.analyze_file(test_file)
+    assert patterns  # Verify patterns were detected
+```
+
+// Best Practices:
+1. Use Path objects for file operations
+2. Implement context managers for resource handling
+3. Use dataclasses for data containers
+4. Implement proper cleanup in destructors
+5. Follow the observer pattern for file watching
+6. Use environment variables for configuration
+7. Implement proper logging at all levels
+8. Use type hints consistently
+9. Write clear, descriptive commit messages
+10. Keep functions focused and small
+
+// Security Considerations:
+1. Validate all file paths
+2. Don't execute analyzed code
+3. Handle permissions carefully
+4. Sanitize all inputs
+5. Use secure defaults
+6. Implement proper error handling
+7. Log security-relevant events
+8. Use safe file operations
+9. Validate configuration
+10. Handle sensitive data appropriately
