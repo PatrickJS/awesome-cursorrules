@@ -1,0 +1,40 @@
+{
+    "name": "cursor-rules-dynamic",
+    "displayName": "Cursor Rules Dynamic",
+    "description": "Dynamic code analysis and rule enforcement for Cursor IDE",
+    "version": "1.0.0",
+    "engines": {
+        "vscode": "^1.85.0",
+        "node": ">=16.13.1"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "rm -rf out && npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest/index.js",
+        "test:coverage": "c8 --reporter=lcov --reporter=text-summary npm run test"
+    },
+    "devDependencies": {
+        "@types/glob": "^8.1.0",
+        "@types/mocha": "^10.0.10",
+        "@types/node": "^16.18.0",
+        "@types/vscode": "^1.85.0",
+        "@typescript-eslint/eslint-plugin": "^7.0.0",
+        "@typescript-eslint/parser": "^7.0.0",
+        "@vscode/test-electron": "^2.4.1",
+        "eslint": "^8.57.1",
+        "mocha": "^10.2.0",
+        "typescript": "^5.3.3",
+        "c8": "^8.0.1",
+        "glob": "^9.3.5"
+    }
+}

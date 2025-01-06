@@ -2,28 +2,81 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, feature/typescript-conversion ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, feature/typescript-conversion ]
   workflow_dispatch:
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.13']
+        node-version: [16.x, 18.x]
 
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
       with:
-        python-version: ${{ matrix.python-version }}
-        
-    - name: Run format and lint script
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: vscode-extension/package-lock.json
+
+    - name: Install dependencies
       run: |
-        bash scripts/format_and_lint.sh 
+        cd vscode-extension
+        npm ci
+
+    - name: Run ESLint
+      run: |
+        cd vscode-extension
+        npm run lint
+
+    - name: Build Extension
+      run: |
+        cd vscode-extension
+        npm run compile
+
+    - name: Run Tests
+      run: |
+        cd vscode-extension
+        npm test
+
+    - name: Package Extension
+      run: |
+        cd vscode-extension
+        npm run vscode:prepublish
+
+  coverage:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+        cache-dependency-path: vscode-extension/package-lock.json
+
+    - name: Install dependencies
+      run: |
+        cd vscode-extension
+        npm ci
+
+    - name: Generate coverage report
+      run: |
+        cd vscode-extension
+        npm run test:coverage
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        directory: ./vscode-extension/coverage
+        flags: typescript 
