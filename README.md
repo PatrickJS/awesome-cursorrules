@@ -115,6 +115,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript (NestJS Best Practices)](./rules/typescript-nestjs-best-practices-cursorrules-promp/.cursorrules)
 - [WordPress (PHP, Guzzle, Gutenberg)](./rules/wordpress-php-guzzle-gutenberg-cursorrules-prompt-/.cursorrules)
 - [WordPress (macOS)](./rules/cursorrules-cursor-ai-wordpress-draft-macos-prompt/.cursorrules)
+- [Python LLM & ML Workflow](./rules/python-llm-ml-workflow-cursorrules-prompt-file/.cursorrules)
 
 ### Mobile Development
 - [React Native Expo](./rules/react-native-expo-cursorrules-prompt-file/.cursorrules)
