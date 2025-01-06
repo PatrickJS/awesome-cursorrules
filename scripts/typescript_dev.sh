@@ -56,4 +56,4 @@ echo -e "${GREEN}\nAll checks passed successfully!${NC}"
 if [ -f "coverage/lcov-report/index.html" ]; then
     print_step "Coverage Summary:"
     cat coverage/coverage-summary.txt
-fi 
+fi

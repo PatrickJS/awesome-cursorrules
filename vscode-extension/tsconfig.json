@@ -13,8 +13,5 @@
     "resolveJsonModule": true,
     "types": ["node", "mocha", "vscode"]
   },
-  "include": [
-    "src/**/*"
-  ],
   "exclude": ["node_modules", ".vscode-test"]
 } 
