@@ -147,6 +147,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules)
 
 ### Build Tools and Development
+- [Blender VSCode Development](./rules/blender-vscode-cursorrules-prompt-file/.cursorrules)
 - [Chrome Extension (JavaScript/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules)
 - [GitHub Code Quality](./rules/github-code-quality-cursorrules-prompt-file/.cursorrules)
 - [GitHub Instructions](./rules/github-cursorrules-prompt-file-instructions/.cursorrules)
