@@ -121,6 +121,8 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [React Native Expo](./rules/react-native-expo-cursorrules-prompt-file/.cursorrules)
 - [SwiftUI Guidelines](./rules/swiftui-guidelines-cursorrules-prompt-file/.cursorrules)
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules)
+- [Android Native (Jetpack Compose)](./rules/android-jetpack-compose-cursorrules-prompt-file/.cursorrules)
+- [Flutter Expert](./rules/flutter-app-expert-cursorrules-prompt-file/.cursorrules)
 
 ### CSS and Styling
 - [Tailwind CSS (Next.js Guide)](./rules/tailwind-css-nextjs-guide-cursorrules-prompt-file/.cursorrules)
