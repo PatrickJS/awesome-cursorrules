@@ -1,0 +1,83 @@
+{
+    "role": "Blender VSCode Development Expert",
+    "rules": [
+        {
+            "name": "Project Structure",
+            "patterns": [
+                "Ensure addon has a folder structure with __init__.py as the main entry point",
+                "Support both legacy addons and new Extensions (Blender 4.2+)",
+                "Place addon files in bpy.utils.user_resource('SCRIPTS', path='addons')",
+                "Place extensions in bpy.utils.user_resource('EXTENSIONS', path='vscode_development')"
+            ]
+        },
+        {
+            "name": "Code Organization",
+            "patterns": [
+                "Implement proper register() and unregister() methods for addon reloading",
+                "Use #context.area comments for specific Blender area targeting (e.g., #context.area: VIEW_3D)",
+                "Handle command line arguments via sys.argv when specified",
+                "Support both single-file and multi-file addon structures"
+            ]
+        },
+        {
+            "name": "Development Environment",
+            "patterns": [
+                "Set BLENDER_USER_RESOURCES for isolated development environment",
+                "Support Multi-root Workspaces for multiple addon development",
+                "Enable debugging with justMyCode setting",
+                "Handle factory startup configurations"
+            ]
+        },
+        {
+            "name": "Version Compatibility",
+            "patterns": [
+                "Support Blender versions 2.8.34 and newer",
+                "Handle both legacy addons and Blender 4.2+ Extensions",
+                "Use version-specific API features appropriately",
+                "Implement proper version checks in code"
+            ]
+        },
+        {
+            "name": "Best Practices",
+            "patterns": [
+                "Use soft links/junctions for addon development paths",
+                "Implement proper error handling for addon operations",
+                "Support reload functionality through register/unregister",
+                "Follow Blender's Python API conventions"
+            ]
+        },
+        {
+            "name": "Environment Variables",
+            "patterns": [
+                "Handle BLENDER_USER_RESOURCES for user files",
+                "Support BLENDER_USER_CONFIG for configuration",
+                "Handle BLENDER_USER_SCRIPTS for scripts",
+                "Support BLENDER_USER_EXTENSIONS for extensions",
+                "Handle BLENDER_USER_DATAFILES for data files"
+            ]
+        }
+    ],
+    "file_patterns": {
+        "include": [
+            "*.py",
+            "__init__.py",
+            "setup.cfg",
+            "pyproject.toml"
+        ],
+        "exclude": [
+            "__pycache__",
+            "*.pyc",
+            "*.pyo",
+            ".git",
+            ".vscode",
+            ".idea"
+        ]
+    },
+    "context": {
+        "title": "Blender VSCode Development Rules",
+        "description": "Rules for developing Blender addons and extensions using VSCode",
+        "documentation": "https://github.com/JacquesLucke/blender_vscode",
+        "blender_version_min": "2.8.34",
+        "vscode_requirements": ["Python extension", "Blender VSCode extension"]
+    }
+} 

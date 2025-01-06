@@ -5,6 +5,8 @@ from typing import Callable, Set
 
 from watchdog.events import FileSystemEvent, FileSystemEventHandler
 
+from .languages import LanguageDetector
+
 
 class ProjectWatcher(FileSystemEventHandler):
     """Watches for file changes in the project directory."""
@@ -42,7 +44,9 @@ class ProjectWatcher(FileSystemEventHandler):
         if file_path.suffix in {".pyc", ".pyo"}:
             return False
 
-        return True
+        # Check if file is a supported language
+        language = LanguageDetector.detect_language(file_path)
+        return LanguageDetector.supports_language(language)
 
     def on_modified(self, event: FileSystemEvent) -> None:
         """Handle file modification events.
