@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import * as path from 'path';
 import Mocha from 'mocha';
 import { glob } from 'glob';

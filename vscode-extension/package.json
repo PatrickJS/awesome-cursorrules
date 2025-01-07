@@ -4,16 +4,26 @@
     "description": "Dynamic code analysis and rule enforcement for Cursor IDE",
     "version": "1.0.0",
     "engines": {
-        "vscode": "^1.85.0",
+        "vscode": "^1.96.0",
         "node": ">=16.13.1"
     },
     "categories": [
         "Other"
     ],
     "activationEvents": [
-        "onStartupFinished"
+        "onStartupFinished",
+        "workspaceContains:**/.cursorrules"
     ],
     "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "cursor-rules-dynamic.showStatus",
+                "title": "Show Cursor Rules Status",
+                "category": "Cursor Rules"
+            }
+        ]
+    },
     "scripts": {
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
@@ -26,15 +36,15 @@
     "devDependencies": {
         "@types/glob": "^8.1.0",
         "@types/mocha": "^10.0.6",
-        "@types/node": "^20.11.24",
-        "@types/vscode": "^1.85.0",
+        "@types/node": "^20.17.12",
+        "@types/vscode": "^1.96.0",
         "@typescript-eslint/eslint-plugin": "^7.0.0",
         "@typescript-eslint/parser": "^7.0.0",
         "@vscode/test-electron": "^2.3.8",
-        "eslint": "^8.57.0",
-        "mocha": "^10.2.0",
-        "typescript": "^5.3.3",
         "c8": "^8.0.1",
-        "glob": "^10.3.10"
+        "eslint": "^8.57.0",
+        "glob": "^10.3.10",
+        "mocha": "^10.2.0",
+        "typescript": "^5.3.3"
     }
 }

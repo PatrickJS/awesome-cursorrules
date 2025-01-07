@@ -1,26 +1,28 @@
+/// <reference types="node" />
 import * as path from 'path';
 import * as fs from 'fs';
 import { runTests } from '@vscode/test-electron';
+import * as os from 'os';
 
-async function cleanupTestDirectory(testWorkspace: string) {
+async function cleanupTestDirectory(testWorkspace: string): Promise<void> {
     try {
         // Clean up test workspace
         if (fs.existsSync(testWorkspace)) {
-            fs.rmSync(testWorkspace, { recursive: true, force: true });
+            await fs.promises.rm(testWorkspace, { recursive: true, force: true });
         }
-        fs.mkdirSync(testWorkspace, { recursive: true });
+        await fs.promises.mkdir(testWorkspace, { recursive: true });
 
-        // Clean up VSCode test instance data
-        const userDataDir = path.join(__dirname, '../../../.vscode-test/user-data');
+        // Clean up VSCode test instance data using a shorter path
+        const userDataDir = path.join(os.tmpdir(), 'vscode-test-userdata');
         if (fs.existsSync(userDataDir)) {
-            fs.rmSync(userDataDir, { recursive: true, force: true });
+            await fs.promises.rm(userDataDir, { recursive: true, force: true });
         }
     } catch (err) {
         console.warn('Cleanup warning:', err);
     }
 }
 
-async function main() {
+async function main(): Promise<void> {
     try {
         const extensionDevelopmentPath = path.resolve(__dirname, '../../../');
         const extensionTestsPath = path.resolve(__dirname, '../suite/index');
@@ -28,8 +30,7 @@ async function main() {
 
         // Clean up before tests
         await cleanupTestDirectory(testWorkspace);
-
-        // Run the tests
+        
         await runTests({
             extensionDevelopmentPath,
             extensionTestsPath,
@@ -37,7 +38,8 @@ async function main() {
                 testWorkspace,
                 '--disable-extensions',
                 '--disable-telemetry',
-                '--user-data-dir=' + path.join(extensionDevelopmentPath, '.vscode-test/user-data')
+                '--user-data-dir=' + path.join(os.tmpdir(), 'vscode-test-userdata'),
+                '--no-sandbox'
             ]
         });
     } catch (err) {
@@ -46,4 +48,4 @@ async function main() {
     }
 }
 
-main(); 
+void main(); 

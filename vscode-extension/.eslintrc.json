@@ -11,15 +11,21 @@
     ],
     "extends": [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
     "rules": {
-        "@typescript-eslint/naming-convention": "warn",
-        "@typescript-eslint/semi": "warn",
-        "curly": "warn",
-        "eqeqeq": "warn",
-        "no-throw-literal": "warn",
-        "semi": "off"
+        "@typescript-eslint/naming-convention": "error",
+        "@typescript-eslint/semi": "error",
+        "curly": "error",
+        "eqeqeq": "error",
+        "no-throw-literal": "error",
+        "semi": "off",
+        "prefer-const": "error",
+        "no-var": "error",
+        "@typescript-eslint/explicit-function-return-type": "error",
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/no-unused-vars": "error"
     },
     "ignorePatterns": [
         "out",
