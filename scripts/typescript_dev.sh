@@ -32,8 +32,15 @@ cd "$(dirname "$0")/../vscode-extension"
 print_step "Cleaning previous builds..."
 rm -rf node_modules out coverage
 
-print_step "Installing dependencies..."
-npm ci
+print_step "Checking package dependencies..."
+# Check if package-lock.json exists and is in sync
+if [ ! -f "package-lock.json" ] || ! npm ci --dry-run > /dev/null 2>&1; then
+    echo -e "${YELLOW}Package lock file is out of sync. Running npm install...${NC}"
+    npm install
+else
+    echo -e "${GREEN}Installing dependencies from package-lock.json...${NC}"
+    npm ci
+fi
 
 print_step "Running ESLint..."
 npm run lint

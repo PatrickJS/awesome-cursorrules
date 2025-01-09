@@ -21,8 +21,28 @@
                 "command": "cursor-rules-dynamic.showStatus",
                 "title": "Show Cursor Rules Status",
                 "category": "Cursor Rules"
+            },
+            {
+                "command": "cursor-rules-dynamic.convertToJson",
+                "title": "Convert .cursorrules to JSON Format",
+                "category": "Cursor Rules"
             }
-        ]
+        ],
+        "jsonValidation": [
+            {
+                "fileMatch": ".cursorrules",
+                "url": "./schemas/cursorrules.schema.json"
+            }
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "when": "resourceFilename == .cursorrules",
+                    "command": "cursor-rules-dynamic.convertToJson",
+                    "group": "1_modification"
+                }
+            ]
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
@@ -31,7 +51,11 @@
         "pretest": "rm -rf out && npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
         "test": "node ./out/test/runTest/index.js",
+        "test:unit": "mocha -r ts-node/register 'src/test/suite/**/*.test.ts' --exclude 'src/test/suite/extension.test.ts'",
         "test:coverage": "c8 --reporter=lcov --reporter=text-summary npm run test"
+    },
+    "dependencies": {
+        "ajv": "^8.12.0"
     },
     "devDependencies": {
         "@types/glob": "^8.1.0",
@@ -45,6 +69,7 @@
         "eslint": "^8.57.0",
         "glob": "^10.3.10",
         "mocha": "^10.2.0",
+        "ts-node": "^10.9.2",
         "typescript": "^5.3.3"
     }
 }

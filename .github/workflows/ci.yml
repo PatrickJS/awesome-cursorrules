@@ -2,81 +2,30 @@ name: CI
 
 on:
   push:
-    branches: [ main, feature/typescript-conversion ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, feature/typescript-conversion ]
-  workflow_dispatch:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [18.x]
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
+    
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: vscode-extension/package-lock.json
 
-    - name: Install dependencies
-      run: |
-        cd vscode-extension
-        npm ci
+    - name: Make CI script executable
+      run: chmod +x scripts/ci.sh
 
-    - name: Run ESLint
-      run: |
-        cd vscode-extension
-        npm run lint
-
-    - name: Build Extension
-      run: |
-        cd vscode-extension
-        npm run compile
-
-    - name: Run Tests
-      run: |
-        cd vscode-extension
-        npm test
-
-    - name: Package Extension
-      run: |
-        cd vscode-extension
-        npm run vscode:prepublish
-
-  coverage:
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18.x'
-        cache: 'npm'
-        cache-dependency-path: vscode-extension/package-lock.json
-
-    - name: Install dependencies
-      run: |
-        cd vscode-extension
-        npm ci
-
-    - name: Generate coverage report
-      run: |
-        cd vscode-extension
-        npm run test:coverage
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        directory: ./vscode-extension/coverage
-        flags: typescript 
+    - name: Run CI checks
+      run: ./scripts/ci.sh 

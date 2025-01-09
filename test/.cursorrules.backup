@@ -1,0 +1,17 @@
+# TypeScript Rules
+- no-any: Avoid using the 'any' type - it defeats TypeScript's type safety
+- strict-null-checks: Always enable strict null checks for better type safety
+- explicit-return-type: Use explicit return types on functions
+- no-unused-vars: Remove unused variables and imports
+
+# Python Rules
+- type-hints: Always use type hints for function parameters and return values
+- f-strings: Use f-strings instead of older string formatting methods
+- docstrings: Include docstrings for all functions and classes
+- line-length: Keep lines under 88 characters
+
+# JavaScript Rules
+- prefer-const: Use const for variables that aren't reassigned
+- no-var: Never use var, prefer let or const
+- template-literals: Use template literals instead of string concatenation
+- arrow-functions: Use arrow functions for callbacks
