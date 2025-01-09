@@ -18,9 +18,14 @@ npm run compile
 echo "==> Running ESLint..."
 npm run lint
 
-# Run unit tests that don't require VSCode GUI
-echo "==> Running unit tests..."
-SKIP_VSCODE_TESTS=true npm run test:unit
+# Run tests with xvfb-run for headless environment
+echo "==> Running tests..."
+if [ -n "$CI" ]; then
+    sudo apt-get install -y xvfb
+    xvfb-run -a npm test
+else
+    npm test
+fi
 
 # Build the extension package
 echo "==> Building extension package..."
