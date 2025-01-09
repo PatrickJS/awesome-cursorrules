@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { MarkdownConverter } from './converter/markdownConverter';
+import { TemplateService } from './templates/templateService';
 
 export function activate(context: vscode.ExtensionContext): void {
     console.log('Cursor Rules Dynamic extension is now active');
@@ -51,7 +52,7 @@ export function activate(context: vscode.ExtensionContext): void {
                     void vscode.window.showErrorMessage('No .cursorrules files found in workspace');
                     return;
                 }
-                
+
                 const selected = await vscode.window.showQuickPick(
                     files.map(f => ({ label: vscode.workspace.asRelativePath(f), uri: f })),
                     { placeHolder: 'Select .cursorrules file to convert' }
@@ -98,9 +99,50 @@ export function activate(context: vscode.ExtensionContext): void {
         void vscode.window.showInformationMessage(message);
     });
 
+    // Register template browsing command
+    const templateService = new TemplateService(context.extensionPath);
+    const browseTemplatesCommand = vscode.commands.registerCommand('cursor-rules-dynamic.browseTemplates', async () => {
+        try {
+            // Get template categories
+            const categories = await templateService.getTemplateCategories();
+            
+            // Let user select a category
+            const selectedCategory = await vscode.window.showQuickPick(categories, {
+                placeHolder: 'Select a template category'
+            });
+            
+            if (!selectedCategory) {
+                return;
+            }
+            
+            // Get templates in selected category
+            const templates = await templateService.getTemplatesInCategory(selectedCategory);
+            
+            // Let user select a template
+            const selectedTemplate = await vscode.window.showQuickPick(
+                templates.map(t => ({
+                    label: t.name,
+                    description: t.description,
+                    template: t
+                })),
+                {
+                    placeHolder: 'Select a template to preview'
+                }
+            );
+            
+            if (selectedTemplate) {
+                // Preview the selected template
+                await templateService.createTemplatePreview(selectedTemplate.template);
+            }
+        } catch (error) {
+            void vscode.window.showErrorMessage(`Error browsing templates: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    });
+
     context.subscriptions.push(watcher);
     context.subscriptions.push(convertCommand);
     context.subscriptions.push(statusCommand);
+    context.subscriptions.push(browseTemplatesCommand);
 
     // Update status for initial active editor
     if (vscode.window.activeTextEditor) {
