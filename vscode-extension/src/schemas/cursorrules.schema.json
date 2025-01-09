@@ -1,0 +1,78 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Cursor Rules Configuration",
+    "description": "Schema for .cursorrules configuration files",
+    "type": "object",
+    "required": ["version", "languages"],
+    "properties": {
+        "version": {
+            "type": "string",
+            "description": "Version of the cursorrules schema",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "languages": {
+            "type": "object",
+            "description": "Language-specific rules configuration",
+            "additionalProperties": {
+                "$ref": "#/definitions/languageConfig"
+            }
+        }
+    },
+    "definitions": {
+        "languageConfig": {
+            "type": "object",
+            "required": ["rules"],
+            "properties": {
+                "rules": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/rule"
+                    }
+                }
+            }
+        },
+        "rule": {
+            "type": "object",
+            "required": ["id", "level", "description"],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Unique identifier for the rule"
+                },
+                "level": {
+                    "type": "string",
+                    "enum": ["error", "warning", "info", "hint"],
+                    "description": "Severity level of the rule"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Human-readable description of the rule"
+                },
+                "pattern": {
+                    "type": "string",
+                    "description": "Regular expression pattern for rule matching"
+                },
+                "fix": {
+                    "type": "object",
+                    "description": "Automatic fix configuration",
+                    "properties": {
+                        "replace": {
+                            "type": "string",
+                            "description": "Replacement pattern for automatic fixing"
+                        },
+                        "message": {
+                            "type": "string",
+                            "description": "Message to show when fix is applied"
+                        }
+                    },
+                    "required": ["replace"]
+                },
+                "disabled": {
+                    "type": "boolean",
+                    "description": "Whether the rule is disabled",
+                    "default": false
+                }
+            }
+        }
+    }
+} 

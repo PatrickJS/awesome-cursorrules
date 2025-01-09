@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { MarkdownConverter } from './converter/markdownConverter';
 
 export function activate(context: vscode.ExtensionContext): void {
     console.log('Cursor Rules Dynamic extension is now active');
@@ -40,8 +41,57 @@ export function activate(context: vscode.ExtensionContext): void {
         }
     });
 
-    // Register commands
-    const disposable = vscode.commands.registerCommand('cursor-rules-dynamic.showStatus', () => {
+    // Register convert command
+    const convertCommand = vscode.commands.registerCommand('cursor-rules-dynamic.convertToJson', async (uri?: vscode.Uri) => {
+        try {
+            // If URI not provided through context menu, show file picker
+            if (!uri) {
+                const files = await vscode.workspace.findFiles('**/.cursorrules');
+                if (files.length === 0) {
+                    void vscode.window.showErrorMessage('No .cursorrules files found in workspace');
+                    return;
+                }
+                
+                const selected = await vscode.window.showQuickPick(
+                    files.map(f => ({ label: vscode.workspace.asRelativePath(f), uri: f })),
+                    { placeHolder: 'Select .cursorrules file to convert' }
+                );
+                
+                if (!selected) {
+                    return;
+                }
+                uri = selected.uri;
+            }
+
+            // Show preview first
+            await MarkdownConverter.showPreview(uri);
+
+            // Wait for user to review and possibly edit the preview
+            const choice = await vscode.window.showWarningMessage(
+                'Review the preview and make any needed edits. Would you like to proceed with the conversion?',
+                { modal: true },
+                'Convert',
+                'Cancel'
+            );
+
+            if (choice === 'Convert' && MarkdownConverter.hasActivePreview()) {
+                // Convert the file with possibly edited content
+                await MarkdownConverter.convertFile(uri);
+                void vscode.window.showInformationMessage(
+                    `Successfully converted ${vscode.workspace.asRelativePath(uri)} to JSON format. Original file backed up.`
+                );
+            } else {
+                void vscode.window.showInformationMessage('Conversion cancelled.');
+            }
+        } catch (error) {
+            void vscode.window.showErrorMessage(
+                `Failed to convert file: ${error instanceof Error ? error.message : String(error)}`
+            );
+        }
+    });
+
+    // Register status command
+    const statusCommand = vscode.commands.registerCommand('cursor-rules-dynamic.showStatus', () => {
         const editor = vscode.window.activeTextEditor;
         const languageId = editor?.document.languageId || 'none';
         const message = `Cursor Rules Dynamic is active and monitoring ${languageId} files`;
@@ -49,7 +99,8 @@ export function activate(context: vscode.ExtensionContext): void {
     });
 
     context.subscriptions.push(watcher);
-    context.subscriptions.push(disposable);
+    context.subscriptions.push(convertCommand);
+    context.subscriptions.push(statusCommand);
 
     // Update status for initial active editor
     if (vscode.window.activeTextEditor) {
