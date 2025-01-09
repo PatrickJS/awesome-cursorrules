@@ -1,154 +1,144 @@
-// Dynamic .cursorrules Analyzer - AI Development Guidelines
+// Dynamic .cursorrules Analyzer - VSCode Extension
 // Author: Garot Conklin (garotm)
 
 // What you can build with this ruleset:
-A Python-based dynamic analyzer for .cursorrules files that:
+A TypeScript-based VSCode extension that:
 - Automatically analyzes project codebases for patterns and conventions
 - Generates and updates .cursorrules files based on detected patterns
 - Monitors file changes in real-time to suggest rule updates
 - Manages rule versioning and history
-- Provides an API for IDE integration
+- Integrates directly with VSCode
 - Implements intelligent rule merging and conflict resolution
-- Offers CLI tools for manual rule generation and validation
+- Offers commands for manual rule generation and validation
 
 // Project Structure
 Follow this directory structure:
 src/
-  cursor_rules_dynamic/
-    __init__.py          # Package initialization and version
-    analyzer.py          # Code analysis engine
-    watcher.py          # File system monitoring
-    rules_manager.py    # Rules management
-    exceptions.py       # Custom exceptions
-tests/
-  __init__.py
-  test_*.py            # Test files matching implementation
-scripts/               # Development and utility scripts
-docs/                 # Documentation
+  extension.ts         # Extension activation and setup
+  languageDetector.ts  # Language detection logic
+  test/               # Test files
+    runTest/          # Test runner setup
+    suite/            # Test suites
+  types/             # Type definitions
 
 // Development Guidelines
 1. Code Quality:
-   - Use Python 3.8+ features
-   - Implement strict type hints
-   - Follow PEP 8 style guide
+   - Use TypeScript 5.x features
+   - Enable strict type checking
+   - Follow ESLint configuration
    - Maximum line length: 100 characters
-   - Use black for formatting
-   - Use isort for import sorting
-   - Run pylint for linting
+   - Use Prettier for formatting
+   - Maintain clean code principles
 
 2. Testing Requirements:
    - Maintain 90%+ test coverage
-   - Write pytest fixtures
-   - Mock external dependencies
+   - Use Mocha test framework
+   - Mock VSCode API when needed
    - Test both success and failure cases
-   - Include performance tests
+   - Include extension activation tests
    - Document test scenarios
 
 3. Documentation Standards:
-   - Use Google-style docstrings
+   - Use TSDoc comments
    - Document all public APIs
    - Include usage examples
    - Maintain up-to-date README
-   - Document configuration options
+   - Document extension settings
 
 4. Error Handling:
-   - Define custom exceptions
-   - Use structured logging
-   - Implement proper cleanup
+   - Use typed errors
+   - Implement proper logging
+   - Handle VSCode lifecycle
    - Handle edge cases
    - Provide clear error messages
 
 5. Performance:
    - Use efficient data structures
-   - Implement debouncing
-   - Optimize file operations
+   - Implement debouncing for file watchers
+   - Optimize extension activation
    - Monitor memory usage
    - Cache when appropriate
 
 // Code Examples:
 
 1. Class Definition Pattern:
-```python
-from pathlib import Path
-from typing import Dict, List, Optional
+```typescript
+import * as vscode from 'vscode';
+import { Uri } from 'vscode';
 
-class CodeAnalyzer:
-    """Analyzes project code for patterns and conventions.
+export type Language = 'python' | 'typescript' | 'javascript' | 'unknown';
 
-    Args:
-        project_root: Root directory of the project to analyze.
-        config: Optional configuration dictionary.
+export class LanguageDetector {
+    private readonly extensionMap: Record<string, Language> = {
+        '.py': 'python',
+        '.ts': 'typescript',
+        '.js': 'javascript'
+    };
 
-    Attributes:
-        patterns: Dictionary of detected code patterns.
-    """
-
-    def __init__(self, project_root: Path, config: Optional[Dict] = None) -> None:
-        self.project_root = project_root
-        self.patterns: Dict[str, List[str]] = {}
-        self._configure(config or {})
+    public detectLanguage(uri: Uri): Language {
+        const extension = path.extname(uri.fsPath).toLowerCase();
+        return this.extensionMap[extension] || 'unknown';
+    }
+}
 ```
 
 2. Error Handling Pattern:
-```python
-class RuleAnalysisError(Exception):
-    """Raised when rule analysis fails."""
-    pass
+```typescript
+class RuleAnalysisError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'RuleAnalysisError';
+    }
+}
 
-def analyze_file(self, file_path: Path) -> List[str]:
-    """Analyze a file for patterns.
-    
-    Args:
-        file_path: Path to the file to analyze.
-        
-    Returns:
-        List of detected patterns.
-        
-    Raises:
-        RuleAnalysisError: If analysis fails.
-    """
-    try:
-        # Analysis logic
-        return patterns
-    except Exception as e:
-        raise RuleAnalysisError(f"Failed to analyze {file_path}: {str(e)}")
+async function analyzeFile(uri: vscode.Uri): Promise<string[]> {
+    try {
+        // Analysis logic
+        return patterns;
+    } catch (error) {
+        throw new RuleAnalysisError(
+            `Failed to analyze ${uri.fsPath}: ${error.message}`
+        );
+    }
+}
 ```
 
 3. Testing Pattern:
-```python
-import pytest
-from pathlib import Path
+```typescript
+import * as assert from 'assert';
+import * as vscode from 'vscode';
+import { LanguageDetector } from '../../languageDetector';
 
-@pytest.fixture
-def analyzer():
-    """Create a CodeAnalyzer instance for testing."""
-    return CodeAnalyzer(Path("."))
+suite('LanguageDetector Test Suite', () => {
+    let detector: LanguageDetector;
 
-def test_pattern_detection(analyzer, tmp_path):
-    """Test pattern detection in Python files."""
-    test_file = tmp_path / "test.py"
-    test_file.write_text("class TestClass:\n    pass")
-    
-    patterns = analyzer.analyze_file(test_file)
-    assert patterns  # Verify patterns were detected
+    setup(() => {
+        detector = new LanguageDetector();
+    });
+
+    test('should detect TypeScript files', () => {
+        const uri = vscode.Uri.file('/path/to/test.ts');
+        assert.strictEqual(detector.detectLanguage(uri), 'typescript');
+    });
+});
 ```
 
 // Best Practices:
-1. Use Path objects for file operations
-2. Implement context managers for resource handling
-3. Use dataclasses for data containers
-4. Implement proper cleanup in destructors
-5. Follow the observer pattern for file watching
-6. Use environment variables for configuration
-7. Implement proper logging at all levels
-8. Use type hints consistently
-9. Write clear, descriptive commit messages
+1. Use VSCode API types consistently
+2. Implement proper disposables
+3. Use async/await for asynchronous operations
+4. Register commands with clear names
+5. Follow VSCode extension guidelines
+6. Use workspace configuration
+7. Implement proper status bar updates
+8. Handle extension activation events
+9. Write clear commit messages
 10. Keep functions focused and small
 
 // Security Considerations:
-1. Validate all file paths
+1. Validate all URIs
 2. Don't execute analyzed code
-3. Handle permissions carefully
+3. Handle workspace trust
 4. Sanitize all inputs
 5. Use secure defaults
 6. Implement proper error handling

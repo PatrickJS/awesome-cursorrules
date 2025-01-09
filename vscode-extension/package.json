@@ -1,0 +1,50 @@
+{
+    "name": "cursor-rules-dynamic",
+    "displayName": "Cursor Rules Dynamic",
+    "description": "Dynamic code analysis and rule enforcement for Cursor IDE",
+    "version": "1.0.0",
+    "engines": {
+        "vscode": "^1.96.0",
+        "node": ">=16.13.1"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished",
+        "workspaceContains:**/.cursorrules"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "cursor-rules-dynamic.showStatus",
+                "title": "Show Cursor Rules Status",
+                "category": "Cursor Rules"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "rm -rf out && npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest/index.js",
+        "test:coverage": "c8 --reporter=lcov --reporter=text-summary npm run test"
+    },
+    "devDependencies": {
+        "@types/glob": "^8.1.0",
+        "@types/mocha": "^10.0.6",
+        "@types/node": "^20.17.12",
+        "@types/vscode": "^1.96.0",
+        "@typescript-eslint/eslint-plugin": "^7.0.0",
+        "@typescript-eslint/parser": "^7.0.0",
+        "@vscode/test-electron": "^2.3.8",
+        "c8": "^8.0.1",
+        "eslint": "^8.57.0",
+        "glob": "^10.3.10",
+        "mocha": "^10.2.0",
+        "typescript": "^5.3.3"
+    }
+}
