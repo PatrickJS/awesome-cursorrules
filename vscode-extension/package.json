@@ -26,6 +26,11 @@
                 "command": "cursor-rules-dynamic.convertToJson",
                 "title": "Convert .cursorrules to JSON Format",
                 "category": "Cursor Rules"
+            },
+            {
+                "command": "cursor-rules-dynamic.browseTemplates",
+                "title": "Browse Rule Templates",
+                "category": "Cursor Rules"
             }
         ],
         "jsonValidation": [
@@ -41,8 +46,41 @@
                     "command": "cursor-rules-dynamic.convertToJson",
                     "group": "1_modification"
                 }
+            ],
+            "commandPalette": [
+                {
+                    "command": "cursor-rules-dynamic.showStatus",
+                    "group": "navigation"
+                }
+            ],
+            "menuBar": [
+                {
+                    "id": "file",
+                    "group": "navigation",
+                    "submenu": "cursor.rules"
+                }
+            ],
+            "cursor.rules": [
+                {
+                    "command": "cursor-rules-dynamic.browseTemplates",
+                    "group": "1_templates@1"
+                },
+                {
+                    "command": "cursor-rules-dynamic.convertToJson",
+                    "group": "2_conversion@1"
+                },
+                {
+                    "command": "cursor-rules-dynamic.showStatus",
+                    "group": "3_status@1"
+                }
             ]
-        }
+        },
+        "submenus": [
+            {
+                "id": "cursor.rules",
+                "label": "Cursor Rules"
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
