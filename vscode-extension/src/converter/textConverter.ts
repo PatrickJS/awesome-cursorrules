@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { CursorRules, Rule, RuleValidation } from '../types/cursorrules';
+import { CursorRules, RuleValidation } from '../types/cursorrules';
 import schema from '../schemas/cursorrules.schema.json';
 import type { default as AjvType, ValidateFunction } from 'ajv';
 
@@ -13,9 +13,10 @@ interface PreviewResult {
     }>;
 }
 
-export class MarkdownConverter {
+export class TextConverter {
     private static previewDocument: vscode.TextDocument | undefined;
     private static validator: AjvType | undefined;
+    private static temporaryFiles: Set<vscode.Uri> = new Set();
 
     private static getValidator(): AjvType {
         if (!this.validator) {
@@ -125,7 +126,7 @@ export class MarkdownConverter {
                 '# Conversion Preview',
                 '',
                 '## Original Content',
-                '```markdown',
+                '```',
                 preview.original,
                 '```',
                 '',
@@ -144,12 +145,13 @@ export class MarkdownConverter {
                 '4. Close this preview to cancel the conversion'
             ].join('\n');
 
-            // Show preview in new editor
-            const doc = await vscode.workspace.openTextDocument({
-                content: previewContent,
-                language: 'markdown'
-            });
+            // Create a temporary file for the preview
+            const tempUri = uri.with({ path: `${uri.path}.preview.md` });
+            await vscode.workspace.fs.writeFile(tempUri, Buffer.from(previewContent, 'utf-8'));
+            this.temporaryFiles.add(tempUri);
             
+            // Show preview in new editor
+            const doc = await vscode.workspace.openTextDocument(tempUri);
             this.previewDocument = doc;
 
             await vscode.window.showTextDocument(doc, {
@@ -157,15 +159,30 @@ export class MarkdownConverter {
                 viewColumn: vscode.ViewColumn.Beside
             });
 
+            // Ask for confirmation after preview
+            const choice = await vscode.window.showWarningMessage(
+                'Review the preview and make any needed edits. Would you like to proceed with the conversion?',
+                'Convert',
+                'Cancel'
+            );
+
+            if (choice !== 'Convert') {
+                this.previewDocument = undefined;
+                await this.cleanupTemporaryFiles();
+                return;
+            }
+
             // Register preview document close handler
-            const closeHandler = vscode.workspace.onDidCloseTextDocument(closedDoc => {
+            const closeHandler = vscode.workspace.onDidCloseTextDocument(async closedDoc => {
                 if (closedDoc === doc) {
                     this.previewDocument = undefined;
+                    await this.cleanupTemporaryFiles();
                     closeHandler.dispose();
                 }
             });
         } catch (error) {
             this.previewDocument = undefined;
+            await this.cleanupTemporaryFiles();
             throw new Error(`Failed to show preview: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
@@ -199,57 +216,19 @@ export class MarkdownConverter {
      */
     public static convertToJson(content: string): Promise<CursorRules> {
         return new Promise((resolve) => {
-            const lines = content.split('\n');
+            // Create a simple rule object from the content
             const rules: CursorRules = {
                 version: '1.0.0',
-                languages: {}
+                languages: {
+                    default: {
+                        rules: [{
+                            id: 'rule-1',
+                            level: 'error',
+                            description: content.trim()
+                        }]
+                    }
+                }
             };
-
-            let currentLanguage: string | null = null;
-
-            for (const line of lines) {
-                const trimmedLine = line.trim();
-                
-                // Skip empty lines
-                if (!trimmedLine) {
-                    continue;
-                }
-
-                // Check for language header (# Language)
-                const headerMatch = trimmedLine.match(/^#\s+(\w+)\s*(?:Rules)?$/i);
-                if (headerMatch) {
-                    currentLanguage = headerMatch[1].toLowerCase();
-                    if (!rules.languages[currentLanguage]) {
-                        rules.languages[currentLanguage] = { rules: [] };
-                    }
-                    continue;
-                }
-
-                // Check for rule definition (- rule-id: description)
-                if (currentLanguage && trimmedLine.startsWith('-')) {
-                    const ruleMatch = trimmedLine.match(/^-\s*([^:]+):\s*(.+)$/);
-                    if (ruleMatch) {
-                        const [, id, description] = ruleMatch;
-                        const rule: Rule = {
-                            id: id.trim(),
-                            level: 'error', // Default level
-                            description: description.trim()
-                        };
-                        rules.languages[currentLanguage].rules.push(rule);
-                    }
-                }
-            }
-
-            // Validate the converted content
-            if (Object.keys(rules.languages).length === 0) {
-                throw new Error('No valid rules found in the markdown content');
-            }
-
-            // Validate against schema
-            const validation = this.validateRules(rules);
-            if (!validation.isValid) {
-                throw new Error(`Invalid rules format: ${validation.errors?.join(', ')}`);
-            }
 
             resolve(rules);
         });
@@ -273,8 +252,9 @@ export class MarkdownConverter {
                         throw new Error(`Invalid edited JSON: ${validation.errors?.join(', ')}`);
                     }
 
-                    // Create backup of original file
-                    const backupUri = uri.with({ path: `${uri.path}.backup` });
+                    // Create backup with timestamp
+                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                    const backupUri = uri.with({ path: `${uri.path}.${timestamp}.backup` });
                     await vscode.workspace.fs.copy(uri, backupUri, { overwrite: false });
 
                     // Write the edited content
@@ -282,17 +262,20 @@ export class MarkdownConverter {
                     return uri;
                 } catch (error) {
                     throw new Error(`Invalid JSON in preview: ${error instanceof Error ? error.message : String(error)}`);
+                } finally {
+                    await this.cleanupTemporaryFiles();
                 }
             }
 
             // If no edited content, proceed with normal conversion
             const content = await vscode.workspace.fs.readFile(uri);
-            const markdownContent = Buffer.from(content).toString('utf-8');
-            const jsonContent = await this.convertToJson(markdownContent);
+            const textContent = Buffer.from(content).toString('utf-8');
+            const jsonContent = await this.convertToJson(textContent);
             const jsonString = JSON.stringify(jsonContent, null, 4);
 
-            // Create backup of original file
-            const backupUri = uri.with({ path: `${uri.path}.backup` });
+            // Create backup with timestamp
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const backupUri = uri.with({ path: `${uri.path}.${timestamp}.backup` });
             await vscode.workspace.fs.copy(uri, backupUri, { overwrite: false });
 
             // Write the JSON content
@@ -301,8 +284,28 @@ export class MarkdownConverter {
         } catch (error) {
             throw new Error(`Failed to convert file: ${error instanceof Error ? error.message : String(error)}`);
         } finally {
-            // Clear preview state
+            // Clear preview state and cleanup
             this.previewDocument = undefined;
+            await this.cleanupTemporaryFiles();
         }
+    }
+
+    private static async cleanupTemporaryFiles(): Promise<void> {
+        for (const uri of this.temporaryFiles) {
+            try {
+                await vscode.workspace.fs.delete(uri);
+                // Close any editors showing the deleted file
+                const editorsWithDeletedFile = vscode.window.visibleTextEditors.filter(
+                    editor => editor.document.uri.fsPath === uri.fsPath
+                );
+                for (const editor of editorsWithDeletedFile) {
+                    await vscode.window.showTextDocument(editor.document);
+                    await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+                }
+            } catch (error) {
+                console.error(`Failed to delete temporary file ${uri.fsPath}:`, error);
+            }
+        }
+        this.temporaryFiles.clear();
     }
 } 

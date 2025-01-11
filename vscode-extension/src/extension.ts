@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { MarkdownConverter } from './converter/markdownConverter';
+import { TextConverter } from './converter/textConverter';
 import { TemplateService } from './templates/templateService';
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -11,7 +11,7 @@ export function activate(context: vscode.ExtensionContext): void {
         100
     );
     statusBarItem.text = "$(eye) CursorRules";
-    statusBarItem.tooltip = "Cursor Rules Dynamic is active";
+    statusBarItem.tooltip = "Cursor Rules Dynamic is active and monitoring .cursorrules files";
     statusBarItem.show();
     context.subscriptions.push(statusBarItem);
     
@@ -19,24 +19,19 @@ export function activate(context: vscode.ExtensionContext): void {
     context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor((editor) => {
             if (editor) {
-                const languageId = editor.document.languageId;
-                updateStatusBar(statusBarItem, languageId);
+                updateStatusBar(statusBarItem);
             }
         })
     );
 
     // Handle file changes
     const watcher = vscode.workspace.createFileSystemWatcher('**/*');
-    watcher.onDidChange(async (uri) => {
+    watcher.onDidChange((uri) => {
         try {
-            const document = await vscode.workspace.openTextDocument(uri);
-            const languageId = document.languageId;
-            
-            // Process file changes based on language
-            const message = `Processing ${languageId} file: ${uri.fsPath}`;
+            const message = `Processing file: ${uri.fsPath}`;
             console.log(message);
             void vscode.window.showInformationMessage(message);
-            updateStatusBar(statusBarItem, languageId);
+            updateStatusBar(statusBarItem);
         } catch (error) {
             console.error('Error processing file:', error);
         }
@@ -65,19 +60,11 @@ export function activate(context: vscode.ExtensionContext): void {
             }
 
             // Show preview first
-            await MarkdownConverter.showPreview(uri);
+            await TextConverter.showPreview(uri);
 
-            // Wait for user to review and possibly edit the preview
-            const choice = await vscode.window.showWarningMessage(
-                'Review the preview and make any needed edits. Would you like to proceed with the conversion?',
-                { modal: true },
-                'Convert',
-                'Cancel'
-            );
-
-            if (choice === 'Convert' && MarkdownConverter.hasActivePreview()) {
-                // Convert the file with possibly edited content
-                await MarkdownConverter.convertFile(uri);
+            // Convert the file if preview is active
+            if (TextConverter.hasActivePreview()) {
+                await TextConverter.convertFile(uri);
                 void vscode.window.showInformationMessage(
                     `Successfully converted ${vscode.workspace.asRelativePath(uri)} to JSON format. Original file backed up.`
                 );
@@ -93,10 +80,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
     // Register status command
     const statusCommand = vscode.commands.registerCommand('cursor-rules-dynamic.showStatus', () => {
-        const editor = vscode.window.activeTextEditor;
-        const languageId = editor?.document.languageId || 'none';
-        const message = `Cursor Rules Dynamic is active and monitoring ${languageId} files`;
-        void vscode.window.showInformationMessage(message);
+        void vscode.window.showInformationMessage('Cursor Rules Dynamic is active and monitoring .cursorrules files');
     });
 
     // Register template browsing command
@@ -133,6 +117,17 @@ export function activate(context: vscode.ExtensionContext): void {
             if (selectedTemplate) {
                 // Preview the selected template
                 await templateService.createTemplatePreview(selectedTemplate.template);
+                
+                // Ask if user wants to save the template
+                const choice = await vscode.window.showInformationMessage(
+                    'Would you like to save this template as your .cursorrules file?',
+                    'Save',
+                    'Cancel'
+                );
+                
+                if (choice === 'Save') {
+                    await templateService.saveTemplateToWorkspace(selectedTemplate.template);
+                }
             }
         } catch (error) {
             void vscode.window.showErrorMessage(`Error browsing templates: ${error instanceof Error ? error.message : String(error)}`);
@@ -146,13 +141,13 @@ export function activate(context: vscode.ExtensionContext): void {
 
     // Update status for initial active editor
     if (vscode.window.activeTextEditor) {
-        updateStatusBar(statusBarItem, vscode.window.activeTextEditor.document.languageId);
+        updateStatusBar(statusBarItem);
     }
 }
 
-function updateStatusBar(statusBarItem: vscode.StatusBarItem, languageId: string): void {
-    statusBarItem.text = `$(eye) CursorRules [${languageId}]`;
-    statusBarItem.tooltip = `Monitoring ${languageId} files`;
+function updateStatusBar(statusBarItem: vscode.StatusBarItem): void {
+    statusBarItem.text = `$(eye) CursorRules`;
+    statusBarItem.tooltip = `Cursor Rules Dynamic is active and monitoring .cursorrules files`;
 }
 
 export function deactivate(): void {
