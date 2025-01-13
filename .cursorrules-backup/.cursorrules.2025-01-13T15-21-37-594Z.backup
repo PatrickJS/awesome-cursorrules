@@ -1,6 +1,5 @@
 / Dynamic .cursorrules Analyzer - VSCode Extension
-// Author: Garot Conklin (garotm)
-
+// Author: Garot Conklin (garotm)   
 // What you can build with this ruleset:
 A TypeScript-based VSCode extension that:
 - Automatically analyzes project codebases for patterns and conventions
@@ -64,7 +63,8 @@ src/
 1. Class Definition Pattern:
 ```typescript
 import * as vscode from 'vscode';
-import { Uri } from 'vscode';
+import { Uri
+} from 'vscode';
 
 export type Language = 'python' | 'typescript' | 'javascript' | 'unknown';
 
@@ -77,7 +77,8 @@ export class LanguageDetector {
 
     public detectLanguage(uri: Uri): Language {
         const extension = path.extname(uri.fsPath).toLowerCase();
-        return this.extensionMap[extension] || 'unknown';
+        return this.extensionMap[extension
+        ] || 'unknown';
     }
 }
 ```
@@ -97,7 +98,9 @@ async function analyzeFile(uri: vscode.Uri): Promise<string[]> {
         return patterns;
     } catch (error) {
         throw new RuleAnalysisError(
-            `Failed to analyze ${uri.fsPath}: ${error.message}`
+            `Failed to analyze ${uri.fsPath
+        }: ${error.message
+        }`
         );
     }
 }
@@ -107,7 +110,8 @@ async function analyzeFile(uri: vscode.Uri): Promise<string[]> {
 ```typescript
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { LanguageDetector } from '../../languageDetector';
+import { LanguageDetector
+} from '../../languageDetector';
 
 suite('LanguageDetector Test Suite', () => {
     let detector: LanguageDetector;

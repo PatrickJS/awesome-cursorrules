@@ -25,11 +25,28 @@ suite('TemplateService Test Suite', () => {
     teardown(async function(): Promise<void> {
         try {
             await fs.promises.unlink(path.join(testWorkspacePath, '.cursorrules'));
+            
+            // Clean up files in original directory
             const files = await fs.promises.readdir(testWorkspacePath);
             for (const file of files) {
                 if (file.startsWith('.cursorrules.') && file.endsWith('.backup')) {
                     await fs.promises.unlink(path.join(testWorkspacePath, file));
                 }
+            }
+
+            // Clean up files in backup directory
+            const backupDirPath = path.join(testWorkspacePath, '.cursorrules-backup');
+            try {
+                const backupFiles = await fs.promises.readdir(backupDirPath);
+                for (const file of backupFiles) {
+                    if (file.startsWith('.cursorrules.') && file.endsWith('.backup')) {
+                        await fs.promises.unlink(path.join(backupDirPath, file));
+                    }
+                }
+                // Remove backup directory if empty
+                await fs.promises.rmdir(backupDirPath);
+            } catch (e) {
+                // Ignore errors if backup directory doesn't exist
             }
         } catch (e) {
             // Ignore errors if files don't exist
@@ -57,9 +74,17 @@ suite('TemplateService Test Suite', () => {
         try {
             await templateService.saveTemplateToWorkspace(mockTemplate, targetUri);
 
-            // Verify backup was created
+            // Verify backup was created (check both original and backup directory)
             const backupFiles = await fs.promises.readdir(path.dirname(targetUri.fsPath));
-            const backupExists = backupFiles.some(file => file.startsWith('.cursorrules.') && file.endsWith('.backup'));
+            const backupDirPath = path.join(path.dirname(targetUri.fsPath), '.cursorrules-backup');
+            let backupDirFiles: string[] = [];
+            try {
+                backupDirFiles = await fs.promises.readdir(backupDirPath);
+            } catch (e) {
+                // Backup directory might not exist yet
+            }
+            const backupExists = backupFiles.some(file => file.startsWith('.cursorrules.') && file.endsWith('.backup')) ||
+                               backupDirFiles.some(file => file.startsWith('.cursorrules.') && file.endsWith('.backup'));
             assert.ok(backupExists, 'Backup file should be created');
 
             // Verify new content
