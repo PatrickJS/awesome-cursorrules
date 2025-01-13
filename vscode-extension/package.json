@@ -31,6 +31,11 @@
                 "command": "cursor-rules-dynamic.browseTemplates",
                 "title": "Browse Rule Templates",
                 "category": "Cursor Rules"
+            },
+            {
+                "command": "cursor-rules-dynamic.scanProject",
+                "title": "Scan Project for Rule Updates",
+                "category": "Cursor Rules"
             }
         ],
         "jsonValidation": [
@@ -68,6 +73,10 @@
                 {
                     "command": "cursor-rules-dynamic.convertToJson",
                     "group": "2_conversion@1"
+                },
+                {
+                    "command": "cursor-rules-dynamic.scanProject",
+                    "group": "2_conversion@2"
                 },
                 {
                     "command": "cursor-rules-dynamic.showStatus",
