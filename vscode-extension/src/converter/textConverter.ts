@@ -216,6 +216,19 @@ export class TextConverter {
      */
     public static convertToJson(content: string): Promise<CursorRules> {
         return new Promise((resolve) => {
+            // First try to parse as JSON
+            try {
+                const jsonContent = JSON.parse(content) as CursorRules;
+                // Validate the parsed JSON
+                const validation = this.validateRules(jsonContent);
+                if (validation.isValid) {
+                    // If it's already valid JSON, return it as is
+                    return resolve(jsonContent);
+                }
+            } catch (e) {
+                // Not valid JSON, continue with conversion
+            }
+
             // Create a simple rule object from the content
             const rules: CursorRules = {
                 version: '1.0.0',

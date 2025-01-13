@@ -43,5 +43,9 @@ suite('Extension Test Suite', () => {
             commands.includes('cursor-rules-dynamic.showStatus'),
             'Show status command should be registered'
         );
+        assert.ok(
+            commands.includes('cursor-rules-dynamic.scanProject'),
+            'Scan project command should be registered'
+        );
     });
 }); 
