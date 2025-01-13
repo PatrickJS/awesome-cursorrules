@@ -57,6 +57,43 @@ export class TemplateService {
         return content;
     }
 
+    private async ensureBackupDirectory(workspaceUri: vscode.Uri): Promise<vscode.Uri> {
+        const backupDirUri = vscode.Uri.joinPath(workspaceUri, '.cursorrules-backup');
+        try {
+            await vscode.workspace.fs.stat(backupDirUri);
+        } catch {
+            // Directory doesn't exist, create it
+            await vscode.workspace.fs.createDirectory(backupDirUri);
+        }
+        return backupDirUri;
+    }
+
+    private async moveToBackupDirectory(backupUri: vscode.Uri): Promise<void> {
+        try {
+            // Get workspace root
+            const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+            if (!workspaceFolder) {
+                throw new Error('No workspace folder found');
+            }
+
+            // Ensure backup directory exists
+            const backupDirUri = await this.ensureBackupDirectory(workspaceFolder.uri);
+            
+            // Create new URI in backup directory
+            const fileName = backupUri.path.split('/').pop();
+            if (!fileName) {
+                throw new Error('Invalid backup file path');
+            }
+            const newBackupUri = vscode.Uri.joinPath(backupDirUri, fileName);
+
+            // Move the file
+            await vscode.workspace.fs.copy(backupUri, newBackupUri, { overwrite: false });
+            await vscode.workspace.fs.delete(backupUri);
+        } catch (error) {
+            console.error(`Failed to move backup file: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+
     public async saveTemplateToWorkspace(template: RuleTemplate, targetUri?: vscode.Uri): Promise<void> {
         try {
             // If no target URI provided, get the workspace folder
@@ -92,6 +129,9 @@ export class TemplateService {
                     `.cursorrules.${timestamp}.backup`
                 );
                 await vscode.workspace.fs.copy(targetUri, backupUri, { overwrite: true });
+                
+                // Move backup to dedicated directory
+                await this.moveToBackupDirectory(backupUri);
             } catch (e) {
                 // File doesn't exist, continue with creation
             }

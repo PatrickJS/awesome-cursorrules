@@ -256,6 +256,9 @@ export class TextConverter {
                     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
                     const backupUri = uri.with({ path: `${uri.path}.${timestamp}.backup` });
                     await vscode.workspace.fs.copy(uri, backupUri, { overwrite: false });
+                    
+                    // Move backup to dedicated directory
+                    await this.moveToBackupDirectory(backupUri);
 
                     // Write the edited content
                     await vscode.workspace.fs.writeFile(uri, Buffer.from(editedContent, 'utf-8'));
@@ -277,6 +280,9 @@ export class TextConverter {
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
             const backupUri = uri.with({ path: `${uri.path}.${timestamp}.backup` });
             await vscode.workspace.fs.copy(uri, backupUri, { overwrite: false });
+            
+            // Move backup to dedicated directory
+            await this.moveToBackupDirectory(backupUri);
 
             // Write the JSON content
             await vscode.workspace.fs.writeFile(uri, Buffer.from(jsonString, 'utf-8'));
@@ -307,5 +313,42 @@ export class TextConverter {
             }
         }
         this.temporaryFiles.clear();
+    }
+
+    private static async ensureBackupDirectory(workspaceUri: vscode.Uri): Promise<vscode.Uri> {
+        const backupDirUri = vscode.Uri.joinPath(workspaceUri, '.cursorrules-backup');
+        try {
+            await vscode.workspace.fs.stat(backupDirUri);
+        } catch {
+            // Directory doesn't exist, create it
+            await vscode.workspace.fs.createDirectory(backupDirUri);
+        }
+        return backupDirUri;
+    }
+
+    private static async moveToBackupDirectory(backupUri: vscode.Uri): Promise<void> {
+        try {
+            // Get workspace root
+            const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+            if (!workspaceFolder) {
+                throw new Error('No workspace folder found');
+            }
+
+            // Ensure backup directory exists
+            const backupDirUri = await this.ensureBackupDirectory(workspaceFolder.uri);
+            
+            // Create new URI in backup directory
+            const fileName = backupUri.path.split('/').pop();
+            if (!fileName) {
+                throw new Error('Invalid backup file path');
+            }
+            const newBackupUri = vscode.Uri.joinPath(backupDirUri, fileName);
+
+            // Move the file
+            await vscode.workspace.fs.copy(backupUri, newBackupUri, { overwrite: false });
+            await vscode.workspace.fs.delete(backupUri);
+        } catch (error) {
+            console.error(`Failed to move backup file: ${error instanceof Error ? error.message : String(error)}`);
+        }
     }
 } 
