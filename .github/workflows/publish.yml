@@ -32,11 +32,13 @@ jobs:
           echo "registry=https://npm.pkg.github.com" > .npmrc
           echo "@garotm:registry=https://npm.pkg.github.com" >> .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
+          npm config set scope @garotm
       
       - name: Publish to GitHub Packages
         working-directory: ./vscode-extension
         run: |
           npm ci
-          npm publish --access public
+          npm publish --access public --scope @garotm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
