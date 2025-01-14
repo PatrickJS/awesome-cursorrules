@@ -16,18 +16,14 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@garotm'
+          cache: 'npm'
+          cache-dependency-path: vscode-extension/package-lock.json
       
-      - name: Install dependencies
-        run: |
-          cd vscode-extension
-          npm ci
-      
-      - name: Run tests
-        run: |
-          cd vscode-extension
-          sudo apt-get update
-          sudo apt-get install -y xvfb
-          xvfb-run -a npm test
+      - name: Make CI script executable
+        run: chmod +x scripts/ci.sh
+
+      - name: Run CI checks
+        run: ./scripts/ci.sh
       
       - name: Create VSIX package
         run: |
