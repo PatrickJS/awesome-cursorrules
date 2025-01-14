@@ -1,0 +1,45 @@
+# Source files
+src/**
+.cursorrules-backup/**
+**/*.ts
+!src/schemas/*.json
+
+# Development files
+.vscode/**
+.vscode-test/**
+test/**
+.gitignore
+.yarnrc
+.npmrc
+**/tsconfig.json
+**/.eslintrc.json
+**/*.map
+
+# Test files
+coverage/**
+.nyc_output/**
+out/test/**
+**/*.test.ts
+**/*.spec.ts
+
+# Backup files
+**/*.backup
+**/*.bak
+**/*.tmp
+**/*.temp
+
+# Documentation
+docs/**
+**/*.md
+!README.md
+
+# Version control
+.git/**
+.github/**
+.gitattributes
+.gitmodules
+
+# Misc
+**/.DS_Store
+**/*.log
+**/*.vsix 
