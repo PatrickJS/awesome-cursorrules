@@ -14,7 +14,7 @@
     },
     "engines": {
         "vscode": "^1.96.0",
-        "node": ">=16.13.1"
+        "node": ">=18.x"
     },
     "categories": [
         "Other"
