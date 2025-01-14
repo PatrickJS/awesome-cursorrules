@@ -10,16 +10,32 @@ jobs:
     defaults:
       run:
         working-directory: ./vscode-extension
+
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '16.x'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@garotm'
-      - run: npm ci
-      - run: npm run compile
-      - run: npm run test
-      - run: npm publish
+
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install xvfb
+        run: sudo apt-get install -y xvfb
+      
+      - name: Run tests
+        run: xvfb-run -a npm test
+      
+      - name: Create VSIX package
+        run: |
+          npm install -g @vscode/vsce
+          vsce package
+      
+      - name: Publish to GitHub Packages
+        run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}} 
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
