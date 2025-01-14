@@ -3,6 +3,15 @@
     "displayName": "Cursor Rules Dynamic",
     "description": "Dynamic code analysis and rule enforcement for Cursor IDE",
     "version": "1.0.0",
+    "publisher": "garotm",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/garotm/awesome-cursorrules-dynamic.git"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "name": "@garotm/cursor-rules-dynamic"
+    },
     "engines": {
         "vscode": "^1.96.0",
         "node": ">=16.13.1"
@@ -99,7 +108,8 @@
         "lint": "eslint src --ext ts",
         "test": "node ./out/test/runTest/index.js",
         "test:unit": "mocha -r ts-node/register 'src/test/suite/**/*.test.ts' --exclude 'src/test/suite/extension.test.ts'",
-        "test:coverage": "c8 --reporter=lcov --reporter=text-summary npm run test"
+        "test:coverage": "c8 --reporter=lcov --reporter=text-summary npm run test",
+        "package": "../scripts/package_extension.sh"
     },
     "dependencies": {
         "ajv": "^8.12.0"
