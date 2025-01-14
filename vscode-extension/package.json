@@ -106,7 +106,7 @@
         "watch": "tsc -watch -p ./",
         "pretest": "rm -rf out && npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
-        "test": "xvfb-run -a --server-args=\"-screen 0 1024x768x24\" node ./out/test/runTest/index.js",
+        "test": "node ./out/test/runTest/index.js",
         "test:unit": "mocha -r ts-node/register 'src/test/suite/**/*.test.ts' --exclude 'src/test/suite/extension.test.ts'",
         "test:coverage": "c8 --reporter=lcov --reporter=text-summary npm run test",
         "package": "../scripts/package_extension.sh"
