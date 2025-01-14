@@ -7,26 +7,33 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
       
-      - name: Use Node.js 18.x
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
-          cache: 'npm'
-          cache-dependency-path: vscode-extension/package-lock.json
-
-      - name: Make CI script executable
-        run: chmod +x scripts/ci.sh
-
-      - name: Run CI checks
-        run: ./scripts/ci.sh
+          node-version: '18.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@garotm'
+      
+      - name: Install dependencies
+        run: |
+          cd vscode-extension
+          npm ci
+      
+      - name: Run tests
+        run: |
+          cd vscode-extension
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+          xvfb-run -a npm test
       
       - name: Create VSIX package
-        working-directory: ./vscode-extension
-        run: npm run package
+        run: |
+          cd vscode-extension
+          npm install -g @vscode/vsce
+          vsce package
       
       - name: Upload VSIX to release
         uses: actions/upload-release-asset@v1
@@ -39,7 +46,8 @@ jobs:
           asset_content_type: application/octet-stream
       
       - name: Publish to GitHub Packages
-        working-directory: ./vscode-extension
-        run: npm publish
+        run: |
+          cd vscode-extension
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
