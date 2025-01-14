@@ -39,7 +39,10 @@ async function main(): Promise<void> {
                 '--disable-extensions',
                 '--disable-telemetry',
                 '--user-data-dir=' + path.join(os.tmpdir(), 'vscode-test-userdata'),
-                '--no-sandbox'
+                '--no-sandbox',
+                '--disable-gpu',
+                '--disable-dev-shm-usage',
+                '--force-device-scale-factor=1'
             ]
         });
     } catch (err) {
