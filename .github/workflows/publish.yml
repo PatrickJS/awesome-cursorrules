@@ -7,30 +7,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./vscode-extension
 
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@garotm'
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb
-          npm ci
-      
-      - name: Run tests
-        run: ../scripts/ci.sh
+      - name: Run CI checks
+        run: ./scripts/ci.sh
       
       - name: Publish to GitHub Packages
+        working-directory: ./vscode-extension
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
