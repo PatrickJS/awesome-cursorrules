@@ -11,10 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Use Node.js 18.x
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: '18.x'
           cache: 'npm'
           cache-dependency-path: vscode-extension/package-lock.json
           registry-url: 'https://npm.pkg.github.com'
@@ -26,8 +26,16 @@ jobs:
       - name: Run CI checks
         run: ./scripts/ci.sh
       
+      - name: Configure npm for publishing
+        working-directory: ./vscode-extension
+        run: |
+          echo "@garotm:registry=https://npm.pkg.github.com" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
+
       - name: Publish to GitHub Packages
         working-directory: ./vscode-extension
-        run: npm publish
+        run: |
+          npm ci
+          npm publish --scope=@garotm --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
