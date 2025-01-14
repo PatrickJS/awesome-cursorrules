@@ -14,8 +14,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18.x'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@garotm'
           cache: 'npm'
           cache-dependency-path: vscode-extension/package-lock.json
       
@@ -39,11 +37,4 @@ jobs:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./vscode-extension/cursor-rules-dynamic-1.0.0.vsix
           asset_name: cursor-rules-dynamic-1.0.0.vsix
-          asset_content_type: application/octet-stream
-      
-      - name: Publish to GitHub Packages
-        run: |
-          cd vscode-extension
-          npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          asset_content_type: application/octet-stream 
