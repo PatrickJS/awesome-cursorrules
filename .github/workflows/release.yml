@@ -7,30 +7,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./vscode-extension
 
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@garotm'
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb
-          npm ci
-      
-      - name: Run tests
-        run: ../scripts/ci.sh
+      - name: Run CI checks
+        run: ./scripts/ci.sh
       
       - name: Create VSIX package
+        working-directory: ./vscode-extension
         run: |
           npm install -g @vscode/vsce
           vsce package
@@ -41,11 +26,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./cursor-rules-dynamic-1.0.0.vsix
+          asset_path: ./vscode-extension/cursor-rules-dynamic-1.0.0.vsix
           asset_name: cursor-rules-dynamic-1.0.0.vsix
           asset_content_type: application/octet-stream
       
       - name: Publish to GitHub Packages
+        working-directory: ./vscode-extension
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
