@@ -29,13 +29,14 @@ jobs:
       - name: Configure npm for publishing
         working-directory: ./vscode-extension
         run: |
-          echo "@garotm:registry=https://npm.pkg.github.com" > .npmrc
+          echo "registry=https://npm.pkg.github.com" > .npmrc
+          echo "@garotm:registry=https://npm.pkg.github.com" >> .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
       
       - name: Publish to GitHub Packages
         working-directory: ./vscode-extension
         run: |
           npm ci
-          npm publish --scope=@garotm --access public
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
