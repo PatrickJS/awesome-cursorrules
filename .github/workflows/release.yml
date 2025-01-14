@@ -24,8 +24,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
+      - name: Install xvfb
+        run: sudo apt-get install -y xvfb
+      
       - name: Run tests
-        run: npm test
+        run: xvfb-run -a npm test
       
       - name: Create VSIX package
         run: |
@@ -38,7 +41,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./vscode-extension/cursor-rules-dynamic-1.0.0.vsix
+          asset_path: ./cursor-rules-dynamic-1.0.0.vsix
           asset_name: cursor-rules-dynamic-1.0.0.vsix
           asset_content_type: application/octet-stream
       
