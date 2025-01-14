@@ -11,14 +11,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: 'npm'
+          cache-dependency-path: vscode-extension/package-lock.json
+
+      - name: Make CI script executable
+        run: chmod +x scripts/ci.sh
+
       - name: Run CI checks
         run: ./scripts/ci.sh
       
       - name: Create VSIX package
         working-directory: ./vscode-extension
-        run: |
-          npm install -g @vscode/vsce
-          vsce package
+        run: npm run package
       
       - name: Upload VSIX to release
         uses: actions/upload-release-asset@v1

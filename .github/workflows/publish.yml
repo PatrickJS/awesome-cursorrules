@@ -11,6 +11,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: 'npm'
+          cache-dependency-path: vscode-extension/package-lock.json
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@garotm'
+
+      - name: Make CI script executable
+        run: chmod +x scripts/ci.sh
+
       - name: Run CI checks
         run: ./scripts/ci.sh
       
