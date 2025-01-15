@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # Enable version updates for npm (vscode-extension)
+  - package-ecosystem: "npm"
+    directory: "/vscode-extension"
+    schedule:
+      interval: "weekly"
+    # Labels on pull requests for version updates
+    labels:
+      - "npm dependencies"
+      - "dependencies"
+    # Specify reviewers for pull requests
+    reviewers:
+      - "garotm"
+    # Allow up to 10 open pull requests for npm dependencies
+    open-pull-requests-limit: 10
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "github-actions"
+      - "dependencies"
+    reviewers:
+      - "garotm"
+    open-pull-requests-limit: 5
