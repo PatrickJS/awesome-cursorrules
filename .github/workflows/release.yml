@@ -37,4 +37,10 @@ jobs:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./vscode-extension/cursor-rules-dynamic-1.0.0.vsix
           asset_name: cursor-rules-dynamic-1.0.0.vsix
-          asset_content_type: application/octet-stream 
+          asset_content_type: application/octet-stream
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: vscode-extension/out/ 
