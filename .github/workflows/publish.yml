@@ -21,11 +21,13 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@garotm'
       
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
+      - name: Download artifacts from release workflow
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
           path: vscode-extension/out/
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
       
       - name: Configure npm for publishing
         working-directory: ./vscode-extension
@@ -41,6 +43,9 @@ jobs:
           
           # Modify package.json for npm publish
           jq '.name = "@garotm/cursor-rules-dynamic" | del(.publishConfig.name)' package.json > temp.json && mv temp.json package.json
+          
+          # Install dependencies without running scripts
+          npm ci --ignore-scripts
           
           # Publish using existing build
           npm publish --access public --ignore-scripts
