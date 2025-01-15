@@ -10,7 +10,7 @@
     },
     "publishConfig": {
         "registry": "https://npm.pkg.github.com",
-        "name": "@garotm/cursor-rules-dynamic"
+        "name": "cursor-rules-dynamic"
     },
     "engines": {
         "vscode": "^1.96.0",

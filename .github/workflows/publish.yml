@@ -1,12 +1,15 @@
 name: Publish Package
 
 on:
-  release:
-    types: [created]
+  workflow_run:
+    workflows: ["Release"]
+    types:
+      - completed
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -15,16 +18,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18.x'
-          cache: 'npm'
-          cache-dependency-path: vscode-extension/package-lock.json
           registry-url: 'https://npm.pkg.github.com'
           scope: '@garotm'
       
-      - name: Make CI script executable
-        run: chmod +x scripts/ci.sh
-      
-      - name: Run CI checks
-        run: ./scripts/ci.sh
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: vscode-extension/out/
       
       - name: Configure npm for publishing
         working-directory: ./vscode-extension
@@ -32,10 +33,19 @@ jobs:
           echo "@garotm:registry=https://npm.pkg.github.com" > .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
       
-      - name: Publish to GitHub Packages
+      - name: Prepare and publish package
         working-directory: ./vscode-extension
         run: |
-          npm ci
-          npm publish --access public
+          # Save original package.json
+          cp package.json package.json.bak
+          
+          # Modify package.json for npm publish
+          jq '.name = "@garotm/cursor-rules-dynamic" | del(.publishConfig.name)' package.json > temp.json && mv temp.json package.json
+          
+          # Publish using existing build
+          npm publish --access public --ignore-scripts
+          
+          # Restore original package.json
+          mv package.json.bak package.json
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
