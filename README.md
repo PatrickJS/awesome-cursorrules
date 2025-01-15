@@ -3,10 +3,12 @@
 [![CI](https://github.com/garotm/awesome-cursorrules-dynamic/actions/workflows/ci.yml/badge.svg)](https://github.com/garotm/awesome-cursorrules-dynamic/actions/workflows/ci.yml)
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](http://creativecommons.org/publicdomain/zero/1.0/)
 [![TypeScript Version](https://img.shields.io/badge/typescript-5.3.3-blue)](https://www.typescriptlang.org/)
+[![Release](https://github.com/garotm/awesome-cursorrules-dynamic/actions/workflows/release.yml/badge.svg)](https://github.com/garotm/awesome-cursorrules-dynamic/actions/workflows/release.yml)
+[![Publish Package](https://github.com/garotm/awesome-cursorrules-dynamic/actions/workflows/publish.yml/badge.svg)](https://github.com/garotm/awesome-cursorrules-dynamic/actions/workflows/publish.yml)
 
 <p align="center">
   <a href="https://patrickjs.com" target="_blank">
-    <img src="/cursor-ai-logo.png" alt="Awesome CursorRules" />
+    <img src="/cursor-ai-logo.png" alt="Awesome CursorRules" style="border-radius: 10px;" />
   </a>
 </p>
 
@@ -56,6 +58,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ## Rules
 
 ### Frontend Frameworks and Libraries
+
 - [Angular (Novo Elements)](./rules/angular-novo-elements-cursorrules-prompt-file/.cursorrules)
 - [Angular (TypeScript)](./rules/angular-typescript-cursorrules-prompt-file/.cursorrules)
 - [Astro (TypeScript)](./rules/astro-typescript-cursorrules-prompt-file/.cursorrules)
@@ -92,6 +95,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Vue 3 (Composition API)](./rules/vue3-composition-api-cursorrules-prompt-file/.cursorrules)
 
 ### Backend and Full-Stack
+
 - [Deno Integration](./rules/deno-integration-techniques-cursorrules-prompt-fil/.cursorrules)
 - [Elixir Engineer Guidelines](./rules/elixir-engineer-guidelines-cursorrules-prompt-file/.cursorrules)
 - [Elixir (Phoenix, Docker)](./rules/elixir-phoenix-docker-setup-cursorrules-prompt-fil/.cursorrules)
@@ -121,11 +125,13 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [WordPress (macOS)](./rules/cursorrules-cursor-ai-wordpress-draft-macos-prompt/.cursorrules)
 
 ### Mobile Development
+
 - [React Native Expo](./rules/react-native-expo-cursorrules-prompt-file/.cursorrules)
 - [SwiftUI Guidelines](./rules/swiftui-guidelines-cursorrules-prompt-file/.cursorrules)
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules)
 
 ### CSS and Styling
+
 - [Tailwind CSS (Next.js Guide)](./rules/tailwind-css-nextjs-guide-cursorrules-prompt-file/.cursorrules)
 - [Tailwind (React, Firebase)](./rules/tailwind-react-firebase-cursorrules-prompt-file/.cursorrules)
 - [Tailwind (shadcn/ui Integration)](./rules/tailwind-shadcn-ui-integration-cursorrules-prompt-/.cursorrules)
@@ -135,18 +141,22 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [React (Chakra UI)](./rules/react-chakra-ui-cursorrules-prompt-file/.cursorrules)
 
 ### State Management
+
 - [React (Redux, TypeScript)](./rules/react-redux-typescript-cursorrules-prompt-file/.cursorrules)
 - [React (MobX)](./rules/react-mobx-cursorrules-prompt-file/.cursorrules)
 - [React (React Query)](./rules/react-query-cursorrules-prompt-file/.cursorrules)
 
 ### Database and API
+
 - [GraphQL (Apollo Client)](./rules/react-graphql-apollo-client-cursorrules-prompt-file/.cursorrules)
 - [TypeScript (Axios)](./rules/typescript-axios-cursorrules-prompt-file/.cursorrules)
 
 ### Testing
+
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules)
 
 ### Build Tools and Development
+
 - [Blender VSCode Development](./rules/blender-vscode-cursorrules-prompt-file/.cursorrules)
 - [Chrome Extension (JavaScript/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules)
 - [GitHub Code Quality](./rules/github-code-quality-cursorrules-prompt-file/.cursorrules)
@@ -160,6 +170,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript Code Convention](./rules/typescript-code-convention-cursorrules-prompt-file/.cursorrules)
 
 ### Language-Specific
+
 - [JavaScript/TypeScript Code Quality](./rules/javascript-typescript-code-quality-cursorrules-pro/.cursorrules)
 - [JavaScript (Chrome APIs)](./rules/javascript-chrome-apis-cursorrules-prompt-file/.cursorrules)
 - [Optimize (Rell Blockchain Code)](./rules/optimize-rell-blockchain-code-cursorrules-prompt-f/.cursorrules)
@@ -193,6 +204,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript (Clasp App Script)](./rules/typescript-clasp-cursorrules-prompt-file/.cursorrules)
 
 ### Other
+
 - [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file/.cursorrules)
 - [Code Guidelines](./rules/code-guidelines-cursorrules-prompt-file/.cursorrules)
 - [DragonRuby Best Practices](./rules/dragonruby-best-practices-cursorrules-prompt-file/.cursorrules)
@@ -203,22 +215,26 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules)
 
 ## Directories
+
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
 
 ## How to Use
+
 ### Method One
+
 1. Install [Cursor AI](https://cursor.sh/) if you haven't already.
 2. Browse the rules above to find a `.cursorrules` file that suits your needs.
 3. Copy the chosen `.cursorrules` file to your project's root directory.
 4. Customize the rules as needed for your specific project requirements.
+
 ### Method Two
+
 1. Install [Cursor AI](https://cursor.sh/) if you haven't already.
 2. Install [vscode-cursor-rules](https://marketplace.visualstudio.com/items?itemName=BeilunYang.cursor-rules) extension.
 3. Open the command palette (Cmd+Shift+P or Ctrl+Shift+P) and type `Cursor Rules: Add .cursorrules`.
 4. Select and download the `.cursorrules` file that suits your needs.
 5. Customize the rules as needed for your specific project requirements.
-
 
 ## Contributing
 
