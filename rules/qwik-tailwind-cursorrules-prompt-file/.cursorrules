@@ -1,9 +1,11 @@
 // Qwik.js with Tailwind CSS (TypeScript and Vite included) .cursorrules
 
 // Prefer functional components
+
 const preferFunctionalComponents = true;
 
 // Qwik.js and Tailwind CSS best practices
+
 const qwikTailwindBestPractices = [
   "Use $ suffix for lazy-loaded functions",
   "Utilize useSignal() for reactive state",
@@ -16,6 +18,7 @@ const qwikTailwindBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   components/
@@ -31,6 +34,7 @@ tsconfig.json
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use TypeScript for all .ts and .tsx files
 2. Implement proper Tailwind CSS purging for production builds
@@ -41,3 +45,4 @@ const additionalInstructions = `
 7. Use server$ for server-side code execution
 8. Leverage Vite plugins for optimized builds
 `;
+

@@ -1,6 +1,7 @@
 // HTMX with Go (Basic Setup) .cursorrules
 
 // HTMX and Go best practices
+
 const htmxGoBestPractices = [
   "Use html/template for server-side rendering",
   "Implement http.HandlerFunc for handling HTMX requests",
@@ -11,6 +12,7 @@ const htmxGoBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 cmd/
   main.go
@@ -26,6 +28,7 @@ go.sum
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use semantic HTML5 elements with HTMX attributes
 2. Implement proper CSRF protection
@@ -35,3 +38,4 @@ const additionalInstructions = `
 6. Implement graceful shutdown for the server
 7. Use Go modules for dependency management
 `;
+

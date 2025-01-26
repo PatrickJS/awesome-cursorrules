@@ -1,6 +1,7 @@
 // HTMX Basic Setup .cursorrules
 
 // HTMX best practices
+
 const htmxBestPractices = [
   "Use hx-get for GET requests",
   "Implement hx-post for POST requests",
@@ -11,6 +12,7 @@ const htmxBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   templates/
@@ -21,6 +23,7 @@ src/
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use semantic HTML5 elements
 2. Implement proper CSRF protection
@@ -30,3 +33,4 @@ const additionalInstructions = `
 6. Follow progressive enhancement principles
 7. Use server-side templating (e.g., Jinja2, Handlebars)
 `;
+

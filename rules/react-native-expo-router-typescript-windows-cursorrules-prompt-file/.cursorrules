@@ -1,6 +1,7 @@
 // React Native Expo .cursorrules
 
 // React Native Expo Best Practices
+
 const reactNativeExpoBestPractices = [
   "Use functional components with hooks.",
   "Leverage Expo SDK features and APIs.",
@@ -19,6 +20,7 @@ const reactNativeExpoBestPractices = [
 ];
 
 // Folder Structure
+
 const folderStructure = `
 assets/
 src/
@@ -35,6 +37,7 @@ app.json
 `;
 
 // Package Version Compatibility Notes
+
 const packageCompatibilityNotes = [
   "NativeWind and Tailwind CSS compatibility:",
   "- Use nativewind@2.0.11 with tailwindcss@3.3.2.",
@@ -50,6 +53,7 @@ const packageCompatibilityNotes = [
 ];
 
 // Additional Instructions
+
 const additionalInstructions = [
   "Use PowerShell for terminal commands.",
   "Before installing a new package, check if it's already installed:",
@@ -68,3 +72,4 @@ const additionalInstructions = [
   "Follow the recommended folder structure and maintain organized code for scalability and readability.",
   "Implement navigation using Expo Router for clean and declarative routing."
 ];
+

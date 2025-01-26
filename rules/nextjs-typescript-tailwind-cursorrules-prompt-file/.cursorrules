@@ -1,1 +1,55 @@
-# Project OverviewThis project, named Astral, the Block Explorer of Autonomys network, is built using Next.js and TypeScript. It integrates various libraries for state management, UI components, and data fetching.# Key URLs- Astral Block Explorer: https://explorer.autonomys.xyz/- GitHub Repository: https://github.com/autonomys/astral- Autonomys: https://autonomys.xyz/- Academy: https://academy.autonomys.xyz/- Documentation: https://docs.autonomys.xyz/# Project Structure- **Components**: Contains reusable UI components.- **App**: Next.js app for routing.- **Hooks**: Custom React hooks for state management.# Development Guidelines- Use TypeScript for type safety.- Follow the coding standards defined in the ESLint configuration.- Ensure all components are responsive and accessible.- Use Tailwind CSS for styling, adhering to the defined color palette.# Important Scripts- `dev`: Starts the development server.- `build`: Builds the application for production.# AI Interaction Guidelines- When generating code, prioritize TypeScript and React best practices.- Ensure that any new components are reusable and follow the existing design patterns.- Minimize the use of AI generated comments, instead use clearly named variables and functions.- Always validate user inputs and handle errors gracefully.- Use the existing components and pages as a reference for the new components and pages.# Lexicon of Terms and Concepts- **H+AI (Human + Artificial Intelligence)**: The collaboration between humans and AI to enhance capabilities and ensure a harmonious coexistence.- **Autonomys Network**: A decentralized network designed to provide infrastructure for AI-powered decentralized applications (dApps).- **deAI Ecosystem**: A stack of components that includes distributed storage, compute, and a dApp/agent layer for building and deploying AI applications.- **Distributed Storage**: A system ensuring data integrity and availability for AI-related data.- **Distributed Compute**: Scalable computational resources for AI training and inference.- **dApp (Decentralized Application)**: Applications that run on a decentralized network, providing enhanced security and transparency.# Additional Resources- [Next.js Documentation](https://nextjs.org/docs)- [TypeScript Handbook](https://www.typescriptlang.org/docs/)- [Tailwind CSS Documentation](https://tailwindcss.com/docs)- [React Documentation](https://reactjs.org/docs/getting-started.html)- [Autonomys Overview](https://autonomys.xyz/)
+# Project Overview
+
+This project, named Astral, the Block Explorer of Autonomys network, is built using Next.js and TypeScript. It integrates various libraries for state management, UI components, and data fetching.
+
+# Key URLs
+
+- Astral Block Explorer: https://explorer.autonomys.xyz/
+- GitHub Repository: https://github.com/autonomys/astral
+- Autonomys: https://autonomys.xyz/
+- Academy: https://academy.autonomys.xyz/
+- Documentation: https://docs.autonomys.xyz/
+
+# Project Structure
+
+- **Components**: Contains reusable UI components.
+- **App**: Next.js app for routing.
+- **Hooks**: Custom React hooks for state management.
+
+# Development Guidelines
+
+- Use TypeScript for type safety.
+- Follow the coding standards defined in the ESLint configuration.
+- Ensure all components are responsive and accessible.
+- Use Tailwind CSS for styling, adhering to the defined color palette.
+
+# Important Scripts
+
+- `dev`: Starts the development server.
+- `build`: Builds the application for production.
+
+# AI Interaction Guidelines
+
+- When generating code, prioritize TypeScript and React best practices.
+- Ensure that any new components are reusable and follow the existing design patterns.
+- Minimize the use of AI generated comments, instead use clearly named variables and functions.
+- Always validate user inputs and handle errors gracefully.
+- Use the existing components and pages as a reference for the new components and pages.
+
+# Lexicon of Terms and Concepts
+
+- **H+AI (Human + Artificial Intelligence)**: The collaboration between humans and AI to enhance capabilities and ensure a harmonious coexistence.
+- **Autonomys Network**: A decentralized network designed to provide infrastructure for AI-powered decentralized applications (dApps).
+- **deAI Ecosystem**: A stack of components that includes distributed storage, compute, and a dApp/agent layer for building and deploying AI applications.
+- **Distributed Storage**: A system ensuring data integrity and availability for AI-related data.
+- **Distributed Compute**: Scalable computational resources for AI training and inference.
+- **dApp (Decentralized Application)**: Applications that run on a decentralized network, providing enhanced security and transparency.
+
+# Additional Resources
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [React Documentation](https://reactjs.org/docs/getting-started.html)
+- [Autonomys Overview](https://autonomys.xyz/)
+

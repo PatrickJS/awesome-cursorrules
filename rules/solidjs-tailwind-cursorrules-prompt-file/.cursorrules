@@ -1,9 +1,11 @@
 // Solid.js with Tailwind CSS .cursorrules
 
 // Prefer functional components
+
 const preferFunctionalComponents = true;
 
 // Solid.js and Tailwind CSS best practices
+
 const solidjsTailwindBestPractices = [
   "Use createSignal() for reactive state",
   "Implement Tailwind CSS classes for styling",
@@ -14,6 +16,7 @@ const solidjsTailwindBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   components/
@@ -28,6 +31,7 @@ postcss.config.js
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use JSX for component templates
 2. Implement proper Tailwind CSS purging for production builds
@@ -37,3 +41,4 @@ const additionalInstructions = `
 6. Follow both Solid.js and Tailwind naming conventions
 7. Use JIT (Just-In-Time) mode for faster development
 `;
+

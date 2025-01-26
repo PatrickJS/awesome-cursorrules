@@ -1,9 +1,11 @@
 // TypeScript React .cursorrules
 
 // Prefer functional components
+
 const preferFunctionalComponents = true;
 
 // TypeScript React best practices
+
 const typescriptReactBestPractices = [
   "Use React.FC for functional components with props",
   "Utilize useState and useEffect hooks for state and side effects",
@@ -14,6 +16,7 @@ const typescriptReactBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   components/
@@ -26,6 +29,7 @@ src/
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use .tsx extension for files with JSX
 2. Implement strict TypeScript checks
@@ -35,3 +39,4 @@ const additionalInstructions = `
 6. Follow React and TypeScript best practices and naming conventions
 7. Use ESLint with TypeScript and React plugins for code quality
 `;
+

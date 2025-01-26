@@ -1,9 +1,11 @@
 // React + Styled Components .cursorrules
 
 // Prefer functional components with hooks
+
 const preferFunctionalComponents = true;
 
 // Styled Components best practices
+
 const styledComponentsBestPractices = [
   "Use the styled-components/macro for better debugging",
   "Implement a global theme using ThemeProvider",
@@ -13,6 +15,7 @@ const styledComponentsBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   components/
@@ -25,6 +28,7 @@ src/
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use proper naming conventions for styled components (e.g., StyledButton)
 2. Implement a consistent theming system
@@ -34,3 +38,4 @@ const additionalInstructions = `
 6. Use the css prop for conditional styling when appropriate
 7. Follow the styled-components documentation for best practices
 `;
+

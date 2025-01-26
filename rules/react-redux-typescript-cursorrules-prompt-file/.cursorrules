@@ -1,12 +1,15 @@
 // React + Redux + TypeScript .cursorrules
 
 // Prefer functional components with hooks
+
 const preferFunctionalComponents = true;
 
 // Use TypeScript for type safety
+
 const useTypeScript = true;
 
 // Redux best practices
+
 const reduxBestPractices = [
   "Use Redux Toolkit for efficient Redux development",
   "Implement slice pattern for organizing Redux code",
@@ -15,6 +18,7 @@ const reduxBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   components/
@@ -28,6 +32,7 @@ src/
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use React.FC for functional components with props
 2. Implement strict TypeScript checks
@@ -37,3 +42,4 @@ const additionalInstructions = `
 6. Use Redux DevTools for debugging
 7. Follow Redux style guide for naming conventions
 `;
+

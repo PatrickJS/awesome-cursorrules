@@ -1,1 +1,137 @@
-# Cursorrules## IntroI am building 'BA Copilot', where BA stands for Business Analysts.I will sometimes refer to it as bacp.## BA Copilot MVP### OverviewIt is an assistant for business analysts.The MVP will be a an ai chatbot type tool, which will render BPMN diagrams using bpmn-js.The user can then iterate on them either with:- additional discussion- editing the diagram directly (bpmn-js supports this)### UI DescriptionHere is a hierarchical, indented bullet description of the BA Copilot MVP, focusing on its functionality for creating and iterating on BPMN diagrams:BA Copilot InterfaceQuestion Input SectionUsers can input questions or requests related to business processes.Example: "Based on the doc content what have I missed?"Process Section (Optional)Allows users to upload or view BPMN diagrams in formats like .png, .vsdx, etc.Users can visualize and edit existing diagrams or create new ones.Example: A BPMN diagram showing a flow of "Register expense report", "Approve", and "Deny" processes.Documents Section (Optional)Users can upload relevant documents, such as PDFs, that might contain process details.Example: "Shelter - employee handbook.pdf" uploaded to provide context for the BPMN diagram.Artifacts SectionProvides a space for related outputs or references to be displayed.Example: Diagram suggestions based on uploaded content.Iterative BPMN Diagram Creation and ModificationInput ProcessUsers can pose questions or requests for modifications to existing processes.Example: Asking for missing steps in the process based on document content.AI-Powered SuggestionsThe system suggests additions or modifications to the BPMN diagram based on the content of uploaded documents or user queries.Example: Suggestion to add a task for checking the expense policy, citing specific sections from the uploaded handbook.Diagram EditingUsers can interactively edit the BPMN diagram based on suggestions.Example: Adding a task "Check expense policy" with inputs and outputs like "Expense report" and "Checked expense report".Documentation and ReferencesThe system references uploaded documents and highlights relevant sections.Example: Citing "Section 7. Claiming reimbursement for payments made on behalf of the company" from the employee handbook.User WorkflowStart with a QuestionUser initiates the process by asking a question or making a request.Upload Process Diagrams and DocumentsUser uploads existing diagrams and documents for context.Receive AI-Generated SuggestionsSystem provides suggestions to enhance or correct the process flow.Modify BPMN DiagramUser edits the BPMN diagram based on the received suggestions.Iterate Until SatisfiedUser continues to ask follow-up questions and modify the diagram until the desired outcome is achieved.This BA Copilot MVP allows users to efficiently create, modify, and iterate on BPMN diagrams with contextual suggestions, leveraging uploaded documents and user queries.## BA Copilot Vision### OverviewThe vision for this is that it will be the home for business analysts to get assistance relating to their jobs.It will protect itself network effects to increase the value of the product e.g. BA agencies posting their products in the toolkit section, and members discussing BA topics in community section.It will also protect itself via an ever improving model for BA tasks e.g. BPMN generation. Although it will never be trained on user data.It will grow via virality via a dropbox style 'refer a friend and you both get 100 AI credits'.Revenue will be via companies paying for it for their BAs.Revenue will also be via companies paying to list on the job board### UI DescriptionThis UI for the Business Analyst (BA) Copilot is designed to facilitate various tasks related to business analysis. Here's a description of its features:Header SectionThe top navigation bar displays the application name "BA Copilot" and provides options like sharing the prototype and accessing user settings.Left Sidebar NavigationHome: The main dashboard or landing page of the BA Copilot.Assistant: A section likely dedicated to personalized assistance or guided help.Vault: A storage area for important documents or resources.Library: A collection of resources, templates, or reference materials.History: Access to past interactions, tasks, or saved work.Toolkit: Tools or utilities that support various BA activities.Community: A section for engaging with other users, discussing best practices, or sharing knowledge.Job Board: An area for job-related resources, possibly listing openings or career opportunities.Settings: User-specific settings, located at the bottom, allowing for customization of the BA Copilot experience.User Information: At the bottom, the user's email is displayed (e.g., alex@tesla.com), along with a security note indicating data is secure.Main Content AreaCentral Interaction BoxA prominent text box labeled "Ask anything..." invites users to enter questions, requests, or commands. This is the primary interface for interacting with the BA Copilot.Quick Action ButtonsBelow the interaction box, several buttons offer shortcuts to common BA tasks:Create flowchart from requirements: Generates a process flowchart based on a list of requirements.Create requirements from flowchart: Extracts and documents requirements from an existing flowchart.Create documentation from notes: Converts meeting notes or other informal documentation into formal documents.Create tests from documentation: Develops test cases or scripts based on existing documentation.Give me career advice: Provides personalized career guidance or resources.Recommend a toolkit: Suggests tools or software relevant to the user's current tasks or projects.Overall LayoutThe interface is clean, minimalist, and user-friendly, with a clear emphasis on functionality and ease of use. It is designed to guide users smoothly through typical BA tasks while providing easy access to tools and resources.This UI embodies the vision of a comprehensive yet streamlined tool tailored to assist business analysts in their day-to-day tasks, making their work more efficient and organized.## Technical### OverviewThe following elements of the stack are ones I'm confident I'll build with:- Next.js using App router, not Pages router always check that you have not made a recommendation that is for Pages router always check that your recommendation is appropriate for App router- Vercel AI- Supabase - db, including their type safety- Supabase - auth- Tanstack query- Material UI- Potentially Orval for API calls (typing, tanstack query, and mock service worker testing)- QuokkaI have intermediate experience with React.However, I am new to Next.js.So whenever implementing something with Next.js, teach me as if I don't know about it. Then offer to explain more.If you feel I should replace elements of my stack above, always tell me.For elements of the stack that are missing, make recommendations and explain pros and cons, and then make a recommendation.My app folder is src/appNever create app/Creating app/ will break things### Devias TemplateThis workspace contains: - the repo that I'm building in (ba-copilot-main, or ba-copilot) - a repo that I'm building from: nextjs-template-typescriptnextjs-template-typescript is a template made my Devias Kit Pro herein Devias.I will bring elements in from their repo to mine.So be aware of that, and consider recommending bringing elements in from there as well, and following their coding style and structure.
+# Cursorrules
+
+## Intro
+
+I am building 'BA Copilot', where BA stands for Business Analysts. I will sometimes refer to it as bacp.
+
+## BA Copilot MVP
+
+### Overview
+
+It is an assistant for business analysts. The MVP will be a an ai chatbot type tool, which will render BPMN diagrams using bpmn-js. The user can then iterate on them either with:
+
+- additional discussion
+- editing the diagram directly (bpmn-js supports this)
+
+### UI Description
+
+Here is a hierarchical, indented bullet description of the BA Copilot MVP, focusing on its functionality for creating and iterating on BPMN diagrams:
+
+BA Copilot Interface
+
+Question Input Section
+
+Users can input questions or requests related to business processes. Example: "Based on the doc content what have I missed?"
+
+Process Section (Optional)
+
+Allows users to upload or view BPMN diagrams in formats like .png, .vsdx, etc. Users can visualize and edit existing diagrams or create new ones. Example: A BPMN diagram showing a flow of "Register expense report", "Approve", and "Deny" processes.
+
+Documents Section (Optional)
+
+Users can upload relevant documents, such as PDFs, that might contain process details. Example: "Shelter - employee handbook.pdf" uploaded to provide context for the BPMN diagram.
+
+Artifacts Section
+
+Provides a space for related outputs or references to be displayed. Example: Diagram suggestions based on uploaded content.
+
+Iterative BPMN Diagram Creation and Modification
+
+Input Process
+
+Users can pose questions or requests for modifications to existing processes. Example: Asking for missing steps in the process based on document content.
+
+AI-Powered Suggestions
+
+The system suggests additions or modifications to the BPMN diagram based on the content of uploaded documents or user queries. Example: Suggestion to add a task for checking the expense policy, citing specific sections from the uploaded handbook.
+
+Diagram Editing
+
+Users can interactively edit the BPMN diagram based on suggestions. Example: Adding a task "Check expense policy" with inputs and outputs like "Expense report" and "Checked expense report".
+
+Documentation and References
+
+The system references uploaded documents and highlights relevant sections. Example: Citing "Section 7. Claiming reimbursement for payments made on behalf of the company" from the employee handbook.
+
+User Workflow
+
+Start with a Question
+
+User initiates the process by asking a question or making a request.
+
+Upload Process Diagrams and Documents
+
+User uploads existing diagrams and documents for context.
+
+Receive AI-Generated Suggestions
+
+System provides suggestions to enhance or correct the process flow.
+
+Modify BPMN Diagram
+
+User edits the BPMN diagram based on the received suggestions.
+
+Iterate Until Satisfied
+
+User continues to ask follow-up questions and modify the diagram until the desired outcome is achieved.
+
+This BA Copilot MVP allows users to efficiently create, modify, and iterate on BPMN diagrams with contextual suggestions, leveraging uploaded documents and user queries.
+
+## BA Copilot Vision
+
+### Overview
+
+The vision for this is that it will be the home for business analysts to get assistance relating to their jobs. It will protect itself network effects to increase the value of the product e.g. BA agencies posting their products in the toolkit section, and members discussing BA topics in community section. It will also protect itself via an ever improving model for BA tasks e.g. BPMN generation. Although it will never be trained on user data. It will grow via virality via a dropbox style 'refer a friend and you both get 100 AI credits'. Revenue will be via companies paying for it for their BAs. Revenue will also be via companies paying to list on the job board.
+
+### UI Description
+
+This UI for the Business Analyst (BA) Copilot is designed to facilitate various tasks related to business analysis. Here's a description of its features:
+
+Header Section
+
+The top navigation bar displays the application name "BA Copilot" and provides options like sharing the prototype and accessing user settings.
+
+Left Sidebar Navigation
+
+Home: The main dashboard or landing page of the BA Copilot. Assistant: A section likely dedicated to personalized assistance or guided help. Vault: A storage area for important documents or resources. Library: A collection of resources, templates, or reference materials. History: Access to past interactions, tasks, or saved work. Toolkit: Tools or utilities that support various BA activities. Community: A section for engaging with other users, discussing best practices, or sharing knowledge. Job Board: An area for job-related resources, possibly listing openings or career opportunities. Settings: User-specific settings, located at the bottom, allowing for customization of the BA Copilot experience. User Information: At the bottom, the user's email is displayed (e.g., alex@tesla.com), along with a security note indicating data is secure.
+
+Main Content Area
+
+Central Interaction Box
+
+A prominent text box labeled "Ask anything..." invites users to enter questions, requests, or commands. This is the primary interface for interacting with the BA Copilot.
+
+Quick Action Buttons
+
+Below the interaction box, several buttons offer shortcuts to common BA tasks: Create flowchart from requirements: Generates a process flowchart based on a list of requirements. Create requirements from flowchart: Extracts and documents requirements from an existing flowchart. Create documentation from notes: Converts meeting notes or other informal documentation into formal documents. Create tests from documentation: Develops test cases or scripts based on existing documentation. Give me career advice: Provides personalized career guidance or resources. Recommend a toolkit: Suggests tools or software relevant to the user's current tasks or projects.
+
+Overall Layout
+
+The interface is clean, minimalist, and user-friendly, with a clear emphasis on functionality and ease of use. It is designed to guide users smoothly through typical BA tasks while providing easy access to tools and resources. This UI embodies the vision of a comprehensive yet streamlined tool tailored to assist business analysts in their day-to-day tasks, making their work more efficient and organized.
+
+## Technical
+
+### Overview
+
+The following elements of the stack are ones I'm confident I'll build with:
+
+- Next.js using App router, not Pages router always check that you have not made a recommendation that is for Pages router always check that your recommendation is appropriate for App router
+- Vercel AI
+- Supabase - db, including their type safety
+- Supabase - auth
+- Tanstack query
+- Material UI
+- Potentially Orval for API calls (typing, tanstack query, and mock service worker testing)
+- Quokka
+
+I have intermediate experience with React. However, I am new to Next.js. So whenever implementing something with Next.js, teach me as if I don't know about it. Then offer to explain more. If you feel I should replace elements of my stack above, always tell me. For elements of the stack that are missing, make recommendations and explain pros and cons, and then make a recommendation. My app folder is src/app Never create app/Creating app/ will break things
+
+### Devias Template
+
+This workspace contains:
+
+- the repo that I'm building in (ba-copilot-main, or ba-copilot)
+- a repo that I'm building from: nextjs-template-typescript
+
+nextjs-template-typescript is a template made my Devias Kit Pro herein Devias. I will bring elements in from their repo to mine. So be aware of that, and consider recommending bringing elements in from there as well, and following their coding style and structure.
+
