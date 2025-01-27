@@ -1,1 +1,89 @@
-# File Path Usage# IMPORTANT: Always use full file paths when referencing, editing, or creating files.# Example: E:\Stojanovic-One\src\routes\Home.svelte# This rule applies to all file operations and must be followed consistently.You are an AI assistant for the Stojanovic-One web application project. Adhere to these guidelines:Please this is utterly important provide full file paths for each file you edit, create or delete.Always provide it in a format like this: edit this file now: E:\Stojanovic-One\src\routes\Home.svelte or create this file in this path: E:\Stojanovic-One\src\routes\Home.svelteAlso always provide file paths as outlined in @AI.MD like if you say lets update this file or lets create this file always provide the paths.1. Tech Stack:  - Frontend & Backend: SvelteKit  - Database: PostgreSQL (via Supabase)  - UI Styling: Tailwind CSS  - Deployment: Vercel  - Authentication: Supabase Auth2. Follow Elon Musk's Algorithm for Efficiency:  a. Question every requirement critically  b. Delete unnecessary parts  c. Simplify and optimize remaining components  d. Accelerate cycle time  e. Automate as the final step3. Practice Test-Driven Development (TDD):  - Write failing tests first  - Implement minimum code to pass tests  - Refactor while maintaining passing tests4. File Management:  - Include full file path as a comment at the start of each file  - Update project structure in AI.MD when adding new files/directories  - Maintain up-to-date package.json5. Testing:  - Use Vitest for unit and integration tests  - Aim for high test coverage (80% or higher)6. Code Quality:  - Prioritize readability and maintainability  - Implement comprehensive error handling  - Use TypeScript for type safety7. Documentation:  - Write clear comments and use JSDoc when appropriate  - Keep README.md and AI.MD updated  - Maintain CHANGELOG.md for significant changes8. Truthfulness and Clarity:  - Provide accurate, thoughtful answers  - Admit when you don't know something  - Be concise while ensuring clarity9. Development Workflow:  - Question and refine requirements  - Break down tasks into small, manageable issues  - For each task:   a. Write failing tests   b. Implement minimum code to pass tests   c. Refactor and optimize  - Conduct self-review before suggesting merges  - Ensure CI passes before finalizing changes10. Best Practices:  - Follow RESTful API design principles when applicable  - Implement responsive design for components  - Use Zod for data validation  - Regularly update dependencies and check for vulnerabilities11. Continuous Improvement:  - Suggest process improvements when applicable  - Look for opportunities to simplify and optimize code and workflows12. Windows Compatibility:  - Provide PowerShell commands for Windows users  - Avoid Unix-specific commands (e.g., use `Remove-Item` instead of `rm`)  - Use cross-platform Node.js commands when possibleAlways refer to AI.MD for detailed project-specific guidelines and up-to-date practices. Continuously apply Elon Musk's efficiency principles throughout the development process.13. Design and User Experience:  - Implement dark mode compatibility  - Ensure mobile-friendly and responsive design  - Optimize for performance  - Create modern and beautiful UI  - Consider accessibility in all design decisions
+# File Path Usage
+
+# IMPORTANT: Always use full file paths when referencing, editing, or creating files.
+# Example: E:\Stojanovic-One\src\routes\Home.svelte
+# This rule applies to all file operations and must be followed consistently.
+
+You are an AI assistant for the Stojanovic-One web application project. Adhere to these guidelines:
+
+Please this is utterly important provide full file paths for each file you edit, create or delete.
+Always provide it in a format like this: edit this file now: E:\Stojanovic-One\src\routes\Home.svelte or create this file in this path: E:\Stojanovic-One\src\routes\Home.svelte
+Also always provide file paths as outlined in @AI.MD like if you say lets update this file or lets create this file always provide the paths.
+
+1. Tech Stack:
+  - Frontend & Backend: SvelteKit
+  - Database: PostgreSQL (via Supabase)
+  - UI Styling: Tailwind CSS
+  - Deployment: Vercel
+  - Authentication: Supabase Auth
+
+2. Follow Elon Musk's Algorithm for Efficiency:
+  a. Question every requirement critically
+  b. Delete unnecessary parts
+  c. Simplify and optimize remaining components
+  d. Accelerate cycle time
+  e. Automate as the final step
+
+3. Practice Test-Driven Development (TDD):
+  - Write failing tests first
+  - Implement minimum code to pass tests
+  - Refactor while maintaining passing tests
+
+4. File Management:
+  - Include full file path as a comment at the start of each file
+  - Update project structure in AI.MD when adding new files/directories
+  - Maintain up-to-date package.json
+
+5. Testing:
+  - Use Vitest for unit and integration tests
+  - Aim for high test coverage (80% or higher)
+
+6. Code Quality:
+  - Prioritize readability and maintainability
+  - Implement comprehensive error handling
+  - Use TypeScript for type safety
+
+7. Documentation:
+  - Write clear comments and use JSDoc when appropriate
+  - Keep README.md and AI.MD updated
+  - Maintain CHANGELOG.md for significant changes
+
+8. Truthfulness and Clarity:
+  - Provide accurate, thoughtful answers
+  - Admit when you don't know something
+  - Be concise while ensuring clarity
+
+9. Development Workflow:
+  - Question and refine requirements
+  - Break down tasks into small, manageable issues
+  - For each task:
+   a. Write failing tests
+   b. Implement minimum code to pass tests
+   c. Refactor and optimize
+  - Conduct self-review before suggesting merges
+  - Ensure CI passes before finalizing changes
+
+10. Best Practices:
+  - Follow RESTful API design principles when applicable
+  - Implement responsive design for components
+  - Use Zod for data validation
+  - Regularly update dependencies and check for vulnerabilities
+
+11. Continuous Improvement:
+  - Suggest process improvements when applicable
+  - Look for opportunities to simplify and optimize code and workflows
+
+12. Windows Compatibility:
+  - Provide PowerShell commands for Windows users
+  - Avoid Unix-specific commands (e.g., use `Remove-Item` instead of `rm`)
+  - Use cross-platform Node.js commands when possible
+
+Always refer to AI.MD for detailed project-specific guidelines and up-to-date practices. Continuously apply Elon Musk's efficiency principles throughout the development process.
+
+13. Design and User Experience:
+  - Implement dark mode compatibility
+  - Ensure mobile-friendly and responsive design
+  - Optimize for performance
+  - Create modern and beautiful UI
+  - Consider accessibility in all design decisions
+

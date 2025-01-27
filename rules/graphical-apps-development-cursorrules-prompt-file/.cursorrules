@@ -1,1 +1,37 @@
-# Project SynopsisPyllments is a Python library for building graphical and API-based LLM applications through chaining together Elements in a potentially cyclic graph. Elements and Payloads are a type of Components. A Component is composed of a Model and Views. The Model handles the underlying data and logic, while the Views are the UI components that are used to display display the interactive UI used to interact with the Model. An Element is a type of Component that is responsible for a specific function. For instance, an Element can handle the LLM selection and generation by making calls to LLM providers. Another Element may handle the chat interface, whose Model would store the chat message history, and the Views would be the text boxes and buttons used to interact with the chat interface. Elements are meant to connect to other Elements through Ports. All that is necessary to link Elements together is to link the output port of one Element to the input port of Another. Each output port may have unlimited input ports it connects to, and each input port may have unlimited output ports it connects to. The ports follow an observer pattern where the output port is the subject and the input port is the observer. The subject notifies the observers when a certain event that we set within the Element is triggered. In order to connect an input and and output port, they need to be setup in a manner that sends and receives the same type of Payload. A Payload is also a Component with a Model as well as views responsible for the display logic. Elements may receive payloads and use methods of the Payload to generate the views for the UI. The sending Element is responsible for packing data into the Payload.  I am currently working on making this a fully-fledged framework.# Project OrganizationHere is an example of the file structure of an individual element:chat_interface:  - __init__.py  - chat_interface_element.py  - chat_interface_model.py  - css:    - buttons.css    - column.css    - input.css# Primary Libraries Used- Panel is used to create the visualization layer and run the GUI. Views tend to consist of Panel objects which can be styled with Python and CSS.- Param is used to create parameterized classes which help create parameters that handle type validation, default values, constraints, and most importantly, reactivity(setting event handlers to catch changes).- Langchain is responsible for the specific functions pertaining to incorporating LLM workflows.# Development PrioritiesPyllments code is prioritized on being developer-friendly, where extensibility and modularity are first-class citizens. Elements should be customizeable with clean and intuitive interfaces. It should also be easy to create new elements depending on the needs of the developer. # DocumentationDocstrings should use a NumPy/SciPy style.
+# Project Synopsis
+
+Pyllments is a Python library for building graphical and API-based LLM applications through chaining together Elements in a potentially cyclic graph. Elements and Payloads are a type of Components. A Component is composed of a Model and Views. The Model handles the underlying data and logic, while the Views are the UI components that are used to display display the interactive UI used to interact with the Model.
+
+An Element is a type of Component that is responsible for a specific function. For instance, an Element can handle the LLM selection and generation by making calls to LLM providers. Another Element may handle the chat interface, whose Model would store the chat message history, and the Views would be the text boxes and buttons used to interact with the chat interface. Elements are meant to connect to other Elements through Ports. All that is necessary to link Elements together is to link the output port of one Element to the input port of Another. Each output port may have unlimited input ports it connects to, and each input port may have unlimited output ports it connects to. The ports follow an observer pattern where the output port is the subject and the input port is the observer. The subject notifies the observers when a certain event that we set within the Element is triggered.
+
+In order to connect an input and and output port, they need to be setup in a manner that sends and receives the same type of Payload. A Payload is also a Component with a Model as well as views responsible for the display logic. Elements may receive payloads and use methods of the Payload to generate the views for the UI. The sending Element is responsible for packing data into the Payload.
+
+I am currently working on making this a fully-fledged framework.
+
+# Project Organization
+
+Here is an example of the file structure of an individual element:
+
+chat_interface:
+  - __init__.py
+  - chat_interface_element.py
+  - chat_interface_model.py
+  - css:
+    - buttons.css
+    - column.css
+    - input.css
+
+# Primary Libraries Used
+
+- Panel is used to create the visualization layer and run the GUI. Views tend to consist of Panel objects which can be styled with Python and CSS.
+- Param is used to create parameterized classes which help create parameters that handle type validation, default values, constraints, and most importantly, reactivity(setting event handlers to catch changes).
+- Langchain is responsible for the specific functions pertaining to incorporating LLM workflows.
+
+# Development Priorities
+
+Pyllments code is prioritized on being developer-friendly, where extensibility and modularity are first-class citizens. Elements should be customizeable with clean and intuitive interfaces. It should also be easy to create new elements depending on the needs of the developer.
+
+# Documentation
+
+Docstrings should use a NumPy/SciPy style.
+

@@ -1,9 +1,11 @@
 // Qwik.js Basic Setup (with TypeScript and Vite) .cursorrules
 
 // Prefer functional components
+
 const preferFunctionalComponents = true;
 
 // Qwik.js best practices
+
 const qwikBestPractices = [
   "Use $ suffix for lazy-loaded functions",
   "Utilize useSignal() for reactive state",
@@ -16,6 +18,7 @@ const qwikBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   components/
@@ -29,6 +32,7 @@ tsconfig.json
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use TypeScript for all .ts and .tsx files
 2. Implement proper error boundaries
@@ -39,3 +43,4 @@ const additionalInstructions = `
 7. Use server$ for server-side code execution
 8. Leverage Vite plugins for optimized builds
 `;
+

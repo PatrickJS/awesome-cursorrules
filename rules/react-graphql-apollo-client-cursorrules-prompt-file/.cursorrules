@@ -1,9 +1,11 @@
 // React + GraphQL (Apollo Client) .cursorrules
 
 // Prefer functional components with hooks
+
 const preferFunctionalComponents = true;
 
 // GraphQL and Apollo Client best practices
+
 const graphqlBestPractices = [
   "Use Apollo Client for state management and data fetching",
   "Implement query components for data fetching",
@@ -13,6 +15,7 @@ const graphqlBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   components/
@@ -26,6 +29,7 @@ src/
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use Apollo Provider at the root of your app
 2. Implement custom hooks for Apollo operations
@@ -35,3 +39,4 @@ const additionalInstructions = `
 6. Use Apollo Client DevTools for debugging
 7. Follow naming conventions for queries, mutations, and fragments
 `;
+

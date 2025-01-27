@@ -1,9 +1,11 @@
 // Solid.js Basic Setup .cursorrules
 
 // Prefer functional components
+
 const preferFunctionalComponents = true;
 
 // Solid.js best practices
+
 const solidjsBestPractices = [
   "Use createSignal() for reactive state",
   "Utilize createEffect() for side effects",
@@ -14,6 +16,7 @@ const solidjsBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   components/
@@ -26,6 +29,7 @@ public/
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use JSX for component templates
 2. Implement proper error boundaries
@@ -35,3 +39,4 @@ const additionalInstructions = `
 6. Follow Solid.js naming conventions and best practices
 7. Use server-side rendering (SSR) when needed
 `;
+

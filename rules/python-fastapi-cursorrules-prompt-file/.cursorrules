@@ -1,6 +1,7 @@
 # Python FastAPI .cursorrules
 
 # FastAPI best practices
+
 fastapi_best_practices = [
     "Use Pydantic models for request and response schemas",
     "Implement dependency injection for shared resources",
@@ -11,6 +12,7 @@ fastapi_best_practices = [
 ]
 
 # Folder structure
+
 folder_structure = """
 app/
   main.py
@@ -23,6 +25,7 @@ app/
 """
 
 # Additional instructions
+
 additional_instructions = """
 1. Use type hints for all function parameters and return values
 2. Implement proper input validation using Pydantic
@@ -32,3 +35,4 @@ additional_instructions = """
 6. Follow PEP 8 style guide for Python code
 7. Implement comprehensive unit and integration tests
 """
+

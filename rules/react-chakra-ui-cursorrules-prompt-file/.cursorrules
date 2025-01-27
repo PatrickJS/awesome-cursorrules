@@ -1,9 +1,11 @@
 // React + Chakra UI .cursorrules
 
 // Prefer functional components with hooks
+
 const preferFunctionalComponents = true;
 
 // Chakra UI best practices
+
 const chakraUIBestPractices = [
   "Use ChakraProvider at the root of your app",
   "Utilize Chakra UI components for consistent design",
@@ -13,6 +15,7 @@ const chakraUIBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   components/
@@ -26,6 +29,7 @@ src/
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use TypeScript for type safety with Chakra UI components
 2. Implement proper component composition using Chakra UI
@@ -35,3 +39,4 @@ const additionalInstructions = `
 6. Use Chakra UI's layout components for responsive design
 7. Follow Chakra UI best practices for performance optimization
 `;
+

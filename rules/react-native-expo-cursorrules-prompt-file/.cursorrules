@@ -1,6 +1,7 @@
 // React Native Expo .cursorrules
 
 // React Native Expo best practices
+
 const reactNativeExpoBestPractices = [
   "Use functional components with hooks",
   "Utilize Expo SDK features and APIs",
@@ -11,6 +12,7 @@ const reactNativeExpoBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 assets/
 src/
@@ -24,6 +26,7 @@ app.json
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use TypeScript for type safety
 2. Implement proper styling using StyleSheet
@@ -33,3 +36,4 @@ const additionalInstructions = `
 6. Follow React Native best practices for performance
 7. Use Expo's OTA updates for quick deployments
 `;
+

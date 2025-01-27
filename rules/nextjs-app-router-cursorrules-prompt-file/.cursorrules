@@ -1,6 +1,7 @@
 // Next.js App Router .cursorrules
 
 // Next.js App Router best practices
+
 const nextjsAppRouterBestPractices = [
   "Use server components by default",
   "Implement client components only when necessary",
@@ -12,6 +13,7 @@ const nextjsAppRouterBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 app/
   layout.js
@@ -23,6 +25,7 @@ public/
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use TypeScript for type safety
 2. Implement proper metadata for SEO
@@ -32,3 +35,4 @@ const additionalInstructions = `
 6. Follow Next.js naming conventions for special files
 7. Use environment variables for configuration
 `;
+

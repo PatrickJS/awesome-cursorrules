@@ -1,6 +1,7 @@
 // HTMX with Flask .cursorrules
 
 // HTMX and Flask best practices
+
 const htmxFlaskBestPractices = [
   "Use Flask's render_template for server-side rendering",
   "Implement Flask-WTF for form handling",
@@ -11,6 +12,7 @@ const htmxFlaskBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 app/
   templates/
@@ -25,6 +27,7 @@ run.py
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use Jinja2 templating with HTMX attributes
 2. Implement proper CSRF protection with Flask-WTF
@@ -34,3 +37,4 @@ const additionalInstructions = `
 6. Follow Flask's application factory pattern
 7. Use environment variables for configuration
 `;
+

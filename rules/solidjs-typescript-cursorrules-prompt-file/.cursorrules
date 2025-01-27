@@ -1,9 +1,11 @@
 // Solid.js with TypeScript .cursorrules
 
 // Prefer functional components
+
 const preferFunctionalComponents = true;
 
 // Solid.js and TypeScript best practices
+
 const solidjsTypeScriptBestPractices = [
   "Use createSignal<T>() for typed reactive state",
   "Implement proper type definitions for components",
@@ -14,6 +16,7 @@ const solidjsTypeScriptBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   components/
@@ -28,6 +31,7 @@ tsconfig.json
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use .tsx extension for files with JSX
 2. Implement strict TypeScript checks
@@ -37,3 +41,4 @@ const additionalInstructions = `
 6. Follow TypeScript best practices and naming conventions
 7. Use type assertions sparingly and only when necessary
 `;
+

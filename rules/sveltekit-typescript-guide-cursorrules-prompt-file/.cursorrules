@@ -1,1 +1,32 @@
-You are an expert in Svelte 5, SvelteKit, TypeScript, Supabase, Drizzle and modern web development.Key PrinciplesCode Style and StructureNaming ConventionsTypeScript UsageSvelte RunesUI and StylingShadcn Color ConventionsSvelteKit Project StructureComponent DevelopmentState ManagementUse classes for complex state management (state machines):```typescript// counter.svelte.tsclass Counter {count = $state(0);incrementor = $state(1);increment() {this.count += this.incrementor;}resetCount() {this.count = 0;}resetIncrementor() {this.incrementor = 1;}}export const counter = new Counter();```Use in components:```svelte<script lang="ts">import { counter } from './counter.svelte.ts';</script><button on:click={() => counter.increment()}>Count: {counter.count}</button>```Routing and PagesServer-Side Rendering (SSR) and Static Site Generation (SSG)Performance OptimizationData Fetching and API RoutesSEO and Meta TagsForms and ActionsInternationalization (i18n) with Paraglide.jsUse Paraglide.js for internationalization: https://inlang.com/m/gerre34r/library-inlang-paraglideJsInstall Paraglide.js: npm install @inlang/paraglide-jsSet up language files in the languages directory.Use the t function to translate strings:```svelte<script>import { t } from '@inlang/paraglide-js';</script><h1>{t('welcome_message')}</h1>```Support multiple languages and RTL layouts.Ensure text scaling and font adjustments for accessibility.AccessibilityKey ConventionsEmbrace Svelte's simplicity and avoid over-engineering solutions.Use SvelteKit for full-stack applications with SSR and API routes.Prioritize Web Vitals (LCP, FID, CLS) for performance optimization.Use environment variables for configuration management.Follow Svelte's best practices for component composition and state management.Ensure cross-browser compatibility by testing on multiple platforms.Keep your Svelte and SvelteKit versions up to date.Use the @supabase/ssr package instead of the older auth helpers packages.Configure your Supabase client to use cookies for storing session information.Implement the PKCE (Proof Key for Code Exchange) flow for authentication in SSR applications.Create separate browser and server clients using the createBrowserClient and createServerClient functions.Store access and refresh tokens in secure cookies for SSR.Implement proper error handling for invalid refresh token errors on the server-side.Use environment variables to store Supabase URL and API keys.Implement Row Level Security (RLS) on all tables containing sensitive data.Adopt a multi-stage development workflow (local -> staging -> prod).Use database migration tools to manage schema changes.Optimize queries, indexes, and connection management regularly.Implement proper CORS settings in your Supabase project.Use TypeScript for better type safety and developer experience.Implement consistent error handling across your application.Use a logging service for production environments to track errors and performance issues.Implement unit tests for database interactions.Documentation:[2] https://supabase.com/docs/guides/auth/server-side[3] https://supabase.com/docs/guides/auth/server-side/creating-a-client[4] https://www.reddit.com/r/Supabase/comments/17hbwqb/question_about_supabasessr_and/[5] https://supabase.com/docs/guides/auth/server-side/advanced-guide[6] https://www.restack.io/docs/supabase-knowledge-supabase-documentation[8] https://github.com/supabase/supabase/milestonesDocumentationRefer to Svelte, SvelteKit, and Paraglide.js documentation for detailed information on components, internationalization, and best practices.
+You are an expert in Svelte 5, SvelteKit, TypeScript, Supabase, Drizzle and modern web development.
+
+Key Principles
+
+Code Style and Structure
+Naming Conventions
+TypeScript Usage
+Svelte Runes
+UI and Styling
+Shadcn Color Conventions
+SvelteKit Project Structure
+Component Development
+State Management
+
+Use classes for complex state management (state machines):
+```typescript
+// counter.svelte.ts
+class Counter {
+  count = $state(0);
+  incrementor = $state(1);
+  increment() {
+    this.count += this.incrementor;
+  }
+  resetCount() {
+    this.count = 0;
+  }
+  resetIncrementor() {
+    this.incrementor = 1;
+  }
+}
+export const counter = new Counter();
+

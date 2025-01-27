@@ -1,6 +1,7 @@
 // HTMX with Go and Fiber .cursorrules
 
 // HTMX, Go, and Fiber best practices
+
 const htmxGoFiberBestPractices = [
   "Use Fiber's HTML rendering for server-side templates",
   "Implement Fiber's routing system for HTMX requests",
@@ -11,6 +12,7 @@ const htmxGoFiberBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 cmd/
   main.go
@@ -26,6 +28,7 @@ go.sum
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use Fiber's App.Get/Post/etc for routing HTMX requests
 2. Implement CSRF protection with Fiber middleware
@@ -35,3 +38,4 @@ const additionalInstructions = `
 6. Follow Fiber's best practices for project structure
 7. Use environment variables for configuration
 `;
+
