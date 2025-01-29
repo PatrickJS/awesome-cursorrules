@@ -1,1 +1,109 @@
-Prompt Generation Rules:- Analyze the component requirements thoroughly- Include specific DaisyUI component suggestions- Specify desired Tailwind CSS classes for styling- Mention any required TypeScript types or interfaces- Include instructions for responsive design- Suggest appropriate Next.js features if applicable- Specify any necessary state management or hooks- Include accessibility considerations- Mention any required icons or assets- Suggest error handling and loading states- Include instructions for animations or transitions if needed- Specify any required API integrations or data fetching- Mention performance optimization techniques if applicable- Include instructions for testing the component- Suggest documentation requirements for the componentGeneral Component Creation Guidelines:- Prioritize reusability and modularity- Ensure consistent naming conventions- Follow React best practices and patterns- Implement proper prop validation- Consider internationalization requirements- Optimize for SEO when applicable- Ensure compatibility with different browsers and devicesGeneral Rules:- Enable strict TypeScript (strict: true in tsconfig.json)- Avoid 'any', prefer 'unknown' with runtime checks- Explicitly type function inputs and outputs- Use advanced TypeScript features (type guards, mapped types, conditional types)- Organize project structure: components, pages, hooks, utils, styles, contracts, services- Separate concerns: presentational components, business logic, side effects- Use Biome for code formatting and linting- Configure Biome as a pre-commit hookNext.js Rules:- Use dynamic routes with bracket notation ([id].tsx)- Validate and sanitize route parameters- Prefer flat, descriptive routes- Use getServerSideProps for dynamic data, getStaticProps/getStaticPaths for static- Implement Incremental Static Regeneration (ISR) where appropriate- Use next/image for optimized images- Configure image layout, priority, sizes, and srcSet attributesTypeScript Rules:- Enable all strict mode options in tsconfig.json- Explicitly type all variables, parameters, and return values- Use utility types, mapped types, and conditional types- Prefer 'interface' for extendable object shapes- Use 'type' for unions, intersections, and primitive compositions- Document complex types with JSDoc- Avoid ambiguous union types, use discriminated unions when necessaryTailwindCSS and DaisyUI Rules:- Use TailwindCSS utility classes for styling- Avoid custom CSS unless absolutely necessary- Maintain consistent order of utility classes- Use Tailwind's responsive variants for adaptive designs- Leverage DaisyUI components for rapid development- Customize DaisyUI components only when necessary- Define and use design tokens in tailwind.config.jsStarknet React Rules:- Centralize blockchain connection management- Implement automatic reconnection and error handling- Use React hooks for transaction status management- Provide clear UI feedback for blockchain interactions- Implement comprehensive error handling for blockchain operationsCairo Rules:- Design modular and maintainable contract structures- Optimize for gas efficiency- Minimize state changes and storage access- Document all contracts and functions thoroughly- Explain complex logic and implementation choicesDevelopment Process:- Conduct thorough code reviews via Pull Requests- Include clear PR descriptions with context and screenshots- Implement comprehensive automated testing (unit, integration, e2e)- Prioritize meaningful tests over high coverage numbers- Use Conventional Commits for commit messages (feat:, fix:, docs:, chore:)- Make small, incremental commits for easier review and debuggingBiome Rules:- Use Biome for code formatting and linting- Configure Biome as a pre-commit hook- Follow Biome's recommended rules- Customize Biome configuration in biome.json as needed- Ensure consistent code style across the project- Run Biome checks before committing changes- Address all Biome warnings and errors promptly- Use Biome's organize imports feature to maintain clean import statements- Leverage Biome's advanced linting capabilities for TypeScript- Integrate Biome into the CI/CD pipeline for automated checks- Keep Biome updated to the latest stable version- Use Biome's ignore patterns to exclude specific files or directories when necessary
+Prompt Generation Rules:
+
+- Analyze the component requirements thoroughly
+- Include specific DaisyUI component suggestions
+- Specify desired Tailwind CSS classes for styling
+- Mention any required TypeScript types or interfaces
+- Include instructions for responsive design
+- Suggest appropriate Next.js features if applicable
+- Specify any necessary state management or hooks
+- Include accessibility considerations
+- Mention any required icons or assets
+- Suggest error handling and loading states
+- Include instructions for animations or transitions if needed
+- Specify any required API integrations or data fetching
+- Mention performance optimization techniques if applicable
+- Include instructions for testing the component
+- Suggest documentation requirements for the component
+
+General Component Creation Guidelines:
+
+- Prioritize reusability and modularity
+- Ensure consistent naming conventions
+- Follow React best practices and patterns
+- Implement proper prop validation
+- Consider internationalization requirements
+- Optimize for SEO when applicable
+- Ensure compatibility with different browsers and devices
+
+General Rules:
+
+- Enable strict TypeScript (strict: true in tsconfig.json)
+- Avoid 'any', prefer 'unknown' with runtime checks
+- Explicitly type function inputs and outputs
+- Use advanced TypeScript features (type guards, mapped types, conditional types)
+- Organize project structure: components, pages, hooks, utils, styles, contracts, services
+- Separate concerns: presentational components, business logic, side effects
+- Use Biome for code formatting and linting
+- Configure Biome as a pre-commit hook
+
+Next.js Rules:
+
+- Use dynamic routes with bracket notation ([id].tsx)
+- Validate and sanitize route parameters
+- Prefer flat, descriptive routes
+- Use getServerSideProps for dynamic data, getStaticProps/getStaticPaths for static
+- Implement Incremental Static Regeneration (ISR) where appropriate
+- Use next/image for optimized images
+- Configure image layout, priority, sizes, and srcSet attributes
+
+TypeScript Rules:
+
+- Enable all strict mode options in tsconfig.json
+- Explicitly type all variables, parameters, and return values
+- Use utility types, mapped types, and conditional types
+- Prefer 'interface' for extendable object shapes
+- Use 'type' for unions, intersections, and primitive compositions
+- Document complex types with JSDoc
+- Avoid ambiguous union types, use discriminated unions when necessary
+
+TailwindCSS and DaisyUI Rules:
+
+- Use TailwindCSS utility classes for styling
+- Avoid custom CSS unless absolutely necessary
+- Maintain consistent order of utility classes
+- Use Tailwind's responsive variants for adaptive designs
+- Leverage DaisyUI components for rapid development
+- Customize DaisyUI components only when necessary
+- Define and use design tokens in tailwind.config.js
+
+Starknet React Rules:
+
+- Centralize blockchain connection management
+- Implement automatic reconnection and error handling
+- Use React hooks for transaction status management
+- Provide clear UI feedback for blockchain interactions
+- Implement comprehensive error handling for blockchain operations
+
+Cairo Rules:
+
+- Design modular and maintainable contract structures
+- Optimize for gas efficiency
+- Minimize state changes and storage access
+- Document all contracts and functions thoroughly
+- Explain complex logic and implementation choices
+
+Development Process:
+
+- Conduct thorough code reviews via Pull Requests
+- Include clear PR descriptions with context and screenshots
+- Implement comprehensive automated testing (unit, integration, e2e)
+- Prioritize meaningful tests over high coverage numbers
+- Use Conventional Commits for commit messages (feat:, fix:, docs:, chore:)
+- Make small, incremental commits for easier review and debugging
+
+Biome Rules:
+
+- Use Biome for code formatting and linting
+- Configure Biome as a pre-commit hook
+- Follow Biome's recommended rules
+- Customize Biome configuration in biome.json as needed
+- Ensure consistent code style across the project
+- Run Biome checks before committing changes
+- Address all Biome warnings and errors promptly
+- Use Biome's organize imports feature to maintain clean import statements
+- Leverage Biome's advanced linting capabilities for TypeScript
+- Integrate Biome into the CI/CD pipeline for automated checks
+- Keep Biome updated to the latest stable version
+- Use Biome's ignore patterns to exclude specific files or directories when necessary
+

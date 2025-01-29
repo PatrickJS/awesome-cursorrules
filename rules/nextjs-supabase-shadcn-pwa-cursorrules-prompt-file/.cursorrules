@@ -1,6 +1,7 @@
 ## Key Principles
 
 - **Code Quality & Style**
+
   - Write concise, maintainable, and strongly typed code with accurate TypeScript implementations.
   - Embrace functional, declarative programming. Avoid OOP and classes.
   - Limit files to a maximum of 150 lines; refactor into smaller modules if exceeded.
@@ -14,19 +15,22 @@
   - Check and improve Web Vitals (LCP, CLS, FID) to maintain performance and user experience.
 
 - **Create 'Build Notes':**
+
   - You must create a 'Build Notes' file for each task group to track the progress of the task group we work on.
-  - **Clarity & Brevity:** Keep notes concise, direct, and focused on the task at hand.  
-  - **Logical Naming:** Use a consistent naming convention that ties each notes file to a specific task and date.  
-  - **Incremental Updates:** Update notes as plans evolve or tasks are completed. Append rather than overwrite.  
+  - **Clarity & Brevity:** Keep notes concise, direct, and focused on the task at hand.
+  - **Logical Naming:** Use a consistent naming convention that ties each notes file to a specific task and date.
+  - **Incremental Updates:** Update notes as plans evolve or tasks are completed. Append rather than overwrite.
   - **Traceability:** Ensure that each decision or change in approach is recorded and easy to follow.
 
 - **Review 'Project Contexts':**
+
   - You must review the `projectContext.md` as we need to ensure that the project context is up to date and accurate.
-  - **Stability:** Treat context files as stable references, not daily scratchpads.  
-  - **Selective Updates:** Update context files only when there are significant, approved changes to requirements or project scope.  
+  - **Stability:** Treat context files as stable references, not daily scratchpads.
+  - **Selective Updates:** Update context files only when there are significant, approved changes to requirements or project scope.
   - **Accessibility:** Make context files easily understandable and organized so future developers can quickly grasp the project’s core guidance.
 
 - **Stack and Framework Conventions**
+
   - Target **Next.js 15+** and leverage the App Router, React Server Components (RSC), and SSR capabilities.
   - Use Zustand for state management in client components when necessary.
   - Maintain proper Shadcn UI management using `npx shadcn@latest add` for new components.
@@ -35,6 +39,7 @@
   - Structure project as Progressive Web App (PWA) with offline capabilities, app-like experience, and installability across devices.
 
 - **Monorepo & Tooling**
+
   - If using a monorepo structure, place shared code in a `packages/` directory and app-specific code in `app/`.
   - Use `Taskfile.yml` commands for development, testing, and deployment tasks.
   - Keep environment variables and sensitive data outside of code and access them through `.env` files or similar configuration.
@@ -45,35 +50,40 @@ Below is a structured guideline to provide to the AI development agent, incorpor
 
 ### Rules for Build Notes Files
 
-1. **Location & Naming:**  
-   - Store all notes files in `/ProjectDocs/Build_Notes/`.  
+1. **Location & Naming:**
+
+   - Store all notes files in `/ProjectDocs/Build_Notes/`.
    - Use a logical, descriptive naming convention, e.g., `build-title_phase-#_task-group-name.md`.
    - Use the `<build-title>` to describe the build task.
    - Use the `<phase-#>` to apply the Phase # to the build task.
    - Use the `<task-group-name>` to describe the task group name.
    - Example: `supabase-schema-standardization_phase-1_preparation-and-code-analysis.md`
-       - `supabase-schema-standardization` is the build title
-       - `phase-1` is the phase number
-       - `preparation-and-code-analysis` is the task group name
+     - `supabase-schema-standardization` is the build title
+     - `phase-1` is the phase number
+     - `preparation-and-code-analysis` is the task group name
 
-2. **Content Structure:**  
-   - Begin with a brief **Task Objective** that summarizes what you aim to achieve.  
+2. **Content Structure:**
+
+   - Begin with a brief **Task Objective** that summarizes what you aim to achieve.
    - Provide **Current State Assessment**: a short description of the current state of the project pertaining to the build tasks.
    - Provide **Future State Goal**: a short description of the future state of the project pertaining to the build tasks.
    - Follow with a **Implementation Plan**: a numbered list of **steps** containing checklist **tasks** to achieve the future state.
    - Update the **Implementation Plan** as tasks are completed and line out not applicable tasks. NEVER DELETE TASKS FROM THE PLAN.
    - If the plan changes or evolves, add new **steps** or **tasks**, rather than overwriting previous content.
 
-3. **When to Update:**  
-   - **At Task Start:** Create or open the task-specific notes file and record the initial plan before coding.  
-   - **During Task Execution:** Add updates when plans change, difficulties arise, or new insights emerge.  
+3. **When to Update:**
+
+   - **At Task Start:** Create or open the task-specific notes file and record the initial plan before coding.
+   - **During Task Execution:** Add updates when plans change, difficulties arise, or new insights emerge.
    - **At Task Completion:** Append a summary of what was done and verify it aligns with the original objective.
 
-4. **Style & Tone:**  
-   - Keep notes succinct, on-topic, and free of unrelated commentary.  
+4. **Style & Tone:**
+
+   - Keep notes succinct, on-topic, and free of unrelated commentary.
    - Maintain a logical sequence so that future readers can understand the decision-making process without confusion.
 
 5. **Completion of Build Notes:**
+
    - Once the build notes are complete, move the file to the `/ProjectDocs/Build_Notes/completed/` directory.
    - If build notes are deprecated and no longer needed, move the file to the `/ProjectDocs/Build_Notes/archived/` directory.
 
@@ -81,18 +91,21 @@ Below is a structured guideline to provide to the AI development agent, incorpor
 
 ### Rules for Context Files
 
-1. **Master Project Context (`projectContext.md`):**  
-   - Located in `/ProjectDocs/contexts/`.  
-   - Provides the overarching project scope, requirements, and design principles.  
+1. **Master Project Context (`projectContext.md`):**
+
+   - Located in `/ProjectDocs/contexts/`.
+   - Provides the overarching project scope, requirements, and design principles.
    - Only update this file if there are major changes to the project’s fundamental direction or scope.
 
-2. **Additional Context Files:**  
-   - Supplementary files (e.g., `uiContext.md`, `featureAContext.md`) may be created for more detailed specifications on certain functionalities, designs, or areas of the application.  
-   - Keep these files stable. Update them only when new, approved changes need to be documented.  
+2. **Additional Context Files:**
+
+   - Supplementary files (e.g., `uiContext.md`, `featureAContext.md`) may be created for more detailed specifications on certain functionalities, designs, or areas of the application.
+   - Keep these files stable. Update them only when new, approved changes need to be documented.
    - Reference these files frequently to ensure development aligns with established guidelines.
 
-3. **Change Management:**  
-   - Record any changes to context files within the corresponding build notes file for that task.  
+3. **Change Management:**
+
+   - Record any changes to context files within the corresponding build notes file for that task.
    - Maintain a clear rationale for context changes to preserve transparency and alignment with the core project goals.
 
 ---
@@ -101,205 +114,4 @@ Below is a structured guideline to provide to the AI development agent, incorpor
 
 Adopt a clear, modular directory structure:
 
-```
-├── app/
-│   ├── (auth)/           # Auth-related routes/pages
-│   ├── (dashboard)/      # Dashboard routes/pages
-│   ├── api/              # API routes
-│   └── layout.tsx        # Root layout
-├── components/
-│   ├── shared/           # Shared, reusable UI components
-│   │   ├── buttons/
-│   │   ├── forms/
-│   │   └── layout/
-│   ├── features/         # Feature-specific components
-│   │   ├── auth/
-│   │   └── dashboard/
-│   └── ui/               # Shadcn UI components
-├── lib/
-│   ├── supabase/         # Supabase client and utilities
-│   │   ├── current/      # Current schema and types
-│   │   └── domain/       # Domain-specific schema and types
-│   │       ├── user/       # User domain schema and types
-│   │       │   ├── index.ts    # Exports all supabase utilities
-│   │       │   ├── queries.ts  # Supabase queries
-│   │       │   ├── services.ts # Supabase services
-│   │       │   └── types.ts    # Supabase types
-│   │       ├── roles/        # Roles domain schema and types
-│   │       └── ...            # Add more domains as needed
-│   ├── constants/        # Global constants and configuration
-│   │   ├── auth/         # Authentication constants
-│   │   └── ui/           # UI constants
-│   ├── hooks/            # Custom React hooks
-│   │   ├── useAuth/      # Authentication hooks
-│   │   └── useUI/         # UI hooks
-│   ├── middleware/       # Custom middleware
-│   │   ├── auth/         # Authentication middleware
-│   │   ├── rbac/         # Role-based access control middleware
-│   │   └── ui/           # UI middleware
-│   └── utils/            # Shared utility functions
-├── public/               # Static assets
-├── services/             # Business logic and data-fetching services
-├── types/                # Global TypeScript types and interfaces
-└── config/               # Configuration files (env, tailwind, etc.)
-```
 
-**Naming & Organization:**
-- Use semantic, descriptive names.
-- Keep file names lowercase with dashes.
-- Use `feature/`, `bugfix/`, `hotfix/`, `refactor/`, `docs/` prefixes for branches.
-- Export from `index.ts` files in feature directories for cleaner imports.
-
----
-
-## JavaScript/TypeScript Standards
-
-- Use TypeScript everywhere. Prefer `interface` for public-facing contracts.
-- Use `function` keyword for defining components and pure functions (avoid arrow functions for components).
-- Omit semicolons for a cleaner look.
-- Maintain a logical file order:
-  1. Exported component
-  2. Subcomponents
-  3. Helpers/internal utilities
-  4. Static content/constants
-  5. Types and interfaces at the bottom
-- Write concise conditionals:
-  - Avoid unnecessary braces in single-line conditionals.
-  - Use early returns to handle edge cases and errors upfront.
-- Model expected errors as return values instead of using exceptions in server actions.
-
-Example:
-
-```typescript
-function formatInput({ input }: { input: string }) {
-  if (!input) return null
-  return input.trim()
-}
-```
-
----
-
-## Error Handling, Validation, and Services
-
-- Handle errors at the start of functions with guard clauses and early returns.
-- Keep the “happy path” visible at the bottom of the function.
-- Avoid `else` statements by using if-return patterns to reduce nesting.
-- Use Zod for schema validation and form validation.
-- Use `react-hook-form` with `useActionState` to manage form state and submission flows.
-- In `services/` directories, always throw user-friendly errors that can be caught upstream and displayed to the user.
-- Implement proper error logging and user-friendly messages.
-- Employ error boundaries (`error.tsx`, `global-error.tsx`) for unexpected errors.
-- Use `next-safe-action` for secure and type-safe server actions.
-
----
-
-## AI Integration
-
-- Use the Vercel AI SDK UI and Core to implement streaming chat and AI-driven features.
-- Handle rate limiting, quota, and model availability gracefully.
-- Implement fallback logic if AI models are unavailable.
-- Sanitize user inputs before sending them to the AI.
-- Store API keys and sensitive information in environment variables.
-- Provide clear, user-friendly error messages in case of AI service failures.
-
----
-
-## React/Next.js Component Development
-
-- **Functional Components**: Use function declarations and TypeScript interfaces for props.
-- **Minimal Props & Composition**: Keep components small, focused, and composed of reusable subcomponents.
-- **Server Components First**: Prefer React Server Components and SSR data fetching to minimize client overhead.
-- **Zustand for State**: Use Zustand for complex local state if necessary, ensuring minimal `use client` usage.
-- **Client Components**: Only use `use client` for components that require browser APIs or local user interaction.
-- **Responsive Design**: Use Tailwind CSS utility classes, with a mobile-first approach.
-- **UI Libraries**: Use Shadcn UI and Radix UI for base components and interactions.
-- **Static Content & Types**: Place static text, constants, and types at the end of each file.
-- **Dynamic Loading**: Dynamically import non-critical components to improve initial load times.
-- **Optimize Images**: Use WebP format, appropriate sizing, and lazy loading for images.
-
----
-
-## Supabase, Database, and GraphQL
-
-- **Schema Management**: Keep `schema.sql` updated regularly with the latest schema changes.
-- **Types Management**: Keep `database.types.ts` updated regularly with the latest schema changes.
-- **Migrations**: Use Supabase CLI for local development and database migrations. Test all changes before staging/production.
-- **RLS & RBAC**: Implement Row Level Security and role-based access control. Assign default roles in `handle_new_user` functions.
-- **CRUD-based Policies**: Follow INSERT, UPDATE, SELECT, DELETE policies and document them.
-- **Enum Tables**: Use enum tables for predefined values.
-- **Relationships**: Document all table relationships and data flows.
-- **Genql**: Use Genql for type-safe GraphQL queries against Supabase. Fetch only necessary data.
-
-Example user creation:
-
-```typescript
-async function handleNewUser({ userId, email }: { userId: string; email: string }) {
-  const defaultRole = await getDefaultRole()
-  await supabase.from('profiles').insert({
-    id: userId,
-    email,
-    role_id: defaultRole.id,
-    created_at: new Date().toISOString(),
-  })
-}
-```
-
----
-
-## Version Control and Workflow
-
-- **Branch Naming**: `feature/`, `bugfix/`, `hotfix/`, `refactor/`, `docs/`.
-- **Commit Messages**: Use `type(scope): description` format. Common types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`.
-- **Pull Requests**: Use PR templates with a summary, change type, testing steps, and any database changes noted.
-- **Schema Updates**: Update `schema.sql` and commit the changes after each migration.
-- **Testing Before PR**: Always test changes locally before submitting PRs.
-
----
-
-## Data Fetching and State Management
-
-- **RSC for Data**: Use React Server Components for data fetching whenever possible.
-- **Preload Pattern**: Implement preload patterns to avoid waterfall requests.
-- **Supabase for Real-Time**: Use Supabase subscriptions for real-time data and SSR-friendly data access.
-- **Zustand**: Manage local state in isolated client components when needed.
-- **Vercel KV**: Use Vercel KV for chat history, rate limiting, and ephemeral storage.
-- **SSR & Minimize ‘use client’**: Prefer SSR and server actions. Only use `use client` for browser-based interactions.
-
----
-
-## Testing and Quality Assurance
-
-- **Unit Tests**: Write unit tests for utilities, hooks, and business logic.
-- **Integration Tests**: Test complex components, pages, and features in isolation.
-- **End-to-End Tests**: Validate critical flows (login, checkout) end-to-end.
-- **Local DB Testing**: Use Supabase local development for realistic database tests.
-- **Coverage**: Maintain a minimum test coverage threshold for PR merges.
-
----
-
-## Styling and Accessibility
-
-- **Tailwind CSS**: Use utility classes with a mobile-first responsive approach.
-- **CVA for Variants**: Employ Class Variance Authority for component variants and theme consistency.
-- **Radix UI**: Utilize Radix primitives for accessible UI patterns.
-- **ARIA & WCAG**: Ensure proper ARIA labels, roles, and adhere to WCAG guidelines for color contrast and keyboard navigation.
-- **Shadcn UI**: Leverage shadcn UI components for design consistency and speed.
-
----
-
-## Documentation
-
-- **Comments & JSDoc**: Comment complex logic and use JSDoc for functions and components.
-- **Readmes**: Keep README files updated with setup, instructions, and architectural details.
-- **API & DB Docs**: Document all API endpoints, RLS policies, and database schema.
-- **Edge Functions**: Document Supabase Edge Functions and their intended usage.
-- **Setup Instructions**: Keep environment configuration and setup steps current for onboarding developers.
-
----
-
-**Remember:**
-- Regularly check file sizes; refactor when needed.
-- Maintain separation of concerns and modular design.
-- Reuse components and keep them composable and testable.
-- Always test locally before pushing changes.
-- Ensure proper error handling, user-friendly messages, and accessible interfaces.

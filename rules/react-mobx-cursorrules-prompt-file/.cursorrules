@@ -1,9 +1,11 @@
 // React + MobX .cursorrules
 
 // Prefer functional components with hooks
+
 const preferFunctionalComponents = true;
 
 // MobX best practices
+
 const mobxBestPractices = [
   "Use MobX-react-lite for optimal performance with functional components",
   "Implement stores for managing application state",
@@ -13,6 +15,7 @@ const mobxBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   components/
@@ -23,6 +26,7 @@ src/
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use TypeScript for type safety with MobX
 2. Implement strict mode for MobX for better debugging
@@ -32,3 +36,4 @@ const additionalInstructions = `
 6. Utilize MobX DevTools for debugging
 7. Follow MobX best practices for scalable state management
 `;
+

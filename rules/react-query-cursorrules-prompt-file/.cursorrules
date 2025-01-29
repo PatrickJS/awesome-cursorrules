@@ -1,9 +1,11 @@
 // React + React Query .cursorrules
 
 // Prefer functional components with hooks
+
 const preferFunctionalComponents = true;
 
 // React Query best practices
+
 const reactQueryBestPractices = [
   "Use QueryClient and QueryClientProvider at the root of your app",
   "Implement custom hooks for queries and mutations",
@@ -13,6 +15,7 @@ const reactQueryBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   components/
@@ -25,6 +28,7 @@ src/
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use TypeScript for type safety with React Query
 2. Implement proper error boundaries for query errors
@@ -34,3 +38,4 @@ const additionalInstructions = `
 6. Use query invalidation for data refetching
 7. Follow React Query naming conventions for consistency
 `;
+

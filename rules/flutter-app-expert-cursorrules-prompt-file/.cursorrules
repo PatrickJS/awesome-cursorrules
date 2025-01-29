@@ -1,11 +1,13 @@
 // Flutter App Expert .cursorrules
 
 // Flexibility Notice
+
 // Note: This is a recommended project structure, but be flexible and adapt to existing project structures.
 // Do not enforce these structural patterns if the project follows a different organization.
 // Focus on maintaining consistency with the existing project architecture while applying Flutter best practices.
 
 // Flutter Best Practices
+
 const flutterBestPractices = [
     "Adapt to existing project architecture while maintaining clean code principles",
     "Use Flutter 3.x features and Material 3 design",
@@ -18,7 +20,9 @@ const flutterBestPractices = [
 ];
 
 // Project Structure
+
 // Note: This is a reference structure. Adapt to the project's existing organization
+
 const projectStructure = `
 lib/
   core/
@@ -49,6 +53,7 @@ test/
 `;
 
 // Coding Guidelines
+
 const codingGuidelines = `
 1. Use proper null safety practices
 2. Implement proper error handling with Either type
@@ -63,6 +68,7 @@ const codingGuidelines = `
 `;
 
 // Widget Guidelines
+
 const widgetGuidelines = `
 1. Keep widgets small and focused
 2. Use const constructors when possible
@@ -75,6 +81,7 @@ const widgetGuidelines = `
 `;
 
 // Performance Guidelines
+
 const performanceGuidelines = `
 1. Use proper image caching
 2. Implement proper list view optimization
@@ -86,6 +93,7 @@ const performanceGuidelines = `
 `;
 
 // Testing Guidelines
+
 const testingTestingGuidelines = `
 1. Write unit tests for business logic
 2. Implement widget tests for UI components
@@ -94,4 +102,5 @@ const testingTestingGuidelines = `
 5. Use proper test coverage tools
 6. Follow proper test naming conventions
 7. Implement proper CI/CD testing
-`; 
+`;
+

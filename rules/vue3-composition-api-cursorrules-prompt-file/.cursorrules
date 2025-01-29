@@ -1,6 +1,7 @@
 // Vue 3 Composition API .cursorrules
 
 // Vue 3 Composition API best practices
+
 const vue3CompositionApiBestPractices = [
   "Use setup() function for component logic",
   "Utilize ref and reactive for reactive state",
@@ -11,6 +12,7 @@ const vue3CompositionApiBestPractices = [
 ];
 
 // Folder structure
+
 const folderStructure = `
 src/
   components/
@@ -24,6 +26,7 @@ src/
 `;
 
 // Additional instructions
+
 const additionalInstructions = `
 1. Use TypeScript for type safety
 2. Implement proper props and emits definitions
@@ -33,3 +36,4 @@ const additionalInstructions = `
 6. Follow Vue 3 style guide and naming conventions
 7. Use Vite for fast development and building
 `;
+
