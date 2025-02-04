@@ -6,27 +6,49 @@
   </a>
 </p>
 
-A curated list of awesome .cursorrules files for enhancing your Cursor AI experience.
+A curated list of awesome Rules for AI files for enhancing your Cursor AI experience.
 
-[Cursor AI](https://cursor.sh/) is an AI-powered code editor. `.cursorrules` files define custom rules for Cursor AI to follow when generating code, allowing you to tailor its behavior to your specific needs and preferences.
+[Cursor AI](https://cursor.sh/) is an AI-powered code editor. Rules for AI define custom rules for Cursor AI to follow when generating code, allowing you to tailor its behavior to your specific needs and preferences.
 
-## Why .cursorrules?
+# Why Rules for AI?
 
-`.cursorrules` is a powerful feature in Cursor AI that allows developers to define project-specific instructions for the AI. Here's why you might want to use it:
+**[Rules for AI](https://docs.cursor.com/context/rules-for-ai)** is a powerful feature in Cursor AI that allows developers to define global or project-specific instructions for the AI. Here's why you might want to use it:
 
-1. **Customized AI Behavior**: `.cursorrules` files help tailor the AI's responses to your project's specific needs, ensuring more relevant and accurate code suggestions.
+1. **Customized AI Behavior**: Rules files help tailor the AI's responses to your project's specific needs, ensuring more relevant and accurate code suggestions.
 
-2. **Consistency**: By defining coding standards and best practices in your `.cursorrules` file, you can ensure that the AI generates code that aligns with your project's style guidelines.
+2. **Consistency**: By defining coding standards and best practices in your rules, you can ensure that the AI generates code that aligns with your project's style guidelines.
 
 3. **Context Awareness**: You can provide the AI with important context about your project, such as commonly used methods, architectural decisions, or specific libraries, leading to more informed code generation.
 
 4. **Improved Productivity**: With well-defined rules, the AI can generate code that requires less manual editing, speeding up your development process.
 
-5. **Team Alignment**: For team projects, a shared `.cursorrules` file ensures that all team members receive consistent AI assistance, promoting cohesion in coding practices.
+5. **Team Alignment**: For team projects, shared rules ensure that all team members receive consistent AI assistance, promoting cohesion in coding practices.
 
 6. **Project-Specific Knowledge**: You can include information about your project's structure, dependencies, or unique requirements, helping the AI to provide more accurate and relevant suggestions.
 
-By creating a `.cursorrules` file in your project's root directory, you can leverage these benefits and enhance your coding experience with Cursor AI.
+## Setting Up Rules in Cursor
+
+### Global Rules
+
+You can set global rules that apply across all projects:
+
+1. Open Cursor Settings
+2. Navigate to General > Rules for AI
+3. Add your custom instructions
+
+### Project Rules (Recommended)
+
+Cursor now offers a more powerful and flexible rules system.
+
+**To Create a Project Rule:**
+
+1. Open the command palette (Cmd + Shift + P)
+2. Select "New Cursor Rule"
+3. Configure your rule with patterns and instructions
+
+### Legacy .cursorrules File
+
+While still supported for backward compatibility, the `.cursorrules` file in the project root is deprecated. We recommend migrating to the new Project Rules system for better flexibility and control over your AI interactions.
 
 ## Contents
 
@@ -52,6 +74,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ## Rules
 
 ### Frontend Frameworks and Libraries
+
 - [Angular (Novo Elements)](./rules/angular-novo-elements-cursorrules-prompt-file/.cursorrules)
 - [Angular (TypeScript)](./rules/angular-typescript-cursorrules-prompt-file/.cursorrules)
 - [Astro (TypeScript)](./rules/astro-typescript-cursorrules-prompt-file/.cursorrules)
@@ -88,6 +111,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Vue 3 (Composition API)](./rules/vue3-composition-api-cursorrules-prompt-file/.cursorrules)
 
 ### Backend and Full-Stack
+
 - [Deno Integration](./rules/deno-integration-techniques-cursorrules-prompt-fil/.cursorrules)
 - [Elixir Engineer Guidelines](./rules/elixir-engineer-guidelines-cursorrules-prompt-file/.cursorrules)
 - [Elixir (Phoenix, Docker)](./rules/elixir-phoenix-docker-setup-cursorrules-prompt-fil/.cursorrules)
@@ -118,6 +142,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Python LLM & ML Workflow](./rules/python-llm-ml-workflow-cursorrules-prompt-file/.cursorrules)
 
 ### Mobile Development
+
 - [React Native Expo](./rules/react-native-expo-cursorrules-prompt-file/.cursorrules)
 - [SwiftUI Guidelines](./rules/swiftui-guidelines-cursorrules-prompt-file/.cursorrules)
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules)
@@ -125,6 +150,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Flutter Expert](./rules/flutter-app-expert-cursorrules-prompt-file/.cursorrules)
 
 ### CSS and Styling
+
 - [Tailwind CSS (Next.js Guide)](./rules/tailwind-css-nextjs-guide-cursorrules-prompt-file/.cursorrules)
 - [Tailwind (React, Firebase)](./rules/tailwind-react-firebase-cursorrules-prompt-file/.cursorrules)
 - [Tailwind (shadcn/ui Integration)](./rules/tailwind-shadcn-ui-integration-cursorrules-prompt-/.cursorrules)
@@ -134,18 +160,22 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [React (Chakra UI)](./rules/react-chakra-ui-cursorrules-prompt-file/.cursorrules)
 
 ### State Management
+
 - [React (Redux, TypeScript)](./rules/react-redux-typescript-cursorrules-prompt-file/.cursorrules)
 - [React (MobX)](./rules/react-mobx-cursorrules-prompt-file/.cursorrules)
 - [React (React Query)](./rules/react-query-cursorrules-prompt-file/.cursorrules)
 
 ### Database and API
+
 - [GraphQL (Apollo Client)](./rules/react-graphql-apollo-client-cursorrules-prompt-file/.cursorrules)
 - [TypeScript (Axios)](./rules/typescript-axios-cursorrules-prompt-file/.cursorrules)
 
 ### Testing
+
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules)
 
 ### Build Tools and Development
+
 - [Chrome Extension (JavaScript/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules)
 - [GitHub Code Quality](./rules/github-code-quality-cursorrules-prompt-file/.cursorrules)
 - [GitHub Instructions](./rules/github-cursorrules-prompt-file-instructions/.cursorrules)
@@ -158,6 +188,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript Code Convention](./rules/typescript-code-convention-cursorrules-prompt-file/.cursorrules)
 
 ### Language-Specific
+
 - [JavaScript/TypeScript Code Quality](./rules/javascript-typescript-code-quality-cursorrules-pro/.cursorrules)
 - [JavaScript (Chrome APIs)](./rules/javascript-chrome-apis-cursorrules-prompt-file/.cursorrules)
 - [Optimize (Rell Blockchain Code)](./rules/optimize-rell-blockchain-code-cursorrules-prompt-f/.cursorrules)
@@ -191,6 +222,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript (Clasp App Script)](./rules/typescript-clasp-cursorrules-prompt-file/.cursorrules)
 
 ### Other
+
 - [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file/.cursorrules)
 - [Code Guidelines](./rules/code-guidelines-cursorrules-prompt-file/.cursorrules)
 - [DragonRuby Best Practices](./rules/dragonruby-best-practices-cursorrules-prompt-file/.cursorrules)
@@ -201,22 +233,26 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules)
 
 ## Directories
+
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
 
 ## How to Use
+
 ### Method One
+
 1. Install [Cursor AI](https://cursor.sh/) if you haven't already.
 2. Browse the rules above to find a `.cursorrules` file that suits your needs.
 3. Copy the chosen `.cursorrules` file to your project's root directory.
 4. Customize the rules as needed for your specific project requirements.
+
 ### Method Two
+
 1. Install [Cursor AI](https://cursor.sh/) if you haven't already.
 2. Install [vscode-cursor-rules](https://marketplace.visualstudio.com/items?itemName=BeilunYang.cursor-rules) extension.
 3. Open the command palette (Cmd+Shift+P or Ctrl+Shift+P) and type `Cursor Rules: Add .cursorrules`.
 4. Select and download the `.cursorrules` file that suits your needs.
 5. Customize the rules as needed for your specific project requirements.
-
 
 ## Contributing
 
