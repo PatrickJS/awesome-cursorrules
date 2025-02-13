@@ -1,9 +1,9 @@
 ---
-description: Node.js and Express best practices for building modern web applications and APIs
-globs: **/*.ts, **/*.js, src/**/*, api/**/*
+description: Node.js and Express.js best practices for backend development
+globs: **/*.js, **/*.ts, src/**/*.ts
 ---
 
-# Node.js and Express Best Practices
+# Node.js and Express.js Best Practices
 
 ## Project Structure
 - Use proper directory structure

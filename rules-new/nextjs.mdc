@@ -1,6 +1,6 @@
 ---
-description: Rules and best practices for Next.js applications with TypeScript and React
-globs: app/**/*.tsx,app/**/*.ts,components/**/*.tsx,lib/**/*.ts
+description: Next.js with TypeScript and Tailwind UI best practices
+globs: **/*.tsx, **/*.ts, src/**/*.ts, src/**/*.tsx
 ---
 
 # Next.js Best Practices
