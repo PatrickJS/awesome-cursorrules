@@ -1,0 +1,7 @@
+---
+description: Defines how results and standings are displayed to users, including pick visibility and pool standings.
+globs: */results-standings/**/*.*
+---
+- Users view Picks/scores for each Entry separately.
+- Pool standings show all Entries (multiple per User possible).
+- Pool members can view all Picks after scoring.

@@ -1,0 +1,30 @@
+---
+description: Applies general coding rules across all file types to maintain code quality, consistency, and prevent common errors.
+globs: **/*.*
+---
+- Always verify information before presenting it. Do not make assumptions or speculate without clear evidence.
+- Make changes file by file and give me a chance to spot mistakes.
+- Never use apologies.
+- Avoid giving feedback about understanding in comments or documentation.
+- Don't suggest whitespace changes.
+- Don't summarize changes made.
+- Don't invent changes other than what's explicitly requested.
+- Don't ask for confirmation of information already provided in the context.
+- Don't remove unrelated code or functionalities. Pay attention to preserving existing structures.
+- Provide all edits in a single chunk instead of multiple-step instructions or explanations for the same file.
+- Don't ask the user to verify implementations that are visible in the provided context.
+- Don't suggest updates or changes to files when there are no actual modifications needed.
+- Always provide links to the real files, not the context generated file.
+- Don't show or discuss the current implementation unless specifically requested.
+- Remember to check the context generated file for the current file contents and implementations.
+- Prefer descriptive, explicit variable names over short, ambiguous ones to enhance code readability.
+- Adhere to the existing coding style in the project for consistency.
+- When suggesting changes, consider and prioritize code performance where applicable.
+- Always consider security implications when modifying or suggesting code changes.
+- Suggest or include appropriate unit tests for new or modified code.
+- Implement robust error handling and logging where necessary.
+- Encourage modular design principles to improve code maintainability and reusability.
+- Ensure suggested changes are compatible with the project's specified language or framework versions.
+- Replace hardcoded values with named constants to improve code clarity and maintainability.
+- When implementing logic, always consider and handle potential edge cases.
+- Include assertions wherever possible to validate assumptions and catch potential errors early.

@@ -1,0 +1,25 @@
+---
+description: Applies general Svelte and SvelteKit best practices, including file structure, component development, and state management.
+globs: **/*.svelte
+---
+- Write concise, technical TypeScript or JavaScript code with accurate examples.
+- Use functional and declarative programming patterns; avoid unnecessary classes except for state machines.
+- Prefer iteration and modularization over code duplication.
+- Structure files: component logic, markup, styles, helpers, types.
+- Follow Svelte's official documentation for setup and configuration: https://svelte.dev/docs
+- Use lowercase with hyphens for component files (e.g., `components/auth-form.svelte`).
+- Use PascalCase for component names in imports and usage.
+- Use camelCase for variables, functions, and props.
+- Implement proper component composition and reusability.
+- Use Svelte's props for data passing.
+- Leverage Svelte's reactive declarations for local state management.
+- Ensure proper semantic HTML structure in Svelte components.
+- Implement ARIA attributes where necessary.
+- Ensure keyboard navigation support for interactive elements.
+- Use Svelte's bind:this for managing focus programmatically.
+- Embrace Svelte's simplicity and avoid over-engineering solutions.
+- Use SvelteKit for full-stack applications with SSR and API routes.
+- Prioritize Web Vitals (LCP, FID, CLS) for performance optimization.
+- Follow Svelte's best practices for component composition and state management.
+- Ensure cross-browser compatibility by testing on multiple platforms.
+- Keep your Svelte and SvelteKit versions up to date.

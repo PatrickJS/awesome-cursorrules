@@ -1,0 +1,8 @@
+---
+description: Provides best practices for styling with Tailwind CSS, including reusable styles, responsive design, and dark mode.
+globs: **/*.css
+---
+- Utilize @apply directive in CSS files for reusable styles.
+- Implement responsive design using Tailwind's responsive classes.
+- Use Tailwind's configuration file for customization.
+- Implement dark mode using Tailwind's dark variant.

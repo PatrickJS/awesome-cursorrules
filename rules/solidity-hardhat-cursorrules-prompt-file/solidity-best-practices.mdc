@@ -1,0 +1,44 @@
+---
+description: Enforces best practices for Solidity smart contract development, covering aspects like function visibility, naming conventions, and upgradeability patterns.
+globs: **/*.sol
+---
+- Use explicit function visibility modifiers and appropriate natspec comments.
+- Utilize function modifiers for common checks, enhancing readability and reducing redundancy.
+- Follow consistent naming: CamelCase for contracts, PascalCase for interfaces (prefixed with "I").
+- Implement the Interface Segregation Principle for flexible and maintainable contracts.
+- Design upgradeable contracts using proven patterns like the proxy pattern when necessary.
+- Implement comprehensive events for all significant state changes.
+- Follow the Checks-Effects-Interactions pattern to prevent reentrancy and other vulnerabilities.
+- Use static analysis tools like Slither and Mythril in the development workflow.
+- Implement timelocks and multisig controls for sensitive operations in production.
+- Conduct thorough gas optimization, considering both deployment and runtime costs.
+- Use OpenZeppelin's AccessControl for fine-grained permissions.
+- Use Solidity 0.8.0+ for built-in overflow/underflow protection.
+- Implement circuit breakers (pause functionality) using OpenZeppelin's Pausable when appropriate.
+- Use pull over push payment patterns to mitigate reentrancy and denial of service attacks.
+- Implement rate limiting for sensitive functions to prevent abuse.
+- Use OpenZeppelin's SafeERC20 for interacting with ERC20 tokens.
+- Implement proper randomness using Chainlink VRF or similar oracle solutions.
+- Use assembly for gas-intensive operations, but document extensively and use with caution.
+- Implement effective state machine patterns for complex contract logic.
+- Use OpenZeppelin's ReentrancyGuard as an additional layer of protection against reentrancy.
+- Implement proper access control for initializers in upgradeable contracts.
+- Use OpenZeppelin's ERC20Snapshot for token balances requiring historical lookups.
+- Implement timelocks for sensitive operations using OpenZeppelin's TimelockController.
+- Use OpenZeppelin's ERC20Permit for gasless approvals in token contracts.
+- Implement proper slippage protection for DEX-like functionalities.
+- Use OpenZeppelin's ERC20Votes for governance token implementations.
+- Implement effective storage patterns to optimize gas costs (e.g., packing variables).
+- Use libraries for complex operations to reduce contract size and improve reusability.
+- Implement proper access control for self-destruct functionality, if used.
+- Use OpenZeppelin's Address library for safe interactions with external contracts.
+- Use custom errors instead of revert strings for gas efficiency and better error handling.
+- Implement NatSpec comments for all public and external functions.
+- Use immutable variables for values set once at construction time.
+- Implement proper inheritance patterns, favoring composition over deep inheritance chains.
+- Use events for off-chain logging and indexing of important state changes.
+- Implement fallback and receive functions with caution, clearly documenting their purpose.
+- Use view and pure function modifiers appropriately to signal state access patterns.
+- Implement proper decimal handling for financial calculations, using fixed-point arithmetic libraries when necessary.
+- Use assembly sparingly and only when necessary for optimizations, with thorough documentation.
+- Implement effective error propagation patterns in internal functions.

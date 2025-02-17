@@ -1,0 +1,8 @@
+---
+description: Enforces specific naming conventions across the project.
+globs: **/*.{js,ts,jsx,tsx,py}
+---
+- Use descriptive and meaningful names.
+- Follow camelCase for variables and functions (e.g., `myVariable`, `myFunction`).
+- Use PascalCase for class names (e.g., `MyClass`).
+- Avoid abbreviations unless they are widely understood.

@@ -1,0 +1,31 @@
+---
+description: Enforces rules for creating and managing build notes files within the /ProjectDocs/Build_Notes/ directory, including naming conventions, content structure, and update frequency.
+globs: **/ProjectDocs/Build_Notes/**/*
+---
+- **Location & Naming:**
+   - Store all notes files in `/ProjectDocs/Build_Notes/`.
+   - Use a logical, descriptive naming convention, e.g., `build-title_phase-#_task-group-name.md`.
+   - Use the `<build-title>` to describe the build task.
+   - Use the `<phase-#>` to apply the Phase # to the build task.
+   - Use the `<task-group-name>` to describe the task group name.
+   - Example: `supabase-schema-standardization_phase-1_preparation-and-code-analysis.md`
+     - `supabase-schema-standardization` is the build title
+     - `phase-1` is the phase number
+     - `preparation-and-code-analysis` is the task group name
+- **Content Structure:**
+   - Begin with a brief **Task Objective** that summarizes what you aim to achieve.
+   - Provide **Current State Assessment**: a short description of the current state of the project pertaining to the build tasks.
+   - Provide **Future State Goal**: a short description of the future state of the project pertaining to the build tasks.
+   - Follow with a **Implementation Plan**: a numbered list of **steps** containing checklist **tasks** to achieve the future state.
+   - Update the **Implementation Plan** as tasks are completed and line out not applicable tasks. NEVER DELETE TASKS FROM THE PLAN.
+   - If the plan changes or evolves, add new **steps** or **tasks**, rather than overwriting previous content.
+- **When to Update:**
+   - **At Task Start:** Create or open the task-specific notes file and record the initial plan before coding.
+   - **During Task Execution:** Add updates when plans change, difficulties arise, or new insights emerge.
+   - **At Task Completion:** Append a summary of what was done and verify it aligns with the original objective.
+- **Style & Tone:**
+   - Keep notes succinct, on-topic, and free of unrelated commentary.
+   - Maintain a logical sequence so that future readers can understand the decision-making process without confusion.
+- **Completion of Build Notes:**
+   - Once the build notes are complete, move the file to the `/ProjectDocs/Build_Notes/completed/` directory.
+   - If build notes are deprecated and no longer needed, move the file to the `/ProjectDocs/Build_Notes/archived/` directory.

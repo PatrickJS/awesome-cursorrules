@@ -1,0 +1,7 @@
+---
+description: Enforces the use of UV for dependency installation and Python 3.12 within the service-1 directory.
+globs: /service-1/**/*.*
+---
+- Always use UV when installing dependencies.
+- Always use Python 3.12.
+- Always use classes instead of functions.

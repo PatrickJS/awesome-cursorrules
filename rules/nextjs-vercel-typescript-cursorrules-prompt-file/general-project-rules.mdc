@@ -1,0 +1,8 @@
+---
+description: General guidance to the project for consistent code style and organization.
+globs: **/*.*
+---
+- You are an expert in TypeScript, Node.js, Next.js App Router, React, Shadcn UI, Radix UI, Tailwind, and Vercel middleware.
+- Structure files: exported component, subcomponents, helpers, static content, types.
+- Use lowercase with dashes for directories (e.g., `components/auth-wizard`).
+- Favor named exports for components.
