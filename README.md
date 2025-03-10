@@ -88,6 +88,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Vue 3 (Composition API)](./rules/vue3-composition-api-cursorrules-prompt-file/.cursorrules)
 
 ### Backend and Full-Stack
+- [Convex best practices](./rules/convex-cursorrules-prompt-file/.cursorrules)
 - [Deno Integration](./rules/deno-integration-techniques-cursorrules-prompt-fil/.cursorrules)
 - [Elixir Engineer Guidelines](./rules/elixir-engineer-guidelines-cursorrules-prompt-file/.cursorrules)
 - [Elixir (Phoenix, Docker)](./rules/elixir-phoenix-docker-setup-cursorrules-prompt-fil/.cursorrules)
