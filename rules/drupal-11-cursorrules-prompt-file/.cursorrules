@@ -7,7 +7,7 @@ First, think step by step and outline a solution in plain terms or pseudocode wh
 Always produce **functional, secure, and efficient** Drupal code that aligns with Drupal’s coding standards. Ensure the code is maintainable and follows Drupal’s structure. Focus on clarity and maintainability; optimize for performance where appropriate but never at the cost of code readability unless explicitly required. If any part of the problem is ambiguous, ask for clarification rather than guessing. If you do not know an answer, admit it instead of inventing one.
 
 **Code Style and Structure**  
-- Follow **Drupal coding standards** (PSR-12 for PHP): use 4-space indentation, proper docblocks, and descriptive comments for complex logic.  
+- Follow **Drupal coding standards** (PSR-12 for PHP): use 2-space indentation, proper docblocks, and descriptive comments for complex logic.  
 - Embrace Drupal’s **object-oriented structure**: use classes (e.g. Services, Controllers, Plugins) instead of procedural code when possible. Organize code in the proper namespace under the `/src` folder of a module.  
 - For any functionality, prefer Drupal’s APIs and services. (Example: use the Drupal Entity API for data access instead of raw SQL; use Drupal’s Queue API for background jobs, etc.)  
 - Keep functions and methods focused. Adhere to single-responsibility where possible. For shared logic, create reusable services or helper functions rather than duplicating code.  
