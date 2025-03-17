@@ -44,6 +44,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
     - [Build Tools and Development](#build-tools-and-development)
     - [Language-Specific](#language-specific)
     - [Other](#other)
+    - [Utilities](#utilities)
   - [Directories](#directories)
   - [How to Use](#how-to-use)
   - [Contributing](#contributing)
@@ -88,6 +89,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Vue 3 (Composition API)](./rules/vue3-composition-api-cursorrules-prompt-file/.cursorrules)
 
 ### Backend and Full-Stack
+- [Convex best practices](./rules/convex-cursorrules-prompt-file/.cursorrules)
 - [Deno Integration](./rules/deno-integration-techniques-cursorrules-prompt-fil/.cursorrules)
 - [Elixir Engineer Guidelines](./rules/elixir-engineer-guidelines-cursorrules-prompt-file/.cursorrules)
 - [Elixir (Phoenix, Docker)](./rules/elixir-phoenix-docker-setup-cursorrules-prompt-fil/.cursorrules)
@@ -145,10 +147,14 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Testing
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules)
 
+### Hosting and Deployments
+- [Netlify](./rules/netlify-official-cursorrules-prompt-file/.cursorrules)
+
 ### Build Tools and Development
 - [Chrome Extension (JavaScript/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules)
 - [GitHub Code Quality](./rules/github-code-quality-cursorrules-prompt-file/.cursorrules)
 - [GitHub Instructions](./rules/github-cursorrules-prompt-file-instructions/.cursorrules)
+- [Git Commit Messages](./rules/git-conventional-commit-messages/.cursorrules)
 - [Kubernetes (MkDocs Documentation)](./rules/kubernetes-mkdocs-documentation-cursorrules-prompt/.cursorrules)
 - [Linux (NVIDIA CUDA, Python)](./rules/linux-nvidia-cuda-python-cursorrules-prompt-file/.cursorrules)
 - [Optimize (DRY, SOLID Principles)](./rules/optimize-dry-solid-principles-cursorrules-prompt-f/.cursorrules)
@@ -199,6 +205,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Next.js (Type LLM)](./rules/next-type-llm/.cursorrules)
 - [Unity (C#)](./rules/unity-cursor-ai-c-cursorrules-prompt-file/.cursorrules)
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules)
+
+### Utilities
+- [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
 ## Directories
 - [CursorList](https://cursorlist.com)

@@ -1,0 +1,37 @@
+---
+description: Defines the core mechanics of the game, including map generation, resource management, and nation interactions. This rule focuses on the overall structure of the game world and gameplay loop.
+globs: core_mechanics.py
+---
+- The game is based on a 10x10 grid, each square has a 10x10 grid inside of it. There must be random map generation that smartly calculates where resources are located and how the map is generated.
+- The player does not control anything in the game; the player is simply an observer. Therefore, there should be logs for almost everything in the game, and it should be turn-based.
+- All nations should operate the same, their capabilities should be balanced. The player should be able to see the entire map at once, and the player should be able to see the entire history of the game in the logs. There should be a way to zoom in on a specific square to see more detail.
+- Nations should be able to trade resources with each other. Nations should be able to go to war with each other. Nations should be able to make peace with each other.
+- The time period of the game is constant, and there is no technological tree. It takes place in ancient times.
+- Nations should spawn a minimum distance away from each other.
+- The entire game should be colored ASCII-based in terms of graphics.
+- There should be neutral land that can be claimed by any nation. Neutral land should be randomly generated each game.
+- There should be a way to view the current owner of a square. There should be a way to view the current resources of a square.
+- Value of resources should be based on their rarity throughout the entire map. Nations can use gold to either buy resources or armies.
+- Armies are the primary way that nations can expand their territory.
+- There should be no talent tree or technology tree; nations should be balanced without the need for such a tree.
+- Population should collect in towns and cities.
+- Roads should connect towns and cities.
+- Resources are spread throughout nations through roads.
+- Nations attempt to spread their resources evenly over their territory.
+- Gold is not omnipresent and must be transported using roads to the location where it is spent to build armies or develop land.
+- Oceans should be randomly generated to separate continents.
+- Rivers should be randomly generated to connect oceans and flow across the map vertically or horizontally.
+- Rivers are a food source for the land, and farms can be built on them.
+- Mountains should be randomly generated throughout the map.
+- Mountains should be impassable by armies.
+- Mines in mountains provide metal at 20% efficiency.
+- Nations should expand towards resources that they have a low amount of and away from resources that they have a high amount of.
+- Armies should spawn at the town or city that issued the order.
+- Towns can only spawn a max level 3 army.
+- Towns have a 3-square radius for gathering resources.
+- As towns grow, their radius grows; there are 3 levels of towns and cities.
+- A Nation's largest city is its capital.
+- Population can only live in towns and cities.
+- Resources should be spread throughout the map in a way that encourages nations to expand into new squares.
+- Armies can travel across oceans at .25x speed.
+- Armies can travel on rivers to move across the map at 3x speed.

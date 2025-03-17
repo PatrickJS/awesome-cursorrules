@@ -1,0 +1,5 @@
+---
+description: This rule enforces the use of functional components with hooks in React components within the src/components directory.
+globs: src/components/**/*.tsx
+---
+- Always use functional components with hooks instead of class components.

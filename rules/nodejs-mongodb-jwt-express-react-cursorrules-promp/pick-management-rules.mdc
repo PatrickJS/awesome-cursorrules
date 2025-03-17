@@ -1,0 +1,6 @@
+---
+description: Defines how users manage their picks for each entry, including update deadlines.
+globs: */pick-management/**/*.*
+---
+- Users make Picks for each Entry separately.
+- Picks can be updated until the deadline (game start or 1PM Sunday of the current week of the pick).

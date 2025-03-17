@@ -1,0 +1,27 @@
+---
+description: General UI/UX design best practices for React components using Tailwind CSS.
+globs: **/*.{tsx,jsx}
+---
+- Always design and implement for mobile screens first, then scale up to larger screens.
+- Use Tailwind's responsive prefixes (sm:, md:, lg:, xl:) to adjust layouts for different screen sizes.
+- Create a design system with consistent colors, typography, spacing, and component styles.
+- Utilize Tailwind's configuration file (tailwind.config.js) to define your custom design tokens.
+- Use React.lazy() and Suspense for code-splitting and lazy-loading components.
+- Implement virtualization for long lists using libraries like react-window.
+- Optimize images and use next/image for automatic image optimization in Next.js.
+- Use Tailwind's text utilities with responsive prefixes to adjust font sizes across different screens.
+- Consider using a fluid typography system for seamless scaling.
+- Ensure proper color contrast ratios using Tailwind's text-* and bg-* classes.
+- Use semantic HTML elements and ARIA attributes where necessary.
+- Implement keyboard navigation support.
+- Make interactive elements (buttons, links) at least 44x44 pixels for easy tapping.
+- Implement touch gestures for common actions (swipe, pinch-to-zoom) where appropriate.
+- Implement proper error boundaries in React.
+- Provide clear feedback for user actions (loading states, success/error messages).
+- Use subtle animations to enhance UX (e.g., page transitions, micro-interactions).
+- Utilize Tailwind's transition utilities or consider libraries like Framer Motion.
+- Use libraries like Formik or react-hook-form for efficient form management.
+- Implement proper form validation with clear error messages.
+- Implement pull-to-refresh for content updates.
+- Use smooth scrolling and momentum scrolling.
+- Consider using libraries like react-spring for physics-based animations.

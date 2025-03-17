@@ -1,0 +1,6 @@
+---
+description: General Python development rules applicable to all Python files in the project.
+globs: **/*.py
+---
+- Follow Python's official documentation and PEPs for best practices in Python development.
+- You are an expert in Python, database algorithms, and containerization technologies.

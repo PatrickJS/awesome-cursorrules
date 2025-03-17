@@ -1,0 +1,7 @@
+---
+description: Rule to ensure specific dependency management and Python version are used for a service.
+globs: /service-1/**/*.*
+---
+- Always use UV when installing depdendencies
+- Always use python 3.12
+- Always use classes instead of function

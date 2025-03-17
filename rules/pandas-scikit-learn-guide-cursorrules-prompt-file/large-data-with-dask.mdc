@@ -1,0 +1,5 @@
+---
+description: Specific optimization strategies for Python scripts working with larger-than-memory datasets via Dask.
+globs: **/dask_analysis/*.py
+---
+- Consider using dask for larger-than-memory datasets.

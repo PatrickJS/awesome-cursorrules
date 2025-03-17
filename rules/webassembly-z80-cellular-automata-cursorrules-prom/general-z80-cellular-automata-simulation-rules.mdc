@@ -1,0 +1,21 @@
+---
+description: General rules and concepts for the z80 cellular automata simulation project, focusing on the environmental region grid system. This rule introduces the key concepts and overall purpose.
+globs: /**/*_z80_cellular_automata*.*
+---
+- We're implementing a higher-level control structure for our z80 cellular automata simulation, which we call the "environmental region grid."
+- Key Concepts:
+  - Soup Cells: The individual units of our cellular automata, which follow basic rules and interact with their neighbors.
+  - Regions: Larger areas that encompass multiple soup cells. Each region can have unique properties that influence the behavior of the soup cells within it.
+  - Environmental Region Grid: A grid overlaid on top of the soup cell grid, dividing the simulation space into discrete regions. This grid can be 4x4, 8x8, or 16x16, allowing for different levels of granularity.
+  - Region Parameters: Each region has a set of adjustable parameters that affect the soup cells within it.
+    - Obstacle (A region that blocks the movement of soup cells)
+    - Directional influence (biasing cell interactions in specific directions)
+    - Randomness factor (introducing more or less chaos in cell behavior)
+    - Temperature (affecting overall activity levels)
+    - Energy levels (influencing the likelihood of certain cell states or interactions)
+    - Other custom parameters as needed
+  - Dynamic Influence: The region parameters dynamically modify the behavior of soup cells, creating areas of distinct characteristics within the larger simulation.
+  - User Interaction: Users can interact with the simulation by adjusting region parameters in real-time, allowing for on-the-fly modification of the simulation's behavior.
+  - Visualization: The region grid and its effects are visually represented, allowing users to see the influence of their changes on the simulation.
+- Purpose: This system adds a new layer of complexity and control to the cellular automata simulation. It allows for the creation of diverse environments within a single simulation, enabling users to explore how different regional properties affect the emergent behavior of the cellular automata.
+- By implementing this region grid system, we're providing a powerful tool for users to experiment with large-scale influences on cellular automata behavior, potentially leading to new insights and interesting emergent phenomena.
