@@ -1,0 +1,7 @@
+---
+description: Rules for key conventions, including nuqs for URL state management and Web Vitals optimization.
+globs: **/*.{ts,tsx,js,jsx}
+---
+- Use 'nuqs' for URL search parameter state management.
+- Optimize Web Vitals (LCP, CLS, FID).
+- Limit 'use client': Follow Next.js docs for Data Fetching, Rendering, and Routing.

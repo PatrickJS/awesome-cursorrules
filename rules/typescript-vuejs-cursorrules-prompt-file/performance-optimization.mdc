@@ -1,0 +1,8 @@
+---
+description: Rules for optimizing application performance.
+globs: **/*.{js,ts,jsx,tsx,vue}
+---
+- Optimize images and other assets for faster loading times.
+- Use lazy loading to improve initial page load performance.
+- Minimize the number of HTTP requests.
+- Avoid unnecessary DOM manipulations.

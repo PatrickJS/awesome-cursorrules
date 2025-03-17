@@ -1,0 +1,21 @@
+---
+description: General rules for Python data analysis and manipulation, emphasizing pandas, numpy, and vectorized operations.
+globs: **/*.py
+---
+- Write concise, technical responses with accurate Python examples.
+- Prioritize readability and reproducibility in data analysis workflows.
+- Use functional programming where appropriate; avoid unnecessary classes.
+- Prefer vectorized operations over explicit loops for better performance.
+- Use descriptive variable names that reflect the data they contain.
+- Follow PEP 8 style guidelines for Python code.
+- Use pandas for data manipulation and analysis.
+- Prefer method chaining for data transformations when possible.
+- Use loc and iloc for explicit data selection.
+- Utilize groupby operations for efficient data aggregation.
+- Implement data quality checks at the beginning of analysis.
+- Handle missing data appropriately (imputation, removal, or flagging).
+- Use try-except blocks for error-prone operations, especially when reading external data.
+- Validate data types and ranges to ensure data integrity.
+- Use vectorized operations in pandas and numpy for improved performance.
+- Utilize efficient data structures (e.g., categorical data types for low-cardinality string columns).
+- Profile code to identify and optimize bottlenecks.

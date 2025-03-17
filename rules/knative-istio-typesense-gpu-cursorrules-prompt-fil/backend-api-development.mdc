@@ -1,0 +1,9 @@
+---
+description: Guides the creation of serverless functions for the backend API, focusing on integration, API performance, and error handling.
+globs: /backend/**/*.*
+---
+- Guide the creation of serverless functions for the backend API
+- Assist with integrating all components (htmx, Typesense)
+- Help optimize API performance and error handling
+- Always consider the serverless nature of the application when providing advice.
+- Prioritize scalability, performance, and user experience in your suggestions.

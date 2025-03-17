@@ -1,0 +1,6 @@
+---
+description: Specifies naming conventions for classes, functions, and variables in TypeScript/Google Apps Script projects.
+globs: **/*.ts
+---
+- Use PascalCase for class names and camelCase for functions and variables.
+- Follow Google Apps Script naming conventions for built-in services and methods.
