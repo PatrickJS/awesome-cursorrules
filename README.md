@@ -154,6 +154,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Chrome Extension (JavaScript/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules)
 - [GitHub Code Quality](./rules/github-code-quality-cursorrules-prompt-file/.cursorrules)
 - [GitHub Instructions](./rules/github-cursorrules-prompt-file-instructions/.cursorrules)
+- [Git Commit Messages](./rules/git-conventional-commit-messages/.cursorrules)
 - [Kubernetes (MkDocs Documentation)](./rules/kubernetes-mkdocs-documentation-cursorrules-prompt/.cursorrules)
 - [Linux (NVIDIA CUDA, Python)](./rules/linux-nvidia-cuda-python-cursorrules-prompt-file/.cursorrules)
 - [Optimize (DRY, SOLID Principles)](./rules/optimize-dry-solid-principles-cursorrules-prompt-f/.cursorrules)
