@@ -145,6 +145,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Testing
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules)
 
+### Hosting and Deployments
+- [Netlify](./rules/netlify-official-cursorrules-prompt-file/.cursorrules)
+
 ### Build Tools and Development
 - [Chrome Extension (JavaScript/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules)
 - [GitHub Code Quality](./rules/github-code-quality-cursorrules-prompt-file/.cursorrules)
