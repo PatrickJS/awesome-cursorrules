@@ -44,6 +44,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
     - [Build Tools and Development](#build-tools-and-development)
     - [Language-Specific](#language-specific)
     - [Other](#other)
+    - [Utilities](#utilities)
   - [Directories](#directories)
   - [How to Use](#how-to-use)
   - [Contributing](#contributing)
@@ -203,6 +204,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Next.js (Type LLM)](./rules/next-type-llm/.cursorrules)
 - [Unity (C#)](./rules/unity-cursor-ai-c-cursorrules-prompt-file/.cursorrules)
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules)
+
+### Utilities
+- [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
 ## Directories
 - [CursorList](https://cursorlist.com)
