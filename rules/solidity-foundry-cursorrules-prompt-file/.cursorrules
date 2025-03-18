@@ -40,7 +40,7 @@ Solidity Best Practices
 - Use OpenZeppelin's SafeERC20 for interacting with ERC20 tokens.
 - Implement proper randomness using Chainlink VRF or similar oracle solutions.
 - Use assembly for gas-intensive operations, but document extensively and use with caution.
-  - If [Solady](https://github.com/Vectorized/solady) has an implementation built already, use that instead of writing assembly from scratch.
+  - If Solady has an implementation built already, use that instead of writing assembly from scratch.
 - Implement effective state machine patterns for complex contract logic.
 - Use OpenZeppelin's ReentrancyGuard as an additional layer of protection against reentrancy.
 - Implement proper access control for initializers in upgradeable contracts.
@@ -109,42 +109,34 @@ Documentation
 
 Dependencies
 
+- Use OpenZeppelin (openzeppelin/openzeppelin-contracts) as the main source of dependencies.
+- Use Solady (vectorized/solady) when gas optimization is crucial.
 - Ensure that any libraries used are installed with forge, and remappings are set.
 - Place remappings in `foundry.toml` instead of a `remappings.txt` file.
 
-Configuration
+Configuring Environment
 
-- The following `foundry.toml` values can be used to quickly configure the environment:
+One or more of the following profiles can be added to `foundry.toml` as needed for the project.
+
+- When via_ir is required:
 
 ```
-[profile.default]
-# update solc values if needed for compatability with older contracts
-auto_detect_solc = false
-solc = '0.8.20'
-src = "src"
-out = "out"
-libs = ["lib"]
-
-# don't pollute bytecode with metadata
-bytecode_hash = 'none'
-cbor_metadata = false
-
-[rpc_endpoints]
-sepolia = "${SEPOLIA_RPC_URL}"
-mainnet = "${ETHEREUM_RPC_URL}"
-
-[etherscan]
-ethereum = { key = "${ETHERSCAN_API_KEY}"}
-
 # via_ir pipeline is very slow - use a separate profile to pre-compile and then use vm.getCode to deploy
 [profile.via_ir]
 via_ir = true
 # do not compile tests when compiling via-ir
 test = 'src'
 out = 'via_ir-out'
+```
 
-[profile.gas]
-optimizer = true
-optimizer_runs = 1000000
-via_ir = true
+- When deterministic deployment is required:
+
+```
+[profile.deterministic]
+# ensure that block number + timestamp are realistic when running tests
+block_number = 17722462
+block_timestamp = 1689711647
+# don't pollute bytecode with metadata
+bytecode_hash = 'none'
+cbor_metadata = false
 ```
