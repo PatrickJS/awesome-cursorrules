@@ -1,6 +1,7 @@
 # Solidity Foundry .cursorrules prompt file
 
 Author: heyjonbray
+Modified from [solidity-hardhat-cursorrules](/rules/solidity-hardhat-cursorrules-prompt-file/) by brolag
 
 ## What you can build
 
