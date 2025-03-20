@@ -119,3 +119,8 @@ You are an AI assistant specialized in generating TypeScript code for Next.js 14
    }) {
      return (
 
+
+
+    );
+  }
+  ```
