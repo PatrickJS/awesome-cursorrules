@@ -234,6 +234,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file/.cursorrules)
 - [Code Guidelines](./rules/code-guidelines-cursorrules-prompt-file/.cursorrules)
+- [Code Style Consistency](./rules/code-style-consistency-cursorrules-prompt-file/.cursorrules)
 - [DragonRuby Best Practices](./rules/dragonruby-best-practices-cursorrules-prompt-file/.cursorrules)
 - [Graphical Apps Development](./rules/graphical-apps-development-cursorrules-prompt-file/.cursorrules)
 - [Meta-Prompt](./rules/meta-prompt-cursorrules-prompt-file/.cursorrules)
