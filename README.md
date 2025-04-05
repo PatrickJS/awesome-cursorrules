@@ -174,6 +174,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Python (GitHub Setup)](./rules/python-github-setup-cursorrules-prompt-file/.cursorrules)
 - [Tauri (Svelte, TypeScript Guide)](./rules/tauri-svelte-typescript-guide-cursorrules-prompt-f/.cursorrules)
 - [TypeScript Code Convention](./rules/typescript-code-convention-cursorrules-prompt-file/.cursorrules)
+- [VSCode Extension (Electron/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules)
 
 ### Language-Specific
 
