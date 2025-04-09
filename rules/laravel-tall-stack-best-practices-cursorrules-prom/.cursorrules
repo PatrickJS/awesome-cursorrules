@@ -16,7 +16,7 @@ PHP and Laravel Core
 - Use strict typing: declare(strict_types=1);
 - Utilize Laravel's built-in features and helpers when possible.
 - Follow Laravel's directory structure and naming conventions.
-- Use lowercase with dashes for directories (e.g., app/Http/Controllers).
+- Use PascalCase for class-containing directories (e.g., app/Http/Controllers).
 - Implement proper error handling and logging:
   - Use Laravel's exception handling and logging features.
   - Create custom exceptions when necessary.
