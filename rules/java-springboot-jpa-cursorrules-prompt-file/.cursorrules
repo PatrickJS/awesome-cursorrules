@@ -53,7 +53,7 @@ RestController:
 
 1. Must annotate controller classes with @RestController.
 2. Must specify class-level API routes with @RequestMapping, e.g. ("/api/user").
-3. Class methods must use best practice HTTP method annotations, e.g, create = @postMapping("/create"), etc.
+3. Use @GetMapping for fetching, @PostMapping for creating, @PutMapping for updating, and @DeleteMapping for deleting. Keep paths resource-based (e.g., '/users/{id}'), avoiding verbs like '/create', '/update', '/delete', '/get', or '/edit'
 4. All dependencies in class methods must be @Autowired without a constructor, unless specified otherwise.
 5. Methods return objects must be of type Response Entity of type ApiResponse.
 6. All class method logic must be implemented in a try..catch block(s).
