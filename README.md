@@ -96,6 +96,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [Convex best practices](./rules/convex-cursorrules-prompt-file/.cursorrules)
 - [Deno Integration](./rules/deno-integration-techniques-cursorrules-prompt-fil/.cursorrules)
+- [Drupal 11](./rules/drupal-11-cursorrules-promt-file/.cursorrules)
 - [Elixir Engineer Guidelines](./rules/elixir-engineer-guidelines-cursorrules-prompt-file/.cursorrules)
 - [Elixir (Phoenix, Docker)](./rules/elixir-phoenix-docker-setup-cursorrules-prompt-fil/.cursorrules)
 - [ES Module (Node.js)](./rules/es-module-nodejs-guidelines-cursorrules-prompt-fil/.cursorrules)
