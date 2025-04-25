@@ -1,0 +1,12 @@
+---
+description: Go Temporal DSL Workflow & Activity Rules (Self-Contained)
+alwaysApply: false
+globs:
+  - "**/*.go"
+rules:
+  - index.mdc
+  - guide.mdc
+  - workflow.mdc
+  - activities.mdc
+  - example-usage.mdc
+---
