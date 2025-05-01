@@ -120,6 +120,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Python (FastAPI Scalable API)](./rules/python-fastapi-scalable-api-cursorrules-prompt-fil/.cursorrules)
 - [Python (Flask JSON Guide)](./rules/python-flask-json-guide-cursorrules-prompt-file/.cursorrules)
 - [TypeScript (NestJS Best Practices)](./rules/typescript-nestjs-best-practices-cursorrules-promp/.cursorrules)
+- [TYPO3 CMS Extension](./rules/typo3cms-extension-cursorrules-prompt-file/.cursorrules)
 - [WordPress (PHP, Guzzle, Gutenberg)](./rules/wordpress-php-guzzle-gutenberg-cursorrules-prompt-/.cursorrules)
 - [WordPress (macOS)](./rules/cursorrules-cursor-ai-wordpress-draft-macos-prompt/.cursorrules)
 - [Python LLM & ML Workflow](./rules/python-llm-ml-workflow-cursorrules-prompt-file/.cursorrules)
