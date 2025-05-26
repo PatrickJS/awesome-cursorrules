@@ -53,7 +53,7 @@ jobs:
         
         # Run the security scan on the current directory using the built tool
         echo "Running scan with $VIBECONDOM_TOOL_DIR/vibecondom..."
-        "$VIBECONDOM_TOOL_DIR/vibecondom" -mode=local -target "." -log-level debug -exclude-files "README.md"
+        "$VIBECONDOM_TOOL_DIR/vibecondom" -mode=local -target "." -log-level warn -exclude-files "README.md"
         
         # Check if any issues were found
         exit_code=$?
