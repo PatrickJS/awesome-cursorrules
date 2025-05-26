@@ -13,7 +13,7 @@ jobs:
   security-scan:
     name: Run Vibecondom Security Scan
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -53,7 +53,7 @@ jobs:
         
         # Run the security scan on the current directory using the built tool
         echo "Running scan with $VIBECONDOM_TOOL_DIR/vibecondom..."
-        "$VIBECONDOM_TOOL_DIR/vibecondom" -mode=local -target "." -log-level warn -exclude-files "README.md"
+        "$VIBECONDOM_TOOL_DIR/vibecondom" -mode=local -target "." -log-level warn -exclude-files "README.md" -decode-base64
         
         # Check if any issues were found
         exit_code=$?
@@ -73,7 +73,7 @@ jobs:
       env:
         # Enable debug output
         RUNNER_DEBUG: 1
-
+        
         # Save output to a file
       working-directory: ${{ github.workspace }}
 
