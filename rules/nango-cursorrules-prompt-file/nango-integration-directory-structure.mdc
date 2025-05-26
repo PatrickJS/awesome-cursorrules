@@ -1,0 +1,72 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Integration Directory Structure
+
+Your integration should follow this directory structure for consistency and maintainability:
+
+```
+nango-integrations/
+├── nango.yaml              # Main configuration file
+├── models.ts               # Auto-generated models from nango.yaml
+├── schema.zod.ts          # Generated zod schemas for validation
+└── ${integrationName}/
+    ├── types.ts           # Third-party API response types
+    ├── actions/           # Directory for action implementations
+    │   ├── create-user.ts
+    │   ├── update-user.ts
+    │   └── delete-user.ts
+    ├── syncs/             # Directory for sync implementations
+    │   ├── users.ts
+    │   └── teams.ts
+    └── mappers/          # Shared data transformation functions
+        ├── to-user.ts
+        └── to-team.ts
+```
+
+## Key Components
+
+1. **Root Level Files**:
+   - `nango.yaml`: Main configuration file for all integrations
+   - `models.ts`: Auto-generated models from nango.yaml. If this doesn't exist or you have updated the `nango.yaml` be sure to run `npx nango generate`
+   - `schema.zod.ts`: Generated validation schemas
+
+2. **Integration Level Files**:
+   - `types.ts`: Third-party API response types specific to the integration
+
+3. **Actions Directory**:
+   - One file per action
+   - Named after the action (e.g., `create-user.ts`, `update-user.ts`)
+   - Each file exports a default `runAction` function
+
+4. **Syncs Directory**:
+   - One file per sync
+   - Named after the sync (e.g., `users.ts`, `teams.ts`)
+   - Each file exports a default `fetchData` function
+
+5. **Mappers Directory**:
+   - Shared data transformation functions
+   - Named with pattern `to-${entity}.ts`
+   - Used by both actions and syncs
+
+## Running Tests
+
+Test scripts directly against the third-party API using dryrun:
+
+```bash
+npx nango dryrun ${scriptName} ${connectionId} --integration-id ${INTEGRATION} --auto-confirm
+```
+
+Example:
+```bash
+npx nango dryrun settings g --integration-id google-calendar --auto-confirm
+```
+
+## Dryrun Options
+
+- `--auto-confirm`: Skip prompts and show all output
+```bash
+npx nango dryrun settings g --auto-confirm --integration-id google-calendar
+```

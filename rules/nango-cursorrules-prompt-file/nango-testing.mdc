@@ -1,0 +1,125 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Testing
+
+In order to test you need a valid connectionId. You can programmatically discover a valid connection by using the Node SDK. Here's a complete example of finding Salesforce connections:
+
+1. First, create a script (e.g., `find-connections.js`):
+
+```typescript
+import { Nango } from '@nangohq/node';
+import * as dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
+
+function findNangoSecretKey(): string {
+    // Get all environment variables
+    const envVars = process.env;
+    
+    // Find all NANGO_SECRET_KEY variables
+    const nangoKeys = Object.entries(envVars)
+        .filter(([key]) => key.startsWith('NANGO_SECRET_KEY'))
+        .sort(([keyA], [keyB]) => {
+            // Sort by specificity (env-specific keys first)
+            const isEnvKeyA = keyA !== 'NANGO_SECRET_KEY';
+            const isEnvKeyB = keyB !== 'NANGO_SECRET_KEY';
+            if (isEnvKeyA && !isEnvKeyB) return -1;
+            if (!isEnvKeyA && isEnvKeyB) return 1;
+            return keyA.localeCompare(keyB);
+        });
+
+    if (nangoKeys.length === 0) {
+        throw new Error('No NANGO_SECRET_KEY environment variables found');
+    }
+
+    // Use the first key after sorting
+    const [key, value] = nangoKeys[0];
+    console.log(`Using secret key: ${key}`);
+    return value;
+}
+
+function isValidConnection(connection: any): boolean {
+    // Connection is valid if:
+    // 1. No errors array exists, or
+    // 2. Errors array is empty, or
+    // 3. No errors with type "auth" exist
+    if (!connection.errors) return true;
+    if (connection.errors.length === 0) return true;
+    return !connection.errors.some(error => error.type === 'auth');
+}
+
+async function findConnections(providerConfigKey: string) {
+    const secretKey = findNangoSecretKey();
+    
+    const nango = new Nango({ 
+        secretKey 
+    });
+
+    // List all connections
+    const { connections } = await nango.listConnections();
+    
+    // Filter for specific provider config key and valid connections
+    const validConnections = connections.filter(conn => 
+        conn.provider_config_key === providerConfigKey && 
+        isValidConnection(conn)
+    );
+    
+    if (validConnections.length === 0) {
+        console.log(`No valid connections found for integration: ${providerConfigKey}`);
+        return;
+    }
+
+    console.log(`Found ${validConnections.length} valid connection(s) for integration ${providerConfigKey}:`);
+    validConnections.forEach(conn => {
+        console.log(`- Connection ID: ${conn.connection_id}`);
+        console.log(`  Provider: ${conn.provider}`);
+        console.log(`  Created: ${conn.created}`);
+        if (conn.errors?.length > 0) {
+            console.log(`  Non-auth Errors: ${conn.errors.length}`);
+        }
+        console.log('---');
+    });
+}
+
+// Find connections for the salesforce integration
+findConnections('salesforce').catch(console.error);
+```
+
+2. Make sure your `.env` file contains at least one secret key:
+```env
+# Environment-specific keys take precedence
+NANGO_SECRET_KEY_DEV=your_dev_secret_key_here
+NANGO_SECRET_KEY_STAGING=your_staging_secret_key_here
+# Fallback key
+NANGO_SECRET_KEY=your_default_secret_key_here
+```
+
+3. Run the script:
+```bash
+node find-connections.js
+```
+
+Example output for the salesforce integration:
+```
+Using secret key: NANGO_SECRET_KEY_DEV
+Found 1 valid connection(s) for integration salesforce:
+- Connection ID: 3374a138-a81c-4ff9-b2ed-466c86b3554d
+  Provider: salesforce
+  Created: 2025-02-18T08:41:24.156+00:00
+  Non-auth Errors: 1
+---
+```
+
+Each connection in the response includes:
+- `connection_id`: The unique identifier you'll use for testing (e.g., "3374a138-a81c-4ff9-b2ed-466c86b3554d")
+- `provider`: The API provider (e.g., 'salesforce')
+- `provider_config_key`: The integration ID you searched for (e.g., 'salesforce')
+- `created`: Timestamp of when the connection was created
+- `end_user`: Information about the end user if available
+- `errors`: Any sync or auth errors associated with the connection (connections with auth errors are filtered out)
+- `metadata`: Additional metadata specific to the provider (like field mappings)
+

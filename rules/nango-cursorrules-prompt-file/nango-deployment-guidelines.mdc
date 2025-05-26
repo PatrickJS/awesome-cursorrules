@@ -1,0 +1,46 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+
+# Deploying Integrations
+
+Once your integration is complete and tested, you can deploy it using the Nango CLI:
+
+```bash
+npx nango deploy <environment>
+```
+
+## Deployment Options
+
+- `--auto-confirm`: Skip all confirmation prompts
+- `--debug`: Run CLI in debug mode with verbose logging
+- `-v, --version [version]`: Tag this deployment with a version (useful for rollbacks)
+- `-s, --sync [syncName]`: Deploy only a specific sync
+- `-a, --action [actionName]`: Deploy only a specific action
+- `-i, --integration [integrationId]`: Deploy all scripts for a specific integration
+- `--allow-destructive`: Allow destructive changes without confirmation (use with caution)
+
+## Examples
+
+Deploy everything to production:
+```bash
+npx nango deploy production
+```
+
+Deploy a specific sync to staging:
+```bash
+npx nango deploy staging -s contacts
+```
+
+Deploy an integration with version tag:
+```bash
+npx nango deploy production -i salesforce -v 1.0.0
+```
+
+Deploy with auto-confirmation:
+```bash
+npx nango deploy staging --auto-confirm
+```
+
