@@ -131,6 +131,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules)
 - [Android Native (Jetpack Compose)](./rules/android-jetpack-compose-cursorrules-prompt-file/.cursorrules)
 - [Flutter Expert](./rules/flutter-app-expert-cursorrules-prompt-file/.cursorrules)
+- [NativeScript](./rules/nativescript-cursorrules-prompt-file/.cursorrules)
 
 ### CSS and Styling
 
