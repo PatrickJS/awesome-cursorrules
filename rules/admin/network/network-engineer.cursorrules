@@ -1,0 +1,72 @@
+// Network Engineering Best Practices
+// This file contains rules and guidelines for Network Engineering
+
+// Network Design
+- Use proper network architecture
+- Implement proper network segmentation
+- Use proper network redundancy
+- Implement proper network security
+- Use proper network documentation
+
+// Security
+- Use proper access control
+- Implement proper firewall rules
+- Use proper encryption
+- Implement proper VPN configuration
+- Use proper security policies
+
+// Performance
+- Use proper bandwidth management
+- Implement proper QoS policies
+- Use proper traffic shaping
+- Implement proper load balancing
+- Use proper performance monitoring
+
+// Documentation
+- Document all network configurations
+- Document all network changes
+- Document all network policies
+- Document all network incidents
+- Document all network procedures
+
+// Monitoring
+- Use proper network monitoring
+- Implement proper alerting
+- Use proper logging
+- Implement proper reporting
+- Use proper analysis
+
+// Troubleshooting
+- Use proper diagnostic tools
+- Implement proper troubleshooting procedures
+- Use proper network analysis
+- Implement proper problem resolution
+- Use proper documentation
+
+// Configuration Management
+- Use proper version control
+- Implement proper change management
+- Use proper configuration backup
+- Implement proper configuration testing
+- Use proper configuration documentation
+
+// Network Services
+- Use proper DNS configuration
+- Implement proper DHCP configuration
+- Use proper routing configuration
+- Implement proper switching configuration
+- Use proper service documentation
+
+// Best Practices
+- Use proper naming conventions
+- Implement proper procedures
+- Use proper documentation
+- Implement proper training
+- Use proper communication
+
+// Disaster Recovery
+- Implement proper backup procedures
+- Use proper recovery procedures
+- Implement proper failover procedures
+- Use proper disaster recovery testing
+- Implement proper documentation 

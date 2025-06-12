@@ -12,21 +12,7 @@ A curated list of awesome .cursorrules files for enhancing your Cursor AI experi
 
 ## Why .cursorrules?
 
-`.cursorrules` is a powerful feature in Cursor AI that allows developers to define project-specific instructions for the AI. Here's why you might want to use it:
-
-1. **Customized AI Behavior**: `.cursorrules` files help tailor the AI's responses to your project's specific needs, ensuring more relevant and accurate code suggestions.
-
-2. **Consistency**: By defining coding standards and best practices in your `.cursorrules` file, you can ensure that the AI generates code that aligns with your project's style guidelines.
-
-3. **Context Awareness**: You can provide the AI with important context about your project, such as commonly used methods, architectural decisions, or specific libraries, leading to more informed code generation.
-
-4. **Improved Productivity**: With well-defined rules, the AI can generate code that requires less manual editing, speeding up your development process.
-
-5. **Team Alignment**: For team projects, a shared `.cursorrules` file ensures that all team members receive consistent AI assistance, promoting cohesion in coding practices.
-
-6. **Project-Specific Knowledge**: You can include information about your project's structure, dependencies, or unique requirements, helping the AI to provide more accurate and relevant suggestions.
-
-By creating a `.cursorrules` file in your project's root directory, you can leverage these benefits and enhance your coding experience with Cursor AI.
+.cursorrules files are repository-specific "Rules for AI" that help Cursor AI understand your project's context, coding standards, and best practices. These rules are automatically appended to your global "Rules for AI" settings when working in a repository.
 
 ## Contents
 
@@ -44,6 +30,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
     - [Hosting and Deployments](#hosting-and-deployments)
     - [Build Tools and Development](#build-tools-and-development)
     - [Language-Specific](#language-specific)
+    - [DevOps and Administration](#devops-and-administration)
     - [Other](#other)
     - [Utilities](#utilities)
   - [Directories](#directories)
@@ -210,6 +197,22 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript (React)](./rules/typescript-react-cursorrules-prompt-file/.cursorrules)
 - [TypeScript (Clasp App Script)](./rules/typescript-clasp-cursorrules-prompt-file/.cursorrules)
 - [C++ Programming Guidelines](./rules/cpp-programming-guidelines-cursorrules-prompt-file/.cursorrules)
+
+### DevOps and Administration
+
+#### DevOps
+- [DevOps Engineer](./rules/devops/devops-engineer.cursorrules) - Best practices for DevOps engineering tasks
+
+#### Scripts
+- [PowerShell](./rules/scripts/powershell/powershell-script.cursorrules) - Best practices for PowerShell scripting
+- [PowerCLI](./rules/scripts/powercli/powercli-script.cursorrules) - Best practices for PowerCLI scripting
+- [POSIX (Bash)](./rules/scripts/posix/bash-script.cursorrules) - Best practices for POSIX bash scripting
+- [POSIX (Zsh)](./rules/scripts/posix/zsh-script.cursorrules) - Best practices for POSIX zsh scripting
+
+#### Administration
+- [VMware Admin](./rules/admin/vmware/vmware-admin.cursorrules) - Best practices for VMware administration
+- [Network Engineer](./rules/admin/network/network-engineer.cursorrules) - Best practices for Network Engineering
+- [System Engineer](./rules/admin/system/system-engineer.cursorrules) - Best practices for System Engineering
 
 ### Other
 

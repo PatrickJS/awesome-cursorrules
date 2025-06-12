@@ -1,0 +1,80 @@
+// PowerShell Script Best Practices
+
+// This file contains rules and guidelines for PowerShell scripting
+
+// Script Structure
+- Use proper script headers with metadata
+- Implement error handling with try-catch blocks
+- Use functions for modular code
+- Implement logging
+- Use proper indentation and formatting
+
+// Naming Conventions
+- Use Verb-Noun format for cmdlets
+- Use PascalCase for function names
+- Use camelCase for variables
+- Use descriptive names
+- Follow PowerShell naming conventions
+
+// Error Handling
+- Use try-catch-finally blocks
+- Implement proper error messages
+- Use Write-Error for errors
+- Use Write-Warning for warnings
+- Implement proper exit codes
+
+// Security
+- Use secure string for passwords
+- Implement proper authentication
+- Use least privilege principle
+- Validate input parameters
+- Use secure communication protocols
+
+// Performance
+- Use proper pipeline usage
+- Implement proper memory management
+- Use efficient data structures
+- Implement proper error handling
+- Use proper logging
+
+// Documentation
+- Use proper comment-based help
+- Document parameters
+- Document return values
+- Document examples
+- Document requirements
+
+// Testing
+- Implement unit tests
+- Use Pester for testing
+- Test error conditions
+- Test edge cases
+- Implement integration tests
+
+// Modules
+- Use proper module structure
+- Implement proper versioning
+- Use proper manifest files
+- Document module usage
+- Implement proper exports
+
+// Functions
+- Use proper parameter validation
+- Implement proper return values
+- Use proper error handling
+- Document function usage
+- Use proper logging
+
+// Variables
+- Use proper variable scope
+- Use proper variable types
+- Use proper variable naming
+- Use proper variable initialization
+- Use proper variable cleanup
+
+// Logging
+- Use proper logging levels
+- Implement proper log rotation
+- Use proper log formatting
+- Use proper log location
+- Use proper log security 

@@ -1,0 +1,72 @@
+// System Engineering Best Practices
+// This file contains rules and guidelines for System Engineering
+
+// System Design
+- Use proper system architecture
+- Implement proper system redundancy
+- Use proper system security
+- Implement proper system documentation
+- Use proper system monitoring
+
+// Security
+- Use proper access control
+- Implement proper authentication
+- Use proper encryption
+- Implement proper security policies
+- Use proper security monitoring
+
+// Performance
+- Use proper resource management
+- Implement proper performance monitoring
+- Use proper capacity planning
+- Implement proper load balancing
+- Use proper performance tuning
+
+// Documentation
+- Document all system configurations
+- Document all system changes
+- Document all system policies
+- Document all system incidents
+- Document all system procedures
+
+// Monitoring
+- Use proper system monitoring
+- Implement proper alerting
+- Use proper logging
+- Implement proper reporting
+- Use proper analysis
+
+// Troubleshooting
+- Use proper diagnostic tools
+- Implement proper troubleshooting procedures
+- Use proper system analysis
+- Implement proper problem resolution
+- Use proper documentation
+
+// Configuration Management
+- Use proper version control
+- Implement proper change management
+- Use proper configuration backup
+- Implement proper configuration testing
+- Use proper configuration documentation
+
+// System Services
+- Use proper service configuration
+- Implement proper service monitoring
+- Use proper service documentation
+- Implement proper service recovery
+- Use proper service optimization
+
+// Best Practices
+- Use proper naming conventions
+- Implement proper procedures
+- Use proper documentation
+- Implement proper training
+- Use proper communication
+
+// Disaster Recovery
+- Implement proper backup procedures
+- Use proper recovery procedures
+- Implement proper failover procedures
+- Use proper disaster recovery testing
+- Implement proper documentation 

@@ -1,0 +1,79 @@
+// DevOps Engineer Best Practices
+// This file contains rules and guidelines for DevOps engineering tasks
+
+// Infrastructure as Code (IaC)
+- Use declarative configuration management tools (Terraform, Ansible, etc.)
+- Version control all infrastructure code
+- Implement infrastructure testing
+- Use modules and reusable components
+- Document infrastructure architecture
+
+// CI/CD Pipeline
+- Implement automated testing in pipelines
+- Use version control for pipeline configurations
+- Implement security scanning in CI/CD
+- Use environment-specific configurations
+- Implement rollback procedures
+
+// Monitoring and Logging
+- Implement centralized logging
+- Set up monitoring and alerting
+- Use metrics for performance tracking
+- Implement log rotation and retention policies
+- Set up dashboards for key metrics
+
+// Security
+- Implement least privilege access
+- Use secrets management
+- Regular security audits
+- Implement network security policies
+- Use secure communication protocols
+
+// Containerization
+- Use multi-stage builds
+- Implement container security scanning
+- Use container orchestration
+- Implement resource limits
+- Use container health checks
+
+// Cloud Services
+- Use cloud-native services when appropriate
+- Implement cost optimization
+- Use region-specific configurations
+- Implement disaster recovery
+- Use cloud security best practices
+
+// Automation
+- Automate repetitive tasks
+- Use configuration management
+- Implement self-healing systems
+- Use automated testing
+- Implement automated deployment
+
+// Documentation
+- Document all infrastructure changes
+- Maintain runbooks
+- Document disaster recovery procedures
+- Keep architecture diagrams updated
+- Document security procedures
+
+// Collaboration
+- Use version control for all code
+- Implement code review processes
+- Use issue tracking
+- Maintain documentation
+- Regular team communication
+
+// Performance
+- Implement performance monitoring
+- Use caching strategies
+- Optimize resource usage
+- Implement load balancing
+- Regular performance testing
+
+// Disaster Recovery
+- Implement backup strategies
+- Document recovery procedures
+- Regular disaster recovery testing
+- Implement failover procedures
+- Maintain recovery documentation 
