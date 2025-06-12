@@ -202,6 +202,13 @@ A curated list of awesome .cursorrules files for enhancing your Cursor AI experi
 
 #### DevOps
 - [DevOps Engineer](./rules/devops/devops-engineer.cursorrules) - Best practices for DevOps engineering tasks
+- [SRE Engineer](./rules/devops/sre-engineer.cursorrules) - Best practices for Site Reliability Engineering
+
+#### Database Administration
+- [PostgreSQL DBA](./rules/admin/database/postgresql-dba.cursorrules) - Best practices for PostgreSQL database administration
+- [MySQL DBA](./rules/admin/database/mysql-dba.cursorrules) - Best practices for MySQL database administration
+- [MongoDB DBA](./rules/admin/database/mongodb-dba.cursorrules) - Best practices for MongoDB database administration
+- [Redis DBA](./rules/admin/database/redis-dba.cursorrules) - Best practices for Redis database administration
 
 #### Scripts
 - [PowerShell](./rules/scripts/powershell/powershell-script.cursorrules) - Best practices for PowerShell scripting

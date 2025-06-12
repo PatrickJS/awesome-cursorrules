@@ -1,0 +1,72 @@
+// PostgreSQL Database Administration Best Practices
+// This file contains rules and guidelines for PostgreSQL DBA tasks
+
+// Database Design
+- Use proper table normalization
+- Implement proper indexing strategies
+- Use proper partitioning
+- Implement proper constraints
+- Use proper data types
+
+// Performance Tuning
+- Implement proper query optimization
+- Use proper index maintenance
+- Set up proper vacuuming
+- Implement proper statistics collection
+- Use proper performance monitoring
+
+// Backup and Recovery
+- Implement proper backup strategies
+- Use proper point-in-time recovery
+- Set up proper replication
+- Implement proper failover
+- Use proper backup verification
+
+// Security
+- Implement proper access control
+- Use proper encryption
+- Set up proper SSL/TLS
+- Implement proper audit logging
+- Use proper security policies
+
+// Monitoring
+- Implement proper performance monitoring
+- Use proper resource monitoring
+- Set up proper alerting
+- Implement proper logging
+- Use proper monitoring tools
+
+// Maintenance
+- Implement proper vacuuming
+- Use proper index maintenance
+- Set up proper statistics updates
+- Implement proper table maintenance
+- Use proper maintenance scheduling
+
+// High Availability
+- Implement proper replication
+- Use proper failover
+- Set up proper load balancing
+- Implement proper clustering
+- Use proper HA documentation
+
+// Disaster Recovery
+- Implement proper backup procedures
+- Use proper recovery procedures
+- Set up proper failover procedures
+- Implement proper disaster recovery testing
+- Use proper recovery documentation
+
+// Documentation
+- Document all configurations
+- Document all procedures
+- Document all policies
+- Document all changes
+- Document all incidents
+
+// Best Practices
+- Use proper naming conventions
+- Implement proper procedures
+- Use proper documentation
+- Implement proper training
+- Use proper communication 
