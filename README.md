@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://patrickjs.com" target="_blank">
-    <img src="/cursor-ai-logo.png" alt="Awesome CursorRules" width="200" height="200" />
+    <img src="/cursor-ai-logo.png" alt="Awesome CursorRules"/>
   </a>
 </p>
 
