@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://patrickjs.com" target="_blank">
-    <img src="/cursor-ai-logo.png" alt="Awesome CursorRules"/>
+    <img src="/cursor-ai-logo.png" alt="Awesome CursorRules" width="200" height="200" />
   </a>
 </p>
 
@@ -19,10 +19,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/stars/yourusername/awesome-cursorrules?style=social" alt="Stars" />
-  <img src="https://img.shields.io/github/forks/yourusername/awesome-cursorrules?style=social" alt="Forks" />
-  <img src="https://img.shields.io/github/issues/yourusername/awesome-cursorrules" alt="Issues" />
-  <img src="https://img.shields.io/github/license/yourusername/awesome-cursorrules" alt="License" />
+  <img src="https://img.shields.io/github/stars/sk3pp3r/awesome-cursorrules?style=social" alt="Stars" />
+  <img src="https://img.shields.io/github/forks/sk3pp3r/awesome-cursorrules?style=social" alt="Forks" />
+  <img src="https://img.shields.io/github/issues/sk3pp3r/awesome-cursorrules" alt="Issues" />
+  <img src="https://img.shields.io/github/license/sk3pp3r/awesome-cursorrules" alt="License" />
 </p>
 
 ## 🚀 Why .cursorrules?
