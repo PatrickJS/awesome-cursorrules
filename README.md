@@ -112,6 +112,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Laravel (TALL Stack)](./rules/laravel-tall-stack-best-practices-cursorrules-prom/.cursorrules)
 - [Node.js (MongoDB)](./rules/nodejs-mongodb-cursorrules-prompt-file-tutorial/.cursorrules)
 - [Node.js (MongoDB, JWT, Express, React)](./rules/nodejs-mongodb-jwt-express-react-cursorrules-promp/.cursorrules)
+- [Rails 8 (Basic Setup)](./rules/rails-cursorrules-prompt-file/rails-basics.mdx)
 - [Python (FastAPI)](./rules/py-fast-api/.cursorrules)
 - [Python (FastAPI)](./rules/cursorrules-file-cursor-ai-python-fastapi-api/.cursorrules)
 - [Python 3.12 (FastAPI Best Practices)](./rules/python-312-fastapi-best-practices-cursorrules-prom/.cursorrules)
