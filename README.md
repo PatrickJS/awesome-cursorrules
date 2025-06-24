@@ -110,6 +110,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Knative (Istio, Typesense, GPU)](./rules/knative-istio-typesense-gpu-cursorrules-prompt-fil/.cursorrules)
 - [Laravel (PHP 8.3)](./rules/laravel-php-83-cursorrules-prompt-file/.cursorrules)
 - [Laravel (TALL Stack)](./rules/laravel-tall-stack-best-practices-cursorrules-prom/.cursorrules)
+- [Manifest](./rules/manifest-yaml-cursorrules-prompt-file/.cursorrules)
 - [Node.js (MongoDB)](./rules/nodejs-mongodb-cursorrules-prompt-file-tutorial/.cursorrules)
 - [Node.js (MongoDB, JWT, Express, React)](./rules/nodejs-mongodb-jwt-express-react-cursorrules-promp/.cursorrules)
 - [Python (FastAPI)](./rules/py-fast-api/.cursorrules)
