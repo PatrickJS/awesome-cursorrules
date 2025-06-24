@@ -1,0 +1,115 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Actions
+
+- `runAction` must be the default export at the top of the file
+- Only use `ActionError` for specific error messages:
+
+```typescript
+// ❌ Don't use generic Error
+throw new Error('Invalid response from API');
+
+// ✅ Do use nango.ActionError with a message
+throw new nango.ActionError({
+    message: 'Invalid response format from API'
+});
+```
+
+- Always return objects, not arrays
+- Always define API calls using a typed `ProxyConfiguration` object with retries set to 3:
+
+```typescript
+// ❌ Don't make API calls without a ProxyConfiguration
+const { data } = await nango.get({
+    endpoint: '/some-endpoint',
+    params: { key: 'value' }
+});
+
+// ❌ Don't make API calls without setting retries for actions
+const proxyConfig: ProxyConfiguration = {
+    endpoint: '/some-endpoint',
+    params: { key: 'value' }
+};
+
+// ✅ Do use ProxyConfiguration with retries set to 3 for actions
+const proxyConfig: ProxyConfiguration = {
+    endpoint: '/some-endpoint',
+    params: { key: 'value' },
+    retries: 3 // Default for actions is 3 retries
+};
+const { data } = await nango.get(proxyConfig);
+```
+
+- When implementing pagination in actions, always return a cursor-based response to allow users to paginate through results:
+
+```typescript
+// ✅ Define input type with optional cursor
+interface ListUsersInput {
+    cursor?: string;
+    limit?: number;
+}
+
+// ✅ Define response type with next_cursor
+interface ListUsersResponse {
+    users: User[];
+    next_cursor?: string; // undefined means no more results
+}
+
+// ✅ Example action implementation with pagination
+export default async function runAction(
+    nango: NangoAction,
+    input: ListUsersInput
+): Promise<ListUsersResponse> {
+    const proxyConfig: ProxyConfiguration = {
+        endpoint: '/users',
+        params: {
+            limit: input.limit || 50,
+            cursor: input.cursor
+        },
+        retries: 3
+    };
+    
+    const { data } = await nango.get(proxyConfig);
+    
+    return {
+        users: data.users,
+        next_cursor: data.next_cursor // Pass through the API's cursor if available
+    };
+}
+
+// ❌ Don't paginate without returning a cursor
+export default async function runAction(
+    nango: NangoAction,
+    input: ListUsersInput
+): Promise<User[]> { // Wrong: Returns array without pagination info
+    const { data } = await nango.get({
+        endpoint: '/users',
+        params: { cursor: input.cursor }
+    });
+    return data.users;
+}
+```
+
+```typescript
+// Complete action example:
+import type { NangoAction, ProxyConfiguration, FolderContentInput, FolderContent } from '../../models';
+import { folderContentInputSchema } from '../schema.zod.js';
+
+export default async function runAction(
+    nango: NangoAction,
+    input: FolderContentInput
+): Promise<FolderContent> {
+    const proxyConfig: ProxyConfiguration = {
+        // https://api.example.com/docs/endpoint
+        endpoint: '/some-endpoint',
+        params: { key: 'value' },
+        retries: 3 // Default for actions is 3 retries
+    };
+    
+    const { data } = await nango.get(proxyConfig);
+    return { result: data };
+}
+```

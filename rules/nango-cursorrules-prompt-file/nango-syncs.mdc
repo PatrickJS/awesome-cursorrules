@@ -1,0 +1,748 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Syncs
+
+- `fetchData` must be the default export at the top of the file
+- Always paginate requests to retrieve all records
+- Avoid parallelizing requests (defeats retry policy and rate limiting)
+- Do not wrap syncs in try-catch blocks (Nango handles error reporting)
+- Use dedicated mapper functions for data transformation:
+  - Place shared mappers in a `mappers` directory
+  - Name files as `mappers/to-${entity}` (e.g., `mappers/to-employee.ts`)
+
+```typescript
+import { toEmployee } from '../mappers/to-employee.js';
+
+export default async function fetchData(nango: NangoSync) {
+    const proxyConfig: ProxyConfiguration = {
+        endpoint: '/employees'
+    };
+    const allData = await nango.get(proxyConfig);
+    return toEmployee(allData);
+}
+```
+
+- Avoid type casting to leverage TypeScript benefits:
+
+```typescript
+// ❌ Don't use type casting
+return {
+    user: userResult.records[0] as HumanUser,
+    userType: 'humanUser'
+};
+
+// ✅ Do use proper type checks
+if (isHumanUser(userResult.records[0])) {
+    return {
+        user: userResult.records[0],
+        userType: 'humanUser'
+    };
+}
+```
+
+- For incremental syncs, use `nango.lastSyncDate`
+
+
+## Sync Types
+
+### Table of Contents
+
+1. @Configuration Based Sync
+2. @Selection Based Sync
+3. @Window Time Based Sync
+4. @Action Leveraging Sync Responses
+5. @24 Hour Extended Sync
+6. @Multi-Model Sync
+
+### Configuration Based Sync
+
+#### Overview
+A configuration-based sync allows customization of the sync behavior through metadata provided in the nango.yaml file. This pattern is useful when you need to:
+- Configure specific fields to sync
+- Set custom endpoints or parameters
+- Define filtering rules
+
+#### Key Characteristics
+- Uses metadata in nango.yaml for configuration
+- Allows runtime customization of sync behavior
+- Supports flexible data mapping
+- Can handle provider-specific requirements
+
+#### Implementation Notes
+
+This pattern leverages metadata to define a dynamic schema that drives the sync. The implementation typically consists of two parts:
+
+1. An action to fetch available fields using the provider's introspection endpoint
+2. A sync that uses the configured fields to fetch data
+
+Example configuration in `nango.yaml`:
+
+```yaml
+integrations:
+    salesforce:
+        configuration-based-sync:
+            sync_type: full
+            track_deletes: true
+            endpoint: GET /dynamic
+            description: Fetch all fields of a dynamic model
+            input: DynamicFieldMetadata
+            auto_start: false
+            runs: every 1h
+            output: OutputData
+
+models:
+    DynamicFieldMetadata:
+        configurations: Configuration[]
+    Configuration:
+        model: string
+        fields: Field[]
+    Field:
+        id: string
+        name: string
+        type: string
+    OutputData:
+        id: string
+        model: string
+        data:
+            __string: any
+```
+
+Example field introspection action:
+
+```typescript
+export default async function runAction(
+    nango: NangoAction,
+    input: Entity,
+): Promise<GetSchemaResponse> {
+    const entity = input.name;
+    
+    // Query the API's introspection endpoint
+    const response = await nango.get({
+        endpoint: `/services/data/v51.0/sobjects/${entity}/describe`,
+    });
+    // ... process and return field schema
+}
+```
+
+Example sync implementation:
+
+```typescript
+import type { NangoSync, DynamicFieldMetadata, OutputData } from '../models.js';
+
+const SF_VERSION = 'v59.0';
+
+export default async function fetchData(
+    nango: NangoSync,
+    metadata: DynamicFieldMetadata
+): Promise<void> {
+    // Process each model configuration
+    for (const config of metadata.configurations) {
+        const { model, fields } = config;
+        
+        // Construct SOQL query with field selection
+        const fieldNames = fields.map(f => f.name).join(',');
+        const soqlQuery = `SELECT ${fieldNames} FROM ${model}`;
+        
+        // Query Salesforce API using SOQL
+        const response = await nango.get({
+            endpoint: `/services/data/${SF_VERSION}/query`,
+            params: {
+                q: soqlQuery
+            }
+        });
+
+        // Map response to OutputData format and save
+        const mappedData = response.data.records.map(record => ({
+            id: record.Id,
+            model: model,
+            data: fields.reduce((acc, field) => {
+                acc[field.name] = record[field.name];
+                return acc;
+            }, {} as Record<string, any>)
+        }));
+
+        // Save the batch of records
+        await nango.batchSave(mappedData);
+    }
+}
+```
+
+Key implementation aspects:
+- Uses metadata to drive the API queries
+- Dynamically constructs field selections
+- Supports multiple models from the third party API in a single sync
+- Maps responses to a consistent output format
+- Requires complementary action for field introspection
+- Supports flexible schema configuration through nango.yaml
+
+### Selection Based Sync
+
+#### Overview
+A selection-based sync pattern allows users to specify exactly which resources to sync through metadata. This pattern is useful when you need to:
+- Sync specific files or folders rather than an entire dataset
+- Allow users to control the sync scope dynamically
+- Handle nested resources efficiently
+- Optimize performance by limiting the sync scope
+
+#### Key Characteristics
+- Uses metadata to define sync targets
+- Supports multiple selection types (e.g., files and folders)
+- Handles nested resources recursively
+- Processes data in batches
+- Maintains clear error boundaries
+
+#### Visual Representation
+
+```mermaid
+graph TD
+    A[Start] --> B[Load Metadata]
+    B --> C[Process Folders]
+    B --> D[Process Files]
+    C --> E[List Contents]
+    E --> F{Is File?}
+    F -->|Yes| G[Add to Batch]
+    F -->|No| E
+    D --> G
+    G --> H[Save Batch]
+    H --> I[End]
+```
+
+#### Implementation Example
+
+Here's how this pattern is implemented in a Box files sync:
+
+```yaml
+# nango.yaml configuration
+files:
+    description: Sync files from specific folders or individual files
+    input: BoxMetadata
+    auto_start: false
+    sync_type: full
+
+models:
+    BoxMetadata:
+        files: string[]
+        folders: string[]
+    BoxDocument:
+        id: string
+        name: string
+        modified_at: string
+        download_url: string
+```
+
+```typescript
+export default async function fetchData(nango: NangoSync) {
+    const metadata = await nango.getMetadata<BoxMetadata>();
+    const files = metadata?.files ?? [];
+    const folders = metadata?.folders ?? [];
+    const batchSize = 100;
+
+    if (files.length === 0 && folders.length === 0) {
+        throw new Error('Metadata for files or folders is required.');
+    }
+
+    // Process folders first
+    for (const folder of folders) {
+        await fetchFolder(nango, folder);
+    }
+
+    // Then process individual files
+    let batch: BoxDocument[] = [];
+    for (const file of files) {
+        const metadata = await getFileMetadata(nango, file);
+        batch.push({
+            id: metadata.id,
+            name: metadata.name,
+            modified_at: metadata.modified_at,
+            download_url: metadata.shared_link?.download_url
+        });
+        if (batch.length >= batchSize) {
+            await nango.batchSave(batch, 'BoxDocument');
+            batch = [];
+        }
+    }
+    if (batch.length > 0) {
+        await nango.batchSave(batch, 'BoxDocument');
+    }
+}
+
+async function fetchFolder(nango: NangoSync, folderId: string) {
+    const proxy: ProxyConfiguration = {
+        endpoint: `/2.0/folders/${folderId}/items`,
+        params: {
+            fields: 'id,name,modified_at,shared_link'
+        },
+        paginate: {
+            type: 'cursor',
+            response_path: 'entries'
+        }
+    };
+
+    let batch: BoxDocument[] = [];
+    const batchSize = 100;
+
+    for await (const items of nango.paginate(proxy)) {
+        for (const item of items) {
+            if (item.type === 'folder') {
+                await fetchFolder(nango, item.id);
+            }
+            if (item.type === 'file') {
+                batch.push({
+                    id: item.id,
+                    name: item.name,
+                    modified_at: item.modified_at,
+                    download_url: item.shared_link?.download_url
+                });
+                if (batch.length >= batchSize) {
+                    await nango.batchSave(batch, 'BoxDocument');
+                    batch = [];
+                }
+            }
+        }
+    }
+
+    if (batch.length > 0) {
+        await nango.batchSave(batch, 'BoxDocument');
+    }
+}
+```
+
+#### Best Practices
+1. **Simple Metadata Structure**: Keep the selection criteria simple and clear
+2. **Batch Processing**: Save data in batches for better performance
+3. **Clear Resource Types**: Handle different resource types (files/folders) separately
+4. **Error Boundaries**: Handle errors at the item level to prevent full sync failure
+5. **Progress Logging**: Add debug logs for monitoring progress
+
+#### Common Pitfalls
+1. Not validating metadata inputs
+2. Missing batch size limits
+3. Not handling API rate limits
+4. Poor error handling for individual items
+5. Missing progress tracking logs
+
+### Window Time Based Sync
+
+#### Overview
+
+A window time based sync pattern is designed to efficiently process large datasets by breaking the sync into discrete, time-bounded windows (e.g., monthly or weekly). This approach is essential when:
+
+- The third-party API or dataset is too large to fetch in a single request or run.
+- You want to avoid timeouts, memory issues, or API rate limits.
+- You need to ensure incremental, resumable progress across large time ranges.
+
+This pattern is especially useful for financial or transactional data, where records are naturally grouped by time periods.
+
+#### Key Characteristics
+
+- Divides the sync into time windows (e.g., months).
+- Iterates over each window, fetching and processing data in batches.
+- Uses metadata to track progress and allow for resumable syncs.
+- Handles both initial full syncs and incremental updates.
+- Supports batching and pagination within each window.
+
+#### Visual Representation
+
+```mermaid
+graph TD
+    A[Start] --> B[Load Metadata]
+    B --> C{More Windows?}
+    C -->|Yes| D[Set Window Start/End]
+    D --> E[Build Query for Window]
+    E --> F[Get Count]
+    F --> G[Batch Fetch & Save]
+    G --> H[Update Metadata]
+    H --> C
+    C -->|No| I[Check for Incremental]
+    I -->|Yes| J[Fetch Since Last Sync]
+    J --> K[Batch Fetch & Save]
+    K --> L[Done]
+    I -->|No| L
+```
+
+#### Implementation Example
+
+Here's a simplified example of the window time based sync pattern, focusing on the window selection and iteration logic:
+
+```typescript
+export default async function fetchData(nango: NangoSync): Promise<void> {
+    // 1. Load metadata and determine the overall date range
+    const metadata = await nango.getMetadata();
+    const lookBackPeriodInYears = 5;
+    const { startDate, endDate } = calculateDateRange(metadata, lookBackPeriodInYears);
+    let currentStartDate = new Date(startDate);
+
+    // 2. Iterate over each time window (e.g., month)
+    while (currentStartDate < endDate) {
+        let currentEndDate = new Date(currentStartDate);
+        currentEndDate.setMonth(currentEndDate.getMonth() + 1);
+        currentEndDate.setDate(1);
+
+        if (currentEndDate > endDate) {
+            currentEndDate = new Date(endDate);
+        }
+
+        // 3. Fetch and process data for the current window
+        const data = await fetchDataForWindow(currentStartDate, currentEndDate);
+        await processAndSaveData(data);
+
+        // 4. Update metadata to track progress
+        await nango.updateMetadata({
+            fromDate: currentEndDate.toISOString().split("T")[0],
+            toDate: endDate.toISOString().split("T")[0],
+            useMetadata: currentEndDate < endDate,
+        });
+
+        currentStartDate = new Date(currentEndDate.getTime());
+        if (currentStartDate >= endDate) {
+            await nango.updateMetadata({
+                fromDate: endDate.toISOString().split("T")[0],
+                toDate: endDate.toISOString().split("T")[0],
+                useMetadata: false,
+            });
+            break;
+        }
+    }
+
+    // 5. Optionally, handle incremental updates after the full windowed sync
+    if (!metadata.useMetadata) {
+        // ... (incremental sync logic)
+    }
+}
+
+async function fetchDataForWindow(start: Date, end: Date) {
+    // Implement provider-specific logic to fetch data for the window
+    return [];
+}
+
+async function processAndSaveData(data: any[]) {
+    // Implement logic to process and save data
+}
+```
+
+**Key implementation aspects:**
+
+- **Windowing:** The sync iterates over each month (or other time window), building queries and fetching data for just that period.
+- **Batching:** Large result sets are fetched in batches (e.g., 100,000 records at a time) within each window.
+- **Metadata:** Progress is tracked in metadata, allowing the sync to resume from the last completed window if interrupted.
+- **Incremental:** After the full windowed sync, the script can switch to incremental mode, fetching only records modified since the last sync.
+- **Error Handling:** Each window and batch is processed independently, reducing the risk of a single failure stopping the entire sync.
+
+#### Best Practices
+
+1. **Choose an appropriate window size** (e.g., month, week) based on data volume and API limits.
+2. **Track progress in metadata** to support resumability and avoid duplicate processing.
+3. **Batch large queries** to avoid memory and timeout issues.
+4. **Log progress** for observability and debugging.
+5. **Handle incremental updates** after the initial full sync.
+
+#### Common Pitfalls
+
+1. Not updating metadata after each window, risking duplicate or missed data.
+2. Using too large a window size, leading to timeouts or API errors.
+3. Not handling incremental syncs after the initial windowed sync.
+4. Failing to batch large result sets, causing memory issues.
+5. Not validating or handling edge cases in date calculations.
+
+### Action Leveraging Sync Responses
+
+#### Overview
+
+An "Action Leveraging Sync Responses" pattern allows actions to efficiently return data that has already been fetched and saved by a sync, rather than always querying the third-party API. This approach is useful when:
+
+- The data needed by the action is already available from a previous sync.
+- You want to minimize API calls, reduce latency, and improve reliability.
+- You want to provide a fast, consistent user experience even if the third-party API is slow or unavailable.
+
+This pattern is especially valuable for actions that need to return lists of entities (e.g., users, projects, items) that are already available from a sync.
+
+#### Key Characteristics
+
+- Uses previously fetched or synced data when available.
+- Falls back to a live API call only if no data is available.
+- Transforms data as needed before returning.
+- Returns a consistent, typed response.
+
+#### Visual Representation
+
+```mermaid
+graph TD
+    A[Action Called] --> B[Check for Synced Data]
+    B -->|Data Found| C[Return Synced Data]
+    B -->|No Data| D[Fetch from API]
+    D --> E[Transform/Return API Data]
+```
+
+#### Implementation Example
+
+Here's a generic example of this pattern:
+
+```typescript
+/**
+ * Fetch all entities for an action, preferring previously synced data.
+ * 1) Try using previously synced data (Entity).
+ * 2) If none found, fallback to fetch from API.
+ * 3) Return transformed entities.
+ */
+export default async function runAction(nango: NangoAction) {
+  const syncedEntities: Entity[] = await getSyncedEntities(nango);
+
+  if (syncedEntities.length > 0) {
+    return {
+      entities: syncedEntities.map(({ id, name, ...rest }) => ({
+        id,
+        name,
+        ...rest,
+      })),
+    };
+  }
+
+  // Fallback: fetch from API (not shown)
+  return { entities: [] };
+}
+
+async function getSyncedEntities(nango: NangoAction): Promise<Entity[]> {
+  // Implement logic to retrieve entities from previously synced data
+  return [];
+}
+```
+
+**Key implementation aspects:**
+
+- **Synced data first:** The action first attempts to use data that was previously fetched by a sync.
+- **Fallback:** If no records are found, it can fallback to a live API call (not shown in this example).
+- **Transformation:** The action transforms the data as needed before returning.
+- **Consistent Response:** Always returns a consistent, typed response, even if no data is found.
+
+#### Best Practices
+
+1. **Prefer previously synced data** to minimize API calls and improve performance.
+2. **Handle empty or special cases** gracefully.
+3. **Return a consistent response shape** regardless of data source.
+4. **Document fallback logic** for maintainability.
+5. **Keep transformation logic simple and clear.**
+
+#### Common Pitfalls
+
+1. Not keeping synced data up to date, leading to stale or missing data.
+2. Failing to handle the case where no data is available from sync or API.
+3. Returning inconsistent response shapes.
+4. Not transforming data as needed.
+5. Overcomplicating fallback logic.
+
+### 24 Hour Extended Sync
+
+#### Overview
+A 24-hour extended sync pattern is designed to handle large datasets that cannot be processed within a single sync run due to Nango's 24-hour script execution limit. This pattern is essential when:
+- Your sync needs to process more data than can be handled within 24 hours
+- You need to handle API rate limits while staying within the execution limit
+- You're dealing with very large historical datasets
+- You need to ensure data consistency across multiple sync runs
+
+#### Why This Pattern?
+
+Nango enforces a 24-hour limit on script execution time for several reasons:
+- To prevent runaway scripts that could impact system resources
+- To ensure fair resource allocation across all integrations
+- To maintain system stability and predictability
+- To encourage efficient data processing patterns
+
+When your sync might exceed this limit, you need to:
+1. Break down the sync into manageable chunks
+2. Track progress using metadata
+3. Resume from where the last run stopped
+4. Ensure data consistency across runs
+
+#### Visual Representation
+
+```mermaid
+graph TD
+    A[Start Sync] --> B{Has Metadata?}
+    B -->|No| C[Initialize]
+    B -->|Yes| D[Resume]
+    C --> E[Process Batch]
+    D --> E
+    E --> F{Check Status}
+    F -->|Time Left| E
+    F -->|24h Limit| G[Save Progress]
+    F -->|Complete| H[Reset State]
+    G --> I[End Sync]
+    H --> I
+```
+
+#### Key Characteristics
+- Uses cursor-based pagination with metadata persistence
+- Implements time-remaining checks
+- Gracefully handles the 24-hour limit
+- Maintains sync state across multiple runs
+- Supports automatic resume functionality
+- Ensures data consistency between runs
+
+#### Implementation Notes
+
+This pattern uses metadata to track sync progress and implements time-aware cursor-based pagination. Here's a typical implementation:
+
+```typescript
+export default async function fetchData(nango: NangoSync): Promise<void> {
+    const START_TIME = Date.now();
+    const MAX_RUNTIME_MS = 23.5 * 60 * 60 * 1000; // 23.5 hours in milliseconds
+    
+    // Get or initialize sync metadata
+    let metadata = await nango.getMetadata<SyncCursor>();
+    
+    // Initialize sync window if first run
+    if (!metadata?.currentStartTime) {
+        await nango.updateMetadata({ 
+            currentStartTime: new Date(),
+            lastProcessedId: null,
+            totalProcessed: 0
+        });
+        metadata = await nango.getMetadata<SyncCursor>();
+    }
+    
+    let shouldContinue = true;
+    
+    while (shouldContinue) {
+        // Check if we're approaching the 24h limit
+        const timeElapsed = Date.now() - START_TIME;
+        if (timeElapsed >= MAX_RUNTIME_MS) {
+            // Save progress and exit gracefully
+            await nango.log('Approaching 24h limit, saving progress and exiting');
+            return;
+        }
+        
+        // Fetch and process data batch
+        const response = await fetchDataBatch(metadata.lastProcessedId);
+        await processAndSaveData(response.data);
+        
+        // Update progress
+        await nango.updateMetadata({
+            lastProcessedId: response.lastId,
+            totalProcessed: metadata.totalProcessed + response.data.length
+        });
+        
+        // Check if we're done
+        if (response.isLastPage) {
+            // Reset metadata for fresh start
+            await nango.updateMetadata({
+                currentStartTime: null,
+                lastProcessedId: null,
+                totalProcessed: 0
+            });
+            shouldContinue = false;
+        }
+    }
+}
+
+async function fetchDataBatch(lastId: string | null): Promise<DataBatchResponse> {
+    const config: ProxyConfiguration = {
+        endpoint: '/data',
+        params: {
+            after: lastId,
+            limit: 100
+        },
+        retries: 10
+    };
+    
+    return await nango.get(config);
+}
+```
+
+Key implementation aspects:
+- Tracks elapsed time to respect the 24-hour limit
+- Maintains detailed progress metadata
+- Implements cursor-based pagination
+- Provides automatic resume capability
+- Ensures data consistency across runs
+- Handles rate limits and data volume constraints
+
+#### Best Practices
+1. Leave buffer time (e.g., stop at 23.5 hours) to ensure clean exit
+2. Save progress frequently
+3. Use efficient batch sizes
+4. Implement proper error handling
+5. Log progress for monitoring
+6. Test resume functionality thoroughly
+
+#### Common Pitfalls
+1. Not accounting for API rate limits in time calculations
+2. Insufficient progress tracking
+3. Not handling edge cases in resume logic
+4. Inefficient batch sizes
+5. Poor error handling
+6. Incomplete metadata management
+
+### Multi-Model Sync
+
+#### Overview
+
+A multi-model sync is a pattern where a single sync fetches and saves multiple types of entities (models) in one run. This is useful when the entities are related or have dependencies, and you want to ensure their data is consistent and available together. By syncing multiple models at once, you can resolve dependencies between entities more easily, avoid partial data issues, and ensure that downstream consumers always see a complete, consistent set of related records.
+
+**Why use a multi-model sync?**
+- Ensures related entities are always in sync and available together
+- Helps resolve dependencies between models (e.g., messages and their replies)
+- Reduces the risk of partial or inconsistent data
+- Can improve performance by reducing the number of sync jobs
+
+#### Key Characteristics
+- The sync outputs multiple models (e.g., Message, MessageReply, MessageReaction)
+- Each model may be fetched from a different endpoint or API call
+- All models are saved in the same sync run, ensuring consistency
+
+#### Example Use Case: Slack Messages Sync
+
+Suppose you want to sync Slack messages, thread replies, and reactions for all channels. These entities are related: replies depend on messages, and reactions can belong to either. By syncing them together, you ensure that all dependencies are resolved in a single run.
+
+##### Simplified nango.yaml
+
+```yaml
+integrations:
+  slack:
+    syncs:
+      messages:
+        description: Syncs messages, replies, and reactions for all channels
+        output:
+          - SlackMessage
+          - SlackMessageReply
+          - SlackMessageReaction
+        sync_type: incremental
+        endpoint:
+          - method: GET
+            path: /messages
+          - method: GET
+            path: /messages-reply
+          - method: GET
+            path: /messages-reaction
+```
+
+##### Simplified Sync Implementation
+
+```typescript
+export default async function fetchData(nango: NangoSync) {
+  // Fetch messages
+  for (const message of await fetchMessages()) {
+    await nango.batchSave([message], 'SlackMessage');
+    // Fetch and save replies for each message
+    for (const reply of await fetchReplies(message)) {
+      await nango.batchSave([reply], 'SlackMessageReply');
+    }
+    // Fetch and save reactions for each message
+    for (const reaction of await fetchReactions(message)) {
+      await nango.batchSave([reaction], 'SlackMessageReaction');
+    }
+  }
+}
+```
+
+#### Best Practices
+1. Use a multi-model sync when entities are tightly coupled or have dependencies
+2. Keep the sync logic clear and modular for each model
+3. Batch save each model type separately for clarity and performance
+4. Document the relationships between models in your integration
+
+#### Common Pitfalls
+1. Not handling dependencies between models, leading to missing or inconsistent data
+2. Overcomplicating the sync logic—keep each model's fetch and save logic simple and focused

@@ -1,0 +1,315 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Scripts
+
+## General Guidelines
+
+- Use comments to explain the logic and link to external API documentation
+- Add comments with the endpoint URL above each API request
+- Avoid modifying arguments and prefer returning new values
+
+## API Endpoints and Base URLs
+
+When constructing API endpoints, always check the official providers.yaml configuration at:
+@https://github.com/NangoHQ/nango/blob/master/packages/providers/providers.yaml
+
+This file contains:
+- Base URLs for each provider
+- Authentication requirements
+- API version information
+- Common endpoint patterns
+- Required headers and configurations
+
+Example of using providers.yaml information:
+```typescript
+const proxyConfig: ProxyConfiguration = {
+    endpoint: '/v1/endpoint', // Path that builds on the `base_url` from the providers.yaml
+    retries: 3,
+    headers: {
+        'Content-Type': 'application/json'
+    }
+};
+```
+
+## Imports and Types
+
+- Add a `types.ts` file which contains typed third party API responses
+  - Types in `types.ts` should be prefixed with the integration name (e.g., `GoogleUserResponse`, `AsanaTaskResponse`) as they represent the raw API responses
+  - This helps avoid naming conflicts with the user-facing types defined in `nango.yaml`
+- Models defined in `nango.yaml` are automatically generated into a `models.ts` file
+  - Always import these types from the models file instead of redefining them in your scripts
+- For non-type imports (functions, classes, etc.), always include the `.js` extension:
+
+```typescript
+// ❌ Don't omit .js extension for non-type imports
+import { toEmployee } from '../mappers/to-employee';
+
+// ✅ Do include .js extension for non-type imports
+import { toEmployee } from '../mappers/to-employee.js';
+
+// ✅ Type imports don't need .js extension
+import type { TaskResponse } from '../../models';
+```
+
+- Follow proper type naming and importing conventions:
+
+```typescript
+// ❌ Don't define interfaces that match nango.yaml models
+interface TaskResponse {
+    tasks: Task[];
+}
+
+// ✅ Do import types from the auto-generated models file
+import type { TaskResponse } from '../../models';
+
+// ❌ Don't use generic names for API response types
+interface UserResponse {
+    // raw API response type
+}
+
+// ✅ Do prefix API response types with the integration name
+interface AsanaUserResponse {
+    // raw API response type
+}
+```
+
+## API Calls and Configuration
+
+- Proxy calls should use retries:
+  - Default for syncs: 10 retries
+  - Default for actions: 3 retries
+
+```typescript
+const proxyConfig: ProxyConfiguration = {
+    retries: 10,
+    // ... other config
+};
+```
+
+- Use `await nango.log` for logging (avoid `console.log`)
+- Use the `params` property instead of appending params to the endpoint
+- Use the built-in `nango.paginate` wherever possible:
+
+```typescript
+const proxyConfig: ProxyConfiguration = {
+    endpoint,
+    retries: 10,
+    paginate: {
+        response_path: 'comments'
+    }
+};
+
+for await (const pages of nango.paginate(proxyConfig)) {
+    // ... handle pages
+}
+```
+
+- Always use `ProxyConfiguration` type when setting up requests
+- Add API documentation links above the endpoint property:
+
+```typescript
+const proxyConfig: ProxyConfiguration = {
+    // https://www.great-api-docs.com/endpoint
+    endpoint,
+    retries: 10,
+};
+```
+
+
+## Script Helpers
+
+-   `npx nango dryrun ${scriptName} ${connectionId} -e ${Optional environment}` --integration-id ${INTEGRATION}
+-   `npx nango compile` -- ensure all integrations compile
+-   `npx nango generate` -- when adding an integration or updating the nango.yaml this command should be run to update the models.ts file and also the schema auto-generated files
+-   `npx nango sync:config.check` -- ensure the nango.yaml is valid and could compile successfully 
+
+
+## Full Example of a sync and action in nango
+
+Here's a complete example of a GitHub integration that syncs pull requests and has an action to create a pull request:
+
+`nango-integrations/nango.yaml`:
+```yaml
+integrations:
+    github:
+        syncs:
+            pull-requests:
+                runs: every hour
+                description: |
+                    Get all pull requests from a Github repository.
+                sync_type: incremental
+                endpoint:
+                    method: GET
+                    path: /pull-requests
+                    group: Pull Requests
+                input: GithubMetadata
+                output: PullRequest
+                auto_start: false
+                scopes:
+                    - repo
+                    - repo:status
+        actions:
+            create-pull-request:
+                description: Create a new pull request
+                endpoint:
+                    method: POST
+                    path: /pull-requests
+                    group: Pull Requests
+                input: CreatePullRequest
+                output: PullRequest
+                scopes:
+                    - repo
+                    - repo:status
+
+models:
+    GithubMetadata:
+        owner: string
+        repo: string
+    CreatePullRequest:
+        owner: string
+        repo: string
+        title: string
+        head: string
+        base: string
+        body?: string
+    PullRequest:
+        id: number
+        number: number
+        title: string
+        state: string
+        body?: string
+        created_at: string
+        updated_at: string
+        closed_at?: string
+        merged_at?: string
+        head:
+            ref: string
+            sha: string
+        base:
+            ref: string
+            sha: string
+```
+
+`nango-integrations/github/types.ts`:
+```typescript
+export interface GithubPullRequestResponse {
+    id: number;
+    number: number;
+    title: string;
+    state: string;
+    body: string | null;
+    created_at: string;
+    updated_at: string;
+    closed_at: string | null;
+    merged_at: string | null;
+    head: {
+        ref: string;
+        sha: string;
+    };
+    base: {
+        ref: string;
+        sha: string;
+    };
+}
+```
+
+`nango-integrations/github/mappers/to-pull-request.ts`:
+```typescript
+import type { PullRequest } from '../../models';
+import type { GithubPullRequestResponse } from '../types';
+
+export function toPullRequest(response: GithubPullRequestResponse): PullRequest {
+    return {
+        id: response.id,
+        number: response.number,
+        title: response.title,
+        state: response.state,
+        body: response.body || undefined,
+        created_at: response.created_at,
+        updated_at: response.updated_at,
+        closed_at: response.closed_at || undefined,
+        merged_at: response.merged_at || undefined,
+        head: {
+            ref: response.head.ref,
+            sha: response.head.sha
+        },
+        base: {
+            ref: response.base.ref,
+            sha: response.base.sha
+        }
+    };
+}
+```
+
+`nango-integrations/github/syncs/pull-requests.ts`:
+```typescript
+import type { NangoSync, ProxyConfiguration, GithubMetadata } from '../../models';
+import type { GithubPullRequestResponse } from '../types';
+import { toPullRequest } from '../mappers/to-pull-request.js';
+
+export default async function fetchData(
+    nango: NangoSync
+): Promise<void> {
+    // Get metadata containing repository information
+    const metadata = await nango.getMetadata<GithubMetadata>();
+    
+    const proxyConfig: ProxyConfiguration = {
+        // https://docs.github.com/en/rest/pulls/pulls#list-pull-requests
+        endpoint: `/repos/${metadata.owner}/${metadata.repo}/pulls`,
+        params: {
+            state: 'all',
+            sort: 'updated',
+            direction: 'desc'
+        },
+        retries: 10
+    };
+
+    // Use paginate to handle GitHub's pagination
+    for await (const pullRequests of nango.paginate<GithubPullRequestResponse[]>(proxyConfig)) {
+        const mappedPRs = pullRequests.map(toPullRequest);
+        await nango.batchSave(mappedPRs);
+    }
+}
+```
+
+`nango-integrations/github/actions/create-pull-request.ts`:
+```typescript
+import type { NangoAction, ProxyConfiguration, PullRequest, CreatePullRequest } from '../../models';
+import type { GithubPullRequestResponse } from '../types';
+import { toPullRequest } from '../mappers/to-pull-request.js';
+
+export default async function runAction(
+    nango: NangoAction,
+    input: CreatePullRequest
+): Promise<PullRequest> {
+    // https://docs.github.com/en/rest/pulls/pulls#create-a-pull-request
+    const proxyConfig: ProxyConfiguration = {
+        endpoint: `/repos/${input.owner}/${input.repo}/pulls`,
+        data: {
+            title: input.title,
+            head: input.head,
+            base: input.base,
+            body: input.body
+        },
+        retries: 3
+    };
+
+    const { data } = await nango.post<GithubPullRequestResponse>(proxyConfig);
+    return toPullRequest(data);
+}
+```
+
+This example demonstrates:
+1. A well-structured `nango.yaml` with models, sync, and action definitions
+2. Proper type definitions for the GitHub API responses
+3. A reusable mapper function for data transformation
+4. An incremental sync that handles pagination and uses `getMetadata()`
+5. An action that creates new pull requests
+6. Following all best practices for file organization and code structure# Advanced Integration Script Patterns
+
+This guide covers advanced patterns for implementing different types of Nango integration syncs. Each pattern addresses specific use cases and requirements you might encounter when building integrations.
+
+

@@ -1,0 +1,9 @@
+---
+description: 
+globs: nango-integrations/*
+alwaysApply: false
+---
+# Script Best Practices Checklist
+- [ ] nango.paginate is used to paginate over responses in a sync
+- [ ] if it is possible that an action could have a paginated response then the action should return back a `cursor` so the user can paginate over the action response
+- [ ] ensure when running a sync you run it with the `--validation` flag to to make sure the schema is correct against the actual data

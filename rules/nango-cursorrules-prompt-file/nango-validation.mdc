@@ -1,0 +1,20 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Validation
+
+- Validate script inputs and outputs using `zod`
+- Validate and convert date inputs:
+  - Ensure dates are valid
+  - Convert to the format expected by the provider using `new Date`
+  - Allow users to pass their preferred format
+- Use the nango zod helper for input validation:
+
+```typescript
+const parseResult = await nango.zodValidateInput({
+    zodSchema: documentInputSchema,
+    input,
+});
+```
