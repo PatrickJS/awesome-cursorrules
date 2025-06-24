@@ -229,6 +229,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Next.js (Type LLM)](./rules/next-type-llm/.cursorrules)
 - [Unity (C#)](./rules/unity-cursor-ai-c-cursorrules-prompt-file/.cursorrules)
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules)
+- [Code Pair Interviews](./rules/code-pair-interviews/.cursorrules)
 
 ### Utilities
 
