@@ -1,0 +1,107 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+## Example Usage
+
+The following Go snippets illustrate how to set up the Temporal worker to listen for tasks defined by this DSL and how to start an instance of a DSL-based workflow.
+
+**Worker Setup (`dsl/worker/main.go`):**
+
+This shows the basic setup for a Temporal worker that registers the DSL workflow interpreter (`dsl.SimpleDSLWorkflow`) and the activities it might invoke (like `dsl.SampleActivity1`).
+
+```go
+package main
+
+import (
+	"log"
+
+	"go.temporal.io/sdk/client"
+	"go.temporal.io/sdk/worker"
+
+	"path/to/your/dsl" // Assuming your DSL package path
+)
+
+func main() {
+	c, err := client.Dial(client.Options{})
+	if err != nil {
+		log.Fatalln("Unable to create client", err)
+	}
+	defer c.Close()
+
+	w := worker.New(c, "dsl-task-queue", worker.Options{})
+
+	// Register the DSL workflow interpreter
+	w.RegisterWorkflow(dsl.SimpleDSLWorkflow)
+
+	// Register activities used by the DSL workflows
+	activities := &dsl.SampleActivities{}
+	w.RegisterActivity(activities)
+	// Register other activities...
+
+	err = w.Run(worker.InterruptCh())
+	if err != nil {
+		log.Fatalln("Unable to start worker", err)
+	}
+}
+```
+
+**Workflow Starter (`dsl/starter/main.go`):**
+This demonstrates how to start a workflow instance. It typically involves reading a DSL definition (e.g., from a YAML file), parsing it into the `dsl.Workflow` struct, and then using the Temporal client to execute `SimpleDSLWorkflow` with that struct.
+
+```go
+package main
+
+import (
+	"context"
+	"log"
+	"os"
+	"github.com/pborman/uuid"
+
+	"go.temporal.io/sdk/client"
+	"gopkg.in/yaml.v3"
+
+	"path/to/your/dsl" // Assuming your DSL package path
+)
+
+func main() {
+	// Example: Reading DSL definition from a file (e.g., workflow1.yaml)
+	dslFilePath := "dsl/workflow1.yaml" // Or get from flag
+	data, err := os.ReadFile(dslFilePath)
+	if err != nil {
+		log.Fatalln("Unable to read DSL file", err)
+	}
+	var dslWorkflow dsl.Workflow
+	err = yaml.Unmarshal(data, &dslWorkflow)
+	if err != nil {
+		log.Fatalln("Unable to parse DSL definition", err)
+	}
+
+	c, err := client.Dial(client.Options{})
+	if err != nil {
+		log.Fatalln("Unable to create client", err)
+	}
+	defer c.Close()
+
+	options := client.StartWorkflowOptions{
+		ID:        "dsl-workflow-" + uuid.New(), // Example ID
+		TaskQueue: "dsl-task-queue",
+	}
+
+	we, err := c.ExecuteWorkflow(context.Background(), options, dsl.SimpleDSLWorkflow, dslWorkflow)
+	if err != nil {
+		log.Fatalln("Unable to execute workflow", err)
+	}
+	log.Println("Started workflow", "WorkflowID", we.GetID(), "RunID", we.GetRunID())
+
+	// Optionally wait for completion
+	var result []byte
+	err = we.Get(context.Background(), &result)
+	if err != nil {
+		log.Fatalln("Workflow execution failed", err)
+	}
+	log.Println("Workflow completed successfully.")
+}
+
+```

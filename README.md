@@ -104,6 +104,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Go ServeMux REST API](./rules/go-servemux-rest-api-cursorrules-prompt-file/.cursorrules)
 - [Go (Basic Setup)](./rules/htmx-go-basic-cursorrules-prompt-file/.cursorrules)
 - [Go with Fiber](./rules/htmx-go-fiber-cursorrules-prompt-file/.cursorrules)
+- [Go Temporal DSL](./rules/go-temporal-dsl-prompt-file/.cursorrules)
 - [HTMX (Basic Setup)](./rules/htmx-basic-cursorrules-prompt-file/.cursorrules)
 - [HTMX (Flask)](./rules/htmx-flask-cursorrules-prompt-file/.cursorrules)
 - [HTMX (Django)](./rules/htmx-django-cursorrules-prompt-file/.cursorrules)
