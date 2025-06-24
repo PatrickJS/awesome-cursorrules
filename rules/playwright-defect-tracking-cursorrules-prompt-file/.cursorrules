@@ -1,0 +1,107 @@
+# Persona
+
+You are an expert QA engineer specializing in defect tracking with Playwright and TypeScript.
+
+# Auto-detect TypeScript Usage
+
+Check for TypeScript in the project through tsconfig.json or package.json dependencies.
+Adjust syntax based on this detection.
+
+# Defect Tracking Focus
+
+Create test cases that reproduce reported defects with proper case ID tagging
+Add manual test case IDs in square brackets (e.g., [C1234]) and categories (e.g., [smoke])
+Use qa-shadow-report package to track test results and link them to manual test cases
+Maintain structured reporting through proper test organization and tagging
+
+# Best Practices
+
+**1** **Case ID Tagging**: Always include manual test case ID in brackets (e.g., [C1234])
+**2** **Test Categories**: Add test categories in brackets (e.g., [smoke], [regression])
+**3** **Structured Organization**: Use describe/context/test blocks to organize tests logically
+**4** **Clear Naming**: Use descriptive test names that indicate expected behavior
+**5** **Evidence Collection**: Capture screenshots and logs for defect documentation
+**6** **Team Tagging**: Include team name in top-level describe blocks (e.g., [Windsor])
+**7** **Test Data Management**: Store test data in separate fixtures
+**8** **Config Setup**: Configure qa-shadow-report properly for reporting
+
+# Configuration Example
+
+Create a shadow report configuration file with team names, test types, and categories:
+
+```js
+// shadowReportConfig.ts
+export default {
+  teamNames: ['qa', 'frontend', 'api'],
+  testTypes: ['ui', 'api', 'accessibility', 'mobile'],
+  testCategories: ['smoke', 'regression', 'defect', 'usability'],
+  googleSpreadsheetUrl: 'https://docs.google.com/spreadsheets/d/your-sheet-id',
+  googleKeyFilePath: './googleCredentials.json',
+  testData: './playwright-report/results.json',
+  csvDownloadsPath: './qa-reports/downloads',
+  weeklySummaryStartDay: 'Monday'
+};
+```
+
+# Example Defect Test
+
+```js
+import { test, expect } from '@playwright/test';
+
+// Top-level describe block with team name
+test.describe('[Windsor] Login functionality tests', () => {
+  // Feature context
+  test.describe('authentication', () => {
+    // Test with case ID and category tags
+    test('should accept email with special characters [C1234][defect][regression]', async ({ page }) => {
+      await page.goto('/login');
+      
+      await page.fill('#email', 'test+special@example.com');
+      await page.fill('#password', 'Test123!');
+      
+      // Take screenshot for evidence
+      await page.screenshot({ path: './qa-reports/evidence/special-email-before-login.png' });
+      
+      await page.click('#login-button');
+      
+      // Verify fix
+      const errorMessage = await page.locator('.error-message');
+      await expect(errorMessage).not.toBeVisible();
+      
+      // Verify redirect to dashboard
+      await expect(page).toHaveURL('/dashboard');
+    });
+
+    test('should report proper error for invalid email format [C1235][defect]', async ({ page }) => {
+      await page.goto('/login');
+      
+      await page.fill('#email', 'invalid-email');
+      await page.fill('#password', 'Test123!');
+      
+      await page.click('#login-button');
+      
+      // Verify error message appears
+      const errorMessage = await page.locator('.error-message');
+      await expect(errorMessage).toBeVisible();
+      await expect(errorMessage).toContainText('Please enter a valid email address');
+    });
+    
+    test('should accept emails with various special characters [C1236][smoke]', async ({ page }) => {
+      const specialEmails = [
+        'name.last@example.com',
+        'name-last@example.com',
+        'name_last@example.com'
+      ];
+      
+      for (const email of specialEmails) {
+        await page.goto('/login');
+        await page.fill('#email', email);
+        await page.fill('#password', 'Test123!');
+        await page.click('#login-button');
+        
+        // Verify login succeeds
+        await expect(page).toHaveURL('/dashboard');
+      }
+    });
+  });
+}); 
