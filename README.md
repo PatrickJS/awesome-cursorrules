@@ -45,6 +45,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
     - [Build Tools and Development](#build-tools-and-development)
     - [Language-Specific](#language-specific)
     - [Other](#other)
+    - [Documentation](#documentation)
     - [Utilities](#utilities)
   - [Directories](#directories)
   - [How to Use](#how-to-use)
@@ -96,6 +97,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [Convex best practices](./rules/convex-cursorrules-prompt-file/.cursorrules)
 - [Deno Integration](./rules/deno-integration-techniques-cursorrules-prompt-fil/.cursorrules)
+- [Drupal 11](./rules/drupal-11-cursorrules-promt-file/.cursorrules)
 - [Elixir Engineer Guidelines](./rules/elixir-engineer-guidelines-cursorrules-prompt-file/.cursorrules)
 - [Elixir (Phoenix, Docker)](./rules/elixir-phoenix-docker-setup-cursorrules-prompt-fil/.cursorrules)
 - [ES Module (Node.js)](./rules/es-module-nodejs-guidelines-cursorrules-prompt-fil/.cursorrules)
@@ -103,15 +105,19 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Go ServeMux REST API](./rules/go-servemux-rest-api-cursorrules-prompt-file/.cursorrules)
 - [Go (Basic Setup)](./rules/htmx-go-basic-cursorrules-prompt-file/.cursorrules)
 - [Go with Fiber](./rules/htmx-go-fiber-cursorrules-prompt-file/.cursorrules)
+- [Go Temporal DSL](./rules/go-temporal-dsl-prompt-file/.cursorrules)
 - [HTMX (Basic Setup)](./rules/htmx-basic-cursorrules-prompt-file/.cursorrules)
 - [HTMX (Flask)](./rules/htmx-flask-cursorrules-prompt-file/.cursorrules)
 - [HTMX (Django)](./rules/htmx-django-cursorrules-prompt-file/.cursorrules)
 - [Java (Springboot, JPA)](./rules/java-springboot-jpa-cursorrules-prompt-file/.cursorrules)
 - [Knative (Istio, Typesense, GPU)](./rules/knative-istio-typesense-gpu-cursorrules-prompt-fil/.cursorrules)
+- [Kotlin Ktor Development](./rules/kotlin-ktor-development-cursorrules-prompt-file/.cursorrules)
 - [Laravel (PHP 8.3)](./rules/laravel-php-83-cursorrules-prompt-file/.cursorrules)
 - [Laravel (TALL Stack)](./rules/laravel-tall-stack-best-practices-cursorrules-prom/.cursorrules)
+- [Manifest](./rules/manifest-yaml-cursorrules-prompt-file/.cursorrules)
 - [Node.js (MongoDB)](./rules/nodejs-mongodb-cursorrules-prompt-file-tutorial/.cursorrules)
 - [Node.js (MongoDB, JWT, Express, React)](./rules/nodejs-mongodb-jwt-express-react-cursorrules-promp/.cursorrules)
+- [Rails 8 (Basic Setup)](./rules/rails-cursorrules-prompt-file/rails-basics.mdx)
 - [Python (FastAPI)](./rules/py-fast-api/.cursorrules)
 - [Python (FastAPI)](./rules/cursorrules-file-cursor-ai-python-fastapi-api/.cursorrules)
 - [Python 3.12 (FastAPI Best Practices)](./rules/python-312-fastapi-best-practices-cursorrules-prom/.cursorrules)
@@ -119,10 +125,12 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Python (FastAPI Best Practices)](./rules/python-fastapi-best-practices-cursorrules-prompt-f/.cursorrules)
 - [Python (FastAPI Scalable API)](./rules/python-fastapi-scalable-api-cursorrules-prompt-fil/.cursorrules)
 - [Python (Flask JSON Guide)](./rules/python-flask-json-guide-cursorrules-prompt-file/.cursorrules)
+- [Python LLM & ML Workflow](./rules/python-llm-ml-workflow-cursorrules-prompt-file/.cursorrules)
+- [Salesforce (Apex)](./rules/salesforce-apex-cursorrules-prompt-file/.cursorrules.txt)
 - [TypeScript (NestJS Best Practices)](./rules/typescript-nestjs-best-practices-cursorrules-promp/.cursorrules)
+- [TYPO3 CMS Extension](./rules/typo3cms-extension-cursorrules-prompt-file/.cursorrules)
 - [WordPress (PHP, Guzzle, Gutenberg)](./rules/wordpress-php-guzzle-gutenberg-cursorrules-prompt-/.cursorrules)
 - [WordPress (macOS)](./rules/cursorrules-cursor-ai-wordpress-draft-macos-prompt/.cursorrules)
-- [Python LLM & ML Workflow](./rules/python-llm-ml-workflow-cursorrules-prompt-file/.cursorrules)
 
 ### Mobile Development
 
@@ -132,6 +140,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Android Native (Jetpack Compose)](./rules/android-jetpack-compose-cursorrules-prompt-file/.cursorrules)
 - [Flutter Expert](./rules/flutter-app-expert-cursorrules-prompt-file/.cursorrules)
 - [UIKit Guidelines](./rules/uikit-guidelines-cursorrules-prompt-file/.cursorrules)
+- [NativeScript](./rules/nativescript-cursorrules-prompt-file/.cursorrules)
 
 ### CSS and Styling
 
@@ -156,7 +165,23 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Testing
 
+- [Cypress API Testing](./rules/cypress-api-testing-cursorrules-prompt-file/.cursorrules)
+- [Cypress Accessibility Testing](./rules/cypress-accessibility-testing-cursorrules-prompt-file/.cursorrules)
+- [Cypress Defect Tracking](./rules/cypress-defect-tracking-cursorrules-prompt-file/.cursorrules)
+- [Cypress E2E Testing](./rules/cypress-e2e-testing-cursorrules-prompt-file/.cursorrules)
+- [Cypress Integration Testing](./rules/cypress-integration-testing-cursorrules-prompt-file/.cursorrules)
+- [Jest Unit Testing](./rules/jest-unit-testing-cursorrules-prompt-file/.cursorrules)
+- [Playwright API Testing](./rules/playwright-api-testing-cursorrules-prompt-file/.cursorrules)
+- [Playwright Accessibility Testing](./rules/playwright-accessibility-testing-cursorrules-prompt-file/.cursorrules)
+- [Playwright Defect Tracking](./rules/playwright-defect-tracking-cursorrules-prompt-file/.cursorrules)
+- [Playwright E2E Testing](./rules/playwright-e2e-testing-cursorrules-prompt-file/.cursorrules)
+- [Playwright Integration Testing](./rules/playwright-integration-testing-cursorrules-prompt-file/.cursorrules)
+- [PR Template](./rules/pr-template-cursorrules-prompt-file/.cursorrules)
+- [QA Bug Report](./rules/qa-bug-report-cursorrules-prompt-file/.cursorrules)
+- [TestRail Test Case](./rules/testrail-test-case-cursorrules-prompt-file/.cursorrules)
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules)
+- [Vitest Unit Testing](./rules/vitest-unit-testing-cursorrules-prompt-file/.cursorrules)
+- [Xray Test Case](./rules/xray-test-case-cursorrules-prompt-file/.cursorrules)
 
 ### Hosting and Deployments
 
@@ -165,16 +190,19 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Build Tools and Development
 
 - [Chrome Extension (JavaScript/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules)
+- [Engineering Ticket Template](./rules/engineering-ticket-template-cursorrules-prompt-file/.cursorrules)
 - [GitHub Code Quality](./rules/github-code-quality-cursorrules-prompt-file/.cursorrules)
 - [GitHub Instructions](./rules/github-cursorrules-prompt-file-instructions/.cursorrules)
 - [Git Commit Messages](./rules/git-conventional-commit-messages/.cursorrules)
 - [Kubernetes (MkDocs Documentation)](./rules/kubernetes-mkdocs-documentation-cursorrules-prompt/.cursorrules)
 - [Linux (NVIDIA CUDA, Python)](./rules/linux-nvidia-cuda-python-cursorrules-prompt-file/.cursorrules)
 - [Optimize (DRY, SOLID Principles)](./rules/optimize-dry-solid-principles-cursorrules-prompt-f/.cursorrules)
+- [Project Epic Template](./rules/project-epic-template-cursorrules-prompt-file/.cursorrules)
 - [Python Containerization](./rules/python-containerization-cursorrules-prompt-file/.cursorrules)
 - [Python (GitHub Setup)](./rules/python-github-setup-cursorrules-prompt-file/.cursorrules)
 - [Tauri (Svelte, TypeScript Guide)](./rules/tauri-svelte-typescript-guide-cursorrules-prompt-f/.cursorrules)
 - [TypeScript Code Convention](./rules/typescript-code-convention-cursorrules-prompt-file/.cursorrules)
+- [VSCode Extension (Electron/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules)
 
 ### Language-Specific
 
@@ -216,12 +244,19 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file/.cursorrules)
 - [Code Guidelines](./rules/code-guidelines-cursorrules-prompt-file/.cursorrules)
+- [Code Style Consistency](./rules/code-style-consistency-cursorrules-prompt-file/.cursorrules)
 - [DragonRuby Best Practices](./rules/dragonruby-best-practices-cursorrules-prompt-file/.cursorrules)
 - [Graphical Apps Development](./rules/graphical-apps-development-cursorrules-prompt-file/.cursorrules)
 - [Meta-Prompt](./rules/meta-prompt-cursorrules-prompt-file/.cursorrules)
 - [Next.js (Type LLM)](./rules/next-type-llm/.cursorrules)
 - [Unity (C#)](./rules/unity-cursor-ai-c-cursorrules-prompt-file/.cursorrules)
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules)
+- [Code Pair Interviews](./rules/code-pair-interviews/.cursorrules)
+
+### Documentation
+
+- [Gherkin Style Testing](./rules/gherkin-style-testing-cursorrules-prompt-file/.cursorrules)
+- [How-To Documentation](./rules/how-to-documentation-cursorrules-prompt-file/.cursorrules)
 
 ### Utilities
 

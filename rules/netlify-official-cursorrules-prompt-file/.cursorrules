@@ -1,6 +1,6 @@
 ---
 description: Guidelines and best practices for building Netlify projects & sites, including serverless functions, edge functions, functions, storage, and real-world examples
-globs: **/*.{ts,tsx,js,jsx,toml}
+globs: "**/*.{ts,tsx,js,jsx,toml}"
 ---
 
 <ProviderContextOverrides>

@@ -1,0 +1,195 @@
+---
+description: Rails 8 specific rules and guidelines for the this project. These rules complement the main .cursorrules file with detailed Rails-specific practices.
+globs:
+  [
+    "*.rb",
+    "*.erb",
+    "*.rake",
+    "Gemfile",
+    "Rakefile",
+    "config/**/*.yml",
+    "config/**/*.rb",
+    "db/migrate/*.rb",
+    "app/**/*",
+  ]
+alwaysApply: true
+---
+
+# Your rule content
+
+- You can @ files here
+- You can use markdown but dont have to
+
+# Rails 8 Development Guidelines
+
+## 1. Rails 8 Core Features
+
+** Prefer the command line utilities to manually generated code **
+
+e.g use `rails generate model` instead of creating a model from scratch
+
+** IMPORTANT: Server Management **
+
+- Always use `bin/dev` to start the server (uses Procfile.dev)
+- Check logs after every significant change
+- Monitor development.log for errors and performance issues
+- Use `tail -f log/development.log` for real-time monitoring
+- Review logs before considering any change complete
+
+1. **Modern Infrastructure**
+
+   - Implement Kamal 2 for deployment orchestration
+   - Utilize Solid Queue for background job processing
+   - Leverage Solid Cache for caching
+   - Use Solid Cable for real-time features
+   - Configure healthcheck silencing in production logs
+
+2. **Database Best Practices**
+
+   - Use PostgreSQL for development, test, and production environments
+   - Configure proper database settings in database.yml
+   - Use proper database indexing strategies
+   - Configure connection pooling
+   - Implement proper backup strategies
+   - Monitor and optimize query performance
+
+3. **Controller Patterns**
+   - Use `params.expect()` for safer parameter handling
+   - Implement rate limiting via cache store
+   - Use the new sessions generator for authentication
+   - Silence healthcheck requests in production
+   - Keep controllers RESTful and focused
+   - Use service objects for complex business logic
+
+## 2. Development Standards
+
+1. **Code Organization**
+
+   - Follow Single Responsibility Principle
+   - Use service objects for complex business logic
+   - Keep controllers skinny
+   - Use concerns for shared functionality
+   - Use `params.expect()` instead of strong parameters
+   - Follow Rails 8 conventions
+
+2. **Performance**
+
+   - Implement proper caching with Solid Cache
+   - Configure connection pooling
+   - Use Solid Queue for background jobs
+   - Monitor application metrics
+   - Regular performance profiling
+   - Optimize database queries
+   - Use proper indexing strategies
+
+3. **Testing**
+
+   - Write comprehensive Minitest tests
+   - Use fixtures instead of factories
+   - Use Capybara for integration/system tests
+   - Test happy and edge cases
+   - Keep tests DRY but readable
+   - Use parallel testing by default
+   - Regular security testing
+   - Performance testing
+   - Load testing for critical paths
+   - Emphasize writing model, controller, and integration tests (not system tests) for Ruby code
+   - For Vite-related JavaScript, write npm-based tests (e.g., using Jest, Vitest, or similar)
+
+4. **Security**
+
+   - Use `params.expect()` for parameter handling
+   - Implement proper authorization
+   - Sanitize user input
+   - Follow OWASP guidelines
+   - Configure rate limiting via cache store
+   - Regular security audits
+   - Keep dependencies updated
+   - Use secure communication (HTTPS)
+
+5. **Hotwire and JavaScript Patterns**
+
+   - Use Turbo Frames for partial page updates
+   - Use Turbo Streams for real-time updates
+   - Keep Stimulus controllers focused and simple
+   - Use data attributes for JavaScript hooks
+   - Use Solid Cable for real-time features
+   - For standard Rails interactivity, use Hotwire (Turbo + Stimulus)
+   - For more complex JavaScript/npm dependencies, use ruby-vite
+   - Place npm/Vite-managed JavaScript entrypoints in `app/javascript/entrypoints/`
+
+6. **Asset Pipeline Options**
+
+   - For most projects, use Vite (via ruby-vite) for modern JavaScript and CSS asset management, especially when using npm packages.
+   - If using Vite, asset compression and optimization are handled by Vite; Thruster is not required for JS/CSS assets.
+   - If not using Vite, use Propshaft for the asset pipeline (default in Rails 8).
+   - Thruster is optional: it provides HTTP asset caching/compression and X-Sendfile acceleration with Puma. Consider using Thruster in production for extra HTTP-level asset performance, especially if not using Vite for all assets.
+
+7. **Deployment**
+
+   - Use Kamal 2 for deployment orchestration
+   - Configure healthcheck silencing
+   - Use Propshaft for asset pipeline (if not using Vite)
+   - Implement blue-green deployments
+   - Configure proper health checks
+   - Set up monitoring and alerts
+
+8. **Logging and Monitoring**
+   - Check logs after every code change
+   - Monitor development.log for errors
+   - Use `tail -f log/development.log` for real-time monitoring
+   - Review logs before marking tasks as complete
+   - Set up proper log rotation
+   - Configure log levels appropriately
+   - Monitor performance metrics
+   - Track error rates and patterns
+
+## 3. Directory Structure
+
+```
+/app
+├── components/     # View components
+│   └── ui/         # UI components
+├── controllers/    # Controllers
+├── models/         # Active Record models
+├── views/          # View templates
+├── helpers/        # View helpers
+├── javascript/     # Stimulus controllers and npm/Vite entrypoints
+│   ├── controllers/
+│   └── entrypoints/   # npm/Vite-managed JS entrypoints
+├── services/       # Service objects
+├── policies/       # Pundit policies
+├── jobs/          # Background jobs
+├── mailers/       # Action Mailer classes
+└── assets/        # Assets (if not using importmap)
+```
+
+## 4. Tech Stack
+
+- **Backend**: Ruby on Rails 8
+- **Frontend**: Hotwire (Turbo + Stimulus)
+- **Styling**: Tailwind CSS
+- **Database**: PostgreSQL (development, test, production)
+- **Testing**: Minitest, Capybara, fixtures
+- **Background Jobs**: Solid Queue (default in Rails 8)
+- **Caching**: Solid Cache (default in Rails 8)
+- **Real-time**: Solid Cable
+- **Authentication**: Built-in Sessions Generator
+- **Authorization**: Pundit
+- **Deployment**: Kamal 2 (default in Rails 8)
+- **Asset Pipeline**: Vite (via ruby-vite) or Propshaft (default in Rails 8)
+- **Container**: Docker (optional for production or deployment; not used for local development)
+
+## 5. Rails-Specific Reminders
+
+1. Use `--skip-solid` if not using Solid Stack
+2. Configure healthcheck silencing in production
+3. Docker is not used for local development. Use it for production or deployment if needed.
+4. Follow the new Rails 8 maintenance policy
+5. Keep dependencies updated
+6. Monitor application performance
+7. Regular security audits
+8. Use `params.expect()` instead of strong parameters
+9. Use Propshaft for asset pipeline (if not using Vite)
+10. Always use `bin/dev` to start the server
+11. Check logs after every significant change

@@ -1,0 +1,543 @@
+# iOS Swift MVVM + RxSwift Generic Rules
+
+You are an expert iOS Swift developer specializing in MVVM architecture with RxSwift. Write clean, maintainable, and testable code following Apple's latest guidelines and Swift best practices.
+
+## Core Stack
+- **Language**: Swift 5.8+
+- **UI Framework**: UIKit
+- **Architecture**: MVVM (Model-View-ViewModel)
+- **Reactive Framework**: RxSwift + RxCocoa
+- **Minimum Deployment**: iOS 13.0+
+
+## Generic Project Structure
+
+```
+App/
+├── Models/
+│   ├── User.swift
+│   ├── APIResponse.swift
+│   └── CoreDataModels/
+├── ViewModels/
+│   ├── HomeViewModel.swift
+│   ├── ProfileViewModel.swift
+│   └── BaseViewModel.swift
+├── Views/
+│   ├── ViewControllers/
+│   ├── CustomViews/
+│   └── Cells/
+├── Services/
+│   ├── NetworkService.swift
+│   ├── AuthService.swift
+│   └── DataService.swift
+├── Repositories/
+│   └── UserRepository.swift
+├── Extensions/
+│   ├── UIView+Rx.swift
+│   └── Observable+Extensions.swift
+├── Utilities/
+│   ├── Constants.swift
+│   └── Helpers/
+└── Resources/
+```
+
+## MVVM Implementation Patterns
+
+### 1. Model Layer
+Keep models simple and focused on data representation.
+
+```swift
+struct User: Codable, Equatable {
+    let id: Int
+    let name: String
+    let email: String
+    let avatar: URL?
+}
+
+struct APIResponse<T: Codable>: Codable {
+    let data: T
+    let success: Bool
+    let message: String?
+}
+
+enum LoadingState {
+    case idle
+    case loading
+    case loaded
+    case error(Error)
+}
+```
+
+### 2. ViewModel Pattern
+Use Input/Output pattern for clear separation of concerns.
+
+```swift
+protocol ViewModelType {
+    associatedtype Input
+    associatedtype Output
+    
+    func transform(input: Input) -> Output
+}
+
+final class UserListViewModel: ViewModelType {
+    private let userRepository: UserRepositoryProtocol
+    private let disposeBag = DisposeBag()
+    
+    struct Input {
+        let viewDidLoad: Observable<Void>
+        let refresh: Observable<Void>
+        let selection: Observable<IndexPath>
+    }
+    
+    struct Output {
+        let users: Driver<[User]>
+        let loading: Driver<Bool>
+        let error: Driver<String?>
+        let selectedUser: Driver<User?>
+    }
+    
+    init(userRepository: UserRepositoryProtocol) {
+        self.userRepository = userRepository
+    }
+    
+    func transform(input: Input) -> Output {
+        let activityTracker = ActivityIndicator()
+        let errorTracker = ErrorTracker()
+        
+        let users = Observable.merge(input.viewDidLoad, input.refresh)
+            .flatMapLatest { [unowned self] in
+                self.userRepository.fetchUsers()
+                    .trackActivity(activityTracker)
+                    .trackError(errorTracker)
+                    .catchErrorJustReturn([])
+            }
+            .asDriver(onErrorJustReturn: [])
+        
+        let loading = activityTracker.asDriver()
+        
+        let error = errorTracker
+            .map { $0.localizedDescription }
+            .asDriver(onErrorJustReturn: nil)
+        
+        let selectedUser = input.selection
+            .withLatestFrom(users.asObservable()) { indexPath, users in
+                users[safe: indexPath.row]
+            }
+            .asDriver(onErrorJustReturn: nil)
+        
+        return Output(
+            users: users,
+            loading: loading,
+            error: error,
+            selectedUser: selectedUser
+        )
+    }
+}
+```
+
+### 3. View Controller Implementation
+Keep view controllers focused on UI binding and user interaction.
+
+```swift
+final class UserListViewController: UIViewController {
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var refreshButton: UIButton!
+    
+    private let viewModel: UserListViewModel
+    private let disposeBag = DisposeBag()
+    
+    init(viewModel: UserListViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+        bindViewModel()
+    }
+    
+    private func bindViewModel() {
+        let input = UserListViewModel.Input(
+            viewDidLoad: rx.viewDidLoad.asObservable(),
+            refresh: refreshButton.rx.tap.asObservable(),
+            selection: tableView.rx.itemSelected.asObservable()
+        )
+        
+        let output = viewModel.transform(input: input)
+        
+        output.users
+            .drive(tableView.rx.items(cellIdentifier: "UserCell")) { _, user, cell in
+                if let userCell = cell as? UserTableViewCell {
+                    userCell.configure(with: user)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        output.loading
+            .drive(onNext: { [weak self] isLoading in
+                self?.updateLoadingState(isLoading)
+            })
+            .disposed(by: disposeBag)
+        
+        output.error
+            .compactMap { $0 }
+            .drive(onNext: { [weak self] error in
+                self?.showError(message: error)
+            })
+            .disposed(by: disposeBag)
+        
+        output.selectedUser
+            .compactMap { $0 }
+            .drive(onNext: { [weak self] user in
+                self?.navigateToUserDetail(user)
+            })
+            .disposed(by: disposeBag)
+    }
+}
+```
+
+### 4. Repository Pattern
+Abstract data sources and provide reactive interfaces.
+
+```swift
+protocol UserRepositoryProtocol {
+    func fetchUsers() -> Observable<[User]>
+    func fetchUser(id: Int) -> Observable<User>
+    func updateUser(_ user: User) -> Observable<User>
+}
+
+final class UserRepository: UserRepositoryProtocol {
+    private let networkService: NetworkServiceProtocol
+    private let localService: LocalDataServiceProtocol
+    
+    init(
+        networkService: NetworkServiceProtocol,
+        localService: LocalDataServiceProtocol
+    ) {
+        self.networkService = networkService
+        self.localService = localService
+    }
+    
+    func fetchUsers() -> Observable<[User]> {
+        return networkService.request(.users)
+            .map { (response: APIResponse<[User]>) in response.data }
+            .do(onNext: { [weak self] users in
+                self?.localService.save(users)
+            })
+            .catch { [weak self] _ in
+                self?.localService.fetchUsers() ?? Observable.just([])
+            }
+    }
+    
+    func fetchUser(id: Int) -> Observable<User> {
+        return networkService.request(.user(id: id))
+            .map { (response: APIResponse<User>) in response.data }
+    }
+    
+    func updateUser(_ user: User) -> Observable<User> {
+        return networkService.request(.updateUser(user))
+            .map { (response: APIResponse<User>) in response.data }
+    }
+}
+```
+
+## RxSwift Best Practices
+
+### 1. Memory Management
+```swift
+// Always dispose subscriptions
+.disposed(by: disposeBag)
+
+// Use weak self in closures
+.subscribe(onNext: { [weak self] value in
+    self?.handleValue(value)
+})
+
+// Use unowned when certain reference exists
+.flatMap { [unowned self] in
+    self.processData()
+}
+```
+
+### 2. UI Binding
+```swift
+// Use Driver for UI binding (main thread, no errors)
+viewModel.data.asDriver()
+    .drive(tableView.rx.items)
+    .disposed(by: disposeBag)
+
+// Use Signal for one-time events
+viewModel.showAlert.asSignal()
+    .emit(onNext: { message in
+        // Show alert
+    })
+    .disposed(by: disposeBag)
+```
+
+### 3. Error Handling
+```swift
+// Centralized error tracking
+class ErrorTracker: SharedSequenceConvertibleType {
+    typealias SharingStrategy = DriverSharingStrategy
+    
+    private let _subject = PublishSubject<Error>()
+    
+    func trackError<O: ObservableConvertibleType>(from source: O) -> Observable<O.Element> {
+        return source.asObservable().do(onError: onError)
+    }
+    
+    func asSharedSequence() -> SharedSequence<SharingStrategy, Error> {
+        return _subject.asObservable().asDriver(onErrorRecover: { _ in .empty() })
+    }
+    
+    func asObservable() -> Observable<Error> {
+        return _subject.asObservable()
+    }
+    
+    private func onError(_ error: Error) {
+        _subject.onNext(error)
+    }
+}
+
+// Activity indicator for loading states
+class ActivityIndicator: SharedSequenceConvertibleType {
+    typealias Element = Bool
+    typealias SharingStrategy = DriverSharingStrategy
+    
+    private let _lock = NSRecursiveLock()
+    private let _subject = BehaviorSubject(value: false)
+    private let _loading: SharedSequence<SharingStrategy, Bool>
+    
+    init() {
+        _loading = _subject.asObservable()
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: false)
+    }
+    
+    func trackActivityOfObservable<Source: ObservableConvertibleType>(_ source: Source) -> Observable<Source.Element> {
+        return source.asObservable()
+            .do(onNext: { _ in
+                self.sendStopLoading()
+            }, onError: { _ in
+                self.sendStopLoading()
+            }, onCompleted: {
+                self.sendStopLoading()
+            }, onSubscribe: subscribed)
+    }
+    
+    private func subscribed() {
+        _lock.lock()
+        _subject.onNext(true)
+        _lock.unlock()
+    }
+    
+    private func sendStopLoading() {
+        _lock.lock()
+        _subject.onNext(false)
+        _lock.unlock()
+    }
+    
+    func asSharedSequence() -> SharedSequence<SharingStrategy, Element> {
+        return _loading
+    }
+}
+```
+
+### 4. Network Service
+```swift
+protocol NetworkServiceProtocol {
+    func request<T: Codable>(_ endpoint: APIEndpoint) -> Observable<T>
+}
+
+final class NetworkService: NetworkServiceProtocol {
+    private let session: URLSession
+    
+    init(session: URLSession = .shared) {
+        self.session = session
+    }
+    
+    func request<T: Codable>(_ endpoint: APIEndpoint) -> Observable<T> {
+        return Observable.create { observer in
+            let request = endpoint.asURLRequest()
+            
+            let task = self.session.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    observer.onError(NetworkError.connectionError(error))
+                    return
+                }
+                
+                guard let data = data else {
+                    observer.onError(NetworkError.noData)
+                    return
+                }
+                
+                do {
+                    let decodedObject = try JSONDecoder().decode(T.self, from: data)
+                    observer.onNext(decodedObject)
+                    observer.onCompleted()
+                } catch {
+                    observer.onError(NetworkError.decodingError(error))
+                }
+            }
+            
+            task.resume()
+            
+            return Disposables.create {
+                task.cancel()
+            }
+        }
+    }
+}
+
+enum NetworkError: Error {
+    case connectionError(Error)
+    case noData
+    case decodingError(Error)
+}
+
+enum APIEndpoint {
+    case users
+    case user(id: Int)
+    case updateUser(User)
+    
+    func asURLRequest() -> URLRequest {
+        // Implementation details
+        var request = URLRequest(url: url)
+        request.httpMethod = method.rawValue
+        return request
+    }
+}
+```
+
+## Useful Extensions
+
+```swift
+// Observable extensions
+extension Observable {
+    func trackActivity(_ activityIndicator: ActivityIndicator) -> Observable<Element> {
+        return activityIndicator.trackActivityOfObservable(self)
+    }
+    
+    func trackError(_ errorTracker: ErrorTracker) -> Observable<Element> {
+        return errorTracker.trackError(from: self)
+    }
+}
+
+// Array safe subscript
+extension Array {
+    subscript(safe index: Int) -> Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
+}
+
+// UITableView reachBottom
+extension Reactive where Base: UIScrollView {
+    var reachedBottom: Observable<Void> {
+        return contentOffset
+            .flatMap { [weak base] contentOffset -> Observable<Void> in
+                guard let scrollView = base else { return Observable.empty() }
+                
+                let visibleHeight = scrollView.frame.height - scrollView.contentInset.top - scrollView.contentInset.bottom
+                let y = contentOffset.y + scrollView.contentInset.top
+                let threshold = max(0.0, scrollView.contentSize.height - visibleHeight)
+                
+                return y > threshold ? Observable.just(()) : Observable.empty()
+            }
+    }
+}
+```
+
+## Testing with RxTest
+
+```swift
+import XCTest
+import RxTest
+import RxSwift
+@testable import YourApp
+
+class UserListViewModelTests: XCTestCase {
+    var viewModel: UserListViewModel!
+    var mockRepository: MockUserRepository!
+    var scheduler: TestScheduler!
+    var disposeBag: DisposeBag!
+    
+    override func setUp() {
+        super.setUp()
+        scheduler = TestScheduler(initialClock: 0)
+        mockRepository = MockUserRepository()
+        viewModel = UserListViewModel(userRepository: mockRepository)
+        disposeBag = DisposeBag()
+    }
+    
+    func testViewDidLoadFetchesUsers() {
+        // Given
+        let users = [User(id: 1, name: "John", email: "john@test.com", avatar: nil)]
+        mockRepository.usersToReturn = users
+        
+        let viewDidLoad = scheduler.createHotObservable([.next(10, ())])
+        let refresh = scheduler.createHotObservable([Recorded<Event<Void>>]())
+        let selection = scheduler.createHotObservable([Recorded<Event<IndexPath>>]())
+        
+        let input = UserListViewModel.Input(
+            viewDidLoad: viewDidLoad.asObservable(),
+            refresh: refresh.asObservable(),
+            selection: selection.asObservable()
+        )
+        
+        let output = viewModel.transform(input: input)
+        let result = scheduler.start { output.users.asObservable() }
+        
+        // Then
+        XCTAssertEqual(result.events.count, 1)
+        XCTAssertEqual(result.events.first?.value.element, users)
+    }
+}
+
+class MockUserRepository: UserRepositoryProtocol {
+    var usersToReturn: [User] = []
+    
+    func fetchUsers() -> Observable<[User]> {
+        return Observable.just(usersToReturn)
+    }
+    
+    func fetchUser(id: Int) -> Observable<User> {
+        return Observable.just(usersToReturn.first(where: { $0.id == id })!)
+    }
+    
+    func updateUser(_ user: User) -> Observable<User> {
+        return Observable.just(user)
+    }
+}
+```
+
+## Code Guidelines
+
+### Naming Conventions
+- ViewModels: `FeatureViewModel`
+- ViewControllers: `FeatureViewController`
+- Repositories: `FeatureRepository`
+- Services: `FeatureService`
+
+### File Organization
+- Group by feature, not by type
+- Use meaningful folder names
+- Keep related files together
+
+### Architecture Rules
+- ViewModels should not import UIKit
+- Views should not contain business logic
+- Use dependency injection for testability
+- Separate network and local data concerns
+
+### RxSwift Patterns
+- Use Input/Output pattern for ViewModels
+- Prefer Driver/Signal for UI binding
+- Always dispose subscriptions
+- Use ActivityIndicator for loading states
+- Implement proper error handling
+
+Remember: Keep it simple, testable, and maintainable. Focus on reactive streams and clear separation of concerns. 
