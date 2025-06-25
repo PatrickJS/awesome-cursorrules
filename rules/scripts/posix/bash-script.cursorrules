@@ -1,0 +1,79 @@
+// POSIX Bash Script Best Practices
+// This file contains rules and guidelines for POSIX bash scripting
+
+// Script Structure
+- Use proper shebang line
+- Use proper script headers
+- Implement proper error handling
+- Use proper functions
+- Use proper indentation
+
+// Naming Conventions
+- Use lowercase for variables
+- Use UPPERCASE for constants
+- Use descriptive names
+- Use proper function names
+- Follow POSIX naming conventions
+
+// Error Handling
+- Use set -e for error handling
+- Use set -u for undefined variables
+- Use set -o pipefail for pipeline errors
+- Implement proper error messages
+- Use proper exit codes
+
+// Security
+- Use proper file permissions
+- Implement proper input validation
+- Use proper quoting
+- Implement proper path handling
+- Use proper command substitution
+
+// Performance
+- Use proper command selection
+- Implement proper loop optimization
+- Use proper variable usage
+- Implement proper process management
+- Use proper resource management
+
+// Documentation
+- Use proper comments
+- Document all functions
+- Document all parameters
+- Document all examples
+- Document all requirements
+
+// Testing
+- Test all functions
+- Test all parameters
+- Test all error conditions
+- Test all edge cases
+- Implement proper test cases
+
+// Functions
+- Use proper function structure
+- Implement proper return values
+- Use proper parameter handling
+- Document function usage
+- Use proper error handling
+
+// Variables
+- Use proper variable scope
+- Use proper variable types
+- Use proper variable naming
+- Use proper variable initialization
+- Use proper variable cleanup
+
+// Logging
+- Use proper logging levels
+- Implement proper log rotation
+- Use proper log formatting
+- Use proper log location
+- Use proper log security
+
+// Best Practices
+- Use proper command options
+- Implement proper error handling
+- Use proper quoting
+- Implement proper path handling
+- Use proper command substitution 

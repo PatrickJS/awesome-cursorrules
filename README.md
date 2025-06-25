@@ -2,38 +2,46 @@
 
 <p align="center">
   <a href="https://patrickjs.com" target="_blank">
-    <img src="/cursor-ai-logo.png" alt="Awesome CursorRules" />
+    <img src="/cursor-ai-logo.png" alt="Awesome CursorRules"/>
   </a>
 </p>
 
-A curated list of awesome .cursorrules files for enhancing your Cursor AI experience.
+<p align="center">
+  <b>Supercharge Your Cursor AI Experience with Custom Rules</b>
+</p>
 
-[Cursor AI](https://cursor.sh/) is an AI-powered code editor. `.cursorrules` files define custom rules for Cursor AI to follow when generating code, allowing you to tailor its behavior to your specific needs and preferences.
+<p align="center">
+  <a href="#contents">Contents</a> •
+  <a href="#rules">Rules</a> •
+  <a href="#how-to-use">How to Use</a> •
+  <a href="#contributing">Contributing</a> •
+  <a href="#license">License</a>
+</p>
 
-## Why .cursorrules?
+<p align="center">
+  <img src="https://img.shields.io/github/stars/sk3pp3r/awesome-cursorrules?style=social" alt="Stars" />
+  <img src="https://img.shields.io/github/forks/sk3pp3r/awesome-cursorrules?style=social" alt="Forks" />
+  <img src="https://img.shields.io/github/issues/sk3pp3r/awesome-cursorrules" alt="Issues" />
+  <img src="https://img.shields.io/github/license/sk3pp3r/awesome-cursorrules" alt="License" />
+</p>
 
-`.cursorrules` is a powerful feature in Cursor AI that allows developers to define project-specific instructions for the AI. Here's why you might want to use it:
+## 🚀 Why .cursorrules?
 
-1. **Customized AI Behavior**: `.cursorrules` files help tailor the AI's responses to your project's specific needs, ensuring more relevant and accurate code suggestions.
+.cursorrules files are your secret weapon for supercharging Cursor AI's capabilities. They act as repository-specific "Rules for AI" that help Cursor AI understand your project's context, coding standards, and best practices. These rules are automatically appended to your global "Rules for AI" settings when working in a repository.
 
-2. **Consistency**: By defining coding standards and best practices in your `.cursorrules` file, you can ensure that the AI generates code that aligns with your project's style guidelines.
+### Key Benefits:
+- 🎯 **Project-Specific Context**: Tailor AI behavior to your project's needs
+- 📚 **Best Practices**: Enforce coding standards and patterns
+- 🔄 **Consistency**: Maintain uniform code style across your team
+- 🚀 **Productivity**: Speed up development with AI-powered assistance
+- 🛠️ **Customization**: Fine-tune AI responses to match your workflow
 
-3. **Context Awareness**: You can provide the AI with important context about your project, such as commonly used methods, architectural decisions, or specific libraries, leading to more informed code generation.
+## 📋 Contents
 
-4. **Improved Productivity**: With well-defined rules, the AI can generate code that requires less manual editing, speeding up your development process.
-
-5. **Team Alignment**: For team projects, a shared `.cursorrules` file ensures that all team members receive consistent AI assistance, promoting cohesion in coding practices.
-
-6. **Project-Specific Knowledge**: You can include information about your project's structure, dependencies, or unique requirements, helping the AI to provide more accurate and relevant suggestions.
-
-By creating a `.cursorrules` file in your project's root directory, you can leverage these benefits and enhance your coding experience with Cursor AI.
-
-## Contents
-
-- [Awesome CursorRules ](#awesome-cursorrules-)
-  - [Why .cursorrules?](#why-cursorrules)
-  - [Contents](#contents)
-  - [Rules](#rules)
+- [Awesome CursorRules](#awesome-cursorrules-)
+  - [Why .cursorrules?](#-why-cursorrules)
+  - [Contents](#-contents)
+  - [Rules](#-rules)
     - [Frontend Frameworks and Libraries](#frontend-frameworks-and-libraries)
     - [Backend and Full-Stack](#backend-and-full-stack)
     - [Mobile Development](#mobile-development)
@@ -44,17 +52,16 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
     - [Hosting and Deployments](#hosting-and-deployments)
     - [Build Tools and Development](#build-tools-and-development)
     - [Language-Specific](#language-specific)
+    - [DevOps and Administration](#devops-and-administration)
     - [Other](#other)
     - [Documentation](#documentation)
     - [Utilities](#utilities)
   - [Directories](#directories)
-  - [How to Use](#how-to-use)
-    - [Method One](#method-one)
-    - [Method Two](#method-two)
-  - [Contributing](#contributing)
-  - [License](#license)
+  - [How to Use](#-how-to-use)
+  - [Contributing](#-contributing)
+  - [License](#-license)
 
-## Rules
+## 🎯 Rules
 
 ### Frontend Frameworks and Libraries
 
@@ -240,6 +247,29 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript (Clasp App Script)](./rules/typescript-clasp-cursorrules-prompt-file/.cursorrules)
 - [C++ Programming Guidelines](./rules/cpp-programming-guidelines-cursorrules-prompt-file/.cursorrules)
 
+### DevOps and Administration
+
+#### DevOps
+- [DevOps Engineer](./rules/devops/devops-engineer.cursorrules) - Best practices for DevOps engineering tasks
+- [SRE Engineer](./rules/devops/sre-engineer.cursorrules) - Best practices for Site Reliability Engineering
+
+#### Database Administration
+- [PostgreSQL DBA](./rules/admin/database/postgresql-dba.cursorrules) - Best practices for PostgreSQL database administration
+- [MySQL DBA](./rules/admin/database/mysql-dba.cursorrules) - Best practices for MySQL database administration
+- [MongoDB DBA](./rules/admin/database/mongodb-dba.cursorrules) - Best practices for MongoDB database administration
+- [Redis DBA](./rules/admin/database/redis-dba.cursorrules) - Best practices for Redis database administration
+
+#### Scripts
+- [PowerShell](./rules/scripts/powershell/powershell-script.cursorrules) - Best practices for PowerShell scripting
+- [PowerCLI](./rules/scripts/powercli/powercli-script.cursorrules) - Best practices for PowerCLI scripting
+- [POSIX (Bash)](./rules/scripts/posix/bash-script.cursorrules) - Best practices for POSIX bash scripting
+- [POSIX (Zsh)](./rules/scripts/posix/zsh-script.cursorrules) - Best practices for POSIX zsh scripting
+
+#### Administration
+- [VMware Admin](./rules/admin/vmware/vmware-admin.cursorrules) - Best practices for VMware administration
+- [Network Engineer](./rules/admin/network/network-engineer.cursorrules) - Best practices for Network Engineering
+- [System Engineer](./rules/admin/system/system-engineer.cursorrules) - Best practices for System Engineering
+
 ### Other
 
 - [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file/.cursorrules)
@@ -262,46 +292,55 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
-## Directories
+## 📚 Directories
 
-- [CursorList](https://cursorlist.com)
-- [CursorDirectory](https://cursor.directory/)
+- [CursorList](https://cursorlist.com) - A curated list of Cursor AI resources
+- [CursorDirectory](https://cursor.directory/) - Directory of Cursor AI tools and plugins
 
-## How to Use
+## 🚀 How to Use
 
-### Method One
+### Method One: Manual Installation
 
-1. Install [Cursor AI](https://cursor.sh/) if you haven't already.
-2. Browse the rules above to find a `.cursorrules` file that suits your needs.
-3. Copy the chosen `.cursorrules` file to your project's root directory.
-4. Customize the rules as needed for your specific project requirements.
+1. Install [Cursor AI](https://cursor.sh/) if you haven't already
+2. Browse the rules above to find a `.cursorrules` file that suits your needs
+3. Copy the chosen `.cursorrules` file to your project's root directory
+4. Customize the rules as needed for your specific project requirements
 
-### Method Two
+### Method Two: VS Code Extension
 
-1. Install [Cursor AI](https://cursor.sh/) if you haven't already.
-2. Install [vscode-cursor-rules](https://marketplace.visualstudio.com/items?itemName=BeilunYang.cursor-rules) extension.
-3. Open the command palette (Cmd+Shift+P or Ctrl+Shift+P) and type `Cursor Rules: Add .cursorrules`.
-4. Select and download the `.cursorrules` file that suits your needs.
-5. Customize the rules as needed for your specific project requirements.
+1. Install [Cursor AI](https://cursor.sh/) if you haven't already
+2. Install [vscode-cursor-rules](https://marketplace.visualstudio.com/items?itemName=BeilunYang.cursor-rules) extension
+3. Open the command palette (Cmd+Shift+P or Ctrl+Shift+P) and type `Cursor Rules: Add .cursorrules`
+4. Select and download the `.cursorrules` file that suits your needs
+5. Customize the rules as needed for your specific project requirements
 
-## Contributing
+## 🤝 Contributing
 
-Contributions are welcome! If you have a great `.cursorrules` file to share:
+We welcome contributions! If you have a great `.cursorrules` file to share:
 
-1. Fork this repository.
-2. Create a new folder in the `rules` directory. The folder name should follow this pattern:
+1. Fork this repository
+2. Create a new folder in the `rules` directory following this pattern:
    `technology-focus-cursorrules-prompt-file`
-   For example: `react-typescript-cursorrules-prompt-file`
-3. Add your `.cursorrules` file to the new folder.
-4. Optionally, include a README.md in the folder to provide credit and a brief description.
-5. Update the main README.md file, adding your contribution to the appropriate category.
-6. Ensure your contribution follows the guidelines in the [`.cursorrules`](./.cursorrules) file at the root of this repository.
-7. Submit a pull request.
+   Example: `react-typescript-cursorrules-prompt-file`
+3. Add your `.cursorrules` file to the new folder
+4. Optionally, include a README.md in the folder to provide credit and a brief description
+5. Update the main README.md file, adding your contribution to the appropriate category
+6. Ensure your contribution follows the guidelines in the [`.cursorrules`](./.cursorrules) file
+7. Submit a pull request
 
-Please ensure your contribution is original or properly credited if based on existing work. Refer to the `.cursorrules` file in the root of this repository for detailed guidelines on formatting, naming conventions, and best practices for contributions.
+### Contribution Guidelines:
+- 🎯 Keep rules focused and specific
+- 📝 Include clear documentation
+- 🔄 Follow existing naming conventions
+- ✅ Test your rules thoroughly
+- 📚 Update the main README.md appropriately
+
+## 📄 License
+
+[![CC0](https://licensebuttons.net/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)
 
 ---
 
-## License
-
-[![CC0](https://licensebuttons.net/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)
+<p align="center">
+  Made with ❤️ by the Cursor AI Community
+</p>

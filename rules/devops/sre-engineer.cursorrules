@@ -1,0 +1,72 @@
+// Site Reliability Engineering (SRE) Best Practices
+// This file contains rules and guidelines for SRE tasks
+
+// Service Level Objectives (SLOs)
+- Define clear service level objectives
+- Implement proper error budgets
+- Monitor SLO compliance
+- Set up proper alerting thresholds
+- Document SLO targets and measurements
+
+// Monitoring and Observability
+- Implement comprehensive monitoring
+- Use proper metrics collection
+- Set up proper logging
+- Implement proper tracing
+- Use proper dashboards
+
+// Incident Management
+- Implement proper incident response
+- Use proper incident documentation
+- Set up proper on-call rotations
+- Implement proper post-mortems
+- Use proper incident tracking
+
+// Capacity Planning
+- Implement proper capacity forecasting
+- Use proper resource scaling
+- Set up proper load testing
+- Implement proper performance testing
+- Use proper capacity documentation
+
+// Automation
+- Automate repetitive tasks
+- Implement proper deployment automation
+- Use proper configuration management
+- Implement proper testing automation
+- Use proper monitoring automation
+
+// Reliability
+- Implement proper redundancy
+- Use proper failover mechanisms
+- Set up proper disaster recovery
+- Implement proper backup strategies
+- Use proper reliability testing
+
+// Performance
+- Implement proper performance monitoring
+- Use proper performance optimization
+- Set up proper load balancing
+- Implement proper caching strategies
+- Use proper performance documentation
+
+// Security
+- Implement proper security monitoring
+- Use proper access control
+- Set up proper security scanning
+- Implement proper security testing
+- Use proper security documentation
+
+// Documentation
+- Document all procedures
+- Document all configurations
+- Document all incidents
+- Document all changes
+- Document all best practices
+
+// Best Practices
+- Use proper naming conventions
+- Implement proper procedures
+- Use proper documentation
+- Implement proper training
+- Use proper communication 

@@ -1,0 +1,79 @@
+// PowerCLI Script Best Practices
+// This file contains rules and guidelines for PowerCLI scripting
+
+// Connection Management
+- Use proper connection handling
+- Implement connection pooling
+- Use proper authentication
+- Implement proper disconnection
+- Use proper error handling
+
+// VM Management
+- Use proper VM naming conventions
+- Implement proper VM configuration
+- Use proper resource allocation
+- Implement proper VM templates
+- Use proper VM cloning
+
+// Resource Management
+- Use proper resource allocation
+- Implement proper resource limits
+- Use proper resource monitoring
+- Implement proper resource cleanup
+- Use proper resource optimization
+
+// Security
+- Use proper authentication
+- Implement proper access control
+- Use proper encryption
+- Implement proper audit logging
+- Use proper security policies
+
+// Performance
+- Use proper batch operations
+- Implement proper error handling
+- Use proper resource management
+- Implement proper monitoring
+- Use proper optimization
+
+// Automation
+- Use proper scripting patterns
+- Implement proper error handling
+- Use proper logging
+- Implement proper scheduling
+- Use proper reporting
+
+// Documentation
+- Document all scripts
+- Document all functions
+- Document all parameters
+- Document all examples
+- Document all requirements
+
+// Testing
+- Test all scripts
+- Test all functions
+- Test all parameters
+- Test all error conditions
+- Test all edge cases
+
+// Error Handling
+- Use proper error messages
+- Implement proper error logging
+- Use proper error recovery
+- Implement proper error reporting
+- Use proper error prevention
+
+// Logging
+- Use proper log levels
+- Implement proper log rotation
+- Use proper log formatting
+- Implement proper log security
+- Use proper log analysis
+
+// Best Practices
+- Use proper naming conventions
+- Implement proper code structure
+- Use proper comments
+- Implement proper versioning
+- Use proper documentation 
