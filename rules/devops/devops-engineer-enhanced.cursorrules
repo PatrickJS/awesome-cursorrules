@@ -1,0 +1,255 @@
+// DevOps Engineering Cursor Rules
+// Comprehensive guidelines for DevOps tasks with specific implementation patterns
+
+// =============================================================================
+// INFRASTRUCTURE AS CODE (IaC)
+// =============================================================================
+
+// Terraform Best Practices
+- Always use terraform state backends (S3 + DynamoDB for locking)
+- Structure code: /environments/dev|staging|prod/, /modules/, /shared/
+- Use .terraform-version files and version constraints
+- Implement data sources instead of hardcoded values
+- Use locals {} blocks for complex expressions
+- Always include provider version constraints
+- Use terraform fmt, validate, and plan before apply
+- Tag all resources consistently with environment, project, owner
+
+// Ansible Patterns
+- Use ansible-vault for sensitive data
+- Structure: group_vars/, host_vars/, roles/, playbooks/
+- Use handlers for service restarts
+- Implement idempotent tasks with proper conditionals
+- Use molecule for role testing
+- Pin collection and role versions in requirements.yml
+
+// =============================================================================
+// CI/CD PIPELINE PATTERNS
+// =============================================================================
+
+// Pipeline Structure (GitLab CI / GitHub Actions)
+- Use multi-stage pipelines: build -> test -> security -> deploy
+- Implement parallel job execution where possible
+- Use artifacts and caching strategically
+- Fail fast principle - run quick tests first
+- Use environment-specific variables and secrets
+- Implement approval gates for production deployments
+
+// Security Integration
+- Use SAST tools: SonarQube, CodeQL, Semgrep
+- Container scanning: Trivy, Snyk, Clair
+- Dependency scanning: OWASP Dependency Check
+- Infrastructure scanning: Checkov, tfsec
+- Implement license compliance checks
+
+// Deployment Patterns
+- Blue-green deployments for zero downtime
+- Canary releases with automated rollback triggers
+- Feature flags for gradual rollouts
+- Database migration strategies in pipelines
+- Environment promotion pipelines (dev -> staging -> prod)
+
+// =============================================================================
+// MONITORING & OBSERVABILITY
+// =============================================================================
+
+// The Three Pillars Implementation
+- Metrics: Prometheus + Grafana, CloudWatch, DataDog
+- Logs: ELK Stack, Loki, Fluentd, CloudWatch Logs
+- Traces: Jaeger, Zipkin, AWS X-Ray
+- Use OpenTelemetry for vendor-neutral instrumentation
+
+// Alert Management
+- Use alert runbooks with clear escalation paths
+- Implement alert fatigue prevention (proper thresholds)
+- Use labels and routing for team-specific alerts
+- Implement SLI/SLO/Error Budget monitoring
+- Create dashboards for different audiences (dev, ops, business)
+
+// Key Metrics to Track
+- Golden Signals: Latency, Traffic, Errors, Saturation
+- Infrastructure: CPU, Memory, Disk, Network
+- Application: Response times, throughput, error rates
+- Business: Conversion rates, user engagement
+
+// =============================================================================
+// SECURITY IMPLEMENTATION
+// =============================================================================
+
+// Identity & Access Management
+- Use IAM roles instead of access keys
+- Implement RBAC with principle of least privilege
+- Use service accounts for automation
+- Regular access reviews and cleanup
+- Multi-factor authentication enforcement
+
+// Secrets Management
+- Use HashiCorp Vault, AWS Secrets Manager, Azure Key Vault
+- Never commit secrets to version control
+- Rotate secrets regularly with automation
+- Use short-lived tokens where possible
+- Implement secret scanning in repositories
+
+// Network Security
+- Zero-trust network architecture
+- Use VPCs with proper subnet segmentation
+- Implement Web Application Firewalls (WAF)
+- Use encrypted communication (TLS 1.3+)
+- Regular penetration testing and vulnerability assessments
+
+// =============================================================================
+// CONTAINERIZATION & ORCHESTRATION
+// =============================================================================
+
+// Docker Best Practices
+- Use minimal base images (Alpine, Distroless)
+- Multi-stage builds to reduce image size
+- Run containers as non-root users
+- Use .dockerignore files
+- Scan images for vulnerabilities
+- Implement health checks and readiness probes
+
+// Kubernetes Patterns
+- Use namespaces for environment separation
+- Implement resource quotas and limits
+- Use ConfigMaps and Secrets appropriately
+- Implement Pod Security Standards
+- Use Helm charts for application packaging
+- Implement HPA and VPA for auto-scaling
+- Use network policies for micro-segmentation
+
+// =============================================================================
+// CLOUD-NATIVE PATTERNS
+// =============================================================================
+
+// AWS Best Practices
+- Use CloudFormation/CDK for infrastructure
+- Implement least privilege IAM policies
+- Use VPC endpoints for service communication
+- Implement cost allocation tags
+- Use CloudTrail for audit logging
+- Implement backup strategies with RTO/RPO requirements
+
+// Multi-Cloud Considerations
+- Use cloud-agnostic tools where possible
+- Implement vendor lock-in mitigation strategies
+- Use consistent naming conventions across clouds
+- Implement cross-cloud disaster recovery
+
+// =============================================================================
+// AUTOMATION PATTERNS
+// =============================================================================
+
+// GitOps Implementation
+- Use ArgoCD, Flux, or GitLab GitOps
+- Separate application and configuration repositories
+- Implement automated drift detection and correction
+- Use declarative configuration management
+
+// Self-Healing Systems
+- Implement circuit breakers and retry mechanisms
+- Use auto-scaling based on metrics
+- Implement automated failover procedures
+- Use chaos engineering for resilience testing
+
+// =============================================================================
+// DOCUMENTATION STANDARDS
+// =============================================================================
+
+// Required Documentation
+- README.md with setup and usage instructions
+- Architecture Decision Records (ADRs)
+- API documentation with OpenAPI/Swagger
+- Runbooks for incident response
+- Disaster recovery procedures with testing schedules
+
+// Diagram Requirements
+- Use tools like Draw.io, Lucidchart, or Mermaid
+- Maintain C4 model architecture diagrams
+- Network topology diagrams
+- Data flow diagrams
+- Incident response flowcharts
+
+// =============================================================================
+// PERFORMANCE & RELIABILITY
+// =============================================================================
+
+// Performance Optimization
+- Implement caching at multiple layers (CDN, application, database)
+- Use async processing for non-critical operations
+- Implement connection pooling
+- Use compression for data transfer
+- Regular performance testing with realistic load
+
+// Reliability Patterns
+- Implement circuit breakers and bulkhead patterns
+- Use timeouts and proper error handling
+- Implement graceful degradation
+- Use load balancing with health checks
+- Implement proper retry logic with exponential backoff
+
+// =============================================================================
+// DISASTER RECOVERY & BUSINESS CONTINUITY
+// =============================================================================
+
+// Backup Strategies
+- Follow 3-2-1 backup rule (3 copies, 2 different media, 1 offsite)
+- Test backup restoration regularly
+- Implement point-in-time recovery capabilities
+- Document backup retention policies
+- Use infrastructure backup tools (e.g., AWS Backup)
+
+// Recovery Procedures
+- Document RTO (Recovery Time Objective) and RPO (Recovery Point Objective)
+- Implement automated failover where possible
+- Regular disaster recovery drills
+- Cross-region replication for critical systems
+- Incident command structure and communication plans
+
+// =============================================================================
+// TEAM COLLABORATION & PROCESSES
+// =============================================================================
+
+// Code Review Standards
+- Use pull request templates
+- Require security and infrastructure review
+- Implement automated checks (linting, testing, security)
+- Document review criteria and standards
+- Use conventional commit messages
+
+// Incident Management
+- Use structured incident response (PagerDuty, OpsGenie)
+- Implement blameless post-mortems
+- Maintain incident timeline and communication
+- Use incident severity levels and escalation procedures
+- Track MTTR (Mean Time To Recovery) metrics
+
+// =============================================================================
+// COST OPTIMIZATION
+// =============================================================================
+
+// Cost Management
+- Implement resource tagging for cost allocation
+- Use rightsizing recommendations
+- Implement auto-shutdown for non-production environments
+- Use spot instances and reserved capacity where appropriate
+- Regular cost reviews and optimization recommendations
+- Implement cost alerts and budgets
+
+// =============================================================================
+// COMPLIANCE & GOVERNANCE
+// =============================================================================
+
+// Compliance Requirements
+- Implement audit logging for all changes
+- Use policy as code (Open Policy Agent, AWS Config)
+- Regular compliance scans and reporting
+- Data retention and deletion policies
+- Change management processes with approval workflows
+
+// Governance
+- Use resource naming conventions
+- Implement environment isolation
+- Use centralized logging and monitoring
+- Regular security and compliance assessments
+- Documentation of all architectural decisions
