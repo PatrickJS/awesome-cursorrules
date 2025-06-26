@@ -30,7 +30,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ## Contents
 
-- [Awesome CursorRules ](#awesome-cursorrules-)
+- [Awesome Cursor Rules ](#awesome-cursor-rules-)
   - [Why .cursorrules?](#why-cursorrules)
   - [Contents](#contents)
   - [Rules](#rules)
