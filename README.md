@@ -222,6 +222,7 @@
 
 #### DevOps
 - [DevOps Engineer](./rules/devops/devops-engineer.cursorrules) - Best practices for DevOps engineering tasks
+- [DevOps Engineer - Enhanced](./rules/devops/devops-engineer-enhanced.cursorrules) - Best practices for DevOps engineering tasks - Enhanced
 - [SRE Engineer](./rules/devops/sre-engineer.cursorrules) - Best practices for Site Reliability Engineering
 
 #### Database Administration
