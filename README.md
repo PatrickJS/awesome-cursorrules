@@ -1,4 +1,4 @@
-# Awesome CursorRules [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
+# Awesome CursorRules [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome) ![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/PatrickJS/awesome-cursorrules?utm_source=oss&utm_medium=github&utm_campaign=PatrickJS%2Fawesome-cursorrules&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
 <p align="center">
   <a href="https://patrickjs.com" target="_blank">
