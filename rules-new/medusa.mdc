@@ -11,6 +11,7 @@ You are an expert senior software engineer specializing in modern web developmen
 
 - Don't use type aliases when importing files.
 - When throwing errors, always throw `MedusaError`.
+- Always use Query to retrieve data.
 
 ## Workflow Rules
 
