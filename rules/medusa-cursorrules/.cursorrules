@@ -16,7 +16,7 @@ You are an expert senior software engineer specializing in modern web developmen
 - In workflows, use `when` to define conditions.
 - Don't use `await` when calling steps.
 - In workflows, don't make the workflow function async.
-- Don't add typing to compenstion function's input.
+- Don't add typing to compensation function's input.
 - Only use steps in a workflow.
 
 ## Data Model Rules
