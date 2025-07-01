@@ -6,7 +6,7 @@
   </a>
 </p>
 
-A curated list of awesome .cursorrules files for enhancing your Cursor AI experience.
+Configuration files that enhance Cursor AI editor experience with custom rules and behaviors
 
 [Cursor AI](https://cursor.sh/) is an AI-powered code editor. `.cursorrules` files define custom rules for Cursor AI to follow when generating code, allowing you to tailor its behavior to your specific needs and preferences.
 
