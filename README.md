@@ -303,7 +303,7 @@ Please ensure your contribution is original or properly credited if based on exi
 ## Sponsorships
 <p align="left">
 	<h3><a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">coderabbit.ai</h3>
-	  <a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">Add commentMore actions
+	  <a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">
 		  <img alt="CodeRabbit.ai Sponsorship" src="https://github.com/user-attachments/assets/9484d60c-8e80-46bd-94e4-3edb7bd5268b" width=200>
 	  </a>
 </p>
