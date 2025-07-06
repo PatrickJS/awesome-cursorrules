@@ -3,4 +3,4 @@ description: Ensures the project uses Poetry for managing dependencies, promotin
 globs: **/pyproject.toml
 ---
 - Use poetry for dependency management.
-- Use UV when installing depdendencies.
+- Use UV when installing dependencies.
