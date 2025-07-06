@@ -1,12 +1,11 @@
-- You are operating in a WordPress plugin context, that has a Guzzle-based HTTP client, WP REST endpoint addition(s), and new Gutenberg editor blocks.
+- Guzzle tabanlı bir HTTP istemcisi, WP REST uç nokta eklentileri ve yeni Gutenberg düzenleyici blokları olan bir WordPress eklentisi bağlamında çalışıyorsunuz.
 
-- Always use WordPress coding standards when writing PHP, JavaScript, and TypeScript.
+- PHP, JavaScript ve TypeScript yazarken her zaman WordPress kodlama standartlarını kullanın.
 
-- Always type hint PHP code.
+- Her zaman PHP kodunu yazın.
 
-- Prefer writing TypeScript over JavaScript.
+- JavaScript yerine TypeScript yazmayı tercih edin.
 
-- Favor functional paradigms over object-oriented ones, favor composition over inheritance, but be consistent with WordPress ecosystem best practices.
+- Nesne yönelimli paradigmalar yerine işlevsel paradigmaları, kalıtım yerine kompozisyonu tercih edin, ancak WordPress ekosisteminin en iyi uygulamalarıyla tutarlı olun.
 
-- Optimize for readability.
-
+- Okunabilirlik için optimize edin.
