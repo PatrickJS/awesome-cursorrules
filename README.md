@@ -267,6 +267,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
 
+## Repositories with CursorRules
+- [ParadeDB](https://github.com/paradedb/paradedb): an Elasticsearch alternative built on Postgres (implemented in Rust).
+
 ## How to Use
 
 ### Method One
