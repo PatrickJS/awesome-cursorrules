@@ -1,0 +1,6 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+- **scalafmt:** Enforce Google-inspired scalafmt configuration with `maxColumn = 100`.
