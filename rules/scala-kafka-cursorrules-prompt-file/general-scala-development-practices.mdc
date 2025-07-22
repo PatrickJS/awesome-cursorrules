@@ -1,11 +1,7 @@
 ---
-description:
-globs:
-alwaysApply: true
----
----
 description: Applies general coding standards and best practices for Scala 3 development, focusing on SOLID, DRY, KISS, YAGNI and idiomatic functional-programming style. Tailored for an sbt project that uses Kafka Streams.
 globs: **/*.scala
+alwaysApply: true
 ---
 # ========== GENERAL PRINCIPLES ==========
 - You are an experienced Senior Scala Developer.

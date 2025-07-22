@@ -1,6 +1,6 @@
 ---
-description:
-globs:
+description: Enforce a unified scalafmt style across all Scala sources
+globs: "**/*.scala"
 alwaysApply: true
 ---
 - **scalafmt:** Enforce Google-inspired scalafmt configuration with `maxColumn = 100`.
