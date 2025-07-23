@@ -17,17 +17,12 @@ alwaysApply: true
 - Keep public APIs small, surface only what the module owns.
 - Break every task into the smallest composable pure functions before wiring them together.
 
-# ========== KAFKA-SPECIFIC ==========
-- Encapsulate Kafka SerDes and topology building in dedicated modules (e.g. `ProductSerde`, `TopologyBuilder`). No ad-hoc SerDe code in business logic.
-- All topic names, partitions and replication factors live in config values (Typesafe Config or pure-config).
-- Serializer / Deserializer instances are *implicit* values in companion objects for automatic resolution.
-- Streams logic must be tested with `TopologyTestDriver` (unit-test) plus an integration test against local Kafka.
-
 # ========== NAMING & SYNTAX ==========
 - Class / object / trait names are UpperCamelCase nouns (e.g. *NotificationStreamApp*).
 - Methods & vals are lowerCamelCase verbs or nouns (e.g. *process*, *serde*, *productKey*).
 - Constants use `SCREAMING_SNAKE_CASE`.
-- Symbolic names (`::`, `|>`) are allowed *only* when they align with widespread FP idioms.
+- Similar to Java’s static final members, if the member is final, immutable and it belongs to a package object or an object, it may be considered a constant.
+- Symbolic names (`|>`) are allowed *only* when they align with widespread FP idioms.
 - Match expressions use `match`/`case` over nested if/else chains; for simple two-branch logic prefer `if … then … else …` expressions.
 
 # ========== ERROR HANDLING & LOGGING ==========
@@ -37,10 +32,10 @@ alwaysApply: true
 - Avoid “defensive” logging or `println`; use SLF4J (Logback) with the *scala-logging* wrapper.
 
 # ========== TESTING ==========
-- Use munit or ScalaTest in a **Given-When-Then** layout.
+- Use ScalaTest in a **Given-When-Then** layout with the use of AnyFlatSpec.
 - Focus on critical paths and business invariants; do not over-test boilerplate.
 - Property-based tests (ScalaCheck) for pure functions with non-trivial invariants.
-- Each test must be < 100 ms in isolation; mark integration tests with the `it` tag.
+- Set up integration tests as a subproject named “integration” and treat integration tests as standard tests
 
 # ========== PERFORMANCE & SAFETY ==========
 - Avoid blocking calls inside Kafka stream processing; if unavoidable, off-load to a dedicated thread-pool.
@@ -49,7 +44,7 @@ alwaysApply: true
 
 # ========== MODERN SCALA 3 FEATURES ==========
 - Use *Enums* for finite alternatives instead of Java-style enums.
-- Embrace *opaque types* or `@newtype` (if using `io.estatico`) to avoid accidental misuse of primitive wrappers.
+- Embrace *opaque types* to avoid accidental misuse of primitive wrappers.
 - Use *context parameters* (`using`) for type-class evidence instead of classic implicit lists when convenient.
 - Prefer `given`/`using` syntax over `implicit` where supported.
 
