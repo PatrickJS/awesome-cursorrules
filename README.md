@@ -1,7 +1,7 @@
 # Awesome Cursor Rules [![Awesome](https://awesome.re/badge-flat.svg)](https://awesome.re)
 
 <p align="center">
-  <a href="https://patrickjs.com" target="_blank">
+  <a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules" target="_blank">
     <img src="/cursor-ai-logo.png" alt="Awesome CursorRules" />
   </a>
 </p>
@@ -9,6 +9,15 @@
 Configuration files that enhance Cursor AI editor experience with custom rules and behaviors
 
 [Cursor AI](https://cursor.sh/) is an AI-powered code editor. `.cursorrules` files define custom rules for Cursor AI to follow when generating code, allowing you to tailor its behavior to your specific needs and preferences.
+
+## Sponsorships
+<p align="left">
+	<h3><a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">coderabbit.ai</h3>
+	  <a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">
+		  <img alt="CodeRabbit.ai Sponsorship" src="https://github.com/user-attachments/assets/9484d60c-8e80-46bd-94e4-3edb7bd5268b" width=200>
+	  </a>
+</p>
+
 
 ## Why .cursorrules?
 
