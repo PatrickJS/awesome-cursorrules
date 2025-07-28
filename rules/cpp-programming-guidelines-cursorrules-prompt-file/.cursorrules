@@ -1,6 +1,6 @@
 ---
 description: 
-globs: **/*.c,**/*.cpp,**/*.h,**/*.hpp,**/*.cxx,CMakeLists.txt,*.cmake,conanfile.txt,Makefil,**/*.cc
+globs: **/*.c,**/*.cpp,**/*.h,**/*.hpp,**/*.cxx,CMakeLists.txt,*.cmake,conanfile.txt,Makefile,**/*.cc
 alwaysApply: false
 ---
 # C++ Programming Guidelines
