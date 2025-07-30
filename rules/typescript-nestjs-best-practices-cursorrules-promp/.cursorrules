@@ -99,7 +99,6 @@ You are a senior TypeScript programmer with experience in the NestJS framework a
   - DTOs validated with class-validator for inputs.
   - Declare simple types for outputs.
   - A services module with business logic and persistence.
-  - Entities with MikroORM for data persistence.
   - One service per entity.
 - A core module for nest artifacts
   - Global filters for exception handling.
