@@ -40,6 +40,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ## Contents
 
 - [Awesome Cursor Rules ](#awesome-cursor-rules-)
+  - [Sponsorships](#sponsorships)
   - [Why .cursorrules?](#why-cursorrules)
   - [Contents](#contents)
   - [Rules](#rules)
@@ -61,6 +62,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
     - [Method One](#method-one)
     - [Method Two](#method-two)
   - [Contributing](#contributing)
+  - [Sponsorships](#sponsorships-1)
   - [License](#license)
 
 ## Rules
@@ -70,6 +72,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Angular (Novo Elements)](./rules/angular-novo-elements-cursorrules-prompt-file/.cursorrules) - Cursor rules for Angular development with Novo Elements UI library.
 - [Angular (TypeScript)](./rules/angular-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Angular development with TypeScript integration.
 - [Astro (TypeScript)](./rules/astro-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Astro development with TypeScript integration.
+- [Beefree SDK (TypeScript, JavaScript, CSS, HTML, React, Angular, Vue)](./rules/beefreeSDK-nocode-content-editor-cursorrules-prompt-file/.cursorrules) - Cursor rules for embedding Beefree SDK's no-code content editors (for emails, pages, and popups) into a web application.
 - [Cursor AI (React, TypeScript, shadcn/ui)](./rules/cursor-ai-react-typescript-shadcn-ui-cursorrules-p/.cursorrules) - Cursor rules for Cursor AI development with React, TypeScript, and shadcn/ui integration.
 - [Next.js 15 (React 19, Vercel AI, Tailwind)](./rules/nextjs15-react19-vercelai-tailwind-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with React 19, Vercel AI, and Tailwind CSS integration.
 - [Next.js 14 (Tailwind, SEO)](./rules/cursorrules-cursor-ai-nextjs-14-tailwind-seo-setup/.cursorrules) - Cursor rules for Next.js development with Tailwind CSS and SEO optimization.
