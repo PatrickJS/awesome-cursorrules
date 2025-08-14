@@ -12,7 +12,7 @@ Configuration files that enhance Cursor AI editor experience with custom rules a
 
 ## Sponsorships
 <p align="left">
-	<h3><a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">coderabbit.ai</h3>
+	<h3><a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">coderabbit.ai - Cut Code Review Time & Bugs in Half. Instantly.</h3>
 	  <a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">
 		  <img alt="CodeRabbit.ai Sponsorship" src="https://github.com/user-attachments/assets/9484d60c-8e80-46bd-94e4-3edb7bd5268b" width=200>
 	  </a>
@@ -318,7 +318,7 @@ Please ensure your contribution is original or properly credited if based on exi
 
 ## Sponsorships
 <p align="left">
-	<h3><a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">coderabbit.ai</h3>
+	<h3><a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">coderabbit.ai - Cut Code Review Time & Bugs in Half. Instantly.</h3>
 	  <a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">
 		  <img alt="CodeRabbit.ai Sponsorship" src="https://github.com/user-attachments/assets/9484d60c-8e80-46bd-94e4-3edb7bd5268b" width=200>
 	  </a>
