@@ -1,0 +1,604 @@
+# Xian Smart Contract Development - Cursor Rules
+
+XIAN is the currency of the Xian blockchain.
+Never mention TAU or Lamden.
+
+## Contract Structure
+
+### Basic Structure
+- Smart contracts are written in native Python without transpilation
+- Contract names must follow the pattern: `^con_[a-z][a-z0-9_]*$`
+- Contract names must start with 'con_' prefix (except system contracts like 'currency')
+- Contract names must be lowercase, only contain letters, numbers and underscores after prefix
+- Contract names must be max 64 characters
+
+### Naming Conventions
+- You cannot use '_' as a prefix for variables or functions (e.g., `_private_var` is not allowed)
+- Follow standard Python naming conventions otherwise
+- Use descriptive names for clarity
+- A contract can not be deployed by another contract
+
+### Function Types
+- `@export` decorator defines public functions callable by any user or contract
+- `@construct` decorator defines initialization function executed once at contract submission (optional)
+- Functions without decorators are private and can only be called by the contract itself
+- Functions with `@export` can call private functions internally
+
+### Constructor Arguments
+- Optional arguments can be provided to the `@construct` function
+- Initial state can be setup using these arguments
+
+## State Management
+
+### Variable
+- `Variable` is a way to define a singular state variable in the contract
+- Use `variable.set(value)` to modify
+- Use `variable.get()` to retrieve
+
+```python
+my_var = Variable()
+
+@construct
+def seed():
+    my_var.set(0)  # Initialize variable
+
+@export
+def increment():
+    my_var.set(my_var.get() + 1)
+```
+
+### Hash
+- `Hash` is a key-value store for the contract
+- Default value can be specified with `Hash(default_value=0)`
+- Access through dictionary-like syntax: `hash[key] = value` and `hash[key]`
+- Supports nested keys with tuple: `hash[key1, key2] = value`
+
+```python
+my_hash = Hash(default_value=0)
+
+@export
+def set_value(key: str, value: int):
+    my_hash[key] = value
+
+@export
+def get_value(key: str):
+    return my_hash[key]
+```
+
+#### Illegal Delimiters 
+":" and "." cannot be used in Variable or Hash keys.
+
+### Foreign State Access
+- `ForeignHash` provides read-only access to a Hash from another contract
+- `ForeignVariable` provides read-only access to a Variable from another contract
+
+```python
+token_balances = ForeignHash(foreign_contract='con_my_token', foreign_name='balances')
+foundation_owner = ForeignVariable(foreign_contract='foundation', foreign_name='owner')
+```
+
+## Context Variables
+
+### ctx.caller
+- The identity of the person or contract calling the function
+- Changes when a contract calls another contract's function
+- Used for permission checks in token contracts
+
+### ctx.signer
+- The top-level user who signed the transaction
+- Remains constant throughout transaction execution
+- Only used for security guards/blacklisting, not for account authorization
+
+### ctx.this
+- The identity/name of the current contract
+- Never changes
+- Useful when the contract needs to refer to itself
+
+### ctx.owner
+- Owner of the contract, optional field set at time of submission
+- Only the owner can call exported functions if set
+- Can be changed with `ctx.owner = new_owner`
+
+### ctx.entry
+- Returns tuple of (contract_name, function_name) of the original entry point
+- Helps identify what contract and function initiated the call chain
+
+## Built-in Variables
+
+### Time and Blockchain Information
+- `now` - Returns the current datetime
+- `block_num` - Returns the current block number, useful for block-dependent logic
+- `block_hash` - Returns the current block hash, can be used as a source of randomness
+
+Example usage:
+```python
+@construct
+def seed():
+    submission_time = Variable()
+    submission_block_num = Variable()
+    submission_block_hash = Variable()
+    
+    # Store blockchain state at contract creation
+    submission_time.set(now)
+    submission_block_num.set(block_num)
+    submission_block_hash.set(block_hash)
+```
+
+## Imports and Contract Interaction
+
+### Importing Contracts
+- Use `importlib.import_module(contract_name)` for dynamic contract imports
+- Static contract imports can be done with `import <contract_name>`
+- Only use 'import' syntax for contracts, not for libraries or Python modules
+- Trying to import standard libraries will not work within a contract (they're automatically available)
+- Dynamic imports are preferred when the contract name is determined at runtime
+- Can enforce interface with `importlib.enforce_interface()`
+- NEVER import anything other than a contract.
+- ALL contracting libraries are available globally
+- NEVER IMPORT importlib. It is already available globally.
+
+```python
+@export
+def interact_with_token(token_contract: str, recipient: str, amount: float):
+    token = importlib.import_module(token_contract)
+    
+    # Define expected interface
+    interface = [
+        importlib.Func('transfer', args=('amount', 'to')),
+        importlib.Var('balances', Hash)
+    ]
+    
+    # Enforce interface
+    assert importlib.enforce_interface(token, interface)
+    
+    # Call function on other contract
+    token.transfer(amount=amount, to=recipient)
+```
+
+## Error Handling
+
+### Assertions
+- Use `assert` statements for validation and error checking
+- Include error messages: `assert condition, "Error message"`
+
+### No Try/Except
+- Exception handling with try/except is not allowed
+- Use conditional logic with if/else statements instead
+
+```python
+# DO NOT USE:
+try:
+    result = 100 / value
+except:
+    result = 0
+
+# CORRECT APPROACH:
+assert value != 0, "Cannot divide by zero"
+result = 100 / value
+
+# OR
+if value == 0:
+    result = 0
+else:
+    result = 100 / value
+```
+
+### Prohibited Built-ins
+- `getattr` is an illegal built-in function and must not be used
+- Other Python built-ins may also be restricted for security reasons
+
+## Modules
+
+### Random
+- Seed RNG with `random.seed()`
+- Generate random integers with `random.randint(min, max)`
+
+### Datetime
+- Available by default without importing
+- Compare timestamps with standard comparison operators
+- Use the built-in `now` variable for current time
+
+### Crypto
+- Provides cryptographic functionality using the PyNaCl library under the hood
+- Employs the Ed25519 signature scheme for digital signatures
+- Main function is `verify` for signature validation
+
+```python
+# Verify a signature
+is_valid = crypto.verify(vk, msg, signature)
+# Returns True if the signature is valid for the given message and verification key
+```
+
+Example usage in a contract:
+```python
+@export
+def verify_signature(vk: str, msg: str, signature: str):
+    # Use the verify function to check if the signature is valid 
+    is_valid = crypto.verify(vk, msg, signature)
+    
+    # Return the result of the verification
+    return is_valid
+```
+
+### Hashlib
+- Xian provides a simplified version of hashlib with a different API than Python's standard library
+- Does not require setting up an object and updating it with bytes
+- Functions directly accept and return hexadecimal strings
+
+```python
+# Hash a hex string with SHA3 (256 bit)
+hash_result = hashlib.sha3("68656c6c6f20776f726c64")  # hex for "hello world"
+
+# If not a valid hex string, it will encode the string to bytes first
+text_hash = hashlib.sha3("hello world")
+
+# SHA256 works the same way (SHA2 256-bit, used in Bitcoin)
+sha256_result = hashlib.sha256("68656c6c6f20776f726c64")
+```
+
+## Testing
+
+### Setting Up Tests
+- Use Python's unittest framework
+- Client available via `from contracting.client import ContractingClient`
+- Flush client before and after each test
+
+### Setting Test Environment
+- Pass environment variables like `now` (datetime) in a dictionary
+
+```python
+from contracting.stdlib.bridge.time import Datetime
+
+env = {"now": Datetime(year=2021, month=1, day=1, hour=0)}
+result = self.some_contract.some_fn(some_arg=some_value, environment=env)
+```
+
+### Specifying Signer
+- Specify the signer when calling contract functions in tests
+
+```python
+result = self.some_contract.some_fn(some_arg=some_value, signer="some_signer")
+```
+
+## Events
+
+### Defining Events
+- Use `LogEvent` to define events at the top level of a contract
+- Each event has a name and a schema of parameters with their types
+- Set `idx: True` for parameters that should be indexed for querying
+
+```python
+TransferEvent = LogEvent(
+    event="Transfer",
+    params={
+        "from": {'type': str, 'idx': True},
+        "to": {'type': str, 'idx': True},
+        "amount": {'type': (int, float, decimal)}
+    }
+)
+
+ApprovalEvent = LogEvent(
+    event="Approval",
+    params={
+        "owner": {'type': str, 'idx': True},
+        "spender": {'type': str, 'idx': True},
+        "amount": {'type': (int, float, decimal)}
+    }
+)
+```
+
+### Emitting Events
+- Call the event variable as a function and pass a dictionary of parameter values
+- All parameters defined in the event schema must be provided
+- Event parameters must match the specified types
+
+```python
+@export
+def transfer(amount: float, to: str):
+    sender = ctx.caller
+    
+    # ... perform transfer logic ...
+    
+    # Emit the transfer event
+    TransferEvent({
+        "from": sender,
+        "to": to,
+        "amount": amount
+    })
+```
+
+### Testing Events
+- Use `return_full_output=True` when calling contract functions in tests to capture events
+- Access events in the result dictionary's 'events' key
+- Assert on event types and parameters in tests
+
+```python
+# In your test function
+result = self.contract.transfer(
+    amount=100,
+    to="recipient",
+    signer="sender",
+    return_full_output=True
+)
+
+# Verify events
+events = result['events']
+assert len(events) == 1
+assert events[0]['event'] == 'Transfer'
+assert events[0]['from'] == 'sender'
+assert events[0]['to'] == 'recipient'
+assert events[0]['amount'] == 100
+```
+
+### Common Event Types
+- Transfer: When value moves between accounts
+- Approval: When spending permissions are granted
+- Mint/Burn: When tokens are created or destroyed
+- StateChange: When significant contract state changes
+- ActionPerformed: When important contract actions execute
+
+## Smart Contract Testing Best Practices
+
+### Test Structure
+- Use Python's unittest framework for structured testing
+- Create a proper test class that inherits from `unittest.TestCase`
+- Implement `setUp` and `tearDown` methods to isolate tests
+- Define the environment and chain ID in setUp for consistent testing
+
+```python
+class TestMyContract(unittest.TestCase):
+    def setUp(self):
+        # Bootstrap the environment
+        self.chain_id = "test-chain"
+        self.environment = {"chain_id": self.chain_id}
+        self.deployer_vk = "test-deployer"
+        
+        # Initialize the client
+        self.client = ContractingClient(environment=self.environment)
+        self.client.flush()
+        
+        # Load and submit the contract
+        with open('path/to/my_contract.py') as f:
+            code = f.read()
+            self.client.submit(code, name="my_contract", constructor_args={"owner": self.deployer_vk})
+            
+        # Get contract instance
+        self.contract = self.client.get_contract("my_contract")
+        
+    def tearDown(self):
+        # Clean up after each test
+        self.client.flush()
+```
+
+### Test Organization
+- Group tests by functionality using descriptive method names
+- Follow the Given-When-Then pattern for clear test cases
+- Test both positive paths and error cases
+- Define all variables within the test, not in setUp
+- Define all variables and parameters used by a test WITHIN THE TEST, not within setUp
+- This ensures test isolation and prevents unexpected side effects between tests
+
+```python
+def test_transfer_success(self):
+    # GIVEN a sender with balance
+    sender = "alice"
+    self.contract.balances[sender] = 1000
+    
+    # WHEN a transfer is executed
+    result = self.contract.transfer(amount=100, to="bob", signer=sender)
+    
+    # THEN the balances should be updated correctly
+    self.assertEqual(self.contract.balances["bob"], 100)
+    self.assertEqual(self.contract.balances[sender], 900)
+```
+
+### Testing for Security Vulnerabilities
+
+#### 1. Authorization and Access Control
+- Test that only authorized users can perform restricted actions
+- Verify that contract functions check `ctx.caller` or `ctx.signer` appropriately
+
+```python
+def test_change_metadata_unauthorized(self):
+    # GIVEN a non-operator trying to change metadata
+    with self.assertRaises(Exception):
+        self.contract.change_metadata(key="name", value="NEW", signer="attacker")
+```
+
+#### 2. Replay Attack Protection
+- Test that transaction signatures cannot be reused
+- Verify nonce mechanisms or one-time-use permits
+
+```python
+def test_permit_double_spending(self):
+    # GIVEN a permit already used once
+    self.contract.permit(owner="alice", spender="bob", value=100, deadline=deadline, 
+                        signature=signature)
+    
+    # WHEN the permit is used again
+    # THEN it should fail
+    with self.assertRaises(Exception):
+        self.contract.permit(owner="alice", spender="bob", value=100, 
+                            deadline=deadline, signature=signature)
+```
+
+#### 3. Time-Based Vulnerabilities
+- Test behavior around time boundaries (begin/end dates)
+- Test with different timestamps using the environment parameter
+
+```python
+def test_time_sensitive_function(self):
+    # Test with time before deadline
+    env = {"now": Datetime(year=2023, month=1, day=1)}
+    result = self.contract.some_function(signer="alice", environment=env)
+    self.assertTrue(result)
+    
+    # Test with time after deadline
+    env = {"now": Datetime(year=2024, month=1, day=1)}
+    with self.assertRaises(Exception):
+        self.contract.some_function(signer="alice", environment=env)
+```
+
+#### 4. Balance and State Checks
+- Verify state changes after operations
+- Test for correct balance updates after transfers
+- Ensure state consistency through complex operations
+
+```python
+def test_transfer_balances(self):
+    # Set initial balances
+    self.contract.balances["alice"] = 1000
+    self.contract.balances["bob"] = 500
+    
+    # Perform transfer
+    self.contract.transfer(amount=300, to="bob", signer="alice")
+    
+    # Verify final balances
+    self.assertEqual(self.contract.balances["alice"], 700)
+    self.assertEqual(self.contract.balances["bob"], 800)
+```
+
+#### 5. Signature Validation
+- Test with valid and invalid signatures
+- Test with modified parameters to ensure signatures aren't transferable
+
+```python
+def test_signature_validation(self):
+    # GIVEN a properly signed message
+    signature = wallet.sign_msg(msg)
+    
+    # WHEN using the correct parameters
+    result = self.contract.verify_signature(msg=msg, signature=signature, 
+                                          public_key=wallet.public_key)
+    
+    # THEN verification should succeed
+    self.assertTrue(result)
+    
+    # BUT when using modified parameters
+    with self.assertRaises(Exception):
+        self.contract.verify_signature(msg=msg+"tampered", signature=signature, 
+                                     public_key=wallet.public_key)
+```
+
+#### 6. Edge Cases and Boundary Conditions
+- Test with zero values, max values, empty strings
+- Test operations at time boundaries (exactly at deadline)
+- Test with invalid inputs and malformed data
+
+```python
+def test_edge_cases(self):
+    # Test with zero amount
+    with self.assertRaises(Exception):
+        self.contract.transfer(amount=0, to="receiver", signer="sender")
+    
+    # Test with negative amount
+    with self.assertRaises(Exception):
+        self.contract.transfer(amount=-100, to="receiver", signer="sender")
+```
+
+#### 7. Capturing and Verifying Events
+- Use `return_full_output=True` to capture events
+- Verify event emissions and their parameters
+
+```python
+def test_event_emission(self):
+    # GIVEN a setup for transfer
+    sender = "alice"
+    receiver = "bob"
+    amount = 100
+    self.contract.balances[sender] = amount
+    
+    # WHEN executing with return_full_output
+    result = self.contract.transfer(
+        amount=amount, 
+        to=receiver, 
+        signer=sender,
+        return_full_output=True
+    )
+    
+    # THEN verify the event was emitted with correct parameters
+    self.assertIn('events', result)
+    events = result['events']
+    self.assertEqual(len(events), 1)
+    event = events[0]
+    self.assertEqual(event['event'], 'Transfer')
+    self.assertEqual(event['data_indexed']['from'], sender)
+    self.assertEqual(event['data_indexed']['to'], receiver)
+    self.assertEqual(event['data']['amount'], amount)
+```
+
+### Common Exploits to Test For
+
+#### Reentrancy
+- Test that state is updated before external calls
+- Verify operations complete atomically
+
+```python
+def test_no_reentrancy_vulnerability(self):
+    # Set up the attack scenario (if possible with Xian)
+    
+    # Verify state is properly updated before any external calls
+    # For example, check that balances are decreased before tokens are sent
+    
+    # Verify proper operation ordering in the contract
+```
+
+#### Integer Overflow/Underflow
+- Test with extremely large numbers
+- Test arithmetic operations at boundaries
+
+```python
+def test_integer_boundaries(self):
+    # Set a large balance
+    self.contract.balances["user"] = 10**20
+    
+    # Test with large transfers
+    result = self.contract.transfer(amount=10**19, to="receiver", signer="user")
+    
+    # Verify results are as expected
+    self.assertEqual(self.contract.balances["user"], 9*10**19)
+    self.assertEqual(self.contract.balances["receiver"], 10**19)
+```
+
+#### Front-Running Protection
+- Test mechanisms that prevent frontrunning (e.g., commit-reveal)
+- Test deadline-based protections
+
+```python
+def test_front_running_protection(self):
+    # Test with deadlines to ensure transactions expire
+    deadline = Datetime(year=2023, month=1, day=1)
+    current_time = Datetime(year=2023, month=1, day=2)  # After deadline
+    
+    with self.assertRaises(Exception):
+        self.contract.time_sensitive_operation(
+            param1="value",
+            deadline=str(deadline),
+            environment={"now": current_time}
+        )
+```
+
+#### Authorization Bypass
+- Test authorization for all privileged operations
+- Try to access functions with different signers
+
+```python
+def test_authorization_checks(self):
+    # Test admin functions with non-admin signers
+    with self.assertRaises(Exception):
+        self.contract.admin_function(param="value", signer="regular_user")
+    
+    # Test with proper authorization
+    result = self.contract.admin_function(param="value", signer="admin")
+    self.assertTrue(result)
+```
+
+### Best Practices Summary
+- Test both positive and negative paths
+- Test permissions and authorization thoroughly
+- Use environment variables to test time-dependent behavior
+- Verify event emissions using `return_full_output=True`
+- Test against potential replay attacks and signature validation
+- Check edge cases and boundary conditions
+- Verify state consistency after operations
+- Test for common security vulnerabilities
