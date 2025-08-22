@@ -1,0 +1,29 @@
+---
+description: Performance optimization strategies for TypeScript + React applications, including bundle optimization, caching, and rendering strategies.
+globs: src/**/*
+---
+- Use React.memo for components with expensive render operations.
+- Implement proper code splitting with React.lazy and Suspense.
+- Use useMemo for expensive computations that are used in render.
+- Use useCallback for functions passed as props to prevent unnecessary re-renders.
+- Implement proper bundle analysis with tools like webpack-bundle-analyzer.
+- Use React.PureComponent or shouldComponentUpdate for class components.
+- Implement proper pagination for large data sets.
+- Use windowing/virtualization for long lists with react-window or react-virtualized.
+- Optimize images with proper sizing and modern formats (WebP, AVIF).
+- Implement proper lazy loading for components and images.
+- Use useEffect dependencies correctly to prevent unnecessary re-execution.
+- Implement proper error boundaries to prevent cascading failures.
+- Use production builds for deployment with NODE_ENV=production.
+- Implement proper caching strategies for API responses.
+- Use service workers for caching static assets.
+- Optimize CSS by removing unused styles and using efficient selectors.
+- Implement proper font loading strategies.
+- Use code splitting for routes with React Router.
+- Implement proper database query optimization for backend APIs.
+- Use CDN for static assets delivery.
+- Monitor Core Web Vitals for performance metrics.
+- Implement proper gzip/brotli compression for assets.
+- Use efficient state management to minimize re-renders.
+- Implement proper debounce/throttle for event handlers.
+- Use CSS containment to limit browser layout calculations.

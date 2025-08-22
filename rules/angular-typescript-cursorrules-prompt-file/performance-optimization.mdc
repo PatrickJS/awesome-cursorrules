@@ -1,0 +1,29 @@
+---
+description: Performance optimization strategies for Angular + TypeScript applications, including bundle optimization, caching, and rendering strategies.
+globs: src/**/*
+---
+- Use OnPush change detection strategy for components when possible.
+- Implement proper code splitting with Angular's lazy loading modules.
+- Use Angular's built-in pipes for transformations instead of methods in templates.
+- Implement proper bundle analysis with tools like webpack-bundle-analyzer.
+- Use Angular's built-in optimization features like tree-shaking.
+- Implement proper pagination for large data sets.
+- Use windowing/virtualization for long lists with Angular CDK Virtual Scroll.
+- Optimize images with proper sizing and modern formats (WebP, AVIF).
+- Implement proper lazy loading for modules and components.
+- Use ChangeDetectorRef.detach() and reattach() for manual change detection control.
+- Implement proper error boundaries to prevent cascading failures.
+- Use production builds for deployment with ng build --prod.
+- Implement proper caching strategies for HTTP responses with HttpInterceptors.
+- Use service workers for caching static assets.
+- Optimize CSS by removing unused styles and using efficient selectors.
+- Implement proper font loading strategies.
+- Use code splitting for routes with Angular Router.
+- Implement proper database query optimization for backend APIs.
+- Use CDN for static assets delivery.
+- Monitor Core Web Vitals for performance metrics.
+- Implement proper gzip/brotli compression for assets.
+- Use efficient state management to minimize change detection cycles.
+- Implement proper debounce/throttle for event handlers.
+- Use CSS containment to limit browser layout calculations.
+- Use Angular's built-in trackBy functions for *ngFor directives.

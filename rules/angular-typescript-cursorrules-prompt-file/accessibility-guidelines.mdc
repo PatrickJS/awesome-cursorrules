@@ -1,0 +1,29 @@
+---
+description: Accessibility guidelines for Angular + TypeScript applications to ensure inclusive design and compliance with WCAG standards.
+globs: src/**/*
+---
+- Use semantic HTML elements for proper document structure.
+- Implement proper heading hierarchy (h1, h2, h3, etc.) for content organization.
+- Use ARIA attributes appropriately to enhance accessibility for screen readers.
+- Ensure sufficient color contrast (minimum 4.5:1 for normal text, 3:1 for large text).
+- Implement proper focus management for keyboard navigation.
+- Use `aria-label` or `aria-labelledby` for icon buttons and decorative elements.
+- Provide alternative text for images using `alt` attributes.
+- Implement skip navigation links for keyboard users.
+- Use `role` attributes when necessary to define element purposes.
+- Ensure form inputs have associated labels using `for`/`id` pairing.
+- Implement proper error messaging with `aria-live` regions for dynamic updates.
+- Use `tabindex` appropriately (preferably only `tabindex="0"` or `tabindex="-1"`).
+- Implement proper landmark roles (banner, main, navigation, etc.) for screen readers.
+- Ensure all interactive elements are keyboard accessible.
+- Use `prefers-reduced-motion` media query for users with motion sensitivity.
+- Implement proper table markup with `thead`, `tbody`, `th`, and `scope` attributes.
+- Use `aria-hidden="true"` for decorative elements that should be ignored by screen readers.
+- Implement proper language attributes (`lang`) on HTML elements.
+- Ensure text resizing works properly up to 200% zoom.
+- Use `aria-expanded` for collapsible sections and dropdown menus.
+- Implement proper modal dialog accessibility with focus trapping.
+- Use `aria-current` for current page indicators in navigation.
+- Ensure proper reading order for screen readers with CSS positioning.
+- Test with screen readers like NVDA, JAWS, or VoiceOver.
+- Use accessibility testing tools like axe-core in development workflow.

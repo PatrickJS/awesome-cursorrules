@@ -1,0 +1,28 @@
+---
+description: Testing guidelines for Vue 3 Composition API applications, including unit testing, component testing, and end-to-end testing strategies.
+globs: src/**/*
+---
+- Use Vitest for unit testing Vue components and utility functions.
+- Use Vue Test Utils for component testing with a focus on user behavior.
+- Use Cypress or Playwright for end-to-end testing of user flows.
+- Implement proper test coverage targets (aim for 80%+ coverage).
+- Use mocking for external dependencies and API calls in unit tests.
+- Test both success and error states for components and composables.
+- Use snapshot testing sparingly and only for simple, stable components.
+- Implement proper test data setup and teardown with beforeEach/afterEach.
+- Use describe blocks to group related tests for better organization.
+- Test asynchronous behavior with proper async/await patterns.
+- Use data-testid attributes for selecting elements in tests when necessary.
+- Implement proper environment setup for different test types (unit, integration, e2e).
+- Use factory functions for creating test data to reduce duplication.
+- Test edge cases and boundary conditions for components and functions.
+- Use page objects pattern for end-to-end tests to improve maintainability.
+- Implement visual regression testing for critical UI components.
+- Use code coverage tools to identify untested code paths.
+- Test accessibility with tools like axe-core in Vitest tests.
+- Implement proper error boundary testing for Vue components.
+- Use parameterized tests for testing multiple similar scenarios.
+- Test responsive behavior with different viewport sizes.
+- Implement proper cleanup between tests to prevent test interdependence.
+- Use realistic data in tests rather than dummy data when possible.
+- Test loading states, empty states, and error states for data-driven components.
