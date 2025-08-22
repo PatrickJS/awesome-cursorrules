@@ -1,0 +1,18 @@
+---
+description: Best practices for using the Vercel AI SDK in Next.js 15 applications with React Server Components and streaming capabilities.
+globs: app/**/*
+---
+- Use `streamText` for streaming text responses from AI models.
+- Use `streamObject` for streaming structured JSON responses.
+- Implement proper error handling with `onFinish` callback.
+- Use `onChunk` for real-time UI updates during streaming.
+- Prefer server-side streaming for better performance and security.
+- Use `smoothStream` for smoother streaming experiences.
+- Implement proper loading states for AI responses.
+- Use `useChat` for client-side chat interfaces when needed.
+- Use `useCompletion` for client-side text completion interfaces.
+- Handle rate limiting and quota management appropriately.
+- Implement proper authentication and authorization for AI endpoints.
+- Use environment variables for API keys and sensitive configuration.
+- Cache AI responses when appropriate to reduce costs.
+- Implement proper logging for debugging and monitoring.

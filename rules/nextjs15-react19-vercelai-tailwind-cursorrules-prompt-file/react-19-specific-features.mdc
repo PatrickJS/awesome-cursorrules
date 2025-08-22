@@ -1,0 +1,24 @@
+---
+description: Guidelines for leveraging React 19 specific features in Next.js 15 applications, including new hooks, compiler optimizations, and improved server components.
+globs: app/**/*
+---
+- Use `use` hook for consuming Promises and Context directly in components.
+- Leverage new `useFormStatus` hook for form state management.
+- Use `useActionState` form actions and state management.
+- Implement Document Metadata API for better SEO and social sharing.
+- Use Actions for client-side mutations with automatic loading states.
+- Leverage compiler optimizations like automatic memoization.
+- Use `ref` as a prop directly without needing `forwardRef`.
+- Implement proper error boundaries with new error handling patterns.
+- Use `useOptimistic` hook for optimistic UI updates.
+- Leverage new React Compiler for automatic memoization and performance.
+- Use Document Metadata API for better SEO and social sharing.
+- Implement proper cleanup in useEffect to prevent memory leaks.
+- Use `startTransition` for non-urgent state updates.
+- Leverage new React DevTools for better debugging.
+- Use `useDeferredValue` for deferring UI updates.
+- Implement proper key prop usage for list rendering.
+- Use `useId` for generating unique IDs in server components.
+- Leverage new server component features for better performance.
+- Use `useSyncExternalStore` for subscribing to external stores.
+- Implement proper hydration strategies for client components.
