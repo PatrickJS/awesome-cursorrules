@@ -1,0 +1,29 @@
+---
+description: Performance optimization strategies for Vue 3 Composition API applications, including bundle optimization, caching, and rendering strategies.
+globs: src/**/*
+---
+- Use functional components for simple presentational components.
+- Implement proper code splitting with dynamic imports.
+- Use computed properties for expensive calculations that are used in templates.
+- Implement proper bundle analysis with tools like webpack-bundle-analyzer.
+- Use Vue's built-in optimization features like static hoisting.
+- Implement proper pagination for large data sets.
+- Use windowing/virtualization for long lists with vue-virtual-scroller.
+- Optimize images with proper sizing and modern formats (WebP, AVIF).
+- Implement proper lazy loading for components and images.
+- Use watchEffect and watch with proper dependencies to prevent unnecessary re-execution.
+- Implement proper error boundaries to prevent cascading failures.
+- Use production builds for deployment with NODE_ENV=production.
+- Implement proper caching strategies for API responses.
+- Use service workers for caching static assets.
+- Optimize CSS by removing unused styles and using efficient selectors.
+- Implement proper font loading strategies.
+- Use code splitting for routes with Vue Router.
+- Implement proper database query optimization for backend APIs.
+- Use CDN for static assets delivery.
+- Monitor Core Web Vitals for performance metrics.
+- Implement proper gzip/brotli compression for assets.
+- Use efficient state management to minimize re-renders.
+- Implement proper debounce/throttle for event handlers.
+- Use CSS containment to limit browser layout calculations.
+- Use Vue's reactivity system efficiently by avoiding unnecessary reactive objects.
