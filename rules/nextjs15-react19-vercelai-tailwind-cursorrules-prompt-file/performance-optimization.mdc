@@ -1,0 +1,27 @@
+---
+description: Performance optimization strategies for Next.js 15 and React 19 applications, including bundle optimization, caching, and rendering strategies.
+globs: app/**/*
+---
+- Use React Server Components (RSC) by default for better server-side rendering performance.
+- Minimize client components with 'use client' directive to reduce client-side JavaScript.
+- Implement proper code splitting with dynamic imports for large components.
+- Use Next.js Image component for optimized image loading and caching.
+- Implement proper caching strategies with `cache` function for data fetching.
+- Use `loading.tsx` for skeleton screens and improved perceived performance.
+- Optimize font loading with Next.js Font Optimization features.
+- Implement proper lazy loading for components and images.
+- Use `useTransition` for non-urgent updates to maintain responsiveness.
+- Implement proper bundle analysis with `@next/bundle-analyzer`.
+- Use `React.memo` for components with expensive render operations.
+- Implement proper pagination for large data sets.
+- Use `useDeferredValue` for deferring UI updates that aren't urgent.
+- Optimize API routes with proper caching headers.
+- Implement proper error boundaries to prevent cascading failures.
+- Use `prefetch` for links to preload pages and data.
+- Implement proper compression with gzip/brotli for static assets.
+- Use `generateStaticParams` for static generation of dynamic routes.
+- Implement proper CDN usage for static assets.
+- Use `revalidate` for incremental static regeneration (ISR).
+- Monitor Core Web Vitals for performance metrics.
+- Implement proper database query optimization.
+- Use `useOptimistic` for optimistic UI updates to improve perceived performance.

@@ -1,0 +1,29 @@
+---
+description: Error handling patterns for Next.js 15 and React 19 applications, including error boundaries, API error handling, and graceful degradation strategies.
+globs: app/**/*
+---
+- Use React Error Boundaries to catch rendering errors in component trees.
+- Implement proper error logging with tools like Sentry or LogRocket.
+- Use try/catch blocks for handling asynchronous operations and API calls.
+- Implement proper HTTP status codes for API responses (4xx for client errors, 5xx for server errors).
+- Use Next.js error pages (`error.tsx`, `not-found.tsx`, `global-error.tsx`) for different error scenarios.
+- Implement proper error messages for users that are informative but not expose sensitive information.
+- Use error recovery patterns like retry mechanisms for transient failures.
+- Implement proper validation for user inputs to prevent errors before they occur.
+- Use centralized error handling for API calls with interceptors or wrapper functions.
+- Implement proper fallback UI components for error states.
+- Use error boundaries at appropriate levels in the component hierarchy.
+- Implement proper error tracking in production with error monitoring services.
+- Use proper error serialization when passing errors from server to client.
+- Implement timeout mechanisms for API calls to prevent hanging requests.
+- Use circuit breaker patterns for external service dependencies.
+- Implement proper error handling for server actions and form submissions.
+- Use error codes instead of generic error messages for better debugging.
+- Implement proper error handling for streaming responses from AI services.
+- Use environment-specific error handling (more verbose in development, less in production).
+- Implement proper error boundaries for React Server Components.
+- Use proper error handling for database operations with connection pooling.
+- Implement proper error handling for file uploads and processing.
+- Use proper error handling for authentication and authorization failures.
+- Implement proper error handling for third-party API integrations.
+- Use proper error handling for WebSocket connections and real-time features.
