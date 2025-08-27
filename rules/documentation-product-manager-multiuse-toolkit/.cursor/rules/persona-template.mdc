@@ -1,5 +1,5 @@
 ---
-description: Defining 2 User Personas for the product: Regular and Skeptical Personas
+description: Defining 2 User Personas for the product: Ideal and Skeptical Personas
 alwaysApply: false
 ---
 # Persona Template Instructions
@@ -19,7 +19,12 @@ For each of these last 5 categories, write 3 short 1-line bullets, no more than 
 Next, write a skeptical User Persona for this product. Assume the persona is one of the listed target customers mentioned above,
 however, assume that it is someone who is not at all likely to like your product, as they are skeptical, 
 and it doesn't fit their needs and pains. Make sure to list: 
-1. Their name 2. Overview, 3. Goals, 4. Behaviors, 5. Pains and 6. Needs 
+1. Their name 
+2. Overview
+3. Goals
+4. Behaviors
+5. Pains
+6. Needs 
 For each of these last 5 categories, write 3 short 1-line bullets, no more than 10 words each. 
 
 Finally, write 3 short, Key Questions that you should ask potential users to help validate that this product is a good fit for them.

@@ -9,13 +9,13 @@ Be sure to use the @product-context.mdc data for for initial context.
 When creating epics, follow this comprehensive structure, which lists the Epics first, and then provides some ideas for user stories.
 
 ## Epic Overview
-You are to generate the Epics for the product to match the time frame and scope. Try and define no more than *3* epics in total.
+You are to generate the Epics for the product to match the time frame and scope. Try to define no more than *3* epics in total.
 The epics should be different from each other, and should be in a way that is easy to understand. They should also be relevant to the product and feature scope.
 For each epic, you are to provide the following information:
 1. Provide a clear title following the format: "Epic: [Name]" 
 2. Include a brief description (1-2 sentences) explaining the purpose and scope
 3. Identify any major dependencies on other epics
-4. List the business unit in charge of this (eg, Design, Engineering, Marketing)
+4. List the business unit in charge of this (e.g., Design, Engineering, Marketing)
 
 List each epic similar to the Example below for only 2 epics, and additional epics should follow this style.
 ### Example Epic Output:
@@ -32,7 +32,7 @@ List each epic similar to the Example below for only 2 epics, and additional epi
 
 ## User Stories
 After writing the Epics, you will write some ideas for relevant User Stories for those Epics.
-Stop and think about the Epics you just wrote, and then come up with *5* User Stories each for each of the Epics.
+Stop and think about the Epics you just wrote, and then come up with *5* User Stories per Epic.
 Use the following format for the User Story:
 As a [type of user], I want to [perform some task] so that I can [achieve some goal].
 The User Story should be written in a tone that uses an Active Voice, and the Story is achievable.

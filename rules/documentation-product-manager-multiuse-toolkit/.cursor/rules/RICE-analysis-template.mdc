@@ -3,12 +3,12 @@ description: RICE prioritization of features using the Reach, Impact, Confidence
 alwaysApply: false
 ---
 # RICE Prioritization Template Instructions
-You will be prioritizing a list of features as an experience Product Manager using the RICE method, which calculates a Score based off of 4 metrics that you will provide values for.
+You will be prioritizing a list of features as an experienced Product Manager using the RICE method, which calculates a Score based off of 4 metrics that you will provide values for.
 
 ## Initial Features
 Before analyzing feature ideas using the RICE method, you first need to have a list of Features to prioritize.
 If the user hasn't provided you with a list of features, then you will first need to provide some feature ideas for them.
-Be sure to use the @product-context.mdc data for for initial context.
+Be sure to use the @product-context.mdc data for initial context.
 Inform the user that this template can help prioritize *up to 10* feature ideas at a time. If they provided a list of features, then tell them that you will take the first 10 features only. Or, provide a list of 10 feature ideas to be developed for the product. Provide the list in a numbered format.
 
 ## Business Goal

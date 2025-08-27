@@ -7,7 +7,7 @@ Before writing the KPI-Revenue Connector, ask a short Clarifying Question to the
 ONLY THEN, continue with the rest of this document. 
 **Also, advise the user that it may be better to manually switch to Gemini 2.5, which has a larger context window for this**
 
-Be sure to use the @product-context.mdc data for for initial context.
+Be sure to use @product-context.mdc data for for initial context.
 Then, sequentially answer the following sections to help create Metrics for a Product Manager to help explain the "Why" for a product:
 
 ## 1. Product Goals

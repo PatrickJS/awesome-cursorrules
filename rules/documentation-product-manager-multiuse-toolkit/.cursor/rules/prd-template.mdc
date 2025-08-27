@@ -3,7 +3,7 @@ description: Product Requirements Document, PRD, or Requirements Generator
 alwaysApply: false
 ---
 # PRD Template Instructions
-Before writing the User Stories, ask a short Clarifying Question to the user about what the Time Frame is for the feature, and what the Specific Feature is (do not provide ideas).
+Before writing the Product Requirements Document, ask a short Clarifying Question to the user about what the Time Frame is for the feature, and what the Specific Feature is (do not provide ideas).
 ONLY THEN, continue with the rest of this document.
 Be sure to use the @product-context.mdc data for initial context.
 Then, create a Product Requirements Document, following this comprehensive structure:
@@ -72,7 +72,7 @@ Milestone 1: Competitive Analysis, Make a list of 5 competitors and analyze thei
 In addition, write a single sentence what you think the greatest milestone *Risk* is for this project.
 
 ## 10. OKRs
-Provide 4 L1 and L2 OKRs to develop the feature or product. Each OKR should be a single sentence, no more than 25 words each.
+Provide OKRs as follows: 2 L1 Objectives. For each L1, provide 2 L2 Key Results (4 KRs total). Each line ≤ 25 words.
 Make sure that the OKRs are aligned with the features and the problem-solution set.
 Make sure that the OKRs are measurable and achievable, using the SMART criteria.
 

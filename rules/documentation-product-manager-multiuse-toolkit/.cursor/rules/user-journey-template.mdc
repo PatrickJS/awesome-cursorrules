@@ -5,9 +5,9 @@ alwaysApply: false
 # User Journey Template Instructions
 Before writing the User Journey, ask a short Clarifying Question to the user about what the Specific Feature is (do not provide ideas).
 ONLY THEN, continue with the rest of this document.
-Be sure to use the @product-context.mdc data for for initial context.
-You are writing the User Journey for the feature to be developed as a Product Manager with a speciality in UI and UX.
-Then, write a User Journey for the Feature to be developed, using the this format:
+Be sure to use @product-context.mdc data for initial context.
+Write the User Journey as a PM with a specialty in UI/UX.
+Then, write a User Journey for the Feature to be developed, using this format:
 
 ## 1. Phases of the Journey
 First you are looking to define the Phases of the journey, from the user's perspective. 
@@ -30,10 +30,10 @@ Write them in the first person, as if you were the user, without any extra text.
 Think about how the user interacts with the Product at each Phase. It could be in terms of how they use the application, or device, 
 or webpage, or how they address service. This is the Touchpoint that the user has with the product.
 Write the potential Touchpoints that the User has at each Phase. 
-For the TOUCHPOINTS, make each no more than 1 sentence of up to 12 words.
+For the Touchpoints, make each no more than 1 sentence of up to 12 words.
 
 ## 5. Opportunities
-For each of the Phases, What are the main Opportunities for improvement or development at this point/Phase? 
+For each of the Phases, what are the main Opportunities for improvement or development at this point/Phase? 
 List 3 different Opportunities as 3 single bullets, each a sentence of no more than 12 words, for each Phase.
 
 ## 6. Summary

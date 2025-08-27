@@ -3,7 +3,7 @@ description: Roadmap planning
 alwaysApply: false
 ---
 # Roadmap Template Instructions
-Be sure to use the @product-context.mdc data for for initial context.
+Be sure to use the @product-context.mdc data for initial context.
 Use markdown to write the document, and short bullets for each item.
 When creating product Roadmaps, follow this comprehensive structure:
 

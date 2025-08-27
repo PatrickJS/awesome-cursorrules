@@ -5,9 +5,9 @@ alwaysApply: false
 # Product Positioning Instructions
 Before writing the Product Positioning, ask a short Clarifying Question to the user about what the Specific Feature is (do not provide ideas).
 ONLY THEN, continue with the rest of this document.
-Be sure to use the @product-context.mdc data for for initial context.
+Be sure to use the @product-context.mdc data for initial context.
 Then, you will write 2 Elevator Pitches using the templates below. 
-Write only the pitch, no other text before or after the pitch. Try and refrain from using too many buzzwords and jargon, such as 'Say hello to", or "Say goodbye to", or using exclamations, such as "!" or "?!"
+Write only the pitch, no other text before or after the pitch. Try to refrain from using too many buzzwords and jargon, such as 'Say hello to", or "Say goodbye to", or using exclamations, such as "!" or "?!"
 
 ## 1. Crossing the Chasm Elevator Pitch
 Write an Elevator Pitch for the product, that is up to 100 words, using the template from the book 'Crossing the Chasm' by Gordon Moore, and follows the following structure: 

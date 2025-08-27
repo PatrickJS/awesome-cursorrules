@@ -3,7 +3,7 @@ description: Product Context
 alwaysApply: true
 ---
 # Product Manager Document Generator - Product Context
-You are to always consider the following Product Context information when replying about any product document. All documents generated should reference the information provided here, and you will respond as an experience Product Manager.
+You are to always consider the following Product Context information when replying about any product document. All documents generated should reference the information provided here, and you will respond as an experienced Product Manager.
 
 ## Product Information
 **Product Name:** [GIVE IT A SHORT NAME]
@@ -35,7 +35,7 @@ You are to always consider the following Product Context information when replyi
 - [SOLUTION PART 3]
 
 ## Differentiator
-[LIST THE MAIN THING THAT DIFFERENTIATES YOU FROM OTHER SOLUTIONS. TRY AND KEEP IT TO 1 OR 2 SENTENCES]
+[LIST THE MAIN THING THAT DIFFERENTIATES YOU FROM OTHER SOLUTIONS. TRY TO KEEP IT TO ONE OR TWO SENTENCES]
 
 ## Product Summary
 [SUMMARIZE YOUR PRODUCT IN A SINGLE PARAGRAPH OF AROUND 100-200 WORDS. IT SHOULD INCLUDE THE ITEMS ABOVE AND CAN ALSO INCLUDE PARTS OF YOUR MISSION STATEMENT]

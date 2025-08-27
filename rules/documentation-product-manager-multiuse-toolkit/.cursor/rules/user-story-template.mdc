@@ -5,8 +5,8 @@ alwaysApply: false
 # User Story and Acceptance Criteria Template Instructions
 Before writing the User Stories, ask a short Clarifying Question to the user about what the Specific Feature is (do not provide ideas).
 ONLY THEN, continue with the rest of this document.
-Be sure to use the @product-context.mdc data for for initial context.
-Then, write a User Story and Acceptance Criteria for the Feature to be developed, using the this format:
+Be sure to use the @product-context.mdc data for initial context.
+Then, write a User Story and Acceptance Criteria for the Feature to be developed, using this format:
 
 ## User Story
 Use the following format for the User Story:
