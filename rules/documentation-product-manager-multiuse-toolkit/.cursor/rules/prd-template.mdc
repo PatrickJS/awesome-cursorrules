@@ -1,0 +1,131 @@
+---
+description: Product Requirements Document, PRD, or Requirements Generator
+alwaysApply: false
+---
+# PRD Template Instructions
+Before writing the User Stories, ask a short Clarifying Question to the user about what the Time Frame is for the feature, and what the Specific Feature is (do not provide ideas).
+ONLY THEN, continue with the rest of this document.
+Be sure to use the @product-context.mdc data for initial context.
+Then, create a Product Requirements Document, following this comprehensive structure:
+
+## 1. Market Problem
+Describe the Market Problem being solved, or difficulty in this market, that requires change. 
+Do not mention specific solutions. Write the Market Problem as a single paragraph, of up to 160 words.
+Then, describe the Market Opportunity for this problem. What is the market size for this problem and field, as found in existing market reports or similar report? 
+Keep the description of the Market Opportunity as a single paragraph that is less than 160 words.
+
+## 2. Why Solve This?
+Given the Mission Statement and the Market Problem and Opportunity, and with general understanding of the Market involved,
+provide 2 logical reasons why we can know that this problem is worth solving, using *only* 2 short sentences.
+Make sure that the reasons match the Mission Statement and the Market Problem and Opportunity.
+
+Then, add an additional sentence explaining why you think this will increase the Business Value of the company. 
+
+## 3. Competition Summary
+Given this information about the problem and solution, list 5 potential competitors for what we are developing. 
+List them as 5 bullets, with each bullet being no more than 10 words.
+
+## 4. Target Customers
+The Customer is the person who pays for the product, but not necessarily the User, unless the User is the Customer (e.g. in a B2C or B2B2C model). 
+I want you to summarize the following information, about who we are building this solution for: 
+First describe the general Customers (who will pay for the product), in a single sentence. 
+Next, write a list of why the Customer would want to buy a solution for this problem following these questions: 
+1. Why would the customers want to buy a solution for this problem?
+2. Why would the customers prefer our product over the competition?
+3. What is influencing the customers buying decision (such as price, or culture, or trends, or peer, or income)?
+4. What is their goal in obtaining a solution?
+
+## 5. Success Criteria
+Summarize this information, about how we know if we have solved the problem, using no more than 3 lines of text, with no more than 120 words in total. 
+Only describe the Metrics themselves, not the problem, for example: 
+'We will reduce costs and increase our market share by 10%. In addition, we will reduce the amount of time needed for each task'
+
+## 6. Feature List
+Given the following information about the product, solution and differentiator, list the key features and functionalities expected of the product.
+List the top 5 features, and each feature should be a single sentence, no more than 15 words each.
+
+## 7. Product Requirements
+Provide a list of System Requirements and demands that are applicable for the Product and shape the solution.
+First, write 'Development Requirements', followed by 3 short sentences describing the requirements that constitute the solution's development environment.
+Regarding software, these are often the development tools and API sets.
+Second, write 'Compatibility Requirements', followed by 3 short sentences describing conformance demands and conditions that support the solution and constitute the environment in which the solution will operate.  
+Regarding software, these are elements such as: operating system platforms, GUI interfaces, or supported standards.
+Third, write 'Performance Requirements', followed by 3 short sentences that list requirements that reflect the need for certain levels of speed, usability, capacity, or scalability.
+These three categories should each have three requirements listed as short sentences with up to 15 words each, and the total amount of text should be up to 300 words. 
+Write the response in Markdown format, and use a tone that implies what Could be done and not what Should be done.
+
+## 8. Technological Overview
+Provide a description of the solution and technologies involved.
+First, write 'Solution Technology Overview', followed by up to 4 short sentences describing a general description of what technologies, innovations or methods the solution will use.
+Second, write 'Solution Dependencies', here you will list in up to 4 sentences the potential dependencies for the solution, such as other products, services, or technologies that the solution will use.
+Third, write 'Solution Risks', here you will list in up to 4 sentences the potential risks for the solution, such as technical risks, market risks, or other risks.
+Write only these two sections, with no extra text, in Markdown format.
+
+## 9. Milestones
+Provide a list of milestones for this project, given the timeframe, features and problem-solution set. 
+Consider phases like planning, design, development, testing, and launch.
+List the major milestones, along with their approximate due date, from the time of the project starting, 
+Try not to list more than 8 lines in total. 
+Each milestone should be written as a Markdown bullet point with no more than 10 words each, followed by a short description, followed by an estimated due date, like this:
+Milestone 1: Competitive Analysis, Make a list of 5 competitors and analyze their product - 1 week. 
+
+In addition, write a single sentence what you think the greatest milestone *Risk* is for this project.
+
+## 10. OKRs
+Provide 4 L1 and L2 OKRs to develop the feature or product. Each OKR should be a single sentence, no more than 25 words each.
+Make sure that the OKRs are aligned with the features and the problem-solution set.
+Make sure that the OKRs are measurable and achievable, using the SMART criteria.
+
+## 11. Release Details
+Considering the product being released, think of the Operational Requirements for releasing the product. This includes topics such as: Distribution, Support, Regulation, Safety, Training, 3rd Party Services, Logistics and Security. 
+Consider 3 different categories that are relevant for the product, and write for each of the 3 a single short sentence with up to 15 words each. Return this as Markdown, with each category being a new line, and each requirement being a dash followed by a space and then the requirement. 
+For example:
+### Category1
+- Requirement1
+- Requirement2
+- Requirement3
+
+### Category2
+- Requirement1
+- Requirement2
+- Requirement3
+
+### Category3
+- Requirement1
+- Requirement2
+- Requirement3
+
+## 12. Press Release
+As a Product Marketer, you are using the 'Working Backwards' method of defining a product, by first writing a Product Release statement. The press release shouldn't contain too many buzzwords, and should be in a matter-of-fact tone. 
+Given a placeholder product name: <use the product name listed above> , and the customers, problem and solution listed above, you will describe the benefits to the user as a Press Release for this new goal. The format of the press release is:
+TITLE:string
+SUBTITLE: Subtitle summarizing the solution in a short sentence
+'New York, NY - in another: XX mo/wk/yr 
+What the problem is, in 3-4 sentences.\\n\\n 
+What the solution our product provides, including how the new goal product/feature listed solves a real problem, written in 3-4 sentences. 
+A fake quote by a leader named Joe Johnson saying why we built this new particular feature.\\n\\n
+How the customer would use the solution to solve their problems, in 2-3 sentences.\\n\\n 
+Another fake quote by a fake customer named Wanda Woods saying how this new feature solved her exact problem.
+
+Write the response using Markdown format, with the \\n used above to signify new lines.
+
+## 13. Potential Complaints
+What would the typical complaints be for a product/feature like this? 
+Write a list of 8 common complaints you'd expect to hear, focusing on the solution and differentiator for this product. 
+Each potential complaint should be a single sentence, no more than 15 words each.
+
+## 14. Product Team Feedback
+Given this product, and all its details, written in the PRD above, provide Constructive Criticism or Feedback on the main issues that could be anticipated. For each of the 4 risk categories below, write a single paragraph that may be a problem, given the information provided. Each paragraph will be up to 80 words in length, such that the total output of the response shall be less than 400 words. The 4 categories are:
+1. value risk (whether customers will buy it or users will choose to use it)
+2. usability risk (whether users can figure out how to use it)
+3. feasibility risk (whether our engineers can build what we need with the time, skills and technology we have)
+4. business viability risk (whether this solution also works for the various aspects of our business)
+
+## 15. Risks, Safety and Security
+For the product, provide a list of 3 bullets each for the following 3 issues. Each bullet should be a sentence no more than 20 words long:
+1. What are the major Risks for this product?
+2. What are the main Security concerns?
+3. What are the main Safety concerns?
+
+
+Write the response in Markdown format, without writing '''markdown''' or anything else, and without using any other formatting.

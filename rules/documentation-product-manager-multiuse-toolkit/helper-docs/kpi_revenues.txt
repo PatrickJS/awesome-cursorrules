@@ -1,0 +1,50 @@
+The following are possible connectors between Revenue Goals and Key Performance Indicators.
+
+The three Revenue Goals are: 
+1. Growth (making revenue)
+2. Retention (preserving revenue)
+3. Margins (sustaining revenue)
+
+For companies that are not for-profit, or have non-revenue related business objectives (such as Tech development), here are some potential metrics/indicators that can be used instead of Growth, Retention and Margins:
+Social Impact, Technology Adoption/Breakthrough, Open-source Contributions, Patents Filed, Sustainability Goals, Workplace Safety, Supply chain resilience, Energy Consumption. 
+These should only be used if it is clear that the company is not one interested in Revenues directly. 
+
+Given the Revenue Goal, there are typically KPIs that directly relate to this goal. Here is a partial list of Revenue Goals, and the types of KPIs that are associated with them.
+Note that each Goal has 2 sub-categories of metrics that reach that goal:
+**Growth (making revenue):
+1. User growth and distribution: 
+a. Active Users (AU, DAU, MAU)
+b. Net Promoter Score (NPS)
+c. User Mix
+d. Page Visits
+e. App Installs
+f. Click Through Rate (CTR)
+2. Revenue Growth:
+a. Recurring Revenue (Annual, Monthly; ARR, MRR)
+b. Net Retention Revenue (NRR)
+c. Multi Stock Keeping Unit (SKU)
+d. Partner Revenue
+
+**Retention (preserving revenue):
+1. Customer Retention:
+a. Lifetime value (LTV)
+b. Contract Length
+c. Time to deploy
+d. Time to value
+e. Customer Satisfaction (CSAT)
+2. Revenue Retention:
+a. Churn
+b. Average Contract Value (ACV)
+c. Gross and Net Dollar Retention (GDR, NDR)
+d. Down-sell
+
+**Margins (sustaining revenue)
+1. Product pricing:
+a. $ gating
+b. Up/down/cross-sell
+c. Monetizable account
+d. Professional services
+2. Service Costs:
+a. Customer Acquisition Cost (CAC)
+b. Capital Expenses (CapEx)
+c. Operating Expenses (OpEx)
