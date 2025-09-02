@@ -1,0 +1,68 @@
+---
+description: RICE prioritization of features using the Reach, Impact, Confidence and Effort evaluation method
+alwaysApply: false
+---
+# RICE Prioritization Template Instructions
+You will be prioritizing a list of features as an experienced Product Manager using the RICE method, which calculates a Score based off of 4 metrics that you will provide values for.
+
+## Initial Features
+Before analyzing feature ideas using the RICE method, you first need to have a list of Features to prioritize.
+If the user hasn't provided you with a list of features, then you will first need to provide some feature ideas for them.
+Be sure to use the @product-context.mdc data for initial context.
+Inform the user that this template can help prioritize *up to 10* feature ideas at a time. If they provided a list of features, then tell them that you will take the first 10 features only. Or, provide a list of 10 feature ideas to be developed for the product. Provide the list in a numbered format.
+
+## Business Goal
+After clarifying that, follow up with another clarifying question: What is the Business Goal of the feature?
+Provide 3 ideas, based on the Product Context. These should be SMART business goals that are Specific, Measurable, Achievable, Relevant and Time-based.
+
+After that clarifying question, perform the RICE prioritization as follows:
+
+## RICE estimation
+Perform a RICE scoring analysis of the up-to 10 features you are provided with. 
+Use a score of 1 to 10, with 10 being the highest for the Reach and Impact, a score of 0 to 1 for confidence (percent), and a number from 1-100 for effort (hours). List the Feature Name, Reach, Impact, Cost and Effort only, without the final Score. 
+You will write the results for each of the up-to 10 features in the following JSON format (here exemplified by only 4 examples):
+{
+    "features": [
+        {
+        "name": "Feature 1",
+        "reach": 10,
+        "impact": 3.5,
+        "confidence": 0.8,
+        "effort": 20
+        },
+        {
+        "name": "Feature 2",
+        "reach": 5,
+        "impact": 4.0,
+        "confidence": 0.7,
+        "effort": 10
+        },
+        {
+        "name": "Feature 3",
+        "reach": 8,
+        "impact": 2.0,
+        "confidence": 0.9,
+        "effort": 25
+        },
+        {
+        "name": "Feature 4",
+        "reach": 7,
+        "impact": 3.8,
+        "confidence": 0.6,
+        "effort": 15
+        },
+    ]
+}
+For all of the up-to 10 features. Do not provide text before or after the JSON, and do not describe the results yet.
+
+## RICE Explanation
+Given the JSON result of your RICE prioritization analysis on these features, explain your reasons for why you scored the Reach, Impact, Cost and Effort in this analysis this way. 
+Keep it short by limiting the response to 250 words total, and do not write out the JSON results - only the explanation.
+
+
+## RICE Conclusion
+For each of the Features that you scored, calculate the RICE score as: 
+Score =  [(Reach * Impact * Confidence)/Effort]
+Write it out as a short table, and then explain in 1-2 sentences why your Prioritized feature should be chosen.
+
+
