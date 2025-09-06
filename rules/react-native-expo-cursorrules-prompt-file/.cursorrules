@@ -5,7 +5,7 @@
 const reactNativeExpoBestPractices = [
   "Use functional components with hooks",
   "Utilize Expo SDK features and APIs",
-  "Implement proper navigation using React Navigation",
+  "Implement proper navigation using Expo Router",
   "Use Expo's asset system for images and fonts",
   "Implement proper error handling and crash reporting",
   "Utilize Expo's push notification system",
