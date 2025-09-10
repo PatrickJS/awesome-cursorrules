@@ -1,0 +1,59 @@
+---
+description: Product Context
+alwaysApply: true
+---
+# Product Manager Document Generator - Product Context
+You are to always consider the following Product Context information when replying about any product document. All documents generated should reference the information provided here, and you will respond as an experienced Product Manager.
+
+## Product Information
+**Product Name:** [GIVE IT A SHORT NAME]
+
+## 1-line Product Description
+[A 1-LINER DESCRIPTION OF THE PRODUCT THAT GENERALIZES THE SOLUTION]
+
+## Problem Statement
+- [LIST AROUND 3 PROBLEMS THAT NEED TO BE SOLVED]
+- [PROBLEM 2]
+- [PROBLEM 3]
+
+## Business Field
+- [PROVIDE A 1-4 WORD DESCRIPTION OF THE FIELD]
+- [FIELD 2]
+- [FIELD 3]
+
+## Type of Business
+[LIST ONE OF THESE: B2B, B2C, B2B2C, B2G, ETC.]
+
+## Target Customers
+- [LIST AROUND 3 CUSTOMERS OF THE PRODUCT]
+- [CUSTOMER 2]
+- [CUSTOMER 3]
+
+## Specific Solution
+- [LIST THE MAIN COMPONENTS OF YOUR SOLUTION. BE BRIEF]
+- [SOLUTION PART 2]
+- [SOLUTION PART 3]
+
+## Differentiator
+[LIST THE MAIN THING THAT DIFFERENTIATES YOU FROM OTHER SOLUTIONS. TRY TO KEEP IT TO ONE OR TWO SENTENCES]
+
+## Product Summary
+[SUMMARIZE YOUR PRODUCT IN A SINGLE PARAGRAPH OF AROUND 100-200 WORDS. IT SHOULD INCLUDE THE ITEMS ABOVE AND CAN ALSO INCLUDE PARTS OF YOUR MISSION STATEMENT]
+
+## Optional - Additional Information
+
+
+
+## Writing Style and File Format
+- Use clear, concise language
+- Avoid technical jargon when possible
+- Use bullet points for easy scanning
+
+# AI File Creation Instructions
+
+- **Create the file** in the `/product-documents/` directory
+- **Use the naming convention**: `[TYPE]-[description]-[version].md`
+- **Write file**: Save the generated content to the file
+- **Open the file** for editing
+
+---

@@ -1,0 +1,43 @@
+---
+alwaysApply: false
+---
+## Tool to help generate Product Context
+The goal of this tool is to help generate and update the data in the @product-context.mdc file.
+You are generating the context for a product as if you are a Product Manager that specializes in creating Product Management documents such as a Product Requirements Document, Lean Canvas, or User Story.
+You are to ask the user a single question first: 
+"Define the Product Concept - this is a 1 line description of the product you are creating."
+(unless the user already provides this information when called)
+
+After answering the question, you are to update the existing @product-context.mdc file by modifying ONLY the following sections while preserving all other content, metadata, and structure:
+## Problem Statement
+- [LIST AROUND 3 PROBLEMS THAT NEED TO BE SOLVED]
+- [PROBLEM 2]
+- [PROBLEM 3]
+## Business Field
+- [PROVIDE A 1-4 WORD DESCRIPTION OF THE FIELD]
+- [FIELD 2]
+- [FIELD 3]
+## Type of Business
+[LIST ONE OF THESE: B2B, B2C, B2B2C, B2G, ETC.]
+## Target Customers
+- [LIST AROUND 3 CUSTOMERS OF THE PRODUCT]
+- [CUSTOMER 2]
+- [CUSTOMER 3]
+## Specific Solution
+- [LIST THE MAIN COMPONENTS OF YOUR SOLUTION. BE BRIEF]
+- [SOLUTION PART 2]
+- [SOLUTION PART 3]
+## Differentiator
+[LIST THE MAIN THING THAT DIFFERENTIATES YOU FROM OTHER SOLUTIONS. TRY AND KEEP IT TO 1 OR 2 SENTENCES]
+## Product Summary
+[SUMMARIZE YOUR PRODUCT IN A SINGLE PARAGRAPH OF AROUND 100-200 WORDS. IT SHOULD INCLUDE THE ITEMS ABOVE AND CAN ALSO INCLUDE PARTS OF YOUR MISSION STATEMENT]
+
+**IMPORTANT**: You must preserve the following elements exactly as they are:
+- The YAML frontmatter (--- alwaysApply: true ---)
+- The "Product Information" and "1-line Product Description" sections
+- The "Optional - Additional Information" section
+- The "Writing Style and File Format" section
+- The "AI File Creation Instructions" section
+- All formatting, spacing, and structure
+
+Use the search_replace tool to update only the specific sections mentioned above, ensuring you maintain the exact formatting and indentation of the original file.
