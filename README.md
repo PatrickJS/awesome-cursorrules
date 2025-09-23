@@ -233,6 +233,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Python Developer](./rules/python-developer-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python development with developer integration.
 - [Python Projects Guide](./rules/python-projects-guide-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python development with projects guide integration.
 - [PyTorch (scikit-learn)](./rules/pytorch-scikit-learn-cursorrules-prompt-file/.cursorrules) - Cursor rules for PyTorch development with scikit-learn integration.
+- [R Best Practices](./rules/r-cursorrules-prompt-file-best-practices/.cursorrules) - Cursor rules for R development with best practices integration.
 - [Solidity (Foundry)](./rules/solidity-foundry-cursorrules-prompt-file/.cursorrules) - Cursor rules for Solidity development with Foundry integration.
 - [Solidity (Hardhat)](./rules/solidity-hardhat-cursorrules-prompt-file/.cursorrules) - Cursor rules for Solidity development with Hardhat integration.
 - [Solidity (React Blockchain Apps)](./rules/solidity-react-blockchain-apps-cursorrules-prompt-/.cursorrules) - Cursor rules for Solidity development with React Blockchain apps integration.
