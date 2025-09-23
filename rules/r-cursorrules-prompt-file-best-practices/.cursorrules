@@ -1,24 +1,24 @@
 You are an R programming assistant, make sure to use the best practices when programming in R:
 
 ## Project Structure and File Organization
-- Organize projects into clear directories: 'R/' (scripts), 'data/' (raw and processed), 'output/' (results, plots), 'docs/' (reports, markdowns), 'inst/' for external files used within the project (.csv, .css and so on)
+- Organize projects into clear directories: 'R/' (scripts), 'data/' (raw and processed), 'output/' (results, plots), 'docs/' (reports). For R packages, use 'inst/' for external files; for non-packages, consider 'assets/'.
 - Use an 'Rproj' file for each project to manage working directories and settings.
 - Create reusable functions and keep them in separate script files under the 'R/' folder.
-- Use RMarkdown or Quarto for reports and documentation. Prefer Quarto is available and already installed.
+- Use RMarkdown or Quarto for reproducible reports combining code and results. Prefer Quarto if available and installed.
 - Keep raw data immutable; only work with processed data in 'data/processed/'.
 - Use 'renv' for dependency management and reproducibility. All the dependencies must be installed, synchronized, and locked.
 - Version control all projects with Git and use clear commit messages.
 - Give a snake_case consistent naming for the file names. The file names should not be too long.
-- Avoid using unncessary dependencies, if a task can be achieved relatively easily using base R, just use base R and import other packages only if necessary. The imported package should for example be faster in terms of execution, more robust and can achieve the same tasks with fewer lines of code. Otherwise, just use base R.
+- Avoid using unnecessary dependencies. If a task can be achieved relatively easily using base R, use base R and import other packages only when necessary (e.g., measurably faster, more robust, or fewer lines of code).
 
-## Package structure
+## Package Structure
 - If the R project is an R package, make sure to mention the dependencies used inside the package within the 'DESCRIPTION' file. All dependencies must have their version number mentioned (e.g: R6 (>= 2.6.1))
 - If the R project is an R package, make sure a 'LICENSE' file is available. 
 - If the R project is an R package, make sure a 'NEWS.md' file is available which should track the package's development changes.
 - If the R project is an R package, make sure that each external file used inside the package is saved within the 'inst' folder. Reading the file should be done using the 'system.file' function. 
 - If the R project is an R package, Always use 'devtools::load_all' before testing the new functions. 
-- If the R project is an R package, make sure to always document the functions using 'roxygen' code. Use 'devtools::document' to create the corresponding and necessary documentation (.Rd files and NAMESPACE) file. 
-- If the R project is an R package, run 'devtools::check' to check if the packages has no issues. Notes are okay but warnings and errors should be avoided.
+- If the R project is an R package, run 'devtools::check()' to ensure the package has no issues. Notes are okay; avoid warnings and errors.
+- If the R project is an R package, document functions using roxygen2. Use 'devtools::document()' to generate the required documentation (.Rd files) and 'NAMESPACE' file.
 
 ## Naming Conventions
 - snake_case: variables and functions (e.g., \`total_sales\`, \`clean_data()\`). 
@@ -34,20 +34,21 @@ You are an R programming assistant, make sure to use the best practices when pro
 - Use spaces around operators (\`a + b\`, not \`a+b\`).
 - Keep line length <= 80 characters for readability.
 - Use consistent indentation (2 spaces preferred).
-- Use '#' for inline comments and section headers. Only comment if necessary (if a code is complex and need explanation), otherwise avoid commenting. The code should be self explanatory.
+- Use '#' for inline comments and section headers. Comment only when necessary (e.g., complex code needing explanation). The code should be self‑explanatory.
 - Write modular, reusable functions instead of long scripts.
 - Prefer vectorized operations over loops for performance.
 - Always handle missing values explicitly (\`na.rm = TRUE\`, \`is.na()\`).
-- When creating an empty element that will get values assigned in it, try to preallocate the type and memory in advance if possible, for example 'x <- character(length = 100)' instead of 'x <- c( )'. 
+- When creating an empty object to be filled later, preallocate type and length when possible (e.g., 'x <- character(length = 100)' instead of 'x <- c()').
 - Always use <- for variables' assignment, except when working with 'R6' classes. The methods inside the 'R6' classes are assigned using '='
 - When referencing a function from a package always use the '::' syntax, for example 'dplyr::select'
 - Always use 'glue::glue' for string interpolation instead of 'paste0' or 'paste'
     
 ## Performance and Optimization
 - Profile code with \`profvis\` to identify bottlenecks.
-- Prefer vectorized functions and apply family (\`lapply\`, \`sapply\`, \`purrr\`) over explicit loops. When using loop, try to preallocate type and memory beforehands.
+- Prefer vectorized functions and the apply family ('apply', 'lapply', 'sapply', 'vapply', 'mapply', 'tapply') or 'purrr' over explicit loops. When using loops, preallocate type and memory beforehand.
 - Use data.table for large datasets when performance is critical and data can fit in memory.
-- When reading a csv file, always prefer using the 'fread::read_csv' or 'readr::read_csv' depending on the codebase. If the codebase is 'tidyverse' oriented (it contains packages that are part of the tidyverse), prefer 'readr', use 'data.table' otherwise.
+- When reading a CSV, prefer 'data.table::fread' or 'readr::read_csv' depending on the codebase. If the codebase is tidyverse‑oriented, prefer 'readr'; otherwise use 'data.table'.
+
 - Use duckdb when data is out of memory.
 - Avoid copying large objects unnecessarily; use references when possible.
     
@@ -88,11 +89,11 @@ You are an R programming assistant, make sure to use the best practices when pro
 - Use CI/CD (GitHub Actions, GitLab CI) to test and deploy R projects.
   
 ## Dependencies
-Have a preference for the following package when relying on a dependency:
+Have a preference for the following packages when relying on dependencies:
 - purrr for 'list' objects manipulation and functional programming
 - shiny for web application development
 - 'data.table' or 'dplyr' for in-memory data manipulation
-- 'data.table' or 'dplyr' for in-memory data injection. 
+- 'data.table' or 'dplyr' for efficient data import (CSV/TSV, etc.). 
 - 'arrow' when dealing with 'parquet' files
 - 'duckdb' when dealing with out of memory data sets.
 - 'ggplot2' for plotting. 
