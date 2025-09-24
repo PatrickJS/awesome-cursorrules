@@ -14,7 +14,7 @@ Configuration files that enhance Cursor AI editor experience with custom rules a
 <p align="center">
     <h3><a href="https://go.warp.dev/awesome-cursorrules">Warp - Built for coding with multiple AI agents</h3>
 	  <a href="https://go.warp.dev/awesome-cursorrules">
-		  <img alt="Warp Sponsorship Logo" src="https://github.com/user-attachments/assets/8d7dac5c-e24c-4dec-b60a-2b2ed860c6e0" width=350>
+		  <img alt="Warp Sponsorship Logo" src="https://github.com/user-attachments/assets/8d50d811-fabe-4610-a537-c5a5a9224864" width=350>
 	  </a>
 	<h3>
 	<h3><a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">coderabbit.ai - Cut Code Review Time & Bugs in Half. Instantly.</h3>
@@ -326,7 +326,7 @@ Please ensure your contribution is original or properly credited if based on exi
 <p align="center">
     <h3><a href="https://go.warp.dev/awesome-cursorrules">Warp - Built for coding with multiple AI agents</h3>
 	  <a href="https://go.warp.dev/awesome-cursorrules">
-		  <img alt="Warp Sponsorship Logo" src="https://github.com/user-attachments/assets/8d7dac5c-e24c-4dec-b60a-2b2ed860c6e0" width=350>
+		  <img alt="Warp Sponsorship Logo" src="https://github.com/user-attachments/assets/8d50d811-fabe-4610-a537-c5a5a9224864" width=350>
 	  </a>
 	<h3>
 	<h3><a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">coderabbit.ai - Cut Code Review Time & Bugs in Half. Instantly.</h3>
