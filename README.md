@@ -289,6 +289,10 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
 
+## Reading Recommendations
+
+- [You are using Cursor AI incorrectly...](https://ghuntley.com/stdlib)
+
 ## How to Use
 
 ### Method One
