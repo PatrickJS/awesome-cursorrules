@@ -63,6 +63,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
     - [Hosting and Deployments](#hosting-and-deployments)
     - [Build Tools and Development](#build-tools-and-development)
     - [Language-Specific](#language-specific)
+    - [Security](#security)
     - [Other](#other)
     - [Documentation](#documentation)
     - [Utilities](#utilities)
@@ -261,6 +262,10 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript (React)](./rules/typescript-react-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with React integration.
 - [TypeScript (Clasp App Script)](./rules/typescript-clasp-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Clasp app script integration.
 - [C++ Programming Guidelines](./rules/cpp-programming-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for C++ development with programming guidelines integration.
+
+### Security
+
+- [Cursor Security Rules](https://github.com/matank001/cursor-security-rules) - Security-focused coding rules for safer development with Cursor.
 
 ### Other
 
