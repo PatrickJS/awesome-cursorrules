@@ -2,7 +2,10 @@
 
 <p align="center">
   <a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules" target="_blank">
-    <img src="/cursor-ai-logo.png" alt="Awesome CursorRules" />
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="./LOCKUP_VERTICAL_25D_DARK.png">
+      <img alt="Awesome Cursor Logo" src="./LOCKUP_VERTICAL_25D_LIGHT.png">
+    </picture>
   </a>
 </p>
 
