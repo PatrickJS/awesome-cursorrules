@@ -1,0 +1,91 @@
+name: Vibecondom Security Scan
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    # Weekly scan on Sundays
+    - cron: '0 0 * * 0'
+
+jobs:
+  security-scan:
+    name: Run Vibecondom Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+
+    - name: Run Vibecondom
+      run: |
+        # Store current directory (root of the repo being scanned)
+        SCAN_TARGET_DIR=$(pwd)
+
+        # Create a temporary directory for the vibecondom tool source
+        VIBECONDOM_TOOL_DIR=$(mktemp -d)
+        echo "Cloning vibe-condom tool into $VIBECONDOM_TOOL_DIR..."
+        git clone --depth 1 https://github.com/ngmisl/vibe-condom.git "$VIBECONDOM_TOOL_DIR"
+        
+        echo "Building vibecondom tool in $VIBECONDOM_TOOL_DIR..."
+        cd "$VIBECONDOM_TOOL_DIR"
+        go build -o vibecondom .
+        # Verify the build
+        if [ ! -f vibecondom ]; then
+          echo "::error::Failed to build vibecondom tool in $VIBECONDOM_TOOL_DIR"
+          exit 1
+        fi
+        echo "Vibecondom tool built successfully."
+        ls -la # Show contents of VIBECONDOM_TOOL_DIR
+
+        # Go back to the original directory to scan it
+        cd "$SCAN_TARGET_DIR"
+        echo "Current directory for scanning: $(pwd)"
+        ls -la # Show current directory structure for debugging
+        
+        # Run the security scan on the current directory using the built tool
+        echo "Running scan with $VIBECONDOM_TOOL_DIR/vibecondom..."
+        "$VIBECONDOM_TOOL_DIR/vibecondom" -mode=local -target "." -log-level warn -exclude-files "README.md" -decode-base64
+        
+        # Check if any issues were found
+        exit_code=$?
+        if [ $exit_code -eq 2 ]; then
+          echo "::warning::Vibecondom found potential security issues. Check the logs above for details."
+          exit $exit_code # Fail the step if issues are found
+        elif [ $exit_code -ne 0 ]; then
+          echo "::error::Vibecondom exited with error code $exit_code. Check application logs for details."
+          exit $exit_code # Fail the step on other errors
+        else
+          echo "Vibecondom scan completed successfully with exit code $exit_code."
+        fi
+
+        # Cleanup the temporary directory
+        echo "Cleaning up $VIBECONDOM_TOOL_DIR..."
+        rm -rf "$VIBECONDOM_TOOL_DIR"
+      env:
+        # Enable debug output
+        RUNNER_DEBUG: 1
+        
+        # Save output to a file
+      working-directory: ${{ github.workspace }}
+
+    - name: Upload scan results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-scan-results
+        path: |
+          *.log
+          *.json
+          vibecondom-output-*.txt
+        compression-level: 9
+        retention-days: 7
+        if-no-files-found: warn
