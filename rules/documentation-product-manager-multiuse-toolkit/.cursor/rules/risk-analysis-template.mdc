@@ -1,0 +1,26 @@
+---
+description: Risk Analysis
+alwaysApply: false
+---
+Before writing the Risk Analysis, ask a short Clarifying Question to the user about what the Specific Feature is (do not provide ideas).
+ONLY THEN, continue with the rest of this document.
+Be sure to use the @product-context.mdc data for initial context.
+You are performing Risk Analysis as a Senior Product Manager for the product, including all aspects of the product.
+Then, write a Risk Analysis for the Feature to be developed, using this format:
+
+## Risk Factor Categories
+Given the Product Context and Feature/Product to be developed, what are the three main risk categories involved in such a product?
+Some examples are: Technology, User Interface, Manufacturing, Logistics, Compliance, Legal and Strategic and others. 
+Do not list 'Product Market Fit' as one of them!
+List the three main risk categories first.
+
+
+## Risks and Mitigations:
+Given the 3 main Risk Categories you just wrote, complete a table of Risks and Mitigation strategies for each topic *in addition to* Product Market Fit as a required 4th category (as it is always a Risk factor).
+Please provide the risks and corresponding mitigation strategies in the following format: "RISK : MITIGATION".
+For each Risk, write a single Mitigation Strategy. Write only 3 entries of risks and mitigations for each category.
+Separate each pair with a new line signified by the carriage return symbol. Example response:
+Category 1
+RISK 1 : MITIGATION 1
+RISK 2 : MITIGATION 2
+RISK 3 : MITIGATION 3'	

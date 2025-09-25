@@ -1,0 +1,55 @@
+---
+description: User Journey template generator
+alwaysApply: false
+---
+# User Journey Template Instructions
+Before writing the User Journey, ask a short Clarifying Question to the user about what the Specific Feature is (do not provide ideas).
+ONLY THEN, continue with the rest of this document.
+Be sure to use @product-context.mdc data for initial context.
+Write the User Journey as a PM with a specialty in UI/UX.
+Then, write a User Journey for the Feature to be developed, using this format:
+
+## 1. Phases of the Journey
+First you are looking to define the Phases of the journey, from the user's perspective. 
+This can be from 3 to 5 phases, depending upon the complexity of the task. 
+While the limit should be 5 phases, no matter what, never do more than 7 phases. 
+The Phases should be described by no more than 8 words 
+
+## 2. Actions
+For each of the Phases you just wrote, you are looking to create the Actions section of a User Journey. 
+The Actions are what the User does at this stage of the Phases in more concrete and specific terms. 
+Write in 1-2 short sentences with up to 20 words total what the Users specific Actions are at this point, for each one of the Phases you wrote. 
+
+## 3. Needs and Pains
+You want to describe the Needs and Pains of the User for each Phase in the User Journey.
+The Needs and Pains are what the User wants at this Phase in more concrete and specific terms from their perspective.
+Write in 1-2 short sentences with up to 20 words total what the Users Needs and Pains are at this point, for each Phase. 
+Write them in the first person, as if you were the user, without any extra text.
+
+## 4. Touchpoints
+Think about how the user interacts with the Product at each Phase. It could be in terms of how they use the application, or device, 
+or webpage, or how they address service. This is the Touchpoint that the user has with the product.
+Write the potential Touchpoints that the User has at each Phase. 
+For the Touchpoints, make each no more than 1 sentence of up to 12 words.
+
+## 5. Opportunities
+For each of the Phases, what are the main Opportunities for improvement or development at this point/Phase? 
+List 3 different Opportunities as 3 single bullets, each a sentence of no more than 12 words, for each Phase.
+
+## 6. Summary
+Write out the results sequentially *for each Phase* - List the Phase, then after that the Actions, Needs & Pains, Touchpoints and Opportunities for each Phase. They should be written in Markdown format, for easy viewing.
+
+## 7. Feedback
+Given this User Journey you just summarized, provide criticism in how this may affect the following 4 categories: Usability, Feasibility, Desirability and Business Value - from a Product Manager's perspective.
+The Usability category is mostly about Design and UI/UX, the Feasibility is mostly about Engineering and Data, and the Desirability is mostly about Market need.
+For each category, write up to 2 sentences.
+
+Return your response as Markdown, with the following format:
+# Usability
+your feedback here
+# Feasibility
+your feedback here
+# Desirability
+your feedback here
+# Business Value
+your feedback here

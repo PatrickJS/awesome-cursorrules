@@ -1,0 +1,67 @@
+---
+description: Connect your KPIs to business and revenue goals, CFO communications, North Star Metrics
+alwaysApply: false
+---
+# KPI to Revenues Connector Instructions
+Before writing the KPI-Revenue Connector, ask a short Clarifying Question to the user about what the Specific Feature is (do not provide ideas).
+ONLY THEN, continue with the rest of this document. 
+**Also, advise the user that it may be better to manually switch to Gemini 2.5, which has a larger context window for this**
+
+Be sure to use @product-context.mdc data for for initial context.
+Then, sequentially answer the following sections to help create Metrics for a Product Manager to help explain the "Why" for a product:
+
+## 1. Product Goals
+Based on the product information provided, generate 5 specific, measurable Product Goals that align with the product's mission and target market.
+The Product Goal expresses customer pain points, needs and desires. 
+The Product Goal should be something about the PRODUCT that involves a change in behavior or type of USERS using the product that will help the company achieve a Business Goal. 
+Provide 5 options for potential Product Goals for the given Specific Feature being developed that would match and address the company's solution for its product, customers and mission statement. 
+They can include some of the previous context provided, but provide a few more options that are not in the context.
+Each Product Goal should be written as a SMART goal with a Specific objective that is also Measurable (have a specific number or percentage) and time-limited. 
+They should be focused on the product and the USERS of the product, not the business.
+Write the goals as a list of NUMBERED bullets.
+
+**Ask the user a Clarifying question, which of the 5 Product Goals they would like to use. Only continue once you have a single Product Goal defined by the user!**
+
+## 2. KPIs
+Given this Product/Feature being developed and Product Goal, create 5 relevant KPIs that would be best to keep track of the feature. Each KPI should be up to 6 words. 
+They can include some of the previous context provided, but provide a few more options that are not in the context.
+You can use the KPIs listed here for software product: 
+@list_of_product_metrics_text_only.txt
+Write a list of KPIs as separate bullets.
+
+## 3. KPI Relationships
+Given the following Product Goal: [product_goal]
+And the selected KPI for the Product/Feature: [kpis]
+The goal now is to relate each KPI listed to a Revenue goal, while summarizing in a single line how it helps achieve that goal. 
+To do so, you will need to first look at the KPI and decide what kind of Subcategory metric it relates to.
+You should follow the examples below to find the relationship between KPIs and Revenue Goals:
+@kpi_revenues.txt
+
+Once you have found the relationship between the KPI and the Revenue Goal, we are looking to make a list of the following:
+1. Revenue Goal name (from the list)
+2. Short sentence Explanation for how the Product goal and KPI are related to the Revenue Goal
+
+For each of the KPIs, write the 
+- KPI
+- Revenue Goal
+- Explanation
+
+
+## 4. North Star Metric
+Given the [product_goal] you wrote, the selected KPIs: [selected_kpis] and the KPI Relationships to Revenue [kpi_rel_prompt_text]:
+
+Define a single North Star Metric that best captures the core value our product delivers to customers.
+This metric should:
+1. Be directly tied to customer value
+2. Be measurable
+3. Be actionable
+4. Be predictive of long-term success
+
+In up to 60 words, briefly rephrase all of this information into the following template (you can change the words to fit the product and goals): 
+For (target customer) with this (problem), we propose (solution). Our primary goal is (Product goal). We will know we're successful when (main KPI metric).
+
+Make the style of the North Star Metric be somewhat of a marketing tone - so that it is relevant for the entire team to understand - while being concise.
+Only write out the response in the specific format, without any other text before or after.
+
+Follow this by listing the ONE Metric that best captures the core value our product delivers to customers. Write it as: 
+"One Metric That Matters Most: [Metric]

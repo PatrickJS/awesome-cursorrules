@@ -1,0 +1,100 @@
+---
+description: Comprehensive Epic Plan Generator
+alwaysApply: false
+---
+# Epic Plan Generator Template
+Use @product-context.mdc for product details. Generate a complete Epic plan document for new feature sets or product initiatives following this exact structure:
+
+## Document Header
+```
+# Epic Plan: [Feature Set/Initiative Name]
+## [Brief description of the feature set or initiative]
+
+**Product:** [Product Name]
+**Feature Set:** [Feature Set Name]
+**Document Type:** Epic Plan
+**Created:** [Current Month Year]
+**Version:** 1.0
+```
+
+## Executive Summary
+- One paragraph summarizing the feature set's impact on product and users
+- Reference how it serves target customers and aligns with product differentiator
+
+## Strategic Context
+### Strategic Goals (3-4 bullets starting with action verbs, adjust based on scope)
+- **Address [specific user need/pain point]:** [feature solution approach]
+- **Enhance [product capability]:** [improvement strategy]
+- **Enable [new user behavior/workflow]:** [enablement approach]
+- **Improve [existing metric/experience]:** [optimization goal]
+
+### Success Metrics (3-4 key metrics based on feature scope)
+- **Feature Adoption:** [usage and engagement targets]
+- **User Experience:** [performance and satisfaction targets]
+- **Business Impact:** [revenue, retention, or efficiency targets]
+- **Technical Performance:** [reliability and performance targets]
+
+## Epic Structure (3-4 Core Themes based on feature complexity)
+Generate 3-4 Epic themes with emojis, each containing 2-4 sub-epics based on scope:
+
+### 🏗️ **EPIC 1: Core Functionality & Foundation**
+*Theme: Build essential feature capabilities*
+
+### 🎨 **EPIC 2: User Experience & Interface** 
+*Theme: Design intuitive user interactions*
+
+### 🔗 **EPIC 3: Integration & Compatibility**
+*Theme: Connect with existing systems and platforms*
+
+### 📈 **EPIC 4: Enhancement & Optimization** *(Optional for large feature sets)*
+*Theme: Advanced features and performance optimization*
+
+## Sub-Epic Format (Adjust quantity based on feature scope: 6-16 total sub-epics)
+```
+#### **Epic X.Y: [Feature Component Name]**
+- **User Story:** As a [user type], I want [action] so I can [outcome]
+- **Key Features:**
+  - [3-4 bullet points of main capabilities]
+- **Acceptance Criteria:**
+  - [2-3 measurable criteria with specific targets]
+- **Dependencies:** [Epic references or "None"]
+- **Effort:** [X weeks/sprints]
+- **Priority:** P0 (Critical) / P1 (High) / P2 (Medium)
+```
+
+## Implementation Timeline (Adjust timeframe based on feature scope)
+### Phase 1: Foundation *(Weeks 1-X or Sprints 1-X)*
+### Phase 2: Core Features *(Weeks X-Y or Sprints X-Y)*
+### Phase 3: Integration *(Weeks Y-Z or Sprints Y-Z)*
+### Phase 4: Enhancement *(Optional - for large feature sets)*
+
+## Risk Management
+### High-Risk Dependencies (2-3 items based on feature complexity)
+### Mitigation Strategies (2-3 items)
+
+## Resource Requirements
+### Development Team (3-6 roles based on feature scope)
+### Infrastructure/Tools (2-4 items as needed)
+
+## Success Criteria
+### Initial Release (End of Phase 2) - 2-3 bullets
+### Feature Complete (End of Phase 3) - 2-3 bullets  
+### Optimization Complete (End of Phase 4, if applicable) - 2-3 bullets
+
+## Priority Guidelines
+- P0: Core functionality, security, basic user flow
+- P1: Enhanced features, performance, major platforms
+- P2: Customization, advanced features, ecosystem
+
+## Effort Estimation (Adjust based on feature complexity)
+- Core functionality epics: 2-8 weeks each
+- User experience epics: 2-6 weeks each
+- Integration epics: 3-8 weeks each
+- Enhancement epics: 2-4 weeks each
+
+## Scope Guidelines
+- **Small Feature Set:** 3 Epics, 6-8 Sub-epics, 2-3 months
+- **Medium Feature Set:** 3-4 Epics, 9-12 Sub-epics, 3-6 months
+- **Large Feature Set:** 4 Epics, 12-16 Sub-epics, 6-12 months
+
+Save as: `EPIC-PLAN-[feature-set-name-lowercase]-[year].md`

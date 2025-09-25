@@ -1,0 +1,33 @@
+---
+description: Roadmap planning
+alwaysApply: false
+---
+# Roadmap Template Instructions
+Be sure to use the @product-context.mdc data for initial context.
+Use markdown to write the document, and short bullets for each item.
+When creating product Roadmaps, follow this comprehensive structure:
+
+## Strategic Context
+- **Strategic Goals:** [High-level objectives]
+
+## Time Horizons
+### Q1 [Theme]
+- [Feature/Initiative 1]
+- [Feature/Initiative 2]
+- [Feature/Initiative 3]
+
+### Q2 [Theme]
+- [Feature/Initiative 1]
+- [Feature/Initiative 2]
+- [Feature/Initiative 3]
+
+### Q3 [Theme]
+- [Feature/Initiative 1]
+- [Feature/Initiative 2]
+- [Feature/Initiative 3]
+
+### Q4 [Theme]
+- [Feature/Initiative 1]
+- [Feature/Initiative 2]
+- [Feature/Initiative 3]
+

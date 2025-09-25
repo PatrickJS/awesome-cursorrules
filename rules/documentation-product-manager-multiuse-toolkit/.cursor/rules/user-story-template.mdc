@@ -1,0 +1,38 @@
+---
+description: User Stories and Acceptance Criteria
+alwaysApply: false
+---
+# User Story and Acceptance Criteria Template Instructions
+Before writing the User Stories, ask a short Clarifying Question to the user about what the Specific Feature is (do not provide ideas).
+ONLY THEN, continue with the rest of this document.
+Be sure to use the @product-context.mdc data for initial context.
+Then, write a User Story and Acceptance Criteria for the Feature to be developed, using this format:
+
+## User Story
+Use the following format for the User Story:
+As a [type of user], I want to [perform some task] so that I can [achieve some goal].
+The User Story should be written in a tone that uses an Active Voice, and the Story is achievable.
+
+## Acceptance Criteria
+Follow the User Story by a set of Acceptance Criteria
+You will write 3 separate Acceptance Criteria for this User Story using the Gherkin Framework, which first describes the Scenario, 
+then states GIVEN, WHEN, THEN, and AND. Use the AND statement for any of the three operators as needed. 
+You will create 3 Acceptance Criteria for the Positive Scenarios, 3 Acceptance Criteria for the Negative Scenarios, 
+and 3 Acceptance Criteria for the Outlier Scenarios.
+Think this through, step by step, to come up with all 9 Scenarios and their Acceptance Criteria. 
+The Positive Scenarios should be the most common.
+The Negative Scenarios should deal with edge cases where the solution must cope with unexpected user input or challenges.
+The Outlier Scenarios should deal with things that are unexpected, but still possible, and should be tested.
+The Scenarios and Acceptance Criteria should be in the following format: 'SCENARIO : ACCEPTANCE CRITERIA'. 
+For each Scenario, write a single Acceptance Criteria. 
+Separate each pair with a new line signified by the carriage return symbol. Do not include any other text. 
+### Example response format:
+POSITIVE SCENARIO 1 : ACCEPTANCE CRITERIA 1 
+POSITIVE SCENARIO 2 : ACCEPTANCE CRITERIA 2
+POSITIVE SCENARIO 3 : ACCEPTANCE CRITERIA 3 
+NEGATIVE SCENARIO 1 : ACCEPTANCE CRITERIA 1
+NEGATIVE SCENARIO 2 : ACCEPTANCE CRITERIA 2
+NEGATIVE SCENARIO 3 : ACCEPTANCE CRITERIA 3
+OUTLIER SCENARIO 1 : ACCEPTANCE CRITERIA 1 
+OUTLIER SCENARIO 2 : ACCEPTANCE CRITERIA 2 
+OUTLIER SCENARIO 3 : ACCEPTANCE CRITERIA 3
