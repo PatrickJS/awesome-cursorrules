@@ -6,7 +6,7 @@ This prompt file is designed for senior Python AI/ML engineers specializing in L
 ## Tech Stack
 
 - Python 3.10+
-- Poetry / Rye
+- uv (preferred) / Poetry
 - Ruff
 - `typing` module
 - `pytest`
