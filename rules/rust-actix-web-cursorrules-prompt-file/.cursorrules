@@ -1,0 +1,1249 @@
+# Rust Actix Web Development Guidelines
+
+You are a senior Rust developer specializing in high-performance web services with Actix Web framework.
+
+## Core Principles
+
+### Rust Philosophy
+- Embrace ownership, borrowing, and lifetimes
+- Prefer zero-cost abstractions
+- Write idiomatic Rust code following the Rust API Guidelines
+- Leverage the type system for compile-time safety
+- Handle all errors explicitly - no unwrap() in production code
+
+### Actix Web Best Practices
+- Use async/await for all I/O operations
+- Leverage Actix's actor model when appropriate
+- Prefer extractors for request data handling
+- Use middleware for cross-cutting concerns
+- Configure workers based on CPU cores
+
+## Project Structure
+
+```text
+my-actix-app/
+├── src/
+│   ├── main.rs
+│   ├── lib.rs
+│   ├── config/
+│   │   ├── mod.rs
+│   │   └── settings.rs
+│   ├── routes/
+│   │   ├── mod.rs
+│   │   ├── health.rs
+│   │   └── api/
+│   │       ├── mod.rs
+│   │       ├── users.rs
+│   │       └── posts.rs
+│   ├── handlers/
+│   │   ├── mod.rs
+│   │   └── user_handler.rs
+│   ├── models/
+│   │   ├── mod.rs
+│   │   └── user.rs
+│   ├── services/
+│   │   ├── mod.rs
+│   │   └── user_service.rs
+│   ├── repositories/
+│   │   ├── mod.rs
+│   │   └── user_repository.rs
+│   ├── middleware/
+│   │   ├── mod.rs
+│   │   ├── auth.rs
+│   │   └── logging.rs
+│   ├── errors/
+│   │   ├── mod.rs
+│   │   └── app_error.rs
+│   ├── extractors/
+│   │   ├── mod.rs
+│   │   └── auth_user.rs
+│   └── utils/
+│       ├── mod.rs
+│       └── jwt.rs
+├── migrations/
+├── tests/
+│   ├── common/
+│   │   └── mod.rs
+│   └── integration/
+├── Cargo.toml
+├── Cargo.lock
+├── .env
+├── .env.example
+└── rust-toolchain.toml
+```
+
+## Essential Dependencies (Cargo.toml)
+
+```toml
+[package]
+name = "my-actix-app"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+
+[dependencies]
+# Web framework
+actix-web = "4"
+actix-rt = "2"
+actix-cors = "0.7"
+actix-files = "0.6"
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Database
+sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "uuid", "chrono", "migrate"] }
+
+# Configuration
+config = "0.14"
+dotenvy = "0.15"
+
+# Logging & Tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-actix-web = "0.7"
+
+# Validation
+validator = { version = "0.18", features = ["derive"] }
+
+# Security
+argon2 = "0.5"
+jsonwebtoken = "9"
+
+# Utilities
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "1"
+anyhow = "1"
+once_cell = "1"
+
+[dev-dependencies]
+actix-rt = "2"
+reqwest = { version = "0.12", features = ["json"] }
+fake = "2"
+```
+
+## Application Entry Point
+
+```rust
+// src/main.rs
+use actix_web::{web, App, HttpServer, middleware};
+use tracing_actix_web::TracingLogger;
+use sqlx::postgres::PgPoolOptions;
+use std::sync::Arc;
+
+mod config;
+mod routes;
+mod handlers;
+mod models;
+mod services;
+mod repositories;
+mod middleware as app_middleware;
+mod errors;
+mod extractors;
+
+use config::Settings;
+
+#[derive(Clone)]
+pub struct AppState {
+    pub db: sqlx::PgPool,
+    pub config: Arc<Settings>,
+}
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    // Initialize configuration
+    dotenvy::dotenv().ok();
+    let settings = Settings::new().expect("Failed to load configuration");
+    
+    // Initialize tracing
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| "info,sqlx=warn".into())
+        )
+        .init();
+
+    // Database connection pool
+    let db_pool = PgPoolOptions::new()
+        .max_connections(settings.database.max_connections)
+        .connect(&settings.database.url)
+        .await
+        .expect("Failed to create database pool");
+
+    // Run migrations
+    sqlx::migrate!("./migrations")
+        .run(&db_pool)
+        .await
+        .expect("Failed to run migrations");
+
+    let app_state = AppState {
+        db: db_pool,
+        config: Arc::new(settings.clone()),
+    };
+
+    tracing::info!("Starting server at {}:{}", settings.server.host, settings.server.port);
+
+    HttpServer::new(move || {
+        App::new()
+            .app_data(web::Data::new(app_state.clone()))
+            .wrap(TracingLogger::default())
+            .wrap(middleware::Compress::default())
+            .wrap(
+                actix_cors::Cors::default()
+                    .allowed_origin_fn(|origin, _req_head| {
+                        origin.as_bytes().starts_with(b"http://localhost")
+                    })
+                    .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "PATCH"])
+                    .allowed_headers(vec!["Authorization", "Content-Type"])
+                    .max_age(3600)
+            )
+            .configure(routes::configure)
+    })
+    .workers(num_cpus::get())
+    .bind((settings.server.host.as_str(), settings.server.port))?
+    .run()
+    .await
+}
+```
+
+## Configuration Management
+
+```rust
+// src/config/settings.rs
+use config::{Config, ConfigError, Environment, File};
+use serde::Deserialize;
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Settings {
+    pub server: ServerSettings,
+    pub database: DatabaseSettings,
+    pub jwt: JwtSettings,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct ServerSettings {
+    pub host: String,
+    pub port: u16,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct DatabaseSettings {
+    pub url: String,
+    pub max_connections: u32,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct JwtSettings {
+    pub secret: String,
+    pub expiration_hours: i64,
+}
+
+impl Settings {
+    pub fn new() -> Result<Self, ConfigError> {
+        let run_mode = std::env::var("RUN_MODE").unwrap_or_else(|_| "development".into());
+
+        Config::builder()
+            .add_source(File::with_name("config/default"))
+            .add_source(File::with_name(&format!("config/{}", run_mode)).required(false))
+            .add_source(
+                Environment::with_prefix("APP")
+                    .separator("__")
+                    .try_parsing(true)
+            )
+            .build()?
+            .try_deserialize()
+    }
+}
+```
+
+## Route Configuration
+
+```rust
+// src/routes/mod.rs
+use actix_web::web;
+
+mod health;
+mod api;
+
+pub fn configure(cfg: &mut web::ServiceConfig) {
+    cfg.service(
+        web::scope("")
+            .configure(health::configure)
+            .configure(api::configure)
+    );
+}
+
+// src/routes/health.rs
+use actix_web::{web, HttpResponse};
+
+pub fn configure(cfg: &mut web::ServiceConfig) {
+    cfg.route("/health", web::get().to(health_check));
+}
+
+async fn health_check() -> HttpResponse {
+    HttpResponse::Ok().json(serde_json::json!({
+        "status": "healthy",
+        "timestamp": chrono::Utc::now()
+    }))
+}
+
+// src/routes/api/mod.rs
+use actix_web::web;
+
+mod users;
+mod posts;
+
+pub fn configure(cfg: &mut web::ServiceConfig) {
+    cfg.service(
+        web::scope("/api/v1")
+            .configure(users::configure)
+            .configure(posts::configure)
+    );
+}
+
+// src/routes/api/users.rs
+use actix_web::web;
+use crate::handlers::user_handler;
+
+pub fn configure(cfg: &mut web::ServiceConfig) {
+    cfg.service(
+        web::scope("/users")
+            .route("", web::get().to(user_handler::list_users))
+            .route("", web::post().to(user_handler::create_user))
+            .route("/{id}", web::get().to(user_handler::get_user))
+            .route("/{id}", web::put().to(user_handler::update_user))
+            .route("/{id}", web::delete().to(user_handler::delete_user))
+    );
+}
+```
+
+## Error Handling
+
+```rust
+// src/errors/app_error.rs
+use actix_web::{HttpResponse, ResponseError};
+use serde::Serialize;
+use std::fmt;
+
+#[derive(Debug)]
+pub enum AppError {
+    NotFound(String),
+    BadRequest(String),
+    Unauthorized(String),
+    Forbidden(String),
+    Conflict(String),
+    InternalError(String),
+    ValidationError(validator::ValidationErrors),
+    DatabaseError(sqlx::Error),
+}
+
+#[derive(Serialize)]
+struct ErrorResponse {
+    error: String,
+    message: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    details: Option<serde_json::Value>,
+}
+
+impl fmt::Display for AppError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            AppError::NotFound(msg) => write!(f, "Not Found: {}", msg),
+            AppError::BadRequest(msg) => write!(f, "Bad Request: {}", msg),
+            AppError::Unauthorized(msg) => write!(f, "Unauthorized: {}", msg),
+            AppError::Forbidden(msg) => write!(f, "Forbidden: {}", msg),
+            AppError::Conflict(msg) => write!(f, "Conflict: {}", msg),
+            AppError::InternalError(msg) => write!(f, "Internal Error: {}", msg),
+            AppError::ValidationError(e) => write!(f, "Validation Error: {:?}", e),
+            AppError::DatabaseError(e) => write!(f, "Database Error: {}", e),
+        }
+    }
+}
+
+impl ResponseError for AppError {
+    fn error_response(&self) -> HttpResponse {
+        let (status, error_type, message, details) = match self {
+            AppError::NotFound(msg) => (
+                actix_web::http::StatusCode::NOT_FOUND,
+                "NOT_FOUND",
+                msg.clone(),
+                None,
+            ),
+            AppError::BadRequest(msg) => (
+                actix_web::http::StatusCode::BAD_REQUEST,
+                "BAD_REQUEST",
+                msg.clone(),
+                None,
+            ),
+            AppError::Unauthorized(msg) => (
+                actix_web::http::StatusCode::UNAUTHORIZED,
+                "UNAUTHORIZED",
+                msg.clone(),
+                None,
+            ),
+            AppError::Forbidden(msg) => (
+                actix_web::http::StatusCode::FORBIDDEN,
+                "FORBIDDEN",
+                msg.clone(),
+                None,
+            ),
+            AppError::Conflict(msg) => (
+                actix_web::http::StatusCode::CONFLICT,
+                "CONFLICT",
+                msg.clone(),
+                None,
+            ),
+            AppError::ValidationError(errors) => (
+                actix_web::http::StatusCode::UNPROCESSABLE_ENTITY,
+                "VALIDATION_ERROR",
+                "Validation failed".to_string(),
+                Some(serde_json::to_value(errors).unwrap_or_default()),
+            ),
+            AppError::DatabaseError(_) | AppError::InternalError(_) => (
+                actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
+                "INTERNAL_ERROR",
+                "An internal error occurred".to_string(),
+                None,
+            ),
+        };
+
+        // Log internal errors
+        if matches!(self, AppError::DatabaseError(_) | AppError::InternalError(_)) {
+            tracing::error!("Internal error: {}", self);
+        }
+
+        HttpResponse::build(status).json(ErrorResponse {
+            error: error_type.to_string(),
+            message,
+            details,
+        })
+    }
+}
+
+impl From<sqlx::Error> for AppError {
+    fn from(err: sqlx::Error) -> Self {
+        match err {
+            sqlx::Error::RowNotFound => AppError::NotFound("Resource not found".to_string()),
+            sqlx::Error::Database(db_err) => {
+                if db_err.is_unique_violation() {
+                    AppError::Conflict("Resource already exists".to_string())
+                } else {
+                    AppError::DatabaseError(sqlx::Error::Database(db_err))
+                }
+            }
+            _ => AppError::DatabaseError(err),
+        }
+    }
+}
+
+impl From<validator::ValidationErrors> for AppError {
+    fn from(err: validator::ValidationErrors) -> Self {
+        AppError::ValidationError(err)
+    }
+}
+
+pub type AppResult<T> = Result<T, AppError>;
+```
+
+## Model Definitions
+
+```rust
+// src/models/user.rs
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
+use sqlx::FromRow;
+use uuid::Uuid;
+use validator::Validate;
+
+#[derive(Debug, Clone, Serialize, FromRow)]
+pub struct User {
+    pub id: Uuid,
+    pub email: String,
+    pub name: String,
+    #[serde(skip_serializing)]
+    pub password_hash: String,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct CreateUserRequest {
+    #[validate(email(message = "Invalid email format"))]
+    pub email: String,
+    
+    #[validate(length(min = 2, max = 100, message = "Name must be 2-100 characters"))]
+    pub name: String,
+    
+    #[validate(length(min = 8, message = "Password must be at least 8 characters"))]
+    pub password: String,
+}
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct UpdateUserRequest {
+    #[validate(length(min = 2, max = 100, message = "Name must be 2-100 characters"))]
+    pub name: Option<String>,
+    
+    #[validate(email(message = "Invalid email format"))]
+    pub email: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct UserResponse {
+    pub id: Uuid,
+    pub email: String,
+    pub name: String,
+    pub created_at: DateTime<Utc>,
+}
+
+impl From<User> for UserResponse {
+    fn from(user: User) -> Self {
+        Self {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            created_at: user.created_at,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct PaginatedResponse<T> {
+    pub data: Vec<T>,
+    pub total: i64,
+    pub page: i64,
+    pub per_page: i64,
+    pub total_pages: i64,
+}
+
+impl<T> PaginatedResponse<T> {
+    pub fn new(data: Vec<T>, total: i64, page: i64, per_page: i64) -> Self {
+        let total_pages = (total as f64 / per_page as f64).ceil() as i64;
+        Self {
+            data,
+            total,
+            page,
+            per_page,
+            total_pages,
+        }
+    }
+}
+```
+
+## Handler Implementation
+
+```rust
+// src/handlers/user_handler.rs
+use actix_web::{web, HttpResponse};
+use uuid::Uuid;
+use validator::Validate;
+
+use crate::{
+    errors::{AppError, AppResult},
+    models::user::{CreateUserRequest, UpdateUserRequest, UserResponse, PaginatedResponse},
+    services::user_service::UserService,
+    AppState,
+};
+
+#[derive(Debug, serde::Deserialize)]
+pub struct PaginationParams {
+    #[serde(default = "default_page")]
+    pub page: i64,
+    #[serde(default = "default_per_page")]
+    pub per_page: i64,
+}
+
+fn default_page() -> i64 { 1 }
+fn default_per_page() -> i64 { 20 }
+
+pub async fn list_users(
+    state: web::Data<AppState>,
+    query: web::Query<PaginationParams>,
+) -> AppResult<HttpResponse> {
+    let service = UserService::new(state.db.clone());
+    let (users, total) = service.list_users(query.page, query.per_page).await?;
+    
+    let response: Vec<UserResponse> = users.into_iter().map(Into::into).collect();
+    let paginated = PaginatedResponse::new(response, total, query.page, query.per_page);
+    
+    Ok(HttpResponse::Ok().json(paginated))
+}
+
+pub async fn get_user(
+    state: web::Data<AppState>,
+    path: web::Path<Uuid>,
+) -> AppResult<HttpResponse> {
+    let user_id = path.into_inner();
+    let service = UserService::new(state.db.clone());
+    
+    let user = service.get_user_by_id(user_id).await?;
+    let response: UserResponse = user.into();
+    
+    Ok(HttpResponse::Ok().json(response))
+}
+
+pub async fn create_user(
+    state: web::Data<AppState>,
+    body: web::Json<CreateUserRequest>,
+) -> AppResult<HttpResponse> {
+    body.validate()?;
+    
+    let service = UserService::new(state.db.clone());
+    let user = service.create_user(body.into_inner()).await?;
+    let response: UserResponse = user.into();
+    
+    Ok(HttpResponse::Created().json(response))
+}
+
+pub async fn update_user(
+    state: web::Data<AppState>,
+    path: web::Path<Uuid>,
+    body: web::Json<UpdateUserRequest>,
+) -> AppResult<HttpResponse> {
+    body.validate()?;
+    
+    let user_id = path.into_inner();
+    let service = UserService::new(state.db.clone());
+    
+    let user = service.update_user(user_id, body.into_inner()).await?;
+    let response: UserResponse = user.into();
+    
+    Ok(HttpResponse::Ok().json(response))
+}
+
+pub async fn delete_user(
+    state: web::Data<AppState>,
+    path: web::Path<Uuid>,
+) -> AppResult<HttpResponse> {
+    let user_id = path.into_inner();
+    let service = UserService::new(state.db.clone());
+    
+    service.delete_user(user_id).await?;
+    
+    Ok(HttpResponse::NoContent().finish())
+}
+```
+
+## Service Layer
+
+```rust
+// src/services/user_service.rs
+use sqlx::PgPool;
+use uuid::Uuid;
+
+use crate::{
+    errors::{AppError, AppResult},
+    models::user::{CreateUserRequest, UpdateUserRequest, User},
+    repositories::user_repository::UserRepository,
+};
+
+pub struct UserService {
+    repository: UserRepository,
+}
+
+impl UserService {
+    pub fn new(pool: PgPool) -> Self {
+        Self {
+            repository: UserRepository::new(pool),
+        }
+    }
+
+    pub async fn list_users(&self, page: i64, per_page: i64) -> AppResult<(Vec<User>, i64)> {
+        let offset = (page - 1) * per_page;
+        let users = self.repository.find_all(per_page, offset).await?;
+        let total = self.repository.count().await?;
+        Ok((users, total))
+    }
+
+    pub async fn get_user_by_id(&self, id: Uuid) -> AppResult<User> {
+        self.repository
+            .find_by_id(id)
+            .await?
+            .ok_or_else(|| AppError::NotFound(format!("User with id {} not found", id)))
+    }
+
+    pub async fn create_user(&self, request: CreateUserRequest) -> AppResult<User> {
+        // Check if email already exists
+        if self.repository.find_by_email(&request.email).await?.is_some() {
+            return Err(AppError::Conflict("Email already registered".to_string()));
+        }
+
+        // Hash password
+        let password_hash = hash_password(&request.password)?;
+
+        self.repository
+            .create(&request.email, &request.name, &password_hash)
+            .await
+    }
+
+    pub async fn update_user(&self, id: Uuid, request: UpdateUserRequest) -> AppResult<User> {
+        // Ensure user exists
+        let existing = self.get_user_by_id(id).await?;
+
+        // Check email uniqueness if changing
+        if let Some(ref email) = request.email {
+            if email != &existing.email {
+                if self.repository.find_by_email(email).await?.is_some() {
+                    return Err(AppError::Conflict("Email already in use".to_string()));
+                }
+            }
+        }
+
+        self.repository.update(id, request).await
+    }
+
+    pub async fn delete_user(&self, id: Uuid) -> AppResult<()> {
+        // Ensure user exists
+        self.get_user_by_id(id).await?;
+        self.repository.delete(id).await
+    }
+}
+
+fn hash_password(password: &str) -> AppResult<String> {
+    use argon2::{
+        password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
+        Argon2,
+    };
+
+    let salt = SaltString::generate(&mut OsRng);
+    let argon2 = Argon2::default();
+
+    argon2
+        .hash_password(password.as_bytes(), &salt)
+        .map(|hash| hash.to_string())
+        .map_err(|e| AppError::InternalError(format!("Password hashing failed: {}", e)))
+}
+```
+
+## Repository Pattern
+
+```rust
+// src/repositories/user_repository.rs
+use sqlx::PgPool;
+use uuid::Uuid;
+
+use crate::{
+    errors::AppResult,
+    models::user::{UpdateUserRequest, User},
+};
+
+pub struct UserRepository {
+    pool: PgPool,
+}
+
+impl UserRepository {
+    pub fn new(pool: PgPool) -> Self {
+        Self { pool }
+    }
+
+    pub async fn find_all(&self, limit: i64, offset: i64) -> AppResult<Vec<User>> {
+        let users = sqlx::query_as::<_, User>(
+            r#"
+            SELECT id, email, name, password_hash, created_at, updated_at
+            FROM users
+            ORDER BY created_at DESC
+            LIMIT $1 OFFSET $2
+            "#,
+        )
+        .bind(limit)
+        .bind(offset)
+        .fetch_all(&self.pool)
+        .await?;
+
+        Ok(users)
+    }
+
+    pub async fn count(&self) -> AppResult<i64> {
+        let result = sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM users")
+            .fetch_one(&self.pool)
+            .await?;
+
+        Ok(result)
+    }
+
+    pub async fn find_by_id(&self, id: Uuid) -> AppResult<Option<User>> {
+        let user = sqlx::query_as::<_, User>(
+            r#"
+            SELECT id, email, name, password_hash, created_at, updated_at
+            FROM users
+            WHERE id = $1
+            "#,
+        )
+        .bind(id)
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(user)
+    }
+
+    pub async fn find_by_email(&self, email: &str) -> AppResult<Option<User>> {
+        let user = sqlx::query_as::<_, User>(
+            r#"
+            SELECT id, email, name, password_hash, created_at, updated_at
+            FROM users
+            WHERE email = $1
+            "#,
+        )
+        .bind(email)
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(user)
+    }
+
+    pub async fn create(&self, email: &str, name: &str, password_hash: &str) -> AppResult<User> {
+        let user = sqlx::query_as::<_, User>(
+            r#"
+            INSERT INTO users (id, email, name, password_hash, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, NOW(), NOW())
+            RETURNING id, email, name, password_hash, created_at, updated_at
+            "#,
+        )
+        .bind(Uuid::new_v4())
+        .bind(email)
+        .bind(name)
+        .bind(password_hash)
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(user)
+    }
+
+    pub async fn update(&self, id: Uuid, request: UpdateUserRequest) -> AppResult<User> {
+        let user = sqlx::query_as::<_, User>(
+            r#"
+            UPDATE users
+            SET
+                name = COALESCE($2, name),
+                email = COALESCE($3, email),
+                updated_at = NOW()
+            WHERE id = $1
+            RETURNING id, email, name, password_hash, created_at, updated_at
+            "#,
+        )
+        .bind(id)
+        .bind(request.name)
+        .bind(request.email)
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(user)
+    }
+
+    pub async fn delete(&self, id: Uuid) -> AppResult<()> {
+        sqlx::query("DELETE FROM users WHERE id = $1")
+            .bind(id)
+            .execute(&self.pool)
+            .await?;
+
+        Ok(())
+    }
+}
+```
+
+## Custom Extractors
+
+```rust
+// src/extractors/auth_user.rs
+use actix_web::{dev::Payload, FromRequest, HttpRequest};
+use std::future::{ready, Ready};
+use uuid::Uuid;
+
+use crate::errors::AppError;
+
+#[derive(Debug, Clone)]
+pub struct AuthenticatedUser {
+    pub user_id: Uuid,
+    pub email: String,
+}
+
+impl FromRequest for AuthenticatedUser {
+    type Error = AppError;
+    type Future = Ready<Result<Self, Self::Error>>;
+
+    fn from_request(req: &HttpRequest, _payload: &mut Payload) -> Self::Future {
+        // Extract from request extensions (set by auth middleware)
+        let result = req
+            .extensions()
+            .get::<AuthenticatedUser>()
+            .cloned()
+            .ok_or_else(|| AppError::Unauthorized("Authentication required".to_string()));
+
+        ready(result)
+    }
+}
+
+// Validated JSON extractor with automatic validation
+use serde::de::DeserializeOwned;
+use validator::Validate;
+
+pub struct ValidatedJson<T>(pub T);
+
+impl<T> FromRequest for ValidatedJson<T>
+where
+    T: DeserializeOwned + Validate + 'static,
+{
+    type Error = AppError;
+    type Future = std::pin::Pin<Box<dyn std::future::Future<Output = Result<Self, Self::Error>>>>;
+
+    fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
+        let json_fut = actix_web::web::Json::<T>::from_request(req, payload);
+
+        Box::pin(async move {
+            let json = json_fut.await.map_err(|e| {
+                AppError::BadRequest(format!("Invalid JSON: {}", e))
+            })?;
+
+            json.validate()?;
+            Ok(ValidatedJson(json.into_inner()))
+        })
+    }
+}
+```
+
+## Middleware Implementation
+
+```rust
+// src/middleware/auth.rs
+use actix_web::{
+    body::BoxBody,
+    dev::{ServiceRequest, ServiceResponse},
+    Error, HttpMessage,
+};
+use actix_web_lab::middleware::Next;
+use jsonwebtoken::{decode, DecodingKey, Validation};
+use serde::{Deserialize, Serialize};
+use uuid::Uuid;
+
+use crate::extractors::auth_user::AuthenticatedUser;
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Claims {
+    pub sub: Uuid,
+    pub email: String,
+    pub exp: i64,
+    pub iat: i64,
+}
+
+pub async fn jwt_auth(
+    req: ServiceRequest,
+    next: Next<BoxBody>,
+) -> Result<ServiceResponse<BoxBody>, Error> {
+    // Extract token from Authorization header
+    let token = req
+        .headers()
+        .get("Authorization")
+        .and_then(|h| h.to_str().ok())
+        .and_then(|h| h.strip_prefix("Bearer "))
+        .ok_or_else(|| {
+            actix_web::error::ErrorUnauthorized("Missing or invalid Authorization header")
+        })?;
+
+    // Get JWT secret from app state
+    let secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| "secret".to_string());
+
+    // Decode and validate token
+    let token_data = decode::<Claims>(
+        token,
+        &DecodingKey::from_secret(secret.as_bytes()),
+        &Validation::default(),
+    )
+    .map_err(|e| actix_web::error::ErrorUnauthorized(format!("Invalid token: {}", e)))?;
+
+    // Insert authenticated user into request extensions
+    req.extensions_mut().insert(AuthenticatedUser {
+        user_id: token_data.claims.sub,
+        email: token_data.claims.email,
+    });
+
+    next.call(req).await
+}
+
+// Rate limiting middleware
+use std::sync::Arc;
+use tokio::sync::RwLock;
+use std::collections::HashMap;
+use std::time::{Duration, Instant};
+
+pub struct RateLimiter {
+    requests: Arc<RwLock<HashMap<String, Vec<Instant>>>>,
+    max_requests: usize,
+    window: Duration,
+}
+
+impl RateLimiter {
+    pub fn new(max_requests: usize, window_secs: u64) -> Self {
+        Self {
+            requests: Arc::new(RwLock::new(HashMap::new())),
+            max_requests,
+            window: Duration::from_secs(window_secs),
+        }
+    }
+
+    pub async fn check(&self, key: &str) -> bool {
+        let mut requests = self.requests.write().await;
+        let now = Instant::now();
+
+        let entry = requests.entry(key.to_string()).or_insert_with(Vec::new);
+
+        // Remove expired entries
+        entry.retain(|&time| now.duration_since(time) < self.window);
+
+        if entry.len() >= self.max_requests {
+            return false;
+        }
+
+        entry.push(now);
+        true
+    }
+}
+```
+
+## Testing Patterns
+
+```rust
+// tests/common/mod.rs
+use actix_web::{test, web, App};
+use sqlx::PgPool;
+use std::sync::Arc;
+
+use my_actix_app::{routes, AppState, config::Settings};
+
+pub async fn setup_test_app() -> impl actix_web::dev::Service<
+    actix_http::Request,
+    Response = actix_web::dev::ServiceResponse,
+    Error = actix_web::Error,
+> {
+    let database_url = std::env::var("TEST_DATABASE_URL")
+        .expect("TEST_DATABASE_URL must be set");
+
+    let db_pool = PgPool::connect(&database_url)
+        .await
+        .expect("Failed to connect to test database");
+
+    // Run migrations
+    sqlx::migrate!("./migrations")
+        .run(&db_pool)
+        .await
+        .expect("Failed to run migrations");
+
+    let settings = Settings::new().expect("Failed to load settings");
+
+    let app_state = AppState {
+        db: db_pool,
+        config: Arc::new(settings),
+    };
+
+    test::init_service(
+        App::new()
+            .app_data(web::Data::new(app_state))
+            .configure(routes::configure)
+    )
+    .await
+}
+
+// tests/integration/user_tests.rs
+use actix_web::test;
+use serde_json::json;
+
+mod common;
+
+#[actix_rt::test]
+async fn test_create_user() {
+    let app = common::setup_test_app().await;
+
+    let req = test::TestRequest::post()
+        .uri("/api/v1/users")
+        .set_json(json!({
+            "email": "test@example.com",
+            "name": "Test User",
+            "password": "securepassword123"
+        }))
+        .to_request();
+
+    let resp = test::call_service(&app, req).await;
+    assert!(resp.status().is_success());
+
+    let body: serde_json::Value = test::read_body_json(resp).await;
+    assert_eq!(body["email"], "test@example.com");
+    assert_eq!(body["name"], "Test User");
+    assert!(body.get("id").is_some());
+}
+
+#[actix_rt::test]
+async fn test_get_nonexistent_user_returns_404() {
+    let app = common::setup_test_app().await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/v1/users/00000000-0000-0000-0000-000000000000")
+        .to_request();
+
+    let resp = test::call_service(&app, req).await;
+    assert_eq!(resp.status(), 404);
+}
+
+#[actix_rt::test]
+async fn test_create_user_invalid_email() {
+    let app = common::setup_test_app().await;
+
+    let req = test::TestRequest::post()
+        .uri("/api/v1/users")
+        .set_json(json!({
+            "email": "invalid-email",
+            "name": "Test User",
+            "password": "securepassword123"
+        }))
+        .to_request();
+
+    let resp = test::call_service(&app, req).await;
+    assert_eq!(resp.status(), 422);
+}
+```
+
+## Database Migrations
+
+```sql
+-- migrations/20240101000000_create_users.sql
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_created_at ON users(created_at DESC);
+
+-- Trigger for updated_at
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_users_updated_at
+    BEFORE UPDATE ON users
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+```
+
+## Performance Best Practices
+
+### Connection Pooling
+```rust
+// Configure optimal pool settings
+let db_pool = PgPoolOptions::new()
+    .max_connections(num_cpus::get() as u32 * 4)
+    .min_connections(num_cpus::get() as u32)
+    .acquire_timeout(Duration::from_secs(5))
+    .idle_timeout(Duration::from_secs(600))
+    .max_lifetime(Duration::from_secs(1800))
+    .connect(&database_url)
+    .await?;
+```
+
+### Compile-Time Query Verification
+```rust
+// Use sqlx::query! macro for compile-time SQL verification
+let user = sqlx::query_as!(
+    User,
+    r#"
+    SELECT id, email, name, password_hash, created_at, updated_at
+    FROM users
+    WHERE id = $1
+    "#,
+    user_id
+)
+.fetch_optional(&pool)
+.await?;
+```
+
+### Response Compression
+```rust
+// Enable compression in middleware stack
+App::new()
+    .wrap(middleware::Compress::default())
+    // ...
+```
+
+## Security Guidelines
+
+1. **Always validate input** using the validator crate
+2. **Use parameterized queries** - never interpolate user input into SQL
+3. **Hash passwords** with Argon2 (memory-hard algorithm)
+4. **Set secure headers** via middleware
+5. **Rate limit** sensitive endpoints
+6. **Use HTTPS** in production (via reverse proxy)
+7. **Validate JWT tokens** with proper expiration
+8. **Sanitize error messages** - never expose internal details
+
+## Common Patterns
+
+### Graceful Shutdown
+```rust
+use tokio::signal;
+
+async fn shutdown_signal() {
+    let ctrl_c = async {
+        signal::ctrl_c()
+            .await
+            .expect("Failed to install Ctrl+C handler");
+    };
+
+    #[cfg(unix)]
+    let terminate = async {
+        signal::unix::signal(signal::unix::SignalKind::terminate())
+            .expect("Failed to install SIGTERM handler")
+            .recv()
+            .await;
+    };
+
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
+
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
+    }
+
+    tracing::info!("Shutdown signal received");
+}
+
+// In main
+HttpServer::new(|| { /* ... */ })
+    .bind(addr)?
+    .run()
+    .await?;
+```
+
+### Health Check with Dependencies
+```rust
+async fn health_check(state: web::Data<AppState>) -> HttpResponse {
+    let db_healthy = sqlx::query("SELECT 1")
+        .execute(&state.db)
+        .await
+        .is_ok();
+
+    if db_healthy {
+        HttpResponse::Ok().json(json!({
+            "status": "healthy",
+            "database": "connected"
+        }))
+    } else {
+        HttpResponse::ServiceUnavailable().json(json!({
+            "status": "unhealthy",
+            "database": "disconnected"
+        }))
+    }
+}
+```
