@@ -1,0 +1,960 @@
+# Tauri v2 Desktop & Mobile Development Guidelines
+
+You are a senior developer specializing in cross-platform application development with Tauri v2, combining Rust backend with modern web frontends.
+
+## Core Principles
+
+### Tauri Philosophy
+- Security-first approach - minimal attack surface
+- Native performance with web flexibility
+- Cross-platform consistency (Windows, macOS, Linux, iOS, Android)
+- Minimal binary size and resource usage
+- Leverage system webviews instead of bundling browsers
+
+### Rust Backend Best Practices
+- Use Tauri's command system for IPC
+- Implement proper error handling with thiserror
+- Follow Rust idioms and ownership principles
+- Keep Rust code modular and testable
+- Use async/await for I/O operations
+
+### Frontend Integration
+- Support any web framework (React, Vue, Svelte, Solid, etc.)
+- Use Tauri's JavaScript API for native features
+- Implement proper state synchronization between Rust and JS
+- Handle platform-specific features gracefully
+
+## Project Structure
+
+```text
+my-tauri-app/
+├── src-tauri/
+│   ├── src/
+│   │   ├── main.rs
+│   │   ├── lib.rs
+│   │   ├── commands/
+│   │   │   ├── mod.rs
+│   │   │   ├── file_system.rs
+│   │   │   ├── database.rs
+│   │   │   └── system.rs
+│   │   ├── state/
+│   │   │   ├── mod.rs
+│   │   │   └── app_state.rs
+│   │   ├── services/
+│   │   │   ├── mod.rs
+│   │   │   └── storage.rs
+│   │   ├── models/
+│   │   │   ├── mod.rs
+│   │   │   └── config.rs
+│   │   ├── utils/
+│   │   │   ├── mod.rs
+│   │   │   └── error.rs
+│   │   └── plugins/
+│   │       └── mod.rs
+│   ├── Cargo.toml
+│   ├── tauri.conf.json
+│   ├── capabilities/
+│   │   ├── default.json
+│   │   └── mobile.json
+│   ├── icons/
+│   └── gen/
+├── src/                    # Frontend source
+│   ├── App.tsx
+│   ├── main.tsx
+│   ├── components/
+│   ├── hooks/
+│   │   └── useTauri.ts
+│   ├── lib/
+│   │   └── tauri.ts
+│   └── styles/
+├── public/
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+└── .cursorrules
+```
+
+## Cargo.toml Configuration
+
+```toml
+[package]
+name = "my-tauri-app"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.77"
+
+[lib]
+name = "my_tauri_app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["macos-private-api"] }
+tauri-plugin-shell = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-os = "2"
+tauri-plugin-process = "2"
+tauri-plugin-notification = "2"
+tauri-plugin-clipboard-manager = "2"
+tauri-plugin-http = "2"
+tauri-plugin-store = "2"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Error handling
+thiserror = "1"
+anyhow = "1"
+
+# Database (optional)
+rusqlite = { version = "0.31", features = ["bundled"] }
+
+# Logging
+log = "0.4"
+env_logger = "0.11"
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-autostart = "2"
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-updater = "2"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
+```
+
+## Tauri Configuration (tauri.conf.json)
+
+```json
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "My Tauri App",
+  "version": "0.1.0",
+  "identifier": "com.example.mytauriapp",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "My Tauri App",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600,
+        "resizable": true,
+        "fullscreen": false,
+        "center": true,
+        "decorations": true,
+        "transparent": false,
+        "shadow": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost; style-src 'self' 'unsafe-inline'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "10.15"
+    },
+    "windows": {
+      "wix": {
+        "language": "en-US"
+      }
+    }
+  },
+  "plugins": {
+    "fs": {
+      "scope": {
+        "allow": ["$APPDATA/*", "$DOCUMENT/*", "$DOWNLOAD/*"]
+      }
+    },
+    "shell": {
+      "open": true
+    }
+  }
+}
+```
+
+## Capabilities Configuration
+
+```json
+// src-tauri/capabilities/default.json
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "identifier": "default",
+  "description": "Default capability for desktop",
+  "platforms": ["linux", "macOS", "windows"],
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "shell:allow-open",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "dialog:allow-message",
+    "fs:allow-read",
+    "fs:allow-write",
+    "fs:allow-exists",
+    "fs:scope-appdata-recursive",
+    "fs:scope-document-recursive",
+    "notification:default",
+    "clipboard-manager:allow-write",
+    "clipboard-manager:allow-read",
+    "os:default",
+    "process:default",
+    "http:default",
+    "store:default",
+    "autostart:default",
+    "global-shortcut:default",
+    "updater:default"
+  ]
+}
+```
+
+## Application Entry Point
+
+```rust
+// src-tauri/src/main.rs
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
+fn main() {
+    my_tauri_app_lib::run()
+}
+
+// src-tauri/src/lib.rs
+mod commands;
+mod state;
+mod services;
+mod models;
+mod utils;
+
+use state::AppState;
+use tauri::Manager;
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_os::init())
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_http::init())
+        .plugin(tauri_plugin_store::Builder::default().build())
+        .setup(|app| {
+            // Initialize app state
+            let app_state = AppState::new(app.handle().clone())?;
+            app.manage(app_state);
+
+            // Platform-specific setup
+            #[cfg(desktop)]
+            {
+                app.handle().plugin(tauri_plugin_autostart::init(
+                    tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+                    Some(vec!["--minimized"]),
+                ))?;
+                app.handle().plugin(tauri_plugin_global_shortcut::Builder::new().build())?;
+                app.handle().plugin(tauri_plugin_updater::Builder::new().build())?;
+            }
+
+            // Development tools
+            #[cfg(debug_assertions)]
+            {
+                let window = app.get_webview_window("main").unwrap();
+                window.open_devtools();
+            }
+
+            Ok(())
+        })
+        .invoke_handler(tauri::generate_handler![
+            commands::greet,
+            commands::file_system::read_file,
+            commands::file_system::write_file,
+            commands::file_system::list_directory,
+            commands::database::get_items,
+            commands::database::save_item,
+            commands::database::delete_item,
+            commands::system::get_system_info,
+            commands::system::open_external,
+        ])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+```
+
+## Error Handling
+
+```rust
+// src-tauri/src/utils/error.rs
+use serde::Serialize;
+use thiserror::Error;
+
+#[derive(Debug, Error)]
+pub enum AppError {
+    #[error("File operation failed: {0}")]
+    FileError(#[from] std::io::Error),
+
+    #[error("Database error: {0}")]
+    DatabaseError(#[from] rusqlite::Error),
+
+    #[error("Serialization error: {0}")]
+    SerializationError(#[from] serde_json::Error),
+
+    #[error("Tauri error: {0}")]
+    TauriError(#[from] tauri::Error),
+
+    #[error("Configuration error: {0}")]
+    ConfigError(String),
+
+    #[error("Not found: {0}")]
+    NotFound(String),
+
+    #[error("Invalid input: {0}")]
+    InvalidInput(String),
+}
+
+// Implement Serialize for Tauri command returns
+impl Serialize for AppError {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&self.to_string())
+    }
+}
+
+pub type AppResult<T> = Result<T, AppError>;
+```
+
+## Command Implementation
+
+```rust
+// src-tauri/src/commands/mod.rs
+pub mod file_system;
+pub mod database;
+pub mod system;
+
+use crate::utils::error::AppResult;
+
+#[tauri::command]
+pub async fn greet(name: &str) -> AppResult<String> {
+    Ok(format!("Hello, {}! Welcome to Tauri v2!", name))
+}
+
+// src-tauri/src/commands/file_system.rs
+use crate::utils::error::{AppError, AppResult};
+use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
+use tauri::Manager;
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct FileInfo {
+    pub name: String,
+    pub path: String,
+    pub is_dir: bool,
+    pub size: u64,
+    pub modified: Option<u64>,
+}
+
+#[tauri::command]
+pub async fn read_file(path: PathBuf) -> AppResult<String> {
+    tokio::fs::read_to_string(&path)
+        .await
+        .map_err(AppError::FileError)
+}
+
+#[tauri::command]
+pub async fn write_file(path: PathBuf, contents: String) -> AppResult<()> {
+    // Ensure parent directory exists
+    if let Some(parent) = path.parent() {
+        tokio::fs::create_dir_all(parent).await?;
+    }
+    
+    tokio::fs::write(&path, contents)
+        .await
+        .map_err(AppError::FileError)
+}
+
+#[tauri::command]
+pub async fn list_directory(path: PathBuf) -> AppResult<Vec<FileInfo>> {
+    let mut entries = Vec::new();
+    let mut read_dir = tokio::fs::read_dir(&path).await?;
+
+    while let Some(entry) = read_dir.next_entry().await? {
+        let metadata = entry.metadata().await?;
+        let modified = metadata
+            .modified()
+            .ok()
+            .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok())
+            .map(|d| d.as_secs());
+
+        entries.push(FileInfo {
+            name: entry.file_name().to_string_lossy().to_string(),
+            path: entry.path().to_string_lossy().to_string(),
+            is_dir: metadata.is_dir(),
+            size: metadata.len(),
+            modified,
+        });
+    }
+
+    entries.sort_by(|a, b| {
+        match (a.is_dir, b.is_dir) {
+            (true, false) => std::cmp::Ordering::Less,
+            (false, true) => std::cmp::Ordering::Greater,
+            _ => a.name.to_lowercase().cmp(&b.name.to_lowercase()),
+        }
+    });
+
+    Ok(entries)
+}
+
+// src-tauri/src/commands/system.rs
+use crate::utils::error::AppResult;
+use serde::Serialize;
+use tauri_plugin_shell::ShellExt;
+
+#[derive(Debug, Serialize)]
+pub struct SystemInfo {
+    pub os: String,
+    pub arch: String,
+    pub version: String,
+    pub hostname: String,
+}
+
+#[tauri::command]
+pub async fn get_system_info() -> AppResult<SystemInfo> {
+    Ok(SystemInfo {
+        os: std::env::consts::OS.to_string(),
+        arch: std::env::consts::ARCH.to_string(),
+        version: tauri::VERSION.to_string(),
+        hostname: hostname::get()
+            .map(|h| h.to_string_lossy().to_string())
+            .unwrap_or_else(|_| "unknown".to_string()),
+    })
+}
+
+#[tauri::command]
+pub async fn open_external(app: tauri::AppHandle, url: String) -> AppResult<()> {
+    app.shell().open(&url, None)?;
+    Ok(())
+}
+```
+
+## State Management
+
+```rust
+// src-tauri/src/state/app_state.rs
+use crate::utils::error::{AppError, AppResult};
+use rusqlite::Connection;
+use std::sync::Mutex;
+use tauri::AppHandle;
+
+pub struct AppState {
+    pub db: Mutex<Connection>,
+    pub app_handle: AppHandle,
+}
+
+impl AppState {
+    pub fn new(app_handle: AppHandle) -> AppResult<Self> {
+        let app_dir = app_handle
+            .path()
+            .app_data_dir()
+            .map_err(|e| AppError::ConfigError(e.to_string()))?;
+
+        std::fs::create_dir_all(&app_dir)?;
+
+        let db_path = app_dir.join("app.db");
+        let conn = Connection::open(&db_path)?;
+
+        // Initialize database schema
+        conn.execute_batch(
+            "
+            CREATE TABLE IF NOT EXISTS items (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                content TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+            );
+
+            CREATE TABLE IF NOT EXISTS settings (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL
+            );
+            "
+        )?;
+
+        Ok(Self {
+            db: Mutex::new(conn),
+            app_handle,
+        })
+    }
+}
+
+// src-tauri/src/commands/database.rs
+use crate::state::AppState;
+use crate::utils::error::AppResult;
+use serde::{Deserialize, Serialize};
+use tauri::State;
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Item {
+    pub id: Option<i64>,
+    pub title: String,
+    pub content: Option<String>,
+    pub created_at: Option<String>,
+    pub updated_at: Option<String>,
+}
+
+#[tauri::command]
+pub async fn get_items(state: State<'_, AppState>) -> AppResult<Vec<Item>> {
+    let conn = state.db.lock().unwrap();
+    let mut stmt = conn.prepare(
+        "SELECT id, title, content, created_at, updated_at FROM items ORDER BY updated_at DESC"
+    )?;
+
+    let items = stmt
+        .query_map([], |row| {
+            Ok(Item {
+                id: Some(row.get(0)?),
+                title: row.get(1)?,
+                content: row.get(2)?,
+                created_at: row.get(3)?,
+                updated_at: row.get(4)?,
+            })
+        })?
+        .collect::<Result<Vec<_>, _>>()?;
+
+    Ok(items)
+}
+
+#[tauri::command]
+pub async fn save_item(state: State<'_, AppState>, item: Item) -> AppResult<Item> {
+    let conn = state.db.lock().unwrap();
+
+    if let Some(id) = item.id {
+        conn.execute(
+            "UPDATE items SET title = ?1, content = ?2, updated_at = CURRENT_TIMESTAMP WHERE id = ?3",
+            (&item.title, &item.content, id),
+        )?;
+        Ok(item)
+    } else {
+        conn.execute(
+            "INSERT INTO items (title, content) VALUES (?1, ?2)",
+            (&item.title, &item.content),
+        )?;
+        let id = conn.last_insert_rowid();
+        Ok(Item { id: Some(id), ..item })
+    }
+}
+
+#[tauri::command]
+pub async fn delete_item(state: State<'_, AppState>, id: i64) -> AppResult<()> {
+    let conn = state.db.lock().unwrap();
+    conn.execute("DELETE FROM items WHERE id = ?1", [id])?;
+    Ok(())
+}
+```
+
+## Frontend Integration (TypeScript/React)
+
+```typescript
+// src/lib/tauri.ts
+import { invoke } from '@tauri-apps/api/core';
+import { open, save, message } from '@tauri-apps/plugin-dialog';
+import { readTextFile, writeTextFile, readDir } from '@tauri-apps/plugin-fs';
+import { sendNotification } from '@tauri-apps/plugin-notification';
+import { platform, arch, version } from '@tauri-apps/plugin-os';
+
+// Type-safe command invocation
+export interface Item {
+  id?: number;
+  title: string;
+  content?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface FileInfo {
+  name: string;
+  path: string;
+  is_dir: boolean;
+  size: number;
+  modified?: number;
+}
+
+export interface SystemInfo {
+  os: string;
+  arch: string;
+  version: string;
+  hostname: string;
+}
+
+// Commands
+export const commands = {
+  greet: (name: string) => invoke<string>('greet', { name }),
+  
+  // File system
+  readFile: (path: string) => invoke<string>('read_file', { path }),
+  writeFile: (path: string, contents: string) => 
+    invoke<void>('write_file', { path, contents }),
+  listDirectory: (path: string) => invoke<FileInfo[]>('list_directory', { path }),
+  
+  // Database
+  getItems: () => invoke<Item[]>('get_items'),
+  saveItem: (item: Item) => invoke<Item>('save_item', { item }),
+  deleteItem: (id: number) => invoke<void>('delete_item', { id }),
+  
+  // System
+  getSystemInfo: () => invoke<SystemInfo>('get_system_info'),
+  openExternal: (url: string) => invoke<void>('open_external', { url }),
+};
+
+// Dialog helpers
+export const dialogs = {
+  openFile: async (filters?: { name: string; extensions: string[] }[]) => {
+    return await open({
+      multiple: false,
+      filters,
+    });
+  },
+
+  openFiles: async (filters?: { name: string; extensions: string[] }[]) => {
+    return await open({
+      multiple: true,
+      filters,
+    });
+  },
+
+  openDirectory: async () => {
+    return await open({
+      directory: true,
+    });
+  },
+
+  saveFile: async (defaultPath?: string, filters?: { name: string; extensions: string[] }[]) => {
+    return await save({
+      defaultPath,
+      filters,
+    });
+  },
+
+  showMessage: async (title: string, msg: string, kind: 'info' | 'warning' | 'error' = 'info') => {
+    await message(msg, { title, kind });
+  },
+};
+
+// Notification helper
+export const notify = async (title: string, body: string) => {
+  await sendNotification({ title, body });
+};
+
+// src/hooks/useTauri.ts
+import { useState, useEffect, useCallback } from 'react';
+import { commands, type Item } from '../lib/tauri';
+
+export function useItems() {
+  const [items, setItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchItems = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await commands.getItems();
+      setItems(data);
+      setError(null);
+    } catch (e) {
+      setError(e as string);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const saveItem = useCallback(async (item: Item) => {
+    try {
+      const saved = await commands.saveItem(item);
+      await fetchItems();
+      return saved;
+    } catch (e) {
+      setError(e as string);
+      throw e;
+    }
+  }, [fetchItems]);
+
+  const deleteItem = useCallback(async (id: number) => {
+    try {
+      await commands.deleteItem(id);
+      await fetchItems();
+    } catch (e) {
+      setError(e as string);
+      throw e;
+    }
+  }, [fetchItems]);
+
+  useEffect(() => {
+    fetchItems();
+  }, [fetchItems]);
+
+  return { items, loading, error, fetchItems, saveItem, deleteItem };
+}
+
+export function useSystemInfo() {
+  const [info, setInfo] = useState<SystemInfo | null>(null);
+
+  useEffect(() => {
+    commands.getSystemInfo().then(setInfo);
+  }, []);
+
+  return info;
+}
+```
+
+## React Component Example
+
+```tsx
+// src/App.tsx
+import { useState } from 'react';
+import { useItems, useSystemInfo } from './hooks/useTauri';
+import { dialogs, notify, commands } from './lib/tauri';
+
+function App() {
+  const { items, loading, saveItem, deleteItem } = useItems();
+  const systemInfo = useSystemInfo();
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) return;
+
+    await saveItem({ title, content });
+    await notify('Item Saved', `"${title}" has been saved successfully.`);
+    setTitle('');
+    setContent('');
+  };
+
+  const handleOpenFile = async () => {
+    const path = await dialogs.openFile([
+      { name: 'Text Files', extensions: ['txt', 'md'] },
+    ]);
+    
+    if (path) {
+      const contents = await commands.readFile(path as string);
+      setContent(contents);
+    }
+  };
+
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
+
+  return (
+    <main className="container">
+      <h1>My Tauri App</h1>
+      
+      {systemInfo && (
+        <div className="system-info">
+          Running on {systemInfo.os} ({systemInfo.arch}) - Tauri {systemInfo.version}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Title"
+          required
+        />
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Content"
+        />
+        <div className="actions">
+          <button type="button" onClick={handleOpenFile}>
+            Open File
+          </button>
+          <button type="submit">Save Item</button>
+        </div>
+      </form>
+
+      <ul className="items">
+        {items.map((item) => (
+          <li key={item.id}>
+            <h3>{item.title}</h3>
+            {item.content && <p>{item.content}</p>}
+            <button onClick={() => deleteItem(item.id!)}>Delete</button>
+          </li>
+        ))}
+      </ul>
+    </main>
+  );
+}
+
+export default App;
+```
+
+## Mobile-Specific Patterns
+
+```rust
+// Platform-specific code
+#[cfg(mobile)]
+mod mobile {
+    use tauri::AppHandle;
+    
+    pub fn setup_mobile(app: &AppHandle) {
+        // Mobile-specific initialization
+        // Handle deep links, push notifications, etc.
+    }
+}
+
+// Conditional compilation for platform features
+#[tauri::command]
+pub async fn platform_specific_feature(
+    #[cfg(desktop)] window: tauri::Window,
+) -> AppResult<String> {
+    #[cfg(desktop)]
+    {
+        // Desktop-only feature
+        window.set_title("Updated Title")?;
+        Ok("Desktop feature executed".to_string())
+    }
+    
+    #[cfg(mobile)]
+    {
+        // Mobile-only feature
+        Ok("Mobile feature executed".to_string())
+    }
+}
+```
+
+## Event System
+
+```rust
+// Backend event emission
+use tauri::Emitter;
+
+#[tauri::command]
+pub async fn start_long_task(app: tauri::AppHandle) -> AppResult<()> {
+    tokio::spawn(async move {
+        for i in 0..100 {
+            tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+            let _ = app.emit("task-progress", i);
+        }
+        let _ = app.emit("task-complete", ());
+    });
+    
+    Ok(())
+}
+
+// Frontend event listening
+import { listen } from '@tauri-apps/api/event';
+
+// In component
+useEffect(() => {
+  const unlisten = listen<number>('task-progress', (event) => {
+    setProgress(event.payload);
+  });
+
+  return () => {
+    unlisten.then(fn => fn());
+  };
+}, []);
+```
+
+## Auto-Updater Configuration
+
+```rust
+// Enable in Cargo.toml for desktop
+#[cfg(desktop)]
+fn setup_updater(app: &tauri::AppHandle) -> Result<(), tauri::Error> {
+    use tauri_plugin_updater::UpdaterExt;
+    
+    let handle = app.clone();
+    tauri::async_runtime::spawn(async move {
+        if let Ok(update) = handle.updater().check().await {
+            if let Some(update) = update {
+                // Show update dialog
+                println!("Update available: {}", update.version);
+            }
+        }
+    });
+    
+    Ok(())
+}
+```
+
+## Security Best Practices
+
+1. **Capability System** - Use minimal permissions in capabilities/*.json
+2. **CSP Headers** - Configure strict Content Security Policy
+3. **IPC Validation** - Validate all command inputs
+4. **No eval()** - Disable dynamic code execution
+5. **Path Traversal** - Use tauri's path API, validate file paths
+6. **Update Signing** - Sign updates with private keys
+
+## Build & Distribution
+
+```bash
+# Development
+npm run tauri dev
+
+# Build for current platform
+npm run tauri build
+
+# Build for specific targets
+npm run tauri build -- --target x86_64-pc-windows-msvc
+npm run tauri build -- --target x86_64-apple-darwin
+npm run tauri build -- --target aarch64-apple-darwin
+npm run tauri build -- --target x86_64-unknown-linux-gnu
+
+# Mobile builds
+npm run tauri android init
+npm run tauri android dev
+npm run tauri android build
+
+npm run tauri ios init
+npm run tauri ios dev
+npm run tauri ios build
+```
+
+## Performance Tips
+
+1. **Lazy Loading** - Load heavy modules on demand
+2. **Worker Threads** - Use web workers for CPU-intensive JS tasks
+3. **Async Commands** - Keep Rust commands async for I/O
+4. **State Caching** - Cache frequently accessed data in Rust state
+5. **Bundle Optimization** - Enable LTO and strip in release builds
+6. **Webview Preload** - Use preload scripts for critical JS

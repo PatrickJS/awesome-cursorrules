@@ -1,0 +1,1107 @@
+# tRPC End-to-End Type-Safe API Development Guidelines
+
+You are a senior TypeScript developer specializing in building fully type-safe APIs with tRPC, ensuring seamless type inference from backend to frontend.
+
+## Core Principles
+
+### tRPC Philosophy
+- End-to-end type safety without code generation
+- RPC-style API calls with TypeScript inference
+- Zero runtime overhead from types
+- Seamless integration with React Query/TanStack Query
+- Backend and frontend share the same type definitions
+
+### Type Safety First
+- Never use `any` - leverage TypeScript's full power
+- Use Zod for runtime input validation with type inference
+- Define explicit output types for complex responses
+- Let TypeScript infer types wherever possible
+
+### Architecture Patterns
+- Organize routers by feature/domain
+- Use middleware for cross-cutting concerns
+- Keep procedures focused and single-purpose
+- Separate business logic from procedure definitions
+
+## Project Structure
+
+```text
+my-trpc-app/
+├── src/
+│   ├── server/
+│   │   ├── index.ts
+│   │   ├── trpc.ts
+│   │   ├── context.ts
+│   │   ├── routers/
+│   │   │   ├── _app.ts
+│   │   │   ├── user.ts
+│   │   │   ├── post.ts
+│   │   │   └── auth.ts
+│   │   ├── middleware/
+│   │   │   ├── auth.ts
+│   │   │   └── rateLimit.ts
+│   │   └── services/
+│   │       ├── user.service.ts
+│   │       └── post.service.ts
+│   ├── client/
+│   │   ├── trpc.ts
+│   │   └── hooks/
+│   │       └── useAuth.ts
+│   ├── shared/
+│   │   ├── types.ts
+│   │   └── schemas/
+│   │       ├── user.ts
+│   │       └── post.ts
+│   └── app/                    # Next.js App Router
+│       ├── layout.tsx
+│       ├── page.tsx
+│       ├── api/
+│       │   └── trpc/
+│       │       └── [trpc]/
+│       │           └── route.ts
+│       └── providers.tsx
+├── prisma/
+│   └── schema.prisma
+├── package.json
+├── tsconfig.json
+└── .cursorrules
+```
+
+## Dependencies
+
+```json
+{
+  "dependencies": {
+    "@trpc/server": "^11.0.0",
+    "@trpc/client": "^11.0.0",
+    "@trpc/react-query": "^11.0.0",
+    "@trpc/next": "^11.0.0",
+    "@tanstack/react-query": "^5.0.0",
+    "zod": "^3.23.0",
+    "superjson": "^2.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0"
+  }
+}
+```
+
+## tRPC Server Setup
+
+```typescript
+// src/server/trpc.ts
+import { initTRPC, TRPCError } from '@trpc/server';
+import superjson from 'superjson';
+import { ZodError } from 'zod';
+import type { Context } from './context';
+
+const t = initTRPC.context<Context>().create({
+  transformer: superjson,
+  errorFormatter({ shape, error }) {
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
+    };
+  },
+});
+
+// Base router and procedure helpers
+export const router = t.router;
+export const publicProcedure = t.procedure;
+export const createCallerFactory = t.createCallerFactory;
+
+// Middleware
+export const middleware = t.middleware;
+
+// Merge routers
+export const mergeRouters = t.mergeRouters;
+```
+
+## Context Creation
+
+```typescript
+// src/server/context.ts
+import { type inferAsyncReturnType } from '@trpc/server';
+import { type FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
+import { getServerSession } from 'next-auth';
+import { prisma } from '@/lib/prisma';
+import { authOptions } from '@/lib/auth';
+
+export async function createContext(opts: FetchCreateContextFnOptions) {
+  const session = await getServerSession(authOptions);
+
+  return {
+    session,
+    user: session?.user,
+    prisma,
+    headers: opts.req.headers,
+  };
+}
+
+export type Context = inferAsyncReturnType<typeof createContext>;
+
+// For server-side calls without request
+export function createInnerContext(session?: Session) {
+  return {
+    session,
+    user: session?.user,
+    prisma,
+    headers: new Headers(),
+  };
+}
+```
+
+## Authentication Middleware
+
+```typescript
+// src/server/middleware/auth.ts
+import { TRPCError } from '@trpc/server';
+import { middleware, publicProcedure } from '../trpc';
+
+const isAuthenticated = middleware(async ({ ctx, next }) => {
+  if (!ctx.session || !ctx.user) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'You must be logged in to access this resource',
+    });
+  }
+
+  return next({
+    ctx: {
+      ...ctx,
+      // Infer session and user as non-null
+      session: ctx.session,
+      user: ctx.user,
+    },
+  });
+});
+
+const isAdmin = middleware(async ({ ctx, next }) => {
+  if (!ctx.user || ctx.user.role !== 'ADMIN') {
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'You must be an admin to access this resource',
+    });
+  }
+
+  return next({
+    ctx: {
+      ...ctx,
+      user: ctx.user,
+    },
+  });
+});
+
+// Protected procedure - requires authentication
+export const protectedProcedure = publicProcedure.use(isAuthenticated);
+
+// Admin procedure - requires admin role
+export const adminProcedure = protectedProcedure.use(isAdmin);
+```
+
+## Input Validation Schemas
+
+```typescript
+// src/shared/schemas/user.ts
+import { z } from 'zod';
+
+export const userIdSchema = z.object({
+  id: z.string().uuid(),
+});
+
+export const createUserSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Password must contain uppercase letter')
+    .regex(/[0-9]/, 'Password must contain number'),
+});
+
+export const updateUserSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(2).optional(),
+  email: z.string().email().optional(),
+  bio: z.string().max(500).optional(),
+});
+
+export const userFilterSchema = z.object({
+  search: z.string().optional(),
+  role: z.enum(['USER', 'ADMIN']).optional(),
+  page: z.number().int().positive().default(1),
+  limit: z.number().int().positive().max(100).default(20),
+});
+
+// Infer types from schemas
+export type CreateUserInput = z.infer<typeof createUserSchema>;
+export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+export type UserFilterInput = z.infer<typeof userFilterSchema>;
+
+// src/shared/schemas/post.ts
+import { z } from 'zod';
+
+export const createPostSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(200),
+  content: z.string().min(1, 'Content is required'),
+  published: z.boolean().default(false),
+  tags: z.array(z.string()).max(10).default([]),
+});
+
+export const updatePostSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string().min(1).max(200).optional(),
+  content: z.string().min(1).optional(),
+  published: z.boolean().optional(),
+  tags: z.array(z.string()).max(10).optional(),
+});
+
+export const postFilterSchema = z.object({
+  authorId: z.string().uuid().optional(),
+  published: z.boolean().optional(),
+  search: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  cursor: z.string().uuid().optional(),
+  limit: z.number().int().positive().max(50).default(20),
+});
+
+export type CreatePostInput = z.infer<typeof createPostSchema>;
+export type UpdatePostInput = z.infer<typeof updatePostSchema>;
+export type PostFilterInput = z.infer<typeof postFilterSchema>;
+```
+
+## Router Implementation
+
+```typescript
+// src/server/routers/user.ts
+import { TRPCError } from '@trpc/server';
+import { router, publicProcedure } from '../trpc';
+import { protectedProcedure, adminProcedure } from '../middleware/auth';
+import {
+  userIdSchema,
+  createUserSchema,
+  updateUserSchema,
+  userFilterSchema,
+} from '@/shared/schemas/user';
+import { hashPassword } from '@/lib/auth';
+
+export const userRouter = router({
+  // Public: Get user by ID
+  byId: publicProcedure
+    .input(userIdSchema)
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: input.id },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          bio: true,
+          createdAt: true,
+          _count: {
+            select: { posts: true },
+          },
+        },
+      });
+
+      if (!user) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User not found',
+        });
+      }
+
+      return user;
+    }),
+
+  // Protected: Get current user profile
+  me: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.prisma.user.findUnique({
+      where: { id: ctx.user.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        bio: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+  }),
+
+  // Protected: Update current user
+  updateMe: protectedProcedure
+    .input(updateUserSchema.omit({ id: true }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.user.update({
+        where: { id: ctx.user.id },
+        data: input,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          bio: true,
+        },
+      });
+    }),
+
+  // Admin: List all users with pagination
+  list: adminProcedure
+    .input(userFilterSchema)
+    .query(async ({ ctx, input }) => {
+      const { search, role, page, limit } = input;
+      const skip = (page - 1) * limit;
+
+      const where = {
+        ...(search && {
+          OR: [
+            { name: { contains: search, mode: 'insensitive' as const } },
+            { email: { contains: search, mode: 'insensitive' as const } },
+          ],
+        }),
+        ...(role && { role }),
+      };
+
+      const [users, total] = await Promise.all([
+        ctx.prisma.user.findMany({
+          where,
+          skip,
+          take: limit,
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            createdAt: true,
+          },
+        }),
+        ctx.prisma.user.count({ where }),
+      ]);
+
+      return {
+        users,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    }),
+
+  // Admin: Create user
+  create: adminProcedure
+    .input(createUserSchema)
+    .mutation(async ({ ctx, input }) => {
+      const exists = await ctx.prisma.user.findUnique({
+        where: { email: input.email },
+      });
+
+      if (exists) {
+        throw new TRPCError({
+          code: 'CONFLICT',
+          message: 'Email already registered',
+        });
+      }
+
+      const hashedPassword = await hashPassword(input.password);
+
+      return ctx.prisma.user.create({
+        data: {
+          email: input.email,
+          name: input.name,
+          password: hashedPassword,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          createdAt: true,
+        },
+      });
+    }),
+
+  // Admin: Delete user
+  delete: adminProcedure
+    .input(userIdSchema)
+    .mutation(async ({ ctx, input }) => {
+      // Prevent self-deletion
+      if (input.id === ctx.user.id) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Cannot delete your own account',
+        });
+      }
+
+      await ctx.prisma.user.delete({
+        where: { id: input.id },
+      });
+
+      return { success: true };
+    }),
+});
+```
+
+## Post Router with Cursor Pagination
+
+```typescript
+// src/server/routers/post.ts
+import { TRPCError } from '@trpc/server';
+import { router, publicProcedure } from '../trpc';
+import { protectedProcedure } from '../middleware/auth';
+import {
+  createPostSchema,
+  updatePostSchema,
+  postFilterSchema,
+} from '@/shared/schemas/post';
+import { z } from 'zod';
+
+export const postRouter = router({
+  // Infinite scroll with cursor pagination
+  infiniteList: publicProcedure
+    .input(postFilterSchema)
+    .query(async ({ ctx, input }) => {
+      const { cursor, limit, published, authorId, search, tags } = input;
+
+      const posts = await ctx.prisma.post.findMany({
+        take: limit + 1, // Fetch one extra to check for next page
+        cursor: cursor ? { id: cursor } : undefined,
+        where: {
+          ...(published !== undefined && { published }),
+          ...(authorId && { authorId }),
+          ...(search && {
+            OR: [
+              { title: { contains: search, mode: 'insensitive' } },
+              { content: { contains: search, mode: 'insensitive' } },
+            ],
+          }),
+          ...(tags?.length && { tags: { hasSome: tags } }),
+        },
+        orderBy: { createdAt: 'desc' },
+        include: {
+          author: {
+            select: { id: true, name: true, image: true },
+          },
+          _count: {
+            select: { comments: true, likes: true },
+          },
+        },
+      });
+
+      let nextCursor: string | undefined;
+      if (posts.length > limit) {
+        const nextItem = posts.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return {
+        posts,
+        nextCursor,
+      };
+    }),
+
+  // Get single post
+  byId: publicProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post.findUnique({
+        where: { id: input.id },
+        include: {
+          author: {
+            select: { id: true, name: true, image: true },
+          },
+          comments: {
+            orderBy: { createdAt: 'desc' },
+            include: {
+              author: {
+                select: { id: true, name: true, image: true },
+              },
+            },
+          },
+        },
+      });
+
+      if (!post) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Post not found',
+        });
+      }
+
+      // Check if unpublished post is being accessed by non-author
+      if (!post.published && post.authorId !== ctx.user?.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'This post is not published',
+        });
+      }
+
+      return post;
+    }),
+
+  // Create post
+  create: protectedProcedure
+    .input(createPostSchema)
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.post.create({
+        data: {
+          ...input,
+          authorId: ctx.user.id,
+        },
+      });
+    }),
+
+  // Update post
+  update: protectedProcedure
+    .input(updatePostSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...data } = input;
+
+      // Check ownership
+      const post = await ctx.prisma.post.findUnique({
+        where: { id },
+        select: { authorId: true },
+      });
+
+      if (!post) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Post not found',
+        });
+      }
+
+      if (post.authorId !== ctx.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You can only edit your own posts',
+        });
+      }
+
+      return ctx.prisma.post.update({
+        where: { id },
+        data,
+      });
+    }),
+
+  // Delete post
+  delete: protectedProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post.findUnique({
+        where: { id: input.id },
+        select: { authorId: true },
+      });
+
+      if (!post) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Post not found',
+        });
+      }
+
+      if (post.authorId !== ctx.user.id && ctx.user.role !== 'ADMIN') {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You can only delete your own posts',
+        });
+      }
+
+      await ctx.prisma.post.delete({
+        where: { id: input.id },
+      });
+
+      return { success: true };
+    }),
+
+  // Toggle like
+  toggleLike: protectedProcedure
+    .input(z.object({ postId: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      const existing = await ctx.prisma.like.findUnique({
+        where: {
+          userId_postId: {
+            userId: ctx.user.id,
+            postId: input.postId,
+          },
+        },
+      });
+
+      if (existing) {
+        await ctx.prisma.like.delete({
+          where: { id: existing.id },
+        });
+        return { liked: false };
+      }
+
+      await ctx.prisma.like.create({
+        data: {
+          userId: ctx.user.id,
+          postId: input.postId,
+        },
+      });
+
+      return { liked: true };
+    }),
+});
+```
+
+## Root Router
+
+```typescript
+// src/server/routers/_app.ts
+import { router } from '../trpc';
+import { userRouter } from './user';
+import { postRouter } from './post';
+
+export const appRouter = router({
+  user: userRouter,
+  post: postRouter,
+});
+
+// Export type definition of API
+export type AppRouter = typeof appRouter;
+```
+
+## Next.js API Route Handler
+
+```typescript
+// src/app/api/trpc/[trpc]/route.ts
+import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
+import { appRouter } from '@/server/routers/_app';
+import { createContext } from '@/server/context';
+
+const handler = (req: Request) =>
+  fetchRequestHandler({
+    endpoint: '/api/trpc',
+    req,
+    router: appRouter,
+    createContext,
+    onError:
+      process.env.NODE_ENV === 'development'
+        ? ({ path, error }) => {
+            console.error(
+              `❌ tRPC failed on ${path ?? '<no-path>'}: ${error.message}`
+            );
+          }
+        : undefined,
+  });
+
+export { handler as GET, handler as POST };
+```
+
+## Client Setup
+
+```typescript
+// src/client/trpc.ts
+import { createTRPCReact } from '@trpc/react-query';
+import type { AppRouter } from '@/server/routers/_app';
+
+export const trpc = createTRPCReact<AppRouter>();
+
+// src/app/providers.tsx
+'use client';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { httpBatchLink, loggerLink } from '@trpc/client';
+import { useState } from 'react';
+import superjson from 'superjson';
+import { trpc } from '@/client/trpc';
+
+function getBaseUrl() {
+  if (typeof window !== 'undefined') return '';
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return `http://localhost:${process.env.PORT ?? 3000}`;
+}
+
+export function TRPCProvider({ children }: { children: React.ReactNode }) {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 5 * 1000,
+            refetchOnWindowFocus: false,
+          },
+        },
+      })
+  );
+
+  const [trpcClient] = useState(() =>
+    trpc.createClient({
+      links: [
+        loggerLink({
+          enabled: (opts) =>
+            process.env.NODE_ENV === 'development' ||
+            (opts.direction === 'down' && opts.result instanceof Error),
+        }),
+        httpBatchLink({
+          url: `${getBaseUrl()}/api/trpc`,
+          transformer: superjson,
+          headers() {
+            return {
+              'x-trpc-source': 'react',
+            };
+          },
+        }),
+      ],
+    })
+  );
+
+  return (
+    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </trpc.Provider>
+  );
+}
+```
+
+## React Component Usage
+
+```tsx
+// src/app/posts/page.tsx
+'use client';
+
+import { trpc } from '@/client/trpc';
+import { useCallback, useRef } from 'react';
+
+export default function PostsPage() {
+  // Infinite query for posts
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    error,
+  } = trpc.post.infiniteList.useInfiniteQuery(
+    { limit: 20, published: true },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
+
+  // Create mutation with optimistic update
+  const utils = trpc.useUtils();
+  
+  const createPost = trpc.post.create.useMutation({
+    onSuccess: () => {
+      // Invalidate and refetch
+      utils.post.infiniteList.invalidate();
+    },
+    onMutate: async (newPost) => {
+      // Cancel outgoing fetches
+      await utils.post.infiniteList.cancel();
+
+      // Snapshot previous value
+      const previousPosts = utils.post.infiniteList.getInfiniteData();
+
+      // Optimistically update
+      utils.post.infiniteList.setInfiniteData(
+        { limit: 20, published: true },
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            pages: old.pages.map((page, index) =>
+              index === 0
+                ? {
+                    ...page,
+                    posts: [
+                      { ...newPost, id: 'temp', createdAt: new Date() } as any,
+                      ...page.posts,
+                    ],
+                  }
+                : page
+            ),
+          };
+        }
+      );
+
+      return { previousPosts };
+    },
+    onError: (_err, _newPost, context) => {
+      // Rollback on error
+      if (context?.previousPosts) {
+        utils.post.infiniteList.setInfiniteData(
+          { limit: 20, published: true },
+          context.previousPosts
+        );
+      }
+    },
+  });
+
+  // Toggle like mutation
+  const toggleLike = trpc.post.toggleLike.useMutation({
+    onSuccess: () => {
+      utils.post.infiniteList.invalidate();
+    },
+  });
+
+  // Intersection Observer for infinite scroll
+  const observerRef = useRef<IntersectionObserver>();
+  const lastPostRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (isFetchingNextPage) return;
+      if (observerRef.current) observerRef.current.disconnect();
+      
+      observerRef.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage();
+        }
+      });
+      
+      if (node) observerRef.current.observe(node);
+    },
+    [isFetchingNextPage, hasNextPage, fetchNextPage]
+  );
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  const allPosts = data?.pages.flatMap((page) => page.posts) ?? [];
+
+  return (
+    <div className="posts-container">
+      {allPosts.map((post, index) => (
+        <div
+          key={post.id}
+          ref={index === allPosts.length - 1 ? lastPostRef : null}
+          className="post-card"
+        >
+          <h2>{post.title}</h2>
+          <p>{post.content}</p>
+          <div className="post-meta">
+            <span>By {post.author.name}</span>
+            <button
+              onClick={() => toggleLike.mutate({ postId: post.id })}
+              disabled={toggleLike.isPending}
+            >
+              ❤️ {post._count.likes}
+            </button>
+            <span>💬 {post._count.comments}</span>
+          </div>
+        </div>
+      ))}
+      
+      {isFetchingNextPage && <div>Loading more...</div>}
+    </div>
+  );
+}
+```
+
+## Server-Side Rendering
+
+```tsx
+// src/app/posts/[id]/page.tsx
+import { appRouter } from '@/server/routers/_app';
+import { createInnerContext } from '@/server/context';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { notFound } from 'next/navigation';
+
+interface Props {
+  params: { id: string };
+}
+
+export default async function PostPage({ params }: Props) {
+  const session = await getServerSession(authOptions);
+  const ctx = createInnerContext(session);
+  
+  // Create server-side caller
+  const caller = appRouter.createCaller(ctx);
+
+  try {
+    const post = await caller.post.byId({ id: params.id });
+
+    return (
+      <article>
+        <h1>{post.title}</h1>
+        <div className="author">By {post.author.name}</div>
+        <div className="content">{post.content}</div>
+        
+        <section className="comments">
+          <h2>Comments</h2>
+          {post.comments.map((comment) => (
+            <div key={comment.id} className="comment">
+              <strong>{comment.author.name}</strong>
+              <p>{comment.content}</p>
+            </div>
+          ))}
+        </section>
+      </article>
+    );
+  } catch (error) {
+    notFound();
+  }
+}
+```
+
+## Custom Hooks
+
+```typescript
+// src/client/hooks/useAuth.ts
+import { trpc } from '../trpc';
+
+export function useAuth() {
+  const { data: user, isLoading } = trpc.user.me.useQuery(undefined, {
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  const utils = trpc.useUtils();
+
+  const logout = async () => {
+    // Clear cache on logout
+    utils.invalidate();
+  };
+
+  return {
+    user,
+    isLoading,
+    isAuthenticated: !!user,
+    logout,
+  };
+}
+
+// src/client/hooks/usePosts.ts
+import { trpc } from '../trpc';
+import type { CreatePostInput, UpdatePostInput } from '@/shared/schemas/post';
+
+export function usePosts(filters?: { authorId?: string; published?: boolean }) {
+  const utils = trpc.useUtils();
+
+  const postsQuery = trpc.post.infiniteList.useInfiniteQuery(
+    { ...filters, limit: 20 },
+    { getNextPageParam: (lastPage) => lastPage.nextCursor }
+  );
+
+  const createMutation = trpc.post.create.useMutation({
+    onSuccess: () => {
+      utils.post.infiniteList.invalidate();
+    },
+  });
+
+  const updateMutation = trpc.post.update.useMutation({
+    onSuccess: (data) => {
+      utils.post.byId.setData({ id: data.id }, data);
+      utils.post.infiniteList.invalidate();
+    },
+  });
+
+  const deleteMutation = trpc.post.delete.useMutation({
+    onSuccess: () => {
+      utils.post.infiniteList.invalidate();
+    },
+  });
+
+  return {
+    posts: postsQuery.data?.pages.flatMap((p) => p.posts) ?? [],
+    isLoading: postsQuery.isLoading,
+    hasNextPage: postsQuery.hasNextPage,
+    fetchNextPage: postsQuery.fetchNextPage,
+    isFetchingNextPage: postsQuery.isFetchingNextPage,
+    create: createMutation.mutateAsync,
+    update: updateMutation.mutateAsync,
+    delete: deleteMutation.mutateAsync,
+  };
+}
+```
+
+## Testing
+
+```typescript
+// tests/routers/user.test.ts
+import { appRouter } from '@/server/routers/_app';
+import { createInnerContext } from '@/server/context';
+import { prisma } from '@/lib/prisma';
+
+describe('User Router', () => {
+  const ctx = createInnerContext();
+  const caller = appRouter.createCaller(ctx);
+
+  beforeEach(async () => {
+    await prisma.user.deleteMany();
+  });
+
+  it('should get user by id', async () => {
+    const user = await prisma.user.create({
+      data: {
+        email: 'test@example.com',
+        name: 'Test User',
+        password: 'hashed',
+      },
+    });
+
+    const result = await caller.user.byId({ id: user.id });
+    expect(result.email).toBe('test@example.com');
+    expect(result.name).toBe('Test User');
+  });
+
+  it('should throw NOT_FOUND for invalid user', async () => {
+    await expect(
+      caller.user.byId({ id: '00000000-0000-0000-0000-000000000000' })
+    ).rejects.toThrow('User not found');
+  });
+
+  it('should require auth for protected routes', async () => {
+    await expect(caller.user.me()).rejects.toThrow('UNAUTHORIZED');
+  });
+});
+```
+
+## Error Handling Best Practices
+
+```typescript
+// Consistent error handling in procedures
+import { TRPCError } from '@trpc/server';
+
+// Custom error factory
+export function throwNotFound(resource: string): never {
+  throw new TRPCError({
+    code: 'NOT_FOUND',
+    message: `${resource} not found`,
+  });
+}
+
+export function throwForbidden(message = 'Access denied'): never {
+  throw new TRPCError({
+    code: 'FORBIDDEN',
+    message,
+  });
+}
+
+export function throwConflict(message: string): never {
+  throw new TRPCError({
+    code: 'CONFLICT',
+    message,
+  });
+}
+
+// Usage in procedures
+.query(async ({ ctx, input }) => {
+  const post = await ctx.prisma.post.findUnique({ where: { id: input.id } });
+  
+  if (!post) throwNotFound('Post');
+  if (post.authorId !== ctx.user.id) throwForbidden('Not the author');
+  
+  return post;
+})
+```
+
+## Performance Tips
+
+1. **Batch Requests** - tRPC automatically batches requests on same tick
+2. **Query Prefetching** - Prefetch data on hover/focus for instant navigation
+3. **Optimistic Updates** - Update UI before server confirms
+4. **Select Fields** - Only select needed fields from database
+5. **Cursor Pagination** - More efficient than offset pagination
+6. **Caching Strategy** - Configure staleTime and cacheTime appropriately
