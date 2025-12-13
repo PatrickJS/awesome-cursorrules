@@ -291,6 +291,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
+- [Vibe Coding Directories](rules/vibe-coding-resource-directories-cursorrules) - Rules for curating fun, platform-customizable vibe coding resources like prompts, rules, MCP, news, and jobs.
 
 ## How to Use
 
