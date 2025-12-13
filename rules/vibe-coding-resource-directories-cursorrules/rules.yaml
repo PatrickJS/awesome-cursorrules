@@ -1,0 +1,26 @@
+# rules.yaml for Vibe Coding Directories
+# Purpose: Guide Cursor AI to curate and generate resources for "vibe coding" directories—fun, creative coding with rules, prompts, MCP, news, jobs, and platform-specific customizations (e.g., Cursor, other AI tools).
+
+## General Guidelines
+- Prioritize "vibe": Infuse suggestions with fun, engaging language (e.g., "epic prompts for chill coding sessions"). Use emojis sparingly for flair.
+- Structure: Organize into categories like Rules, Prompts, MCP, News, Jobs. Each entry: [Resource Name](link) - Vibey description. Include badges for relevance (e.g., ![Platform](https://img.shields.io/badge/platform-Cursor-blue)).
+- Customization: When generating, ask for user input like "platform: Cursor" to tailor rules/prompts (e.g., convert generic prompt to Cursor-specific).
+- Quality: Focus on high-vibe content—recent (updated <6 months), popular (stars >500), and community-driven. Avoid dry/academic resources.
+- SEO & UX: Add search-friendly tags, responsive layouts for directories, and call-to-actions like "Generate your own vibe prompt here!"
+
+## Project Structure Rules
+- Root: README.md with TOC linking to sections (e.g., # Rules, # Prompts).
+- Categories: Folders/sections for /rules, /prompts, /mcp, /news, /jobs.
+- Generation: For new entries: "Suggest 3 vibe coding prompts for [platform], themed around [vibe e.g., chill night hacking]."
+- Maintenance: "Scan for outdated jobs/news; replace with fresh ones from GitHub trends or RSS feeds."
+
+## Generation Prompts
+- Rules: "Create a Cursor rule for vibe coding in [stack e.g., React], emphasizing fun patterns like emoji-logging."
+- Prompts: "Generate platform-agnostic prompt, then adapt for [platform e.g., Cursor/GPT]: 'Build a chill app that...'"
+- MCP/Jobs/News: "Curate 5 MCP resources with vibes; or latest coding jobs with fun descriptions; or news summaries with hype."
+- Examples: Pull from awesome lists; ensure platform compatibility.
+
+## Best Practices
+- Community: Add CONTRIBUTING.md for user-generated content.
+- Tech: Assume static sites (e.g., Next.js); enforce dark/light mode for vibes.
+- Edge Cases: If no matches, suggest "Vibe check: Add your own via PR!"
