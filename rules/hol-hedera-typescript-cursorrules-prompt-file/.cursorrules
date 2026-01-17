@@ -1,0 +1,236 @@
+# Hashgraph Online (HOL) Development Rules
+
+You are an expert TypeScript developer building applications with Hashgraph Online (HOL) - the open-source SDK for AI agents and decentralized applications on Hedera.
+
+## Technology Stack
+
+**Core:**
+- Language: TypeScript (strict mode)
+- Runtime: Node.js 20+
+- Package Manager: pnpm
+- Testing: Jest with @swc/jest
+
+**HOL SDK:**
+- @hashgraphonline/standards-sdk - Core SDK for HCS standards and Registry Broker
+- @hol-org/hashnet-mcp - MCP server for AI agent integration
+
+**Frontend (when applicable):**
+- Framework: Next.js 14+ (App Router)
+- UI: shadcn/ui + Tailwind CSS
+- Icons: react-icons (Lucide preferred)
+
+## Coding Standards
+
+### TypeScript Requirements
+- NEVER use `any` - define proper interfaces
+- NEVER use `as any` casting - use type guards
+- ALWAYS define explicit return types
+- ALWAYS use generics for flexible code
+- Validate external data with type guards or zod
+
+### File Naming
+- Use kebab-case: `registry-client.ts`, `topic-manager.ts`
+- Test files: `__tests__/registry-client.test.ts`
+- Components: `registry-browser.tsx`
+
+### Code Style
+- Max 500 lines per file - split larger files
+- No nested ternaries
+- No inline comments - use JSDoc only
+- No console.log - use Logger from standards-sdk
+- Prettier formatting required
+
+### React Patterns (when applicable)
+- NO render functions like `renderContent()`
+- NO inline callbacks in JSX
+- NO hooks in loops/conditionals
+- ALWAYS use separate child components
+- ALWAYS define Props interfaces
+
+## HOL SDK Usage
+
+### RegistryBrokerClient - Initialization
+```typescript
+import { RegistryBrokerClient } from '@hashgraphonline/standards-sdk';
+
+const client = new RegistryBrokerClient({
+  baseUrl: 'https://api.hol.org',
+  apiKey: process.env.HOL_API_KEY,
+});
+```
+
+### RegistryBrokerClient - Search Agents
+```typescript
+import { RegistryBrokerClient, SearchParams } from '@hashgraphonline/standards-sdk';
+
+const client = new RegistryBrokerClient();
+
+const searchParams: SearchParams = {
+  q: 'weather',
+  registry: 'hcs-10',
+  limit: 10,
+  page: 1,
+};
+
+const results = await client.search(searchParams);
+console.log(`Found ${results.total} agents`);
+results.hits.forEach(agent => {
+  console.log(`- ${agent.name}: ${agent.description}`);
+});
+```
+
+### RegistryBrokerClient - Resolve Agent (UAID)
+```typescript
+const agent = await client.resolveUaid('hcs10://0.0.123456/agent-name');
+console.log('Agent:', agent.name);
+console.log('Protocols:', agent.protocols);
+console.log('Capabilities:', agent.capabilities);
+```
+
+### RegistryBrokerClient - Register Agent
+```typescript
+import { AgentRegistrationRequest } from '@hashgraphonline/standards-sdk';
+
+const registration: AgentRegistrationRequest = {
+  name: 'My Agent',
+  description: 'A helpful AI agent',
+  protocols: ['hcs-10'],
+  capabilities: ['chat', 'search'],
+  endpoint: 'https://my-agent.example.com',
+};
+
+const response = await client.registerAgent(registration, {
+  autoTopUp: {
+    accountId: process.env.HEDERA_OPERATOR_ID!,
+    privateKey: process.env.HEDERA_OPERATOR_KEY!,
+  },
+});
+
+if (response.success) {
+  console.log('Agent registered:', response.uaid);
+}
+```
+
+### RegistryBrokerClient - Chat with Agent
+```typescript
+import { StartChatOptions } from '@hashgraphonline/standards-sdk';
+
+const options: StartChatOptions = {
+  uaid: 'hcs10://0.0.123456/agent-name',
+  auth: {
+    accountId: process.env.HEDERA_OPERATOR_ID!,
+    privateKey: process.env.HEDERA_OPERATOR_KEY!,
+  },
+};
+
+const conversation = await client.chat.start(options);
+
+const response = await conversation.sendMessage({
+  content: 'Hello, can you help me?',
+});
+
+console.log('Agent response:', response.content);
+```
+
+### RegistryBrokerClient - Get Stats
+```typescript
+const stats = await client.stats();
+console.log('Total agents:', stats.totalAgents);
+console.log('Active protocols:', stats.protocols);
+
+const registries = await client.registries();
+registries.forEach(r => console.log(`Registry: ${r.name}`));
+```
+
+### RegistryBrokerClient - Vector Search
+```typescript
+import { VectorSearchRequest } from '@hashgraphonline/standards-sdk';
+
+const request: VectorSearchRequest = {
+  query: 'find me an agent that can help with weather forecasts',
+  limit: 5,
+  filter: {
+    registry: 'hcs-10',
+    protocols: ['a2a'],
+  },
+};
+
+const results = await client.vectorSearch(request);
+results.hits.forEach(hit => {
+  console.log(`${hit.agent.name} (score: ${hit.score})`);
+});
+```
+
+## Testing Requirements
+
+### TDD Workflow
+1. RED: Write failing tests first
+2. GREEN: Implement minimum code to pass
+3. REFACTOR: Improve while keeping tests green
+
+### Test Structure
+```typescript
+describe('RegistryBrokerClient', () => {
+  let client: RegistryBrokerClient;
+
+  beforeEach(() => {
+    client = new RegistryBrokerClient();
+  });
+
+  describe('search', () => {
+    it('should return agents matching query', async () => {
+      const result = await client.search({ q: 'test' });
+      
+      expect(result.hits).toBeDefined();
+      expect(Array.isArray(result.hits)).toBe(true);
+    });
+  });
+
+  describe('resolveUaid', () => {
+    it('should resolve valid UAID', async () => {
+      const agent = await client.resolveUaid('hcs10://0.0.123456/test');
+      
+      expect(agent.name).toBeDefined();
+    });
+  });
+});
+```
+
+### Test Commands
+```bash
+pnpm test                    # Run all tests
+pnpm test -- --watch         # Watch mode
+pnpm test -- --coverage      # Coverage report
+pnpm test -- -t "pattern"    # Run specific tests
+```
+
+## Validation Checklist
+
+Before completing any task:
+1. `pnpm run lint` - Zero violations
+2. `pnpm run typecheck` - Zero errors  
+3. `pnpm run build` - Must compile
+4. `pnpm test` - All tests pass
+
+## Environment Configuration
+
+```typescript
+import 'dotenv/config';
+
+const config = {
+  baseUrl: process.env.HOL_API_URL || 'https://api.hol.org',
+  apiKey: process.env.HOL_API_KEY,
+  network: process.env.HEDERA_NETWORK || 'testnet',
+  operatorId: process.env.HEDERA_OPERATOR_ID,
+  operatorKey: process.env.HEDERA_OPERATOR_KEY,
+};
+```
+
+## Resources
+
+- HOL Website: https://hol.org
+- HOL Registry: https://hol.org/registry
+- SDK Docs: https://hol.org/docs/libraries/standards-sdk/overview/
+- Registry Broker Client: https://hol.org/docs/libraries/standards-sdk/registry-broker-client/
+- GitHub: https://github.com/hashgraph-online
+- NPM: @hashgraphonline/standards-sdk

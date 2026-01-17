@@ -130,6 +130,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Go (Basic Setup)](./rules/htmx-go-basic-cursorrules-prompt-file/.cursorrules) - Cursor rules for Go development with basic setup.
 - [Go with Fiber](./rules/htmx-go-fiber-cursorrules-prompt-file/.cursorrules) - Cursor rules for Go development with Fiber integration.
 - [Go Temporal DSL](./rules/go-temporal-dsl-prompt-file/.cursorrules) - Cursor rules for Go development with Temporal DSL integration.
+- [HOL (Hedera TypeScript SDK)](./rules/hol-hedera-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for [Hashgraph Online](https://hol.org) development with TypeScript, building AI agents on Hedera with RegistryBrokerClient.
 - [HTMX (Basic Setup)](./rules/htmx-basic-cursorrules-prompt-file/.cursorrules) - Cursor rules for HTMX development with basic setup.
 - [HTMX (Flask)](./rules/htmx-flask-cursorrules-prompt-file/.cursorrules) - Cursor rules for HTMX development with Flask integration.
 - [HTMX (Django)](./rules/htmx-django-cursorrules-prompt-file/.cursorrules) - Cursor rules for HTMX development with Django integration.
