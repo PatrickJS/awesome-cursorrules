@@ -82,8 +82,9 @@ results.hits.forEach(agent => {
 
 ### RegistryBrokerClient - Resolve Agent (UAID)
 ```typescript
-import { Logger } from '@hashgraphonline/standards-sdk';
+import { RegistryBrokerClient, Logger } from '@hashgraphonline/standards-sdk';
 
+const client = new RegistryBrokerClient();
 const logger = new Logger({ module: 'AgentResolver', level: 'info' });
 
 const agent = await client.resolveUaid('hcs10://0.0.123456/agent-name');
@@ -96,8 +97,9 @@ logger.info('Agent resolved', {
 
 ### RegistryBrokerClient - Register Agent
 ```typescript
-import { AgentRegistrationRequest, Logger } from '@hashgraphonline/standards-sdk';
+import { RegistryBrokerClient, AgentRegistrationRequest, Logger } from '@hashgraphonline/standards-sdk';
 
+const client = new RegistryBrokerClient();
 const logger = new Logger({ module: 'AgentRegistration', level: 'info' });
 
 const registration: AgentRegistrationRequest = {
@@ -122,8 +124,9 @@ if (response.success) {
 
 ### RegistryBrokerClient - Chat with Agent
 ```typescript
-import { StartChatOptions, Logger } from '@hashgraphonline/standards-sdk';
+import { RegistryBrokerClient, StartChatOptions, Logger } from '@hashgraphonline/standards-sdk';
 
+const client = new RegistryBrokerClient();
 const logger = new Logger({ module: 'AgentChat', level: 'info' });
 
 const options: StartChatOptions = {
@@ -145,8 +148,9 @@ logger.info('Agent response received', { sessionId: conversation.sessionId });
 
 ### RegistryBrokerClient - Get Stats
 ```typescript
-import { Logger } from '@hashgraphonline/standards-sdk';
+import { RegistryBrokerClient, Logger } from '@hashgraphonline/standards-sdk';
 
+const client = new RegistryBrokerClient();
 const logger = new Logger({ module: 'RegistryStats', level: 'info' });
 
 const stats = await client.stats();
@@ -158,8 +162,9 @@ registries.forEach(r => logger.debug('Registry', { name: r.name }));
 
 ### RegistryBrokerClient - Vector Search
 ```typescript
-import { VectorSearchRequest, Logger } from '@hashgraphonline/standards-sdk';
+import { RegistryBrokerClient, VectorSearchRequest, Logger } from '@hashgraphonline/standards-sdk';
 
+const client = new RegistryBrokerClient();
 const logger = new Logger({ module: 'VectorSearch', level: 'info' });
 
 const request: VectorSearchRequest = {
