@@ -61,8 +61,9 @@ const client = new RegistryBrokerClient({
 
 ### RegistryBrokerClient - Search Agents
 ```typescript
-import { RegistryBrokerClient, SearchParams } from '@hashgraphonline/standards-sdk';
+import { RegistryBrokerClient, SearchParams, Logger } from '@hashgraphonline/standards-sdk';
 
+const logger = new Logger({ module: 'AgentSearch', level: 'info' });
 const client = new RegistryBrokerClient();
 
 const searchParams: SearchParams = {
@@ -73,23 +74,31 @@ const searchParams: SearchParams = {
 };
 
 const results = await client.search(searchParams);
-console.log(`Found ${results.total} agents`);
+logger.info('Search completed', { total: results.total });
 results.hits.forEach(agent => {
-  console.log(`- ${agent.name}: ${agent.description}`);
+  logger.debug('Agent found', { name: agent.name, description: agent.description });
 });
 ```
 
 ### RegistryBrokerClient - Resolve Agent (UAID)
 ```typescript
+import { Logger } from '@hashgraphonline/standards-sdk';
+
+const logger = new Logger({ module: 'AgentResolver', level: 'info' });
+
 const agent = await client.resolveUaid('hcs10://0.0.123456/agent-name');
-console.log('Agent:', agent.name);
-console.log('Protocols:', agent.protocols);
-console.log('Capabilities:', agent.capabilities);
+logger.info('Agent resolved', { 
+  name: agent.name, 
+  protocols: agent.protocols, 
+  capabilities: agent.capabilities 
+});
 ```
 
 ### RegistryBrokerClient - Register Agent
 ```typescript
-import { AgentRegistrationRequest } from '@hashgraphonline/standards-sdk';
+import { AgentRegistrationRequest, Logger } from '@hashgraphonline/standards-sdk';
+
+const logger = new Logger({ module: 'AgentRegistration', level: 'info' });
 
 const registration: AgentRegistrationRequest = {
   name: 'My Agent',
@@ -107,13 +116,15 @@ const response = await client.registerAgent(registration, {
 });
 
 if (response.success) {
-  console.log('Agent registered:', response.uaid);
+  logger.info('Agent registered', { uaid: response.uaid });
 }
 ```
 
 ### RegistryBrokerClient - Chat with Agent
 ```typescript
-import { StartChatOptions } from '@hashgraphonline/standards-sdk';
+import { StartChatOptions, Logger } from '@hashgraphonline/standards-sdk';
+
+const logger = new Logger({ module: 'AgentChat', level: 'info' });
 
 const options: StartChatOptions = {
   uaid: 'hcs10://0.0.123456/agent-name',
@@ -125,26 +136,31 @@ const options: StartChatOptions = {
 
 const conversation = await client.chat.start(options);
 
-const response = await conversation.sendMessage({
-  content: 'Hello, can you help me?',
+const response = await conversation.send({
+  plaintext: 'Hello, can you help me?',
 });
 
-console.log('Agent response:', response.content);
+logger.info('Agent response received', { sessionId: conversation.sessionId });
 ```
 
 ### RegistryBrokerClient - Get Stats
 ```typescript
+import { Logger } from '@hashgraphonline/standards-sdk';
+
+const logger = new Logger({ module: 'RegistryStats', level: 'info' });
+
 const stats = await client.stats();
-console.log('Total agents:', stats.totalAgents);
-console.log('Active protocols:', stats.protocols);
+logger.info('Registry stats', { totalAgents: stats.totalAgents, protocols: stats.protocols });
 
 const registries = await client.registries();
-registries.forEach(r => console.log(`Registry: ${r.name}`));
+registries.forEach(r => logger.debug('Registry', { name: r.name }));
 ```
 
 ### RegistryBrokerClient - Vector Search
 ```typescript
-import { VectorSearchRequest } from '@hashgraphonline/standards-sdk';
+import { VectorSearchRequest, Logger } from '@hashgraphonline/standards-sdk';
+
+const logger = new Logger({ module: 'VectorSearch', level: 'info' });
 
 const request: VectorSearchRequest = {
   query: 'find me an agent that can help with weather forecasts',
@@ -157,7 +173,7 @@ const request: VectorSearchRequest = {
 
 const results = await client.vectorSearch(request);
 results.hits.forEach(hit => {
-  console.log(`${hit.agent.name} (score: ${hit.score})`);
+  logger.info('Match found', { name: hit.agent.name, score: hit.score });
 });
 ```
 
