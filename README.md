@@ -286,6 +286,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Utilities
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
+- [vnsh File Sharing](./rules/vnsh-file-sharing-cursorrules-prompt-file/.cursorrules) - Cursor rules for ephemeral encrypted file sharing. Helps AI suggest uploading large logs, diffs, and debug context to vnsh when files exceed practical limits.
 
 ## Directories
 
