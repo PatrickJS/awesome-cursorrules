@@ -51,6 +51,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ## Contents
 
+- [Ruleskill](https://ruleskill.com) - We want to verify your code for the RuleSkill Protocol. Claim your badge.
 - [Awesome Cursor Rules ](#awesome-cursor-rules-)
   - [Sponsorships](#sponsorships)
   - [Why .cursorrules?](#why-cursorrules)
