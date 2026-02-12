@@ -289,8 +289,8 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ## Directories
 
-- [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
+- [CursorList](https://cursorlist.com)
 - [Cursorrules Collection](https://github.com/cursorrulespacks/cursorrules-collection)
 
 ## How to Use
