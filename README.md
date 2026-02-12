@@ -291,7 +291,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
-- [Cursorrules Collection](https://github.com/cursorrulespacks/cursorrules-collection) - 33 tested .cursorrules files across languages (Python, TypeScript, Go, Rust, etc.), frameworks (React, Next.js, Django, FastAPI, etc.), practices (testing, security, accessibility), and tools (Docker, Terraform, CI/CD).
+- [Cursorrules Collection](https://github.com/cursorrulespacks/cursorrules-collection)
 
 ## How to Use
 
