@@ -291,6 +291,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
+- [QASkills.sh](https://qaskills.sh) - Curated QA testing skills for Cursor and 27+ AI agents. 20+ expert patterns for Playwright, Cypress, Jest, API testing, and more.
 
 ## How to Use
 
