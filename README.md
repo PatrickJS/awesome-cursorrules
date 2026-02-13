@@ -286,6 +286,8 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Utilities
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
+- [Taskade MCP Server](https://github.com/taskade/mcp) - Connect Taskade to any AI assistant via MCP — 50+ tools for workspaces, projects, tasks, AI agents, knowledge bases, templates, and media.
+
 
 ## Directories
 
