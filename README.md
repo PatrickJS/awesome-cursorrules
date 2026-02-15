@@ -230,6 +230,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Language-Specific
 
+- [Finnish Text Humanizer](./rules/finnish-text-humanizer-cursorrules-prompt-file/.cursorrules) - Cursor rules for Finnish AI text humanization with natural language pattern detection and rewriting.
 - [JavaScript/TypeScript Code Quality](./rules/javascript-typescript-code-quality-cursorrules-pro/.cursorrules) - Cursor rules for JavaScript and TypeScript development with code quality integration.
 - [JavaScript (Chrome APIs)](./rules/javascript-chrome-apis-cursorrules-prompt-file/.cursorrules) - Cursor rules for JavaScript development with Chrome APIs integration.
 - [Optimize (Rell Blockchain Code)](./rules/optimize-rell-blockchain-code-cursorrules-prompt-f/.cursorrules) - Cursor rules for optimization development with Rell Blockchain code integration.
