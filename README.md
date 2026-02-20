@@ -113,6 +113,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [SvelteKit (RESTful API, Tailwind CSS)](./rules/sveltekit-restful-api-tailwind-css-cursorrules-pro/.cursorrules) - Cursor rules for SvelteKit development with RESTful API and Tailwind CSS integration.
 - [SvelteKit (Tailwind CSS, TypeScript)](./rules/sveltekit-tailwindcss-typescript-cursorrules-promp/.cursorrules) - Cursor rules for SvelteKit development with Tailwind CSS and TypeScript integration.
 - [SvelteKit (TypeScript Guide)](./rules/sveltekit-typescript-guide-cursorrules-prompt-file/.cursorrules) - Cursor rules for SvelteKit development with TypeScript integration.
+- [SvelteKit (Svelte 5 Best Practices)](./rules/sveltekit-svelte5-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for SvelteKit with Svelte 5 runes, load functions, form actions, and SSR patterns. Prevents agents from generating outdated Svelte 4 code.
+- [shadcn/ui Best Practices](./rules/shadcn-ui-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for shadcn/ui component customization, forms with React Hook Form + Zod, theming, and accessibility.
+- [Expo/React Native Best Practices](./rules/expo-react-native-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for Expo Router, EAS Build, expo-image, secure storage, and config plugins. Stops agents from using deprecated patterns.
 - [Vue 3 (Nuxt 3 Development)](./rules/vue-3-nuxt-3-development-cursorrules-prompt-file/.cursorrules) - Cursor rules for Vue 3 development with Nuxt 3 integration.
 - [Vue 3 (Nuxt 3, TypeScript)](./rules/vue-3-nuxt-3-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Vue 3 development with TypeScript integration.
 - [Vue 3 (Composition API)](./rules/vue3-composition-api-cursorrules-prompt-file/.cursorrules) - Cursor rules for Vue 3 development with Composition API integration.
@@ -142,6 +145,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Node.js (MongoDB)](./rules/nodejs-mongodb-cursorrules-prompt-file-tutorial/.cursorrules) - Cursor rules for Node.js development with MongoDB integration.
 - [Node.js (MongoDB, JWT, Express, React)](./rules/nodejs-mongodb-jwt-express-react-cursorrules-promp/.cursorrules) - Cursor rules for Node.js development with MongoDB, JWT, Express, and React integration.
 - [Rails 8 (Basic Setup)](./rules/rails-cursorrules-prompt-file/rails-basics.mdx) - Cursor rules for Rails development with basic setup.
+- [FastAPI Best Practices](./rules/fastapi-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for FastAPI with async patterns, dependency injection, Pydantic v2, lifespan events, and proper response models.
 - [Python (FastAPI)](./rules/py-fast-api/.cursorrules) - Cursor rules for Python FastAPI backend development and best practices.
 - [Python (FastAPI)](./rules/cursorrules-file-cursor-ai-python-fastapi-api/.cursorrules) - Cursor rules for Python FastAPI development with API integration.
 - [Python 3.12 (FastAPI Best Practices)](./rules/python-312-fastapi-best-practices-cursorrules-prom/.cursorrules) - Cursor rules for Python FastAPI development with best practices.
@@ -168,6 +172,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### CSS and Styling
 
+- [Tailwind CSS v4 Best Practices](./rules/tailwind-v4-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for Tailwind CSS v4 with CSS-first config, modern opacity syntax, container queries, and gradient naming. Prevents agents from generating v3 code.
 - [Tailwind CSS (Next.js Guide)](./rules/tailwind-css-nextjs-guide-cursorrules-prompt-file/.cursorrules) - Cursor rules for Tailwind CSS development with Next.js integration.
 - [Tailwind (React, Firebase)](./rules/tailwind-react-firebase-cursorrules-prompt-file/.cursorrules) - Cursor rules for Tailwind development with React and Firebase integration.
 - [Tailwind (shadcn/ui Integration)](./rules/tailwind-shadcn-ui-integration-cursorrules-prompt-/.cursorrules) - Cursor rules for Tailwind development with shadcn/ui integration.
@@ -184,6 +189,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Database and API
 
+- [Drizzle ORM Best Practices](./rules/drizzle-orm-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for Drizzle ORM schema design, relations, migrations, type-safe queries, and prepared statements.
 - [GraphQL (Apollo Client)](./rules/react-graphql-apollo-client-cursorrules-prompt-file/.cursorrules) - Cursor rules for GraphQL development with Apollo Client integration.
 - [TypeScript (Axios)](./rules/typescript-axios-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Axios integration.
 
@@ -230,6 +236,8 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Language-Specific
 
+- [TypeScript Best Practices](./rules/typescript-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for modern TypeScript with strict mode, discriminated unions, satisfies operator, and exhaustive switch patterns.
+- [Python 3.12+ Best Practices](./rules/python-312-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for modern Python with type hints (X | Y syntax), Pydantic v2, uv package manager, pathlib, and pyproject.toml.
 - [JavaScript/TypeScript Code Quality](./rules/javascript-typescript-code-quality-cursorrules-pro/.cursorrules) - Cursor rules for JavaScript and TypeScript development with code quality integration.
 - [JavaScript (Chrome APIs)](./rules/javascript-chrome-apis-cursorrules-prompt-file/.cursorrules) - Cursor rules for JavaScript development with Chrome APIs integration.
 - [Optimize (Rell Blockchain Code)](./rules/optimize-rell-blockchain-code-cursorrules-prompt-f/.cursorrules) - Cursor rules for optimization development with Rell Blockchain code integration.
@@ -267,6 +275,8 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Other
 
+- [Think First (Plan Before Code)](./rules/think-first-planning-cursorrules-prompt-file/.cursorrules) - Cursor rules that make AI agents read, search, and plan before implementing changes. Prevents premature coding and missed context.
+- [Vibe Guard (Security Guardrails)](./rules/vibe-guard-security-cursorrules-prompt-file/.cursorrules) - Always-on security rules for AI-generated code. Covers input validation, SQL injection, secrets management, auth, CORS, and rate limiting.
 - [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file/.cursorrules) - Cursor rules for ASCII simulation game development.
 - [Code Guidelines](./rules/code-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for code development with guidelines integration.
 - [Code Style Consistency](./rules/code-style-consistency-cursorrules-prompt-file/.cursorrules) - Cursor rules for code development with style consistency integration.

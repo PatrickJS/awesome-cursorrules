@@ -1,0 +1,6 @@
+
+Use Svelte 5 runes ($state, $derived, $effect) - never use Svelte 4 stores (writable, readable) or reactive declarations ($:).
+Use $props() for component props - never use export let.
+Use load functions in +page.server.ts for data fetching - never fetch data in onMount.
+Use form actions for mutations - never create API routes just for form submissions.
+Use $effect for side effects - never use $: reactive statements.

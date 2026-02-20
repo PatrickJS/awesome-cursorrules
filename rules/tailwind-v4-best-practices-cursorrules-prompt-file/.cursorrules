@@ -1,0 +1,18 @@
+
+Before generating Tailwind classes, verify they exist in v4  - do NOT use v3-only classes.
+
+Use CSS-first @theme configuration, not tailwind.config.js. Define design tokens in a CSS file with @theme { --color-*, --font-*, --breakpoint-*, etc. }.
+
+Use modern opacity syntax (bg-red-500/50) not bg-opacity-50 or text-opacity-25.
+
+Use @import "tailwindcss" not @tailwind base/components/utilities directives.
+
+For gradients, use bg-linear-to-r and bg-linear-45 (angle)  - v4 prefers linear over gradient naming for directional gradients.
+
+Use parentheses for CSS variables in arbitrary values: bg-(--brand-color) not bg-[--brand-color].
+
+For grid-cols, grid-rows, object-position arbitrary values use underscores for spaces: grid-cols-[max-content_auto] not grid-cols-[max-content,auto].
+
+Place the important modifier at the end of the class: flex! bg-red-500! not !flex !bg-red-500.
+
+Use @container and @sm, @md, @max-md for container queries  - style by parent size not viewport.

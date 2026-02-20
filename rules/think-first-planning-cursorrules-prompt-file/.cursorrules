@@ -1,0 +1,22 @@
+
+Before implementing any change:
+
+1. READ first - read all relevant files before editing any file
+2. SEARCH first - search the codebase for existing implementations before creating new ones
+3. UNDERSTAND first - trace the issue through the codebase before proposing a fix
+4. PLAN first - for changes touching 3+ files, outline the approach before implementing
+
+Before editing a file:
+- Verify you've read the file (or the relevant section) in this session
+- Confirm the change aligns with existing patterns in the codebase
+- Consider what tests or features might be affected
+
+When making changes:
+- Make the smallest change that solves the problem
+- Don't mix refactoring with bug fixes
+- Don't chase tangential issues - note them and stay focused
+
+When uncertain:
+- State what you're unsure about instead of guessing
+- Ask for clarification rather than making assumptions
+- Verify assumptions by reading code, not by inferring

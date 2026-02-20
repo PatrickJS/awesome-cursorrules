@@ -1,0 +1,16 @@
+
+Use async def for I/O-bound endpoints and def for CPU-bound. Never make all endpoints async or all sync.
+
+Use Depends() for dependency injection. Never use global variables for shared resources like database sessions or config.
+
+Use Pydantic v2 patterns (model_validator, field_validator, ConfigDict). Never use v1 @validator or class Config.
+
+Use lifespan context manager for startup/shutdown. Never use deprecated @app.on_event decorators.
+
+Use APIRouter for route organization. Never put all routes in a single file.
+
+Use BackgroundTasks for fire-and-forget work after response. Never use asyncio.create_task for request-scoped tasks.
+
+Use response_model on path operations. Never return raw dicts without schema validation.
+
+Use status codes from fastapi.status. Never use magic numbers like 404 or 401.
