@@ -286,6 +286,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Utilities
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
+- [Mantra](https://mantra.gonewx.com) - Time machine for AI coding sessions. Automatically captures, browses, searches, and restores sessions for Cursor and other AI coding tools. Desktop app with CLI support for macOS, Linux, and Windows.
 
 ## Directories
 
