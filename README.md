@@ -270,6 +270,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file/.cursorrules) - Cursor rules for ASCII simulation game development.
 - [Code Guidelines](./rules/code-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for code development with guidelines integration.
 - [Code Style Consistency](./rules/code-style-consistency-cursorrules-prompt-file/.cursorrules) - Cursor rules for code development with style consistency integration.
+- [Conversation Memory](./rules/conversation-memory-cursorrules-prompt-file/.cursorrules) - Cursor rules for searching and recalling past conversation history from Claude Code and Cursor sessions.
 - [DragonRuby Best Practices](./rules/dragonruby-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for DragonRuby development with best practices integration.
 - [Graphical Apps Development](./rules/graphical-apps-development-cursorrules-prompt-file/.cursorrules) - Cursor rules for graphical apps development with integration.
 - [Meta-Prompt](./rules/meta-prompt-cursorrules-prompt-file/.cursorrules) - Cursor rules for meta-prompt development with integration.
