@@ -1,0 +1,16 @@
+When a user references a previous conversation, past session, or asks you to remember/recall/find
+something from earlier work:
+
+1. Identify the AI tool's history location:
+   - Claude Code: `~/.claude/history.jsonl` (global index), `~/.claude/projects/*/` (full sessions)
+   - Cursor: `~/.cursor/projects/*/agent-transcripts/` (full transcripts per workspace)
+
+2. Search by keyword first (grep/rg), never read entire history files
+
+3. Extract only key decisions, code changes, and conclusions from past sessions — do not dump raw
+   transcripts into context
+
+4. When multiple sessions match, present them as a numbered list with date, project, and topic so
+   the user can pick the right one
+
+5. After finding relevant history, summarize what was done and what's still open before continuing
