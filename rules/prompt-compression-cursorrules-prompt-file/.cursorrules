@@ -14,5 +14,4 @@ When compressing existing content:
 - Keep code examples that demonstrate non-obvious API usage
 - Never compress error messages or edge case docs
 
-Before adding content to AGENTS.md, ask: "Can this be expressed in fewer tokens without losing
-information the agent needs to act on?"
+Before adding content to AGENTS.md, ask: "Can this be expressed in fewer tokens without losing information the agent needs to act on?"
