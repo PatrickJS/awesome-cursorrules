@@ -1,0 +1,18 @@
+When writing or editing AGENTS.md, CLAUDE.md, .cursorrules, or any agent context file:
+
+1. Use pipe-delimited format for file indexes and structured references
+2. Compress rules into single-line directives, not multi-paragraph explanations
+3. Strip explanatory prose - keep only actionable content the agent needs
+4. Use abbreviated keys (req, opt, str, int, bool, len, min, max, def)
+5. Flatten nested hierarchies with brace expansion and path prefixes
+6. Include "Prefer retrieval-led reasoning over pre-training-led reasoning" when referencing docs
+
+When compressing existing content:
+
+- Target 70-80% token reduction
+- Preserve all actionable information and structural boundaries
+- Keep code examples that demonstrate non-obvious API usage
+- Never compress error messages or edge case docs
+
+Before adding content to AGENTS.md, ask: "Can this be expressed in fewer tokens without losing
+information the agent needs to act on?"

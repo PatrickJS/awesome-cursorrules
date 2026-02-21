@@ -277,6 +277,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Unity (C#)](./rules/unity-cursor-ai-c-cursorrules-prompt-file/.cursorrules) - Cursor rules for Unity development with C# integration.
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules) - Cursor rules for web app development with optimization integration.
 - [Code Pair Interviews](./rules/code-pair-interviews/.cursorrules) - Cursor rules for code pair interviews development with integration.
+- [Prompt Compression](./rules/prompt-compression-cursorrules-prompt-file/.cursorrules) - Compress docs, prompts, and context into minimal tokens for AGENTS.md. 80% fewer tokens, zero information loss.
 
 ### Documentation
 
