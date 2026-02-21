@@ -1,4 +1,3 @@
-
 - Use Drizzle schema definition (pgTable/mysqlTable/sqliteTable) - never write Prisma-style schema files
 - Use $inferSelect and $inferInsert for type inference - never manually define types that mirror DB schemas
 - Use the Drizzle query builder API - never use raw SQL strings unless absolutely necessary

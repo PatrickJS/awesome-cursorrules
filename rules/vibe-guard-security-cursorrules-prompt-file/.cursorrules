@@ -1,4 +1,3 @@
-
 Before writing any code that handles user input, authentication, or database operations:
 
 1. NEVER hardcode API keys, passwords, tokens, or secrets  - always use environment variables

@@ -1,4 +1,3 @@
-
 - Use Expo Router for navigation - never set up React Navigation manually in Expo projects
 - Use EAS Build for native builds - never use deprecated expo build
 - Use expo-image for images - never use React Native's built-in Image component

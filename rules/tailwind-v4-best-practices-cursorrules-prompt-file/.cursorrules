@@ -1,4 +1,3 @@
-
 Before generating Tailwind classes, verify they exist in v4  - do NOT use v3-only classes.
 
 Use CSS-first @theme configuration, not tailwind.config.js. Define design tokens in a CSS file with @theme { --color-*, --font-*, --breakpoint-*, etc. }.

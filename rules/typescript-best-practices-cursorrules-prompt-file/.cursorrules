@@ -1,4 +1,3 @@
-
 - Always enable strict mode in tsconfig.json  - never set strict: false
 - Use satisfies operator for type checking without widening  - never use "as" for type assertions unless absolutely necessary
 - Prefer discriminated unions with a "type" or "kind" field over optional properties
