@@ -1,8 +1,4 @@
 
-<!-- Rules here should CHANGE agent behavior, not teach knowledge. -->
-<!-- Keep rules actionable and specific. -->
-<!-- Example: "Before generating Tailwind classes, verify they exist in v4" -->
-
 - Use modern Python 3.12+ type hint syntax: X | Y not Union[X, Y], list[str] not List[str]
 - Use Pydantic v2 API: model_validator, field_validator, ConfigDict - never use v1 @validator or class Config
 - Use uv for package management in new projects - not pip or poetry

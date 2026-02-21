@@ -20,5 +20,5 @@ When generating a new API endpoint:
 
 When generating database queries:
 - Use parameterized queries or ORM methods
-- Add Row-Level Security policies if using Supabase/Postgres
+- Add Row-Level Security policies when using PostgreSQL (including Supabase, RDS, Cloud SQL, self-hosted)
 - Never trust user input in WHERE clauses

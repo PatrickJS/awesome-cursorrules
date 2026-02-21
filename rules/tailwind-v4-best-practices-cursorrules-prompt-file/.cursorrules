@@ -7,7 +7,7 @@ Use modern opacity syntax (bg-red-500/50) not bg-opacity-50 or text-opacity-25.
 
 Use @import "tailwindcss" not @tailwind base/components/utilities directives.
 
-For gradients, use bg-linear-to-r and bg-linear-45 (angle)  - v4 prefers linear over gradient naming for directional gradients.
+For gradients, use bg-linear-to-r and bg-linear-45 (angle)  - v4 removed bg-gradient-* naming; bg-linear-* is the only valid syntax for directional linear gradients.
 
 Use parentheses for CSS variables in arbitrary values: bg-(--brand-color) not bg-[--brand-color].
 

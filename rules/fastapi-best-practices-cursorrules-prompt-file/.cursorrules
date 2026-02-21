@@ -1,5 +1,5 @@
 
-Use async def for I/O-bound endpoints and def for CPU-bound. Never make all endpoints async or all sync.
+Use async def when the endpoint awaits I/O (async DB drivers, httpx, etc.). Use def for CPU-bound work or when using synchronous-only libraries — FastAPI runs def endpoints in a thread pool. Never use blocking calls (time.sleep, synchronous DB calls) inside async def.
 
 Use Depends() for dependency injection. Never use global variables for shared resources like database sessions or config.
 
