@@ -1,0 +1,5 @@
+- shadcn/ui components live in your project at @/components/ui/ - never import from @shadcn/ui or any external package
+- Use cn() utility from @/lib/utils for merging Tailwind classes - never use template literals for conditional classes
+- Use React Hook Form + Zod for all forms with shadcn Form components - never use uncontrolled forms or manual validation
+- Use CSS variables for theming - never hardcode colors in components
+- Use cva (class-variance-authority) for component variants - never use complex conditional class logic

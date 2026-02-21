@@ -1,0 +1,23 @@
+Before writing any code that handles user input, authentication, or database operations:
+
+1. NEVER hardcode API keys, passwords, tokens, or secrets  - always use environment variables
+2. ALWAYS validate and sanitize user input before processing  - use a validation library for your stack (Zod/Joi for JS/TS, Pydantic for Python, etc.)
+3. ALWAYS add authentication middleware to API routes unless explicitly marked as public
+4. NEVER use string interpolation in SQL queries  - always use parameterized queries
+5. ALWAYS set CORS to specific origins in production  - never use wildcard (*)
+6. ALWAYS hash passwords with bcrypt/scrypt/Argon2  - never MD5, SHA1, or plain text
+7. ALWAYS set httpOnly, secure, and sameSite flags on cookies
+8. NEVER expose stack traces or internal errors to users in production
+9. ALWAYS add rate limiting to authentication endpoints
+10. NEVER commit .env files  - always use .env.example with placeholder values
+
+When generating a new API endpoint:
+- Add input validation
+- Add authentication check
+- Add rate limiting for sensitive operations
+- Return generic error messages
+
+When generating database queries:
+- Use parameterized queries or ORM methods
+- Add Row-Level Security policies when using PostgreSQL (including Supabase, RDS, Cloud SQL, self-hosted)
+- Never trust user input in WHERE clauses

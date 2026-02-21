@@ -1,0 +1,15 @@
+Use async def when the endpoint awaits I/O (async DB drivers, httpx, etc.). Use def for CPU-bound work or when using synchronous-only libraries — FastAPI runs def endpoints in a thread pool. Never use blocking calls (time.sleep, synchronous DB calls) inside async def.
+
+Use Depends() for dependency injection. Never use global variables for shared resources like database sessions or config.
+
+Use Pydantic v2 patterns (model_validator, field_validator, ConfigDict). Never use v1 @validator or class Config.
+
+Use lifespan context manager for startup/shutdown. Never use deprecated @app.on_event decorators.
+
+Use APIRouter for route organization. Never put all routes in a single file.
+
+Use BackgroundTasks for fire-and-forget work after response. Never use asyncio.create_task for request-scoped tasks.
+
+Use response_model on path operations. Never return raw dicts without schema validation.
+
+Use status codes from fastapi.status. Never use magic numbers like 404 or 401.
