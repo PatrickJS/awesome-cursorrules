@@ -1,7 +1,7 @@
 Before writing any code that handles user input, authentication, or database operations:
 
 1. NEVER hardcode API keys, passwords, tokens, or secrets  - always use environment variables
-2. ALWAYS validate and sanitize user input before processing  - use Zod, Joi, or equivalent
+2. ALWAYS validate and sanitize user input before processing  - use a validation library for your stack (Zod/Joi for JS/TS, Pydantic for Python, etc.)
 3. ALWAYS add authentication middleware to API routes unless explicitly marked as public
 4. NEVER use string interpolation in SQL queries  - always use parameterized queries
 5. ALWAYS set CORS to specific origins in production  - never use wildcard (*)
