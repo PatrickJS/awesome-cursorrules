@@ -163,6 +163,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Expo, Jest, and Detox integration.
 - [Android Native (Jetpack Compose)](./rules/android-jetpack-compose-cursorrules-prompt-file/.cursorrules) - Cursor rules for Android development with Jetpack Compose integration.
 - [Flutter Expert](./rules/flutter-app-expert-cursorrules-prompt-file/.cursorrules) - Cursor rules for Flutter development with expert integration.
+- [Flutter Cursor Plugin (production workflows)](https://github.com/Wreos/flutter-cursor-plugin) - Open-source Cursor plugin for Flutter with rules, skills, commands, MCP integration, release/security workflows, and testing automation.
 - [UIKit Guidelines](./rules/uikit-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for UIKit development guidelines.
 - [NativeScript](./rules/nativescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for NativeScript development.
 
