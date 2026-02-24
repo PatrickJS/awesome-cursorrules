@@ -14,6 +14,7 @@ Configuration files that enhance Cursor AI editor experience with custom rules a
 [Cursor AI](https://cursor.sh/) is an AI-powered code editor. `.cursorrules` files define custom rules for Cursor AI to follow when generating code, allowing you to tailor its behavior to your specific needs and preferences.
 
 ## Sponsorships
+
 <p align="center">
     <h3><a href="https://go.warp.dev/awesome-cursorrules">Warp - Built for coding with multiple AI agents</h3>
 	  <a href="https://go.warp.dev/awesome-cursorrules">
@@ -29,7 +30,6 @@ Configuration files that enhance Cursor AI editor experience with custom rules a
 		  <img alt="Unblocked Sponsorship Logo" src="https://github.com/claire-gong-18/awesome-cursorrules/blob/main/Unblocked-logo-sq-words-over-gradient-1024w.png?raw=true)" width=250>
 	  </a>
 </p>
-
 
 ## Why .cursorrules?
 
@@ -286,6 +286,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Utilities
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
+- [SEO & GEO Optimizer](./rules/seo-geo-optimizer-cursorrules-prompt-file/.cursorrules) - Universal AI skill for Technical SEO, Content Strategy, Schema Markup, Core Web Vitals, and Generative Engine Optimization (GEO).
 
 ## Directories
 
@@ -326,6 +327,7 @@ Contributions are welcome! If you have a great `.cursorrules` file to share:
 Please ensure your contribution is original or properly credited if based on existing work. Refer to the `.cursorrules` file in the root of this repository for detailed guidelines on formatting, naming conventions, and best practices for contributions.
 
 ## Sponsorships
+
 <p align="center">
     <h3><a href="https://go.warp.dev/awesome-cursorrules">Warp - Built for coding with multiple AI agents</h3>
 	  <a href="https://go.warp.dev/awesome-cursorrules">
@@ -341,7 +343,6 @@ Please ensure your contribution is original or properly credited if based on exi
 		  <img alt="Unblocked Sponsorship Logo" src="https://github.com/claire-gong-18/awesome-cursorrules/blob/main/Unblocked-logo-sq-words-over-gradient-1024w.png?raw=true)" width=250>
 	  </a>
 </p>
-
 
 ---
 
