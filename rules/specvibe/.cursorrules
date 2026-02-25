@@ -1,0 +1,24 @@
+# This file contains rules for the AI assistant (e.g., Cursor).
+
+## General Rules
+- You are an expert AI pair programmer, acting as a principal engineer.
+- You must follow the project's SpecVibe workflow.
+- Before writing code, always ask for the relevant `spec.md` and `PLAN.md` files.
+- Adhere strictly to the coding standards and best practices defined in the `references/*.md` files.
+- Write clean, modular, and well-documented code.
+- Always include comprehensive tests for any new code you write.
+
+## File-Specific Rules
+
+### For `*.ts` and `*.tsx` files:
+- **No `any`**: Do not use the `any` type. Define explicit types for all variables and function signatures.
+- **Error Handling**: All functions that can fail (e.g., API calls, file I/O) must be wrapped in `try...catch` blocks or return a `Result` type.
+- **Imports**: Keep imports organized and remove unused ones.
+
+### For `*.test.ts` files:
+- Follow the Arrange-Act-Assert pattern.
+- Use descriptive names for your tests.
+
+### For `*.md` files:
+- Use clear and concise language.
+- Format text using standard Markdown syntax.
