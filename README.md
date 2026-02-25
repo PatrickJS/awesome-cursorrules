@@ -277,6 +277,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Unity (C#)](./rules/unity-cursor-ai-c-cursorrules-prompt-file/.cursorrules) - Cursor rules for Unity development with C# integration.
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules) - Cursor rules for web app development with optimization integration.
 - [Code Pair Interviews](./rules/code-pair-interviews/.cursorrules) - Cursor rules for code pair interviews development with integration.
+- * [SpecVibe](https://github.com/badideal-2046/SpecVibe ) - An executable, spec-driven framework for building production-ready AI-native applications. Based on 2026 best practices.
 
 ### Documentation
 
