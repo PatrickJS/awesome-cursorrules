@@ -285,6 +285,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Utilities
 
+- [cursor-doctor](https://github.com/nedcodes-ok/cursor-doctor) - Diagnose and auto-fix your Cursor setup. Checks for broken frontmatter, rule conflicts, redundant rules, token budget issues, and missing coverage. `npx cursor-doctor scan` gives a health grade (A-F). Zero dependencies.
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
 ## Directories
