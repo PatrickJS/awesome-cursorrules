@@ -286,6 +286,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Utilities
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
+- [rule-porter](https://github.com/nedcodes-ok/rule-porter) - A zero-dependency CLI that converts Cursor `.mdc` rules to AGENTS.md, CLAUDE.md, Copilot, and Windsurf formats (and back). Bidirectional conversion with lossy-conversion warnings. `npx rule-porter --to agents-md`
 
 ## Directories
 
