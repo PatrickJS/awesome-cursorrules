@@ -286,6 +286,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Utilities
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
+- [rule-gen](https://github.com/nedcodes-ok/rule-gen) - Generate AI coding rules from your actual codebase using Google Gemini. Feeds your source files into Gemini's 1M token context window and produces project-specific .mdc rules. Supports Cursor, Claude Code, Copilot, and Windsurf output formats. Zero dependencies.
 
 ## Directories
 
