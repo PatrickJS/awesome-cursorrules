@@ -113,6 +113,17 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.db.post.findUnique({
+        where: { id: input.id },
+        include: { author: { select: { name: true, image: true } } },
+      });
+      if (!post) throw new TRPCError({ code: "NOT_FOUND" });
+      return post;
+    }),
+
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -236,3 +247,4 @@ export default async function PostPage({ params }: { params: { id: string } }) {
 - Forgetting `superjson` transformer (dates, Maps, Sets won't serialize correctly)
 - Not wrapping client providers properly in the root layout
 - Using `getServerSession` outside of RSC/route handlers (wrong context)
+
