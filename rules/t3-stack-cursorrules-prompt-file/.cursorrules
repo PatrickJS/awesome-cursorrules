@@ -75,6 +75,14 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 
 export const postRouter = createTRPCRouter({
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.db.post.findUnique({ where: { id: input.id } });
+      if (!post) throw new TRPCError({ code: "NOT_FOUND" });
+      return post;
+    }),
+
   getAll: publicProcedure
     .input(z.object({
       limit: z.number().min(1).max(100).default(20),
@@ -123,6 +131,7 @@ export const postRouter = createTRPCRouter({
 // server/api/trpc.ts
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
+import { ZodError } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth";
 import { db } from "../db";
@@ -132,7 +141,8 @@ const createTRPCContext = async (opts: { headers: Headers }) => {
   return { db, session, ...opts };
 };
 
-const t = initTRPC.context<typeof createTRPCContext>().create({
+type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
+const t = initTRPC.context<TRPCContext>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return { ...shape, data: { ...shape.data, zodError: error.cause instanceof ZodError ? error.cause.flatten() : null } };

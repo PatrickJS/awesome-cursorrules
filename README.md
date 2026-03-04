@@ -152,9 +152,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Python (Flask JSON Guide)](./rules/python-flask-json-guide-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python Flask development with JSON guide.
 - [Python LLM & ML Workflow](./rules/python-llm-ml-workflow-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python LLM & ML development with workflow integration.
 - [Salesforce (Apex)](./rules/salesforce-apex-cursorrules-prompt-file/.cursorrules.txt) - Cursor rules for Salesforce development with Apex integration.
+- [T3 Stack (Next.js, tRPC, Prisma, Tailwind)](./rules/t3-stack-cursorrules-prompt-file/.cursorrules) - Cursor rules for T3 Stack development with Next.js, tRPC, Prisma, and Tailwind CSS integration.
 - [TypeScript (NestJS Best Practices)](./rules/typescript-nestjs-best-practices-cursorrules-promp/.cursorrules) - Cursor rules for TypeScript development with NestJS best practices.
 - [TYPO3 CMS Extension](./rules/typo3cms-extension-cursorrules-prompt-file/.cursorrules) - Cursor rules for TYPO3 CMS development with extension integration.
-- [T3 Stack (Next.js, tRPC, Prisma, Tailwind)](./rules/t3-stack-cursorrules-prompt-file/.cursorrules) - Cursor rules for T3 Stack development with Next.js, tRPC, Prisma, and Tailwind CSS integration.
 - [WordPress (PHP, Guzzle, Gutenberg)](./rules/wordpress-php-guzzle-gutenberg-cursorrules-prompt-/.cursorrules) - Cursor rules for WordPress development with PHP, Guzzle, and Gutenberg integration.
 - [WordPress (macOS)](./rules/cursorrules-cursor-ai-wordpress-draft-macos-prompt/.cursorrules) - Cursor rules for WordPress development on macOS.
 
