@@ -139,6 +139,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Laravel (PHP 8.3)](./rules/laravel-php-83-cursorrules-prompt-file/.cursorrules) - Cursor rules for Laravel development with PHP 8.3 integration.
 - [Laravel (TALL Stack)](./rules/laravel-tall-stack-best-practices-cursorrules-prom/.cursorrules) - Cursor rules for Laravel development with TALL Stack best practices.
 - [Manifest](./rules/manifest-yaml-cursorrules-prompt-file/.cursorrules) - Cursor rules for manifest development with YAML integration.
+- [MERN Stack (MongoDB, Express, React, Node.js)](./rules/mern-stack-cursorrules-prompt-file/.cursorrules) - Cursor rules for MERN stack development with MongoDB, Express, React, and Node.js best practices.
 - [Node.js (MongoDB)](./rules/nodejs-mongodb-cursorrules-prompt-file-tutorial/.cursorrules) - Cursor rules for Node.js development with MongoDB integration.
 - [Node.js (MongoDB, JWT, Express, React)](./rules/nodejs-mongodb-jwt-express-react-cursorrules-promp/.cursorrules) - Cursor rules for Node.js development with MongoDB, JWT, Express, and React integration.
 - [Rails 8 (Basic Setup)](./rules/rails-cursorrules-prompt-file/rails-basics.mdx) - Cursor rules for Rails development with basic setup.
@@ -153,6 +154,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Salesforce (Apex)](./rules/salesforce-apex-cursorrules-prompt-file/.cursorrules.txt) - Cursor rules for Salesforce development with Apex integration.
 - [TypeScript (NestJS Best Practices)](./rules/typescript-nestjs-best-practices-cursorrules-promp/.cursorrules) - Cursor rules for TypeScript development with NestJS best practices.
 - [TYPO3 CMS Extension](./rules/typo3cms-extension-cursorrules-prompt-file/.cursorrules) - Cursor rules for TYPO3 CMS development with extension integration.
+- [T3 Stack (Next.js, tRPC, Prisma, Tailwind)](./rules/t3-stack-cursorrules-prompt-file/.cursorrules) - Cursor rules for T3 Stack development with Next.js, tRPC, Prisma, and Tailwind CSS integration.
 - [WordPress (PHP, Guzzle, Gutenberg)](./rules/wordpress-php-guzzle-gutenberg-cursorrules-prompt-/.cursorrules) - Cursor rules for WordPress development with PHP, Guzzle, and Gutenberg integration.
 - [WordPress (macOS)](./rules/cursorrules-cursor-ai-wordpress-draft-macos-prompt/.cursorrules) - Cursor rules for WordPress development on macOS.
 
@@ -268,12 +270,14 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Other
 
 - [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file/.cursorrules) - Cursor rules for ASCII simulation game development.
+- [Clean Code Principles](./rules/clean-code-principles-cursorrules-prompt-file/.cursorrules) - Cursor rules for clean code development with SOLID principles, naming conventions, and refactoring best practices.
 - [Code Guidelines](./rules/code-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for code development with guidelines integration.
 - [Code Style Consistency](./rules/code-style-consistency-cursorrules-prompt-file/.cursorrules) - Cursor rules for code development with style consistency integration.
 - [DragonRuby Best Practices](./rules/dragonruby-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for DragonRuby development with best practices integration.
 - [Graphical Apps Development](./rules/graphical-apps-development-cursorrules-prompt-file/.cursorrules) - Cursor rules for graphical apps development with integration.
 - [Meta-Prompt](./rules/meta-prompt-cursorrules-prompt-file/.cursorrules) - Cursor rules for meta-prompt development with integration.
 - [Next.js (Type LLM)](./rules/next-type-llm/.cursorrules) - Cursor rules for Next.js development with Type LLM integration.
+- [Security Best Practices](./rules/security-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for secure code development with OWASP top 10 prevention, input validation, and authentication best practices.
 - [Unity (C#)](./rules/unity-cursor-ai-c-cursorrules-prompt-file/.cursorrules) - Cursor rules for Unity development with C# integration.
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules) - Cursor rules for web app development with optimization integration.
 - [Code Pair Interviews](./rules/code-pair-interviews/.cursorrules) - Cursor rules for code pair interviews development with integration.
@@ -291,6 +295,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
+- [Survivor Forge Cursor Rules](https://github.com/survivorforge/cursor-rules) - A curated collection of 35+ .cursorrules files for 16 frameworks and languages.
 
 ## How to Use
 

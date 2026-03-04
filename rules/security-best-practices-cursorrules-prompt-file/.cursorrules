@@ -1,0 +1,226 @@
+# Security Best Practices — Cursor Rules
+# Comprehensive rules for writing secure application code
+
+## Project Context
+You are working on an application where security is a top priority. The codebase must
+protect against common vulnerabilities (OWASP Top 10), handle sensitive data carefully,
+and follow the principle of least privilege. Every code change should be evaluated for
+security implications.
+
+## Core Principles
+- Defense in depth — multiple layers of security
+- Principle of least privilege — grant minimum necessary access
+- Fail securely — errors should not expose sensitive information
+- Never trust user input — validate and sanitize everything
+- Secure by default — security should not require extra configuration
+
+## Input Validation
+
+### Rules
+- Validate ALL input on the server side, regardless of client-side validation
+- Use allowlists (valid values) over denylists (blocked values)
+- Validate type, length, range, and format
+- Use established validation libraries (Zod, Joi, Pydantic)
+- Reject invalid input — don't try to clean or fix it
+
+### Patterns
+```ts
+// GOOD — strict validation with Zod
+const createUserSchema = z.object({
+  email: z.string().email().max(255),
+  name: z.string().min(1).max(100).regex(/^[a-zA-Z\s'-]+$/),
+  age: z.number().int().min(13).max(150),
+  role: z.enum(['user', 'editor']),  // Allowlist, not freeform string
+});
+
+// BAD — trusting input
+app.post('/users', (req, res) => {
+  db.query(`INSERT INTO users (name) VALUES ('${req.body.name}')`); // SQL injection!
+});
+```
+
+## SQL Injection Prevention
+
+### ALWAYS Use Parameterized Queries
+```ts
+// GOOD — parameterized
+const user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+
+// GOOD — ORM (Prisma handles parameterization)
+const user = await prisma.user.findUnique({ where: { email } });
+
+// BAD — string concatenation
+const user = await db.query(`SELECT * FROM users WHERE email = '${email}'`);
+
+// BAD — template literals
+const user = await db.query(`SELECT * FROM users WHERE email = '${req.body.email}'`);
+```
+
+### Rules
+- Never concatenate user input into SQL strings
+- Use ORM query builders or parameterized queries exclusively
+- Validate and type-check input before passing to queries
+- Use stored procedures for complex operations
+- Limit database user permissions to only required operations
+
+## Cross-Site Scripting (XSS) Prevention
+
+### Rules
+- Escape all user-generated content before rendering in HTML
+- Use framework auto-escaping (React JSX, Vue templates escape by default)
+- Never use `dangerouslySetInnerHTML` (React) or `v-html` (Vue) with user content
+- Set `Content-Security-Policy` headers to restrict script sources
+- Sanitize HTML if rich text is required (use DOMPurify)
+
+```tsx
+// SAFE — React auto-escapes
+<p>{userInput}</p>
+
+// DANGEROUS — raw HTML injection
+<div dangerouslySetInnerHTML={{ __html: userInput }} />
+
+// If you must render HTML, sanitize first
+import DOMPurify from 'dompurify';
+<div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(userInput) }} />
+```
+
+### Content Security Policy
+```
+Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://api.example.com; frame-ancestors 'none';
+```
+
+## Authentication
+
+### Password Handling
+- Hash passwords with bcrypt (cost factor 12+) or Argon2id
+- Never store plain-text passwords
+- Never log passwords, even in error messages
+- Enforce minimum password length (8+ characters)
+- Check passwords against breached password databases (Have I Been Pwned API)
+- Implement account lockout after failed attempts (5 attempts, 15-minute lockout)
+
+```ts
+import bcrypt from 'bcrypt';
+
+// Hashing
+const SALT_ROUNDS = 12;
+const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+
+// Verification (constant-time comparison built in)
+const isValid = await bcrypt.compare(inputPassword, storedHash);
+```
+
+### JWT Best Practices
+- Use short expiry times (15 minutes for access tokens)
+- Use refresh tokens (stored in httpOnly cookies) for session extension
+- Include minimal claims — don't put sensitive data in JWTs
+- Validate `iss`, `aud`, and `exp` claims on every request
+- Use RS256 (asymmetric) for distributed systems, HS256 for single-service
+- Store the signing secret in environment variables, never in code
+- Implement token revocation (blacklist or versioned tokens)
+
+### Session Security
+- Use httpOnly, Secure, SameSite=Strict cookies for session tokens
+- Regenerate session ID after login (prevent session fixation)
+- Set appropriate session timeout (idle and absolute)
+- Invalidate sessions on password change and logout
+
+## Authorization
+
+### Rules
+- Check authorization on EVERY request, not just the UI layer
+- Verify resource ownership — don't just check authentication
+- Use role-based access control (RBAC) or attribute-based (ABAC)
+- Implement authorization in middleware, not scattered through handlers
+- Log authorization failures for security monitoring
+
+```ts
+// GOOD — check ownership
+async function getOrder(req, res) {
+  const order = await Order.findById(req.params.id);
+  if (!order) return res.status(404).json({ error: 'Not found' });
+  if (order.userId !== req.user.id && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+  res.json(order);
+}
+
+// BAD — only checks authentication, not authorization
+async function getOrder(req, res) {
+  const order = await Order.findById(req.params.id);
+  res.json(order); // Any authenticated user can access any order!
+}
+```
+
+## Sensitive Data Handling
+
+### Environment Variables and Secrets
+- Never commit secrets to version control
+- Use `.env` files for local development, secret managers for production
+- Add `.env` to `.gitignore`
+- Rotate secrets regularly
+- Use different secrets per environment (dev, staging, production)
+
+### Data at Rest
+- Encrypt sensitive data in the database (PII, financial data)
+- Use database-level encryption (TDE) or application-level encryption
+- Hash data that only needs verification (passwords, API keys)
+- Mask sensitive data in logs: `email: a****@example.com`
+
+### Data in Transit
+- Use HTTPS everywhere — no exceptions
+- Use TLS 1.2+ for all service-to-service communication
+- Validate SSL certificates — don't disable verification
+- Use HSTS headers to enforce HTTPS
+
+## HTTP Security Headers
+```ts
+// Use helmet.js (Express) or set manually
+app.use(helmet());
+
+// Or set individually:
+// Prevent clickjacking
+res.setHeader('X-Frame-Options', 'DENY');
+// Prevent MIME sniffing
+res.setHeader('X-Content-Type-Options', 'nosniff');
+// Control referrer information
+res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+// Enforce HTTPS
+res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+// Control permissions
+res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+```
+
+## Rate Limiting
+- Implement rate limiting on all public endpoints
+- Stricter limits on authentication endpoints (login, password reset)
+- Use sliding window or token bucket algorithms
+- Return `429 Too Many Requests` with `Retry-After` header
+- Consider per-user and per-IP rate limits
+
+## Logging and Monitoring
+- Log all authentication events (login, logout, failures)
+- Log authorization failures
+- Log input validation failures (potential attack probing)
+- Never log passwords, tokens, credit card numbers, or full SSN
+- Include request ID, user ID, IP address, and timestamp in logs
+- Set up alerts for anomalous patterns (brute force, unusual access)
+
+## Dependency Security
+- Keep dependencies updated — check for known vulnerabilities
+- Run `npm audit` / `pip audit` regularly
+- Use lockfiles (`package-lock.json`, `poetry.lock`) for reproducible builds
+- Review new dependencies before adding (check maintenance, popularity, security record)
+- Pin major versions to avoid unexpected breaking changes
+
+## Common Pitfalls
+- Trusting client-side validation as the only validation
+- Using MD5 or SHA256 for password hashing (use bcrypt/Argon2)
+- Storing secrets in code or version control
+- Returning detailed error messages in production (stack traces, SQL errors)
+- Not implementing rate limiting on authentication endpoints
+- Using `*` for CORS origins in production
+- Not checking resource ownership after authentication
+- Logging sensitive data (passwords, tokens, PII)
+- Using outdated dependencies with known vulnerabilities
+- Disabling HTTPS or SSL verification for "convenience"

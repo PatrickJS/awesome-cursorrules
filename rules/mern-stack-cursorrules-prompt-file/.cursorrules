@@ -1,0 +1,293 @@
+# MERN Stack — Cursor Rules
+# Comprehensive rules for MongoDB + Express + React + Node.js applications
+
+## Project Context
+You are working on a MERN stack application: MongoDB for the database, Express.js for
+the API server, React for the frontend, and Node.js as the runtime. The project may be
+a monorepo or split into separate client/server directories. The codebase uses modern
+JavaScript/TypeScript and follows REST API conventions.
+
+## Tech Stack
+- MongoDB with Mongoose ODM (or MongoDB Node driver)
+- Express.js 4.x for API server
+- React 18+ with TypeScript
+- Node.js 20+ LTS
+- Vite for React client bundling
+- JWT for authentication
+- Zod for API validation
+- React Query for server state management
+
+## Coding Style
+
+### Naming Conventions
+- MongoDB collections: plural lowercase (e.g., `users`, `orders`, `orderItems`)
+- Mongoose models: PascalCase singular (e.g., `User`, `Order`)
+- Express routes: kebab-case URLs (e.g., `/api/order-items`)
+- React components: PascalCase (e.g., `OrderList`, `UserProfile`)
+- API endpoints: RESTful nouns (e.g., `GET /api/users`, `POST /api/orders`)
+- Environment variables: UPPER_SNAKE_CASE with app prefix (e.g., `APP_MONGO_URI`)
+
+### Project Structure (Monorepo)
+```
+packages/
+  client/                 # React frontend
+    src/
+      components/         # Reusable UI components
+      features/           # Feature modules (auth, dashboard, orders)
+        auth/
+          components/
+          hooks/
+          api.ts          # API calls for this feature
+          types.ts
+      hooks/              # Shared hooks
+      lib/                # Utilities, API client setup
+      types/              # Shared types
+  server/                 # Express backend
+    src/
+      config/             # Database, env config
+        db.ts
+        env.ts
+      controllers/        # Route handlers
+      middleware/          # Auth, validation, error handling
+      models/             # Mongoose models
+      routes/             # Route definitions
+      services/           # Business logic
+      utils/              # Utilities
+      validators/         # Zod schemas
+      app.ts
+      server.ts
+  shared/                 # Shared types/utilities (if monorepo)
+    types/
+```
+
+## MongoDB / Mongoose Patterns
+
+### Model Definition
+```ts
+import mongoose, { Schema, Document } from 'mongoose';
+
+export interface IUser extends Document {
+  email: string;
+  name: string;
+  passwordHash: string;
+  role: 'user' | 'admin';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const userSchema = new Schema<IUser>(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
+    },
+    name: { type: String, required: true, trim: true, maxlength: 100 },
+    passwordHash: { type: String, required: true, select: false },
+    role: { type: String, enum: ['user', 'admin'], default: 'user' },
+  },
+  {
+    timestamps: true,
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+        delete ret.passwordHash;
+      },
+    },
+  },
+);
+
+userSchema.index({ email: 1 });
+userSchema.index({ createdAt: -1 });
+
+export const User = mongoose.model<IUser>('User', userSchema);
+```
+
+### Query Patterns
+```ts
+// Use lean() for read-only queries (returns plain objects, ~5x faster)
+const users = await User.find({ role: 'user' }).lean().limit(20).skip(0);
+
+// Use select() to limit returned fields
+const user = await User.findById(id).select('name email role');
+
+// Use populate() sparingly — prefer denormalization for read-heavy data
+const order = await Order.findById(id)
+  .populate('user', 'name email')
+  .populate('items.product', 'name price');
+
+// Aggregation for complex queries
+const stats = await Order.aggregate([
+  { $match: { status: 'completed', createdAt: { $gte: startDate } } },
+  { $group: { _id: '$user', totalSpent: { $sum: '$total' }, orderCount: { $sum: 1 } } },
+  { $sort: { totalSpent: -1 } },
+  { $limit: 10 },
+]);
+```
+
+### Model Rules
+- Always define indexes for fields used in queries and sorts
+- Use `select: false` on sensitive fields (passwords, tokens)
+- Use `toJSON` transform to clean up response objects
+- Use `lean()` on read-only queries for performance
+- Validate at both the schema level and the API validation layer
+- Use transactions for multi-document operations: `session.withTransaction()`
+- Avoid deeply nested subdocuments — use references for entities that grow
+
+## Express API Patterns
+
+### Controller Pattern
+```ts
+export const orderController = {
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { page = 1, limit = 20, status } = req.query;
+      const filter: FilterQuery<IOrder> = { user: req.user.id };
+      if (status) filter.status = status;
+
+      const [orders, total] = await Promise.all([
+        Order.find(filter).lean().sort('-createdAt').skip((+page - 1) * +limit).limit(+limit),
+        Order.countDocuments(filter),
+      ]);
+
+      res.json({
+        data: orders,
+        meta: { page: +page, limit: +limit, total, pages: Math.ceil(total / +limit) },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+};
+```
+
+### API Validation Middleware
+```ts
+import { z } from 'zod';
+
+const createOrderSchema = z.object({
+  body: z.object({
+    items: z.array(z.object({
+      product: z.string().regex(/^[a-f\d]{24}$/i, 'Invalid product ID'),
+      quantity: z.number().int().positive().max(100),
+    })).min(1, 'At least one item required'),
+    shippingAddress: z.object({
+      street: z.string().min(1),
+      city: z.string().min(1),
+      zip: z.string().min(1),
+    }),
+  }),
+});
+
+function validate(schema: z.ZodSchema) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const result = schema.safeParse({ body: req.body, query: req.query, params: req.params });
+    if (!result.success) {
+      return res.status(400).json({ errors: result.error.flatten().fieldErrors });
+    }
+    next();
+  };
+}
+```
+
+## React Frontend Patterns
+
+### API Layer with React Query
+```ts
+// features/orders/api.ts
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiClient } from '../../lib/api-client';
+
+export function useOrders(page = 1) {
+  return useQuery({
+    queryKey: ['orders', page],
+    queryFn: () => apiClient.get(`/api/orders?page=${page}`).then(r => r.data),
+  });
+}
+
+export function useCreateOrder() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateOrderInput) => apiClient.post('/api/orders', data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+    },
+  });
+}
+```
+
+### API Client Setup
+```ts
+// lib/api-client.ts
+import axios from 'axios';
+
+export const apiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
+});
+
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  },
+);
+```
+
+## Error Handling
+- Centralized Express error handler as the last middleware
+- Mongoose validation errors mapped to 400 responses
+- Cast errors (invalid ObjectId) mapped to 404
+- Duplicate key errors mapped to 409 Conflict
+- React error boundaries for component-level errors
+- React Query's `onError` for API error handling in the UI
+
+## Security
+- Validate all API inputs with Zod (never trust the client)
+- Use `helmet` for secure HTTP headers
+- Use CORS with explicit allowed origins
+- Hash passwords with bcrypt (cost factor 12)
+- Validate ObjectIds before database queries
+- Sanitize user input to prevent NoSQL injection (`mongo-sanitize`)
+- Rate limit authentication endpoints
+- Store JWT secret in environment variables, use short expiry
+
+## Testing
+- Use Jest or Vitest for unit and integration tests
+- Use `mongodb-memory-server` for database tests without external MongoDB
+- Test API endpoints with supertest
+- Test React components with React Testing Library
+- Test hooks with `renderHook` from React Testing Library
+
+## Performance Guidelines
+- Use MongoDB indexes — compound indexes for multi-field queries
+- Use `lean()` on all read-only Mongoose queries
+- Implement pagination on all list endpoints
+- Use Redis for caching frequently accessed data
+- Compress responses with `compression` middleware
+- Use React Query's `staleTime` to reduce API calls
+- Lazy-load React routes and heavy components
+
+## Common Pitfalls
+- Not handling MongoDB connection errors at startup
+- Using `findOne` without `lean()` when you don't need a Mongoose document
+- Not indexing fields used in `find()`, `sort()`, or `aggregate()`
+- N+1 queries from looping with `findById` — use `find({ _id: { $in: ids } })`
+- Not validating ObjectId format before passing to Mongoose (causes CastError)
+- Storing JWT tokens in localStorage without considering XSS (consider httpOnly cookies)
+- Not using `.populate()` projection — returning entire related documents
+- Forgetting `{ new: true }` on `findByIdAndUpdate` (returns old document by default)

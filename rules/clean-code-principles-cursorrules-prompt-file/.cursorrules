@@ -1,0 +1,245 @@
+# Clean Code & Refactoring — Cursor Rules
+# Comprehensive rules for writing clean, maintainable, and readable code
+
+## Project Context
+You are working on a codebase where code quality, readability, and maintainability are
+first-class priorities. Code is read far more often than it is written. Every function,
+class, and module should clearly communicate its intent. The codebase should be easy
+for any developer to understand, modify, and extend.
+
+## Core Principles
+- Code should read like well-written prose
+- Every function should do one thing and do it well
+- Make the code express the intent — minimize the need for comments
+- Leave the codebase better than you found it (Boy Scout Rule)
+- Optimize for readability first, performance second (unless profiling says otherwise)
+
+## Naming
+
+### Rules
+- Names should reveal intent — a reader should know what it does without reading the body
+- Use domain language from the business (Ubiquitous Language from DDD)
+- Be consistent — if you call it `fetch` in one place, don't call it `get` in another
+- Avoid abbreviations unless universally understood (`id`, `url`, `http`)
+- Avoid noise words: `data`, `info`, `temp`, `stuff`, `handler` (when everything is a handler)
+- Name length should correlate with scope size — short names for small scopes, descriptive for large
+
+### Examples
+```
+// BAD
+const d = new Date();                    // What is d?
+function proc(lst) { ... }              // proc? lst?
+const flag = user.age > 18;             // What flag?
+const temp = calculateTotal(items);     // Why temp?
+
+// GOOD
+const registrationDate = new Date();
+function filterActiveUsers(users) { ... }
+const isEligibleForAdultContent = user.age > 18;
+const orderTotal = calculateTotal(items);
+```
+
+### Specific Guidelines
+- **Booleans**: `is`, `has`, `should`, `can` prefix (`isActive`, `hasPermission`)
+- **Functions**: verb + noun (`calculateTotal`, `sendNotification`, `validateEmail`)
+- **Classes**: noun or noun phrase (`UserRepository`, `PaymentProcessor`)
+- **Collections**: plural nouns (`users`, `orderItems`, `pendingTasks`)
+- **Callbacks/handlers**: `on` or `handle` prefix (`onSubmit`, `handleClick`)
+- **Factories**: `create` or `build` prefix (`createUser`, `buildQuery`)
+
+## Functions
+
+### Rules
+- Functions should do ONE thing
+- Functions should be short — if you need to scroll, it's too long
+- Aim for 1-3 parameters; 4+ parameters usually means you need an options object
+- No side effects that aren't obvious from the function name
+- Prefer pure functions when possible (same input = same output, no side effects)
+- Functions should operate at one level of abstraction
+
+### Extract Until You Drop
+```ts
+// BAD — mixed levels of abstraction, doing too many things
+function processOrder(order) {
+  // Validate
+  if (!order.items.length) throw new Error('Empty order');
+  if (!order.user) throw new Error('No user');
+  if (order.items.some(i => i.quantity <= 0)) throw new Error('Invalid quantity');
+
+  // Calculate
+  let total = 0;
+  for (const item of order.items) {
+    const price = item.price * item.quantity;
+    const discount = item.quantity >= 10 ? price * 0.1 : 0;
+    total += price - discount;
+  }
+  const tax = total * 0.08;
+  total += tax;
+
+  // Save
+  db.orders.insert({ ...order, total, tax, status: 'pending' });
+  emailService.send(order.user.email, `Order confirmed: $${total}`);
+}
+
+// GOOD — each function does one thing at one level of abstraction
+function processOrder(order) {
+  validateOrder(order);
+  const { total, tax } = calculateOrderTotal(order.items);
+  const savedOrder = saveOrder(order, total, tax);
+  notifyCustomer(order.user, savedOrder);
+}
+
+function validateOrder(order) {
+  if (!order.items.length) throw new OrderError('Order must contain at least one item');
+  if (!order.user) throw new OrderError('Order must have an associated user');
+  if (order.items.some(item => item.quantity <= 0)) {
+    throw new OrderError('All items must have a positive quantity');
+  }
+}
+
+function calculateOrderTotal(items) {
+  const subtotal = items.reduce((sum, item) => sum + calculateItemPrice(item), 0);
+  const tax = subtotal * TAX_RATE;
+  return { total: subtotal + tax, tax };
+}
+
+function calculateItemPrice(item) {
+  const basePrice = item.price * item.quantity;
+  const discount = item.quantity >= BULK_THRESHOLD ? basePrice * BULK_DISCOUNT_RATE : 0;
+  return basePrice - discount;
+}
+```
+
+## Conditionals
+
+### Simplify Complex Conditions
+```ts
+// BAD — what does this check?
+if (user.age >= 18 && user.country === 'US' && !user.isBanned && user.emailVerified) {
+
+// GOOD — extracted to a named function or variable
+const isEligibleForService = user.age >= 18
+  && user.country === 'US'
+  && !user.isBanned
+  && user.emailVerified;
+
+if (isEligibleForService) {
+```
+
+### Use Early Returns (Guard Clauses)
+```ts
+// BAD — deeply nested
+function getDiscount(user) {
+  if (user) {
+    if (user.isPremium) {
+      if (user.yearsActive > 5) {
+        return 0.2;
+      } else {
+        return 0.1;
+      }
+    } else {
+      return 0;
+    }
+  } else {
+    return 0;
+  }
+}
+
+// GOOD — flat with early returns
+function getDiscount(user) {
+  if (!user) return 0;
+  if (!user.isPremium) return 0;
+  if (user.yearsActive > 5) return 0.2;
+  return 0.1;
+}
+```
+
+### Avoid Negative Conditions
+```ts
+// BAD
+if (!isNotFound) { ... }
+if (!disableValidation) { ... }
+
+// GOOD
+if (isFound) { ... }
+if (enableValidation) { ... }
+```
+
+## Error Handling
+
+### Rules
+- Don't use exceptions for control flow
+- Throw specific, descriptive error types
+- Handle errors at the appropriate level (don't catch and ignore)
+- Provide context in error messages: what happened, why, and what was attempted
+- Never swallow errors silently — at minimum, log them
+
+```ts
+// BAD
+try {
+  doSomething();
+} catch (e) {
+  // silently ignored
+}
+
+// BAD
+throw new Error('error');
+
+// GOOD
+throw new OrderNotFoundError(`Order ${orderId} not found for user ${userId}`);
+```
+
+## Comments
+
+### When Comments Are Needed
+- Explaining WHY, not WHAT (the code shows what; comments explain why)
+- Legal or compliance requirements
+- Warnings about consequences: `// WARNING: This clears the entire cache`
+- TODO/FIXME with ticket numbers: `// TODO(JIRA-123): Replace with batch API`
+- Complex regex or algorithm explanation
+- Public API documentation (JSDoc, docstrings)
+
+### When to Avoid Comments
+- Explaining WHAT the code does — rename the code instead
+- Commented-out code — delete it, Git has history
+- Journal comments (`// Added by John on 2024-01-15`) — Git has blame
+- Redundant comments: `count++; // increment count`
+- Closing brace comments: `} // end if` — your function is too long
+
+## Code Smells to Watch For
+- **Long methods** (20+ lines) — break into smaller functions
+- **Long parameter lists** (4+ params) — use an options object or builder
+- **Deep nesting** (3+ levels) — use early returns and extraction
+- **Duplicated code** — extract shared logic into functions/modules
+- **Primitive obsession** — use value objects (`Money`, `EmailAddress`, `DateRange`)
+- **God classes** — split into focused, single-responsibility classes
+- **Feature envy** — a function that uses another class's data more than its own
+- **Magic numbers** — extract to named constants: `const MAX_LOGIN_ATTEMPTS = 5;`
+- **Boolean parameters** — split into two functions or use an enum/options object
+
+## Refactoring Techniques
+- **Extract function**: Pull a block of code into a named function
+- **Extract variable**: Name a complex expression
+- **Rename**: Make intent clearer (most impactful refactoring)
+- **Inline**: Remove unnecessary indirection
+- **Replace conditional with polymorphism**: Replace switch/if chains with classes
+- **Introduce parameter object**: Group related parameters
+- **Replace magic number with constant**: Name the meaning
+
+## File Organization
+- Keep files short — if a file has 300+ lines, consider splitting
+- Group related code together
+- Put the public API at the top of the file
+- Private/helper functions below
+- One concept per file (one class, one module, one concern)
+- Consistent ordering within files across the codebase
+
+## Common Pitfalls
+- Premature abstraction — don't DRY code that happens to look similar but serves different purposes
+- Over-engineering — simple problems need simple solutions (YAGNI)
+- Inconsistent style within a codebase — agree on conventions and follow them
+- Refactoring without tests — always have tests before refactoring
+- Big bang refactors — refactor incrementally, commit often
+- Naming things after their type: `userList`, `nameString` — just use `users`, `name`
+- Mixing abstraction levels in the same function
+- Writing code to impress rather than to communicate

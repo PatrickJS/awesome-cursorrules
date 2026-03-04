@@ -1,0 +1,228 @@
+# T3 Stack — Cursor Rules
+# Comprehensive rules for T3 Stack (Next.js + tRPC + Prisma + NextAuth)
+
+## Project Context
+You are working on a T3 Stack application — the full-stack TypeScript framework combining
+Next.js App Router, tRPC for type-safe APIs, Prisma for database access, and NextAuth.js
+for authentication. The codebase prioritizes end-to-end type safety, with types flowing
+from database schema through API layer to the frontend without manual type definitions.
+
+## Tech Stack
+- Next.js 14+ (App Router)
+- tRPC v11 for type-safe API layer
+- Prisma ORM for database (PostgreSQL recommended)
+- NextAuth.js / Auth.js for authentication
+- Tailwind CSS for styling
+- TypeScript (strict mode — non-negotiable)
+- Zod for input validation
+- React Query (via tRPC) for server state
+
+## Coding Style
+
+### Naming Conventions
+- tRPC routers: camelCase (e.g., `userRouter`, `postRouter`)
+- tRPC procedures: camelCase verbs (e.g., `getById`, `create`, `updateStatus`)
+- Prisma models: PascalCase singular (e.g., `User`, `Post`, `Comment`)
+- Components: PascalCase (e.g., `PostCard`, `UserAvatar`)
+- Server utilities: camelCase in `src/server/`
+- Client hooks: `use` prefix (e.g., `useCreatePost`)
+
+### Project Structure
+```
+src/
+  app/
+    (auth)/
+      sign-in/page.tsx
+    (dashboard)/
+      layout.tsx
+      page.tsx
+      posts/
+        [id]/page.tsx
+    api/
+      trpc/[trpc]/route.ts    # tRPC HTTP handler
+      auth/[...nextauth]/route.ts
+    layout.tsx
+    page.tsx
+  server/
+    api/
+      root.ts               # Root tRPC router
+      trpc.ts               # tRPC initialization, context, middleware
+      routers/
+        user.ts
+        post.ts
+    auth.ts                  # NextAuth configuration
+    db.ts                    # Prisma client singleton
+  trpc/
+    react.tsx                # tRPC React client setup
+    server.ts                # tRPC server caller
+  components/
+    ui/                      # Shared UI components
+    posts/                   # Feature-specific components
+  lib/
+    utils.ts
+    validators.ts            # Shared Zod schemas
+prisma/
+  schema.prisma
+```
+
+## tRPC Patterns
+
+### Router Definition
+```ts
+// server/api/routers/post.ts
+import { z } from "zod";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { TRPCError } from "@trpc/server";
+
+export const postRouter = createTRPCRouter({
+  getAll: publicProcedure
+    .input(z.object({
+      limit: z.number().min(1).max(100).default(20),
+      cursor: z.string().nullish(),
+    }))
+    .query(async ({ ctx, input }) => {
+      const posts = await ctx.db.post.findMany({
+        take: input.limit + 1,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
+        orderBy: { createdAt: "desc" },
+        include: { author: { select: { name: true, image: true } } },
+      });
+      let nextCursor: string | undefined;
+      if (posts.length > input.limit) {
+        nextCursor = posts.pop()!.id;
+      }
+      return { posts, nextCursor };
+    }),
+
+  create: protectedProcedure
+    .input(z.object({
+      title: z.string().min(1).max(200),
+      content: z.string().min(1),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.create({
+        data: { ...input, authorId: ctx.session.user.id },
+      });
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const post = await ctx.db.post.findUnique({ where: { id: input.id } });
+      if (!post) throw new TRPCError({ code: "NOT_FOUND" });
+      if (post.authorId !== ctx.session.user.id) {
+        throw new TRPCError({ code: "FORBIDDEN" });
+      }
+      return ctx.db.post.delete({ where: { id: input.id } });
+    }),
+});
+```
+
+### tRPC Context and Middleware
+```ts
+// server/api/trpc.ts
+import { initTRPC, TRPCError } from "@trpc/server";
+import superjson from "superjson";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth";
+import { db } from "../db";
+
+const createTRPCContext = async (opts: { headers: Headers }) => {
+  const session = await getServerSession(authOptions);
+  return { db, session, ...opts };
+};
+
+const t = initTRPC.context<typeof createTRPCContext>().create({
+  transformer: superjson,
+  errorFormatter({ shape, error }) {
+    return { ...shape, data: { ...shape.data, zodError: error.cause instanceof ZodError ? error.cause.flatten() : null } };
+  },
+});
+
+export const createTRPCRouter = t.router;
+export const publicProcedure = t.procedure;
+export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.session?.user) throw new TRPCError({ code: "UNAUTHORIZED" });
+  return next({ ctx: { session: { ...ctx.session, user: ctx.session.user } } });
+});
+```
+
+### Client-Side Usage
+```tsx
+"use client";
+import { api } from "~/trpc/react";
+
+export function PostList() {
+  const { data, fetchNextPage, hasNextPage, isLoading } = api.post.getAll.useInfiniteQuery(
+    { limit: 20 },
+    { getNextPageParam: (lastPage) => lastPage.nextCursor },
+  );
+
+  const utils = api.useUtils();
+  const createPost = api.post.create.useMutation({
+    onSuccess: () => {
+      utils.post.getAll.invalidate(); // Refetch after mutation
+    },
+  });
+
+  // ...
+}
+```
+
+### Server-Side Calling
+```tsx
+// In a Server Component — call tRPC directly without HTTP
+import { api } from "~/trpc/server";
+
+export default async function PostPage({ params }: { params: { id: string } }) {
+  const post = await api.post.getById({ id: params.id });
+  return <PostDetail post={post} />;
+}
+```
+
+## Prisma Patterns
+- Define clear relations with `@relation` and explicit foreign keys
+- Use `select` or `include` to control returned fields — never return everything
+- Use transactions for multi-table mutations: `db.$transaction([])`
+- Create seed data in `prisma/seed.ts`
+- Run migrations with `npx prisma migrate dev --name descriptive_name`
+- Use `@map` and `@@map` for custom table/column names matching SQL conventions
+- Add indexes on frequently queried/filtered columns
+
+## Authentication
+- Use NextAuth.js with the Prisma adapter
+- Access session in tRPC context — never pass user info from the client
+- Use `protectedProcedure` for all authenticated endpoints
+- Check resource ownership in procedures (not just authentication)
+- Use middleware for role-based access control
+
+## Error Handling
+- Use `TRPCError` with appropriate codes: `NOT_FOUND`, `UNAUTHORIZED`, `FORBIDDEN`, `BAD_REQUEST`
+- Validate all inputs with Zod schemas — tRPC integrates natively
+- Handle Prisma errors (unique constraint, not found) and map to TRPCError
+- Use React error boundaries for client-side error display
+- Format Zod errors in the tRPC error formatter for client consumption
+
+## Testing
+- Test tRPC procedures by creating a test caller with mocked context
+- Test Prisma queries against a test database (or use prismock)
+- Use Playwright for E2E tests
+- Test auth flows with mocked sessions
+
+## Performance Guidelines
+- Use cursor-based pagination (not offset) for large datasets
+- Prefetch data in Server Components using the server-side tRPC caller
+- Use React Query's `staleTime` to reduce unnecessary refetches
+- Use `select` in Prisma to fetch only needed fields
+- Implement optimistic updates for mutations that affect UI immediately
+- Use `Suspense` boundaries for streaming server-rendered content
+
+## Common Pitfalls
+- Importing server code in client components (breaks the build)
+- Not invalidating queries after mutations (stale UI)
+- Using offset pagination for large tables (slow on large offsets)
+- Returning full Prisma objects with sensitive fields to the client
+- Not checking resource ownership — just checking authentication is not enough
+- Forgetting `superjson` transformer (dates, Maps, Sets won't serialize correctly)
+- Not wrapping client providers properly in the root layout
+- Using `getServerSession` outside of RSC/route handlers (wrong context)
