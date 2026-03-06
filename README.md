@@ -285,6 +285,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Utilities
 
+- [create-agent-config](https://github.com/ofershap/create-agent-config) - CLI that detects your project stack and generates `.cursor/rules/project.mdc` with `alwaysApply: true` frontmatter. Also outputs CLAUDE.md, AGENTS.md, copilot-instructions, .windsurfrules, and .clinerules. Pulls community rules from cursor.directory at runtime.
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
 ## Directories
