@@ -286,6 +286,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Utilities
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
+- [Motif](https://github.com/Bulugulu/motif-cli) - Analyzes your Cursor and Claude Code conversations to discover recurring patterns, then generates personalized `.cursorrules`, `CLAUDE.md`, and skill files tuned to how you actually work. Also generates an Agentic Coding Assessment showing your growth over time.
 
 ## Directories
 
