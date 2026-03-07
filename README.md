@@ -291,6 +291,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
+- [NoizAI Skills](https://github.com/NoizAI/skills)
 
 ## How to Use
 
