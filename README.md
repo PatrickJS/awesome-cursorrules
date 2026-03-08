@@ -289,9 +289,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ## Directories
 
-- [CursorList](https://cursorlist.com)
-- [Skill Dock](https://marketplace.visualstudio.com/items?itemName=skill-dock.skill-dock) - VS Code extension to manage, browse, and import agent skills across Cursor and 20+ AI tools.
 - [CursorDirectory](https://cursor.directory/)
+- [CursorList](https://cursorlist.com)
+- [Skill Dock](https://marketplace.visualstudio.com/items?itemName=skill-dock.skill-dock)
 
 ## How to Use
 
