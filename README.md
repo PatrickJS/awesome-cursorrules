@@ -289,8 +289,8 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ## Directories
 
-- [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
+- [CursorList](https://cursorlist.com)
 - [Survivor Forge Cursor Rules](https://github.com/survivorforge/cursor-rules) - A collection of .cursorrules files covering 16 frameworks including React, Next.js, Python, Go, Rust, Flutter, and more.
 
 ## How to Use
