@@ -286,6 +286,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Utilities
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
+- [Caliber](https://github.com/rely-ai-org/caliber) - An open-source CLI that scans your codebase and generates tailored .cursorrules, CLAUDE.md, skills, and MCP configs. Scores your AI setup 0–100 and recommends improvements.
 
 ## Directories
 
