@@ -212,6 +212,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Hosting and Deployments
 
+- [Cloudflare Email to Telegram](./rules/cloudflare-email-telegram-cursorrules-prompt-file/.cursorrules) - Cursor rules for setting up email-to-Telegram forwarding via Cloudflare Email Routing and Workers using the mail2tg CLI.
 - [Netlify](./rules/netlify-official-cursorrules-prompt-file/.cursorrules) - Cursor rules for Netlify development with official integration.
 
 ### Build Tools and Development
