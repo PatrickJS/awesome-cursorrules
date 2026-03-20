@@ -285,6 +285,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Utilities
 
+- [AgenTopology](https://github.com/agentopology/agentopology) - A declarative language and CLI for defining multi-agent teams in `.at` files and scaffolding `.cursor/rules/*.mdc` files automatically. Define your agents, tools, and coordination once, then generate cursor rules (and configs for 5 other platforms) with a single command.
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
 ## Directories
