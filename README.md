@@ -24,7 +24,7 @@ Configuration files that enhance Cursor AI editor experience with custom rules a
 	  <a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">
 		  <img alt="CodeRabbit.ai Sponsorship Logo" src="https://github.com/user-attachments/assets/9484d60c-8e80-46bd-94e4-3edb7bd5268b" width=250>
 	  </a>
-	<h3><a href="https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">Unblocked MCP- Supercharge Cursor with your team’s knowledge</h3> 
+	<h3><a href="https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">Unblocked MCP- Supercharge Cursor with your team's knowledge</h3> 
 	  <a href="https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">
 		  <img alt="Unblocked Sponsorship Logo" src="https://github.com/claire-gong-18/awesome-cursorrules/blob/main/Unblocked-logo-sq-words-over-gradient-1024w.png?raw=true)" width=250>
 	  </a>
@@ -134,7 +134,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [HTMX (Flask)](./rules/htmx-flask-cursorrules-prompt-file/.cursorrules) - Cursor rules for HTMX development with Flask integration.
 - [HTMX (Django)](./rules/htmx-django-cursorrules-prompt-file/.cursorrules) - Cursor rules for HTMX development with Django integration.
 - [Java (Springboot, JPA)](./rules/java-springboot-jpa-cursorrules-prompt-file/.cursorrules) - Cursor rules for Java development with Springboot and JPA integration.
-- [Knative (Istio, Typesense, GPU)](./rules/knative-istio-typesense-gpu-cursorrules-prompt-fil/.cursorrules) - Cursor rules for Knative development with Istio, Typesense, and GPU integration.
+- [Knative (Istio, Typesense, GPU)](./rules/knative-istio-typesense-gpu-cursorrules-prompt-fil/.cursorrules) - Cursor rules for Knative development with Knative, Istio, Typesense, and GPU integration.
 - [Kotlin Ktor Development](./rules/kotlin-ktor-development-cursorrules-prompt-file/.cursorrules) - Cursor rules for Kotlin development with Ktor integration.
 - [Laravel (PHP 8.3)](./rules/laravel-php-83-cursorrules-prompt-file/.cursorrules) - Cursor rules for Laravel development with PHP 8.3 integration.
 - [Laravel (TALL Stack)](./rules/laravel-tall-stack-best-practices-cursorrules-prom/.cursorrules) - Cursor rules for Laravel development with TALL Stack best practices.
@@ -291,6 +291,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
+- [Skills Hub](https://skillshub.io/skills) — Community-rated AI coding skill packs for Copilot, Cursor & Claude. Ratings, version history, and one-click copy.
 
 ## How to Use
 
@@ -336,7 +337,7 @@ Please ensure your contribution is original or properly credited if based on exi
 	  <a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">
 		  <img alt="CodeRabbit.ai Sponsorship Logo" src="https://github.com/user-attachments/assets/9484d60c-8e80-46bd-94e4-3edb7bd5268b" width=250>
 	  </a>
-	<h3><a href="https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">Unblocked MCP- Supercharge Cursor with your team’s knowledge</h3> 
+	<h3><a href="https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">Unblocked MCP- Supercharge Cursor with your team's knowledge</h3> 
 	  <a href="https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">
 		  <img alt="Unblocked Sponsorship Logo" src="https://github.com/claire-gong-18/awesome-cursorrules/blob/main/Unblocked-logo-sq-words-over-gradient-1024w.png?raw=true)" width=250>
 	  </a>
