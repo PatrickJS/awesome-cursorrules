@@ -1,0 +1,115 @@
+# Skillfold - AI Pipeline Compiler
+
+Skillfold is a configuration language and compiler for multi-agent AI pipelines.
+It compiles YAML config into platform-specific agent skill files.
+
+## Project Structure
+
+- `skillfold.yaml` - Pipeline configuration (resources, skills, state, team)
+- `skills/` - Atomic skill definitions (each has a SKILL.md)
+- `build/` - Compiled output (default --out-dir)
+- `skillfold.schema.json` - JSON Schema for IDE autocompletion
+
+## Config Structure
+
+Four top-level sections in skillfold.yaml:
+
+```yaml
+resources:   # Resource namespace declarations for state location validation
+skills:
+  atomic:    # Path references to skill directories containing SKILL.md
+  composed:  # Composition declarations combining atomic skills into agents
+state:       # Typed state schema (primitives, lists, custom types, locations)
+team:
+  orchestrator: # Optional skill to append generated execution plan
+  flow:         # Directed execution graph with routing, loops, parallel map
+```
+
+## Key Commands
+
+```bash
+npx skillfold                        # Compile pipeline
+npx skillfold --target cursor        # Compile to Cursor rules
+npx skillfold --target claude-code   # Compile to Claude Code agents
+npx skillfold validate               # Validate config without compiling
+npx skillfold watch                  # Auto-recompile on changes
+npx skillfold run --target claude-code  # Execute the pipeline
+npx skillfold list                   # Inspect pipeline structure
+npx skillfold graph --html           # Interactive pipeline visualization
+npx skillfold search [query]         # Search npm for shared skills
+npx skillfold init                   # Scaffold a new pipeline
+```
+
+## Skill Authoring
+
+Each atomic skill lives in its own directory with a SKILL.md file:
+
+```markdown
+---
+name: skill-name
+---
+
+# Skill Name
+
+Instructions for the agent when this skill is active.
+Keep skills focused on a single responsibility.
+```
+
+## Composition
+
+Composed skills combine atomic skills by reference:
+
+```yaml
+skills:
+  composed:
+    my-agent:
+      skills: [planning, code-writing, testing]
+```
+
+The compiler concatenates skill bodies in declared order.
+
+## TypeScript Conventions
+
+- Strict mode, ESM modules
+- Node stdlib imports use `node:` prefix
+- File extensions in imports: `.js` (NodeNext module resolution)
+- No `any`, no unnecessary type assertions
+- Custom errors extend Error with descriptive messages
+
+## State Schema
+
+State fields have types, optional locations, and are validated at compile time:
+
+```yaml
+state:
+  types:
+    ReviewResult:
+      approved: boolean
+      comments: string
+  fields:
+    plan: string
+    reviews:
+      type: list<ReviewResult>
+      location: github-issues
+```
+
+## Team Flow
+
+Flow defines agent execution order with conditionals and parallel patterns:
+
+```yaml
+team:
+  flow:
+    planner:
+      skill: planning-agent
+      next: engineer
+    engineer:
+      skill: dev-agent
+      next: reviewer
+    reviewer:
+      skill: review-agent
+      next:
+        - when: reviews[-1].approved == true
+          then: done
+        - default: engineer
+```
