@@ -105,7 +105,7 @@ F.when((F.col('status') == 'Delivered') | (((F.datediff('date_a', 'date_b') < 0)
 
 # GOOD
 is_delivered = (F.col('status') == 'Delivered')
-date_passed = (F.datediff('date_a', 'date_b') < 0)
+date_passed = (F.datediff(F.col('date_a'), F.col('date_b')) < 0)
 has_registration = (F.col('registration').rlike('.+'))
 F.when(is_delivered | (date_passed & has_registration), 'Active')
 ```
