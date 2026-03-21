@@ -59,8 +59,10 @@ Build a generic reader utility that handles partition mechanics (date filters, h
 class PartitionedReader:
     @staticmethod
     def read_latest(spark, table_name, partition_col):
-        max_val = spark.read.table(table_name).agg(F.max(partition_col)).first()[0]
-        return spark.read.table(table_name).filter(F.col(partition_col) == max_val)
+        row = spark.read.table(table_name).agg(F.max(partition_col)).first()
+        if row is None or row[0] is None:
+            return spark.createDataFrame([], spark.read.table(table_name).schema)
+        return spark.read.table(table_name).filter(F.col(partition_col) == row[0])
 
     @staticmethod
     def read_by_date(spark, table_name, partition_col, date_value):
