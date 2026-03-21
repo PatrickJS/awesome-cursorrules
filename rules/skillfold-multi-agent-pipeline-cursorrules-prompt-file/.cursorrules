@@ -1,0 +1,239 @@
+# Skillfold - Multi-Agent AI Pipeline Configuration
+
+You are working on a project that uses Skillfold to configure multi-agent AI pipelines.
+Skillfold compiles YAML config into agent skill files for various AI coding tools.
+
+## Config File Structure
+
+The config file is `skillfold.yaml` with four top-level sections:
+
+```yaml
+resources:   # Resource namespace declarations for state locations
+skills:      # Atomic and composed skill definitions
+state:       # Typed state schema for inter-agent data flow
+team:        # Orchestrator and execution flow graph
+```
+
+Optional top-level fields: `name`, `imports`.
+
+## Skills Section
+
+Skills are split into `atomic` and `composed`:
+
+```yaml
+skills:
+  atomic:
+    # Local skill (directory containing SKILL.md)
+    my-skill: ./skills/my-skill
+    # Remote skill (GitHub URL)
+    remote-skill: https://github.com/org/repo/tree/main/skills/name
+    # npm skill
+    lib-skill: npm:package-name/skills/name
+
+  composed:
+    my-agent:
+      compose: [skill-a, skill-b, skill-c]
+      description: "What this agent does."
+```
+
+Key rules:
+- Atomic skills point to directories containing a SKILL.md file
+- Composed skills list atomic skills in `compose` order (bodies are concatenated)
+- Composition is recursive - a composed skill can reference other composed skills
+- Every skill name referenced in `compose` must exist in `atomic` or `composed`
+- Descriptions should be concise, action-oriented sentences
+
+## State Section
+
+State defines typed data that flows between agents:
+
+```yaml
+state:
+  # Custom type definition (capitalized name)
+  Review:
+    approved: bool
+    feedback: string
+
+  # State variable (lowercase name)
+  plan:
+    type: string
+
+  tasks:
+    type: list<Task>
+
+  review:
+    type: Review
+    location:
+      github-issues: { repo: org/repo, label: review }
+```
+
+Type rules:
+- Primitive types: `string`, `bool`
+- Custom types: defined inline with capitalized names
+- List types: `list<TypeName>`
+- Locations are optional and map state to external services
+- Built-in integrations: `github-issues`, `github-discussions`, `github-pull-requests`
+
+## Team Section
+
+Defines the execution flow graph:
+
+```yaml
+team:
+  orchestrator: orchestrator-agent  # optional, appends generated plan
+
+  flow:
+    - planner:
+        writes: [state.plan]
+      then: engineer
+
+    - engineer:
+        reads: [state.plan]
+        writes: [state.implementation]
+      then: reviewer
+
+    - reviewer:
+        reads: [state.implementation]
+        writes: [state.review]
+      then:
+        - when: review.approved == true
+          to: end
+        - when: review.approved == false
+          to: engineer
+```
+
+Flow rules:
+- Each node names a composed skill and declares `reads`/`writes` on state
+- `then` can be a single target, `end`, or conditional routing with `when`/`to`
+- State paths use `state.` prefix in reads/writes, drop prefix in when-clauses
+- Conditional routes must cover all possible outcomes
+- The graph must be acyclic (except for explicit loops with exit conditions)
+- Map nodes support parallel execution over list state
+
+## Resources Section
+
+Declares resource namespaces for state location validation:
+
+```yaml
+resources:
+  github:
+    url: https://github.com/{repo}
+```
+
+## Imports
+
+Pull in skills, state, and resources from other configs:
+
+```yaml
+imports:
+  - npm:skillfold/library/skillfold.yaml
+  - ./other-config/skillfold.yaml
+```
+
+Imports merge `skills`, `state`, and `resources`. The `team` section is always local.
+
+## CLI Commands
+
+Core commands (run from project root):
+
+```bash
+# Compile pipeline (default output to build/)
+npx skillfold
+
+# Compile for a specific target
+npx skillfold --target claude-code    # .claude/agents/ and .claude/skills/
+npx skillfold --target cursor         # .cursor/rules/
+npx skillfold --target codex           # AGENTS.md
+npx skillfold --target copilot         # .github/copilot-instructions.md
+npx skillfold --target windsurf        # .windsurf/rules/
+npx skillfold --target gemini          # .gemini/agents/ and .gemini/skills/
+
+# Validate config without compiling
+npx skillfold validate
+
+# Check compiled output is up-to-date (for CI)
+npx skillfold --check
+
+# Watch for changes and auto-recompile
+npx skillfold watch
+
+# List pipeline skills, state, and flow
+npx skillfold list
+
+# Generate interactive flow graph
+npx skillfold graph --html > pipeline.html
+
+# Run the pipeline
+npx skillfold run --target claude-code
+npx skillfold run --target claude-code --resume   # resume from checkpoint
+npx skillfold run --target claude-code --dry-run   # preview without executing
+
+# Search for shared skills on npm
+npx skillfold search [query]
+
+# Initialize a new pipeline project
+npx skillfold init
+npx skillfold init --template dev-team
+
+# Package as a Claude Code plugin
+npx skillfold plugin
+```
+
+## Common Patterns
+
+### Linear Pipeline
+```yaml
+flow:
+  - agent-a:
+      writes: [state.output-a]
+    then: agent-b
+  - agent-b:
+      reads: [state.output-a]
+      writes: [state.output-b]
+    then: end
+```
+
+### Review Loop
+```yaml
+flow:
+  - writer:
+      writes: [state.draft]
+    then: reviewer
+  - reviewer:
+      reads: [state.draft]
+      writes: [state.review]
+    then:
+      - when: review.approved == true
+        to: end
+      - when: review.approved == false
+        to: writer
+```
+
+### Parallel Map
+```yaml
+flow:
+  - processor:
+      reads: [state.items]
+      writes: [state.results]
+      map:
+        over: state.items
+        as: item
+        flow:
+          - handler:
+              reads: [item]
+              writes: [item.result]
+            then: end
+    then: end
+```
+
+## Best Practices
+
+- Keep atomic skills small and focused on a single capability
+- Use descriptive skill names that indicate what the skill does
+- Declare reads/writes accurately - the compiler validates state access
+- Use `npx skillfold validate` before committing config changes
+- Use `npx skillfold --check` in CI to verify compiled output stays current
+- Use the library skills (`npm:skillfold/library/skillfold.yaml`) as building blocks
+- Prefer `npm:` imports for shared skills over direct file paths
+- Run `npx skillfold graph --html > pipeline.html` to visualize complex flows
+- Use `skillfold.local.yaml` for local overrides (gitignored by default)
