@@ -213,6 +213,8 @@ If duplicate rows appear, find the root cause. `.dropDuplicates()` masks the pro
 
 ## 4. Window Functions
 
+Use `from pyspark.sql import Window as W` alongside `import pyspark.sql.functions as F`.
+
 ### Always specify an explicit frame
 
 Without a frame, Spark picks one that changes depending on whether `orderBy` is present.
@@ -268,9 +270,9 @@ map_concat(existing_map, new_map)
 # GOOD — keep the entry with the later timestamp
 map_zip_with(new_map, existing_map,
     lambda key, v1, v2: (
-        when(v1.isNull(), v2)
+        F.when(v1.isNull(), v2)
         .when(v2.isNull(), v1)
-        .otherwise(when(v1.event_ts >= v2.event_ts, v1).otherwise(v2))
+        .otherwise(F.when(v1.event_ts >= v2.event_ts, v1).otherwise(v2))
     )
 )
 ```
@@ -362,6 +364,8 @@ partition_df = spark.read.table("catalog.my_table__partitions").select(
 max_partition = partition_df.orderBy(
     F.col("partition_date").desc(), F.col("partition_hour").desc()
 ).first()
+if max_partition is None:
+    raise ValueError("No partitions found in catalog.my_table")
 latest_date = max_partition["partition_date"]
 ```
 
