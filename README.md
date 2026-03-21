@@ -24,7 +24,7 @@ Configuration files that enhance Cursor AI editor experience with custom rules a
 	  <a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">
 		  <img alt="CodeRabbit.ai Sponsorship Logo" src="https://github.com/user-attachments/assets/9484d60c-8e80-46bd-94e4-3edb7bd5268b" width=250>
 	  </a>
-	<h3><a href="https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">Unblocked MCP- Supercharge Cursor with your team’s knowledge</h3> 
+	<h3><a href="https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">Unblocked MCP- Supercharge Cursor with your team's knowledge</h3> 
 	  <a href="https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">
 		  <img alt="Unblocked Sponsorship Logo" src="https://github.com/claire-gong-18/awesome-cursorrules/blob/main/Unblocked-logo-sq-words-over-gradient-1024w.png?raw=true)" width=250>
 	  </a>
@@ -224,6 +224,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Project Epic Template](./rules/project-epic-template-cursorrules-prompt-file/.cursorrules) - Cursor rules for project development with epic template integration.
 - [Python Containerization](./rules/python-containerization-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python development with containerization integration.
 - [Python (GitHub Setup)](./rules/python-github-setup-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python development with GitHub setup integration.
+- [Skillfold (AI Pipeline Compiler)](./rules/skillfold-ai-pipeline-compiler-cursorrules-prompt-file/.cursorrules) - Cursor rules for Skillfold development with multi-agent AI pipeline compilation.
 - [Tauri (Svelte, TypeScript Guide)](./rules/tauri-svelte-typescript-guide-cursorrules-prompt-f/.cursorrules) - Cursor rules for Tauri development with Svelte and TypeScript guide integration.
 - [TypeScript Code Convention](./rules/typescript-code-convention-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with code convention integration.
 - [VSCode Extension (Electron/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules) - Cursor rules for VSCode extension development with Electron and TypeScript integration.
@@ -336,7 +337,7 @@ Please ensure your contribution is original or properly credited if based on exi
 	  <a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">
 		  <img alt="CodeRabbit.ai Sponsorship Logo" src="https://github.com/user-attachments/assets/9484d60c-8e80-46bd-94e4-3edb7bd5268b" width=250>
 	  </a>
-	<h3><a href="https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">Unblocked MCP- Supercharge Cursor with your team’s knowledge</h3> 
+	<h3><a href="https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">Unblocked MCP- Supercharge Cursor with your team's knowledge</h3> 
 	  <a href="https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">
 		  <img alt="Unblocked Sponsorship Logo" src="https://github.com/claire-gong-18/awesome-cursorrules/blob/main/Unblocked-logo-sq-words-over-gradient-1024w.png?raw=true)" width=250>
 	  </a>
