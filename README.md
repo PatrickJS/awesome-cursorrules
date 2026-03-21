@@ -106,6 +106,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [React (Next.js UI Development)](./rules/react-nextjs-ui-development-cursorrules-prompt-fil/.cursorrules) - Cursor rules for React development with Next.js UI integration.
 - [React (TypeScript, Next.js, Node.js)](./rules/react-typescript-nextjs-nodejs-cursorrules-prompt-/.cursorrules) - Cursor rules for React development with TypeScript, Next.js, and Node.js integration.
 - [React (TypeScript, Symfony)](./rules/react-typescript-symfony-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with TypeScript and Symfony integration.
+- [Semiotic (React, D3, Data Visualization)](./rules/semiotic-react-dataviz-cursorrules-prompt-file/.cursorrules) - Cursor rules for Semiotic data visualization library with 30+ chart types, MCP server, and AI-assisted chart generation.
 - [Solid.js (Basic Setup)](./rules/solidjs-basic-cursorrules-prompt-file/.cursorrules) - Cursor rules for Solid.js development with basic setup.
 - [Solid.js (TypeScript)](./rules/solidjs-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Solid.js development with TypeScript integration.
 - [Solid.js (Tailwind CSS)](./rules/solidjs-tailwind-cursorrules-prompt-file/.cursorrules) - Cursor rules for Solid.js development with Tailwind CSS integration.
