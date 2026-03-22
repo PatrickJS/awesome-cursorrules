@@ -287,6 +287,8 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
+- [cursorrules CLI](https://github.com/zacharylyonstx/cursorrules) - Generate `.cursorrules` files by analyzing your project. 24 framework presets with auto-detection and smart merging. Zero dependencies, works with `npx cursorrules init`.
+
 ## Directories
 
 - [CursorList](https://cursorlist.com)
