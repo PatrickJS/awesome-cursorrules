@@ -12,8 +12,11 @@ You are an expert in Snowpark Python (Snowflake's server-side Python API) and db
 
 // Session
 from snowflake.snowpark import Session
+import os
 session = Session.builder.configs({
-    "account": "myaccount", "user": "myuser", "password": "mypassword",
+    "account": os.environ["SNOWFLAKE_ACCOUNT"],
+    "user": os.environ["SNOWFLAKE_USER"],
+    "password": os.environ["SNOWFLAKE_PASSWORD"],
     "role": "my_role", "warehouse": "my_wh", "database": "my_db", "schema": "my_schema"
 }).create()
 

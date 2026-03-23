@@ -185,10 +185,10 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Database and API
 
 - [GraphQL (Apollo Client)](./rules/react-graphql-apollo-client-cursorrules-prompt-file/.cursorrules) - Cursor rules for GraphQL development with Apollo Client integration.
-- [TypeScript (Axios)](./rules/typescript-axios-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Axios integration.
-- [Snowflake Data Engineering](./rules/snowflake-data-engineering-cursorrules-prompt-file/.cursorrules) - Cursor rules for Snowflake SQL, data pipelines (Dynamic Tables, Streams, Tasks, Snowpipe), semi-structured data, Snowflake Postgres, and cost optimization.
 - [Snowflake Cortex AI](./rules/snowflake-cortex-ai-cursorrules-prompt-file/.cursorrules) - Cursor rules for Snowflake Cortex AI Functions (AI_COMPLETE, AI_CLASSIFY, AI_EXTRACT, etc.) and Cortex Search for RAG applications.
+- [Snowflake Data Engineering](./rules/snowflake-data-engineering-cursorrules-prompt-file/.cursorrules) - Cursor rules for Snowflake SQL, data pipelines (Dynamic Tables, Streams, Tasks, Snowpipe), semi-structured data, Snowflake Postgres, and cost optimization.
 - [Snowflake Snowpark Python & dbt](./rules/snowflake-snowpark-dbt-cursorrules-prompt-file/.cursorrules) - Cursor rules for Snowpark Python (DataFrames, UDFs, stored procedures) and dbt with the Snowflake adapter.
+- [TypeScript (Axios)](./rules/typescript-axios-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Axios integration.
 
 ### Testing
 

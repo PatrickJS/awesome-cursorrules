@@ -1,5 +1,7 @@
 # Snowflake Cortex AI Cursor Rules
 
+Author: [Snowflake DevRel](https://github.com/Snowflake-Labs)
+
 Rules for Snowflake Cortex — AI Functions (AI_COMPLETE, AI_CLASSIFY, AI_EXTRACT, AI_EMBED, and more) and Cortex Search (managed hybrid vector+keyword search for RAG applications).
 
 ## Usage

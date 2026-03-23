@@ -1,5 +1,7 @@
 # Snowflake Snowpark Python & dbt Cursor Rules
 
+Author: [Snowflake DevRel](https://github.com/Snowflake-Labs)
+
 Rules for building data pipelines with Snowpark Python (server-side DataFrames, UDFs, stored procedures) and dbt with the Snowflake adapter (dynamic tables, incremental models, Snowflake-specific configs).
 
 ## Usage

@@ -1,5 +1,7 @@
 # Snowflake Data Engineering Cursor Rules
 
+Author: [Snowflake DevRel](https://github.com/Snowflake-Labs)
+
 Rules for comprehensive data engineering on Snowflake — SQL best practices, data pipelines (Dynamic Tables, Streams, Tasks, Snowpipe), semi-structured data handling, Snowflake Postgres, Time Travel, and cost optimization.
 
 ## Usage
