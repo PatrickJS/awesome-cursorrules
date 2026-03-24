@@ -273,11 +273,11 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [DragonRuby Best Practices](./rules/dragonruby-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for DragonRuby development with best practices integration.
 - [Graphical Apps Development](./rules/graphical-apps-development-cursorrules-prompt-file/.cursorrules) - Cursor rules for graphical apps development with integration.
 - [Meta-Prompt](./rules/meta-prompt-cursorrules-prompt-file/.cursorrules) - Cursor rules for meta-prompt development with integration.
+- [Moyu Anti-Overengineering](./rules/moyu-anti-overengineering/.cursorrules) - Cursor rules that prevent AI from over-engineering — three iron rules, comparison tables, and moyu checklist.
 - [Next.js (Type LLM)](./rules/next-type-llm/.cursorrules) - Cursor rules for Next.js development with Type LLM integration.
 - [Unity (C#)](./rules/unity-cursor-ai-c-cursorrules-prompt-file/.cursorrules) - Cursor rules for Unity development with C# integration.
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules) - Cursor rules for web app development with optimization integration.
 - [Code Pair Interviews](./rules/code-pair-interviews/.cursorrules) - Cursor rules for code pair interviews development with integration.
-- [Moyu Anti-Overengineering](./rules/moyu-anti-overengineering/.cursorrules) - Cursor rules that prevent AI from over-engineering — three iron rules, anti-grinding table, and 4-level detection system.
 
 ### Documentation
 
