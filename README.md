@@ -309,6 +309,11 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 4. Select and download the `.cursorrules` file that suits your needs.
 5. Customize the rules as needed for your specific project requirements.
 
+## XVARY Stock Research
+
+- [XVARY Stock Research](https://github.com/xvary-research/claude-code-stock-analysis-skill) — Claude Code skill for public SEC EDGAR + market data: `/analyze`, `/score`, `/compare`. MIT.
+
+
 ## Contributing
 
 Contributions are welcome! If you have a great `.cursorrules` file to share:
