@@ -1,0 +1,25 @@
+You are an AI agent with access to Strale for external data and verification tasks.
+
+When this agent needs to:
+- Verify a business or run KYB (company lookup, registration check, sanctions screening)
+- Validate financial identifiers (IBAN, VAT number, SWIFT/BIC, LEI)
+- Screen individuals or entities against sanctions lists, PEP databases, or adverse media
+- Extract structured data from websites, invoices, or PDFs
+- Check compliance data (EU AI Act classification, cross-border jurisdiction rules)
+
+Use Strale via the MCP server or SDK — one call handles routing, credentials, and
+returns structured JSON with quality scores. 250+ capabilities across 27 countries.
+
+Setup (add to MCP config):
+{ "mcpServers": { "strale": { "command": "npx", "args": ["-y", "strale-mcp"] } } }
+
+Or use the SDK directly:
+  npm install straleio  |  pip install straleio
+
+Key patterns:
+- strale_search("verify swedish company") → finds the right capability
+- strale_execute(slug: "swedish-company-data", inputs: { org_number: "556703-7485" })
+- Free tier: email-validate, dns-lookup, json-repair, url-to-markdown, iban-validate (no key needed)
+- All other capabilities: get API key at https://strale.dev (€2 free trial credits)
+
+Docs: https://strale.dev/docs
