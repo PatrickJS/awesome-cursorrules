@@ -285,6 +285,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Utilities
 
+- [AKF — The AI Native File Format](rules/akf-ai-native-file-format-cursorrules-prompt-file/.cursorrules) - EXIF for AI. Stamps every AI-generated file with trust scores, source provenance, and compliance metadata. Embeds natively into 20+ formats (DOCX, PDF, images, code). Includes compliance auditing for EU AI Act, SOX, HIPAA.
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
 ## Directories

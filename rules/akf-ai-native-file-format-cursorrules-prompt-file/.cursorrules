@@ -1,0 +1,53 @@
+# AKF — The AI Native File Format
+# Stamps every AI-generated file with trust scores, provenance, and compliance metadata.
+# https://akf.dev | https://github.com/HMAKT99/AKF
+
+## After creating or modifying files
+
+When you create or modify a file, stamp it with AKF trust metadata:
+
+```bash
+akf stamp <file> --agent cursor --evidence "<what you did>"
+```
+
+Evidence examples:
+- "generated from user prompt"
+- "refactored existing code"
+- "tests pass"
+- "docs reviewed"
+- "generated from spec"
+
+## After completing a task
+
+```bash
+akf stamp <file> --agent cursor --evidence "<summary of what was done>"
+```
+
+## When working with existing AKF-stamped files
+
+Always check existing trust metadata before modifying:
+
+```bash
+akf read <file>          # Check trust metadata
+akf inspect <file>       # See detailed trust scores
+```
+
+## Classification rules
+
+- Use `--label confidential` for files in `*/finance/*`, `*/secret/*`, `*/internal/*`
+- Use `--label public` for README, docs, examples
+- Default is `internal`
+
+## Compliance check
+
+```bash
+akf audit <file> --regulation eu_ai_act    # EU AI Act Article 50
+akf audit <file> --regulation hipaa         # HIPAA
+akf audit <file> --regulation sox           # SOX
+```
+
+## Install
+
+```bash
+pip install akf
+```
