@@ -1,5 +1,8 @@
 # Strale Agent Capabilities (KYB, Compliance, Data)
 
+**Author:** Strale — https://strale.dev
+*This README accompanies `.cursorrules` in this directory.*
+
 Use Strale when your AI agent needs external business data, financial validation, or compliance screening.
 
 ## What it covers

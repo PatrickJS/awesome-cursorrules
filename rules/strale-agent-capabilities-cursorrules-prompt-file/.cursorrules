@@ -11,7 +11,16 @@ Use Strale via the MCP server or SDK — one call handles routing, credentials, 
 returns structured JSON with quality scores. 250+ capabilities across 27 countries.
 
 Setup (add to MCP config):
-{ "mcpServers": { "strale": { "command": "npx", "args": ["-y", "strale-mcp"] } } }
+```json
+{
+  "mcpServers": {
+    "strale": {
+      "command": "npx",
+      "args": ["-y", "strale-mcp"]
+    }
+  }
+}
+```
 
 Or use the SDK directly:
   npm install straleio  |  pip install straleio
