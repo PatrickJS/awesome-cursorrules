@@ -289,9 +289,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ## Directories
 
-- [ai-coding-guide](https://github.com/jnMetaCode/ai-coding-guide) - Best practices for 8 AI coding tools (Claude Code, Cursor, Copilot, Windsurf, Gemini CLI, Kiro, Aider, Trae) with copy-paste config templates.
-- [CursorList](https://cursorlist.com)
+- [ai-coding-guide](https://github.com/jnMetaCode/ai-coding-guide) - Best practices for 9 AI coding tools (Claude Code, Cursor, Copilot, Windsurf, Gemini CLI, Kiro, Aider, Trae, OpenClaw) with copy-paste config templates.
 - [CursorDirectory](https://cursor.directory/)
+- [CursorList](https://cursorlist.com)
 
 ## How to Use
 
