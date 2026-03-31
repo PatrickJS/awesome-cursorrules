@@ -269,6 +269,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file/.cursorrules) - Cursor rules for ASCII simulation game development.
 - [Code Guidelines](./rules/code-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for code development with guidelines integration.
+- [Shipworthy Production Guardrails](./rules/shipworthy-production-guardrails/.cursorrules) - Production engineering guardrails adapted from [Shipworthy](https://github.com/Vimalk0703/shipworthy). Enforces TDD, input validation, structured logging, proper HTTP status codes, real databases, and security best practices across any project.
 - [Code Style Consistency](./rules/code-style-consistency-cursorrules-prompt-file/.cursorrules) - Cursor rules for code development with style consistency integration.
 - [DragonRuby Best Practices](./rules/dragonruby-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for DragonRuby development with best practices integration.
 - [Graphical Apps Development](./rules/graphical-apps-development-cursorrules-prompt-file/.cursorrules) - Cursor rules for graphical apps development with integration.

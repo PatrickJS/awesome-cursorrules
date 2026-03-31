@@ -1,0 +1,68 @@
+# Shipworthy — Production Engineering Guardrails for Cursor
+
+> Is your code worthy of shipping?
+
+## Non-Negotiable Defaults
+
+Apply these automatically on every project, every session:
+
+1. **NEVER use console.log** — install and use pino (Node.js), logging (Python), or slog (Go). Even for server startup.
+2. **ALWAYS use Zod for input validation** (TypeScript). `npm install zod` before writing any route. Python: Pydantic. Go: validator.
+3. **ALWAYS write tests** — Vitest (TS), pytest (Python), stdlib testing (Go). Configure coverage.
+4. **ALWAYS set up ESLint** (TS), Ruff (Python), or golangci-lint (Go).
+5. **NEVER use `: any`** — use `unknown` and narrow with type guards. `catch (err: unknown)`.
+6. **Proper HTTP status codes** — 201 create, 204 delete, 400 validation, 401 auth, 403 forbidden, 404 not found.
+7. **ALWAYS use a database** — never in-memory arrays. SQLite minimum.
+8. **NEVER hardcode secrets** — environment variables, validated at startup.
+9. **Passwords: bcrypt/argon2** — never MD5/SHA/plaintext.
+10. **Safe error messages** — never expose stack traces or internal details to clients.
+
+## Intent-to-Spec (Before Coding)
+
+For any non-trivial feature request, generate a lightweight spec BEFORE writing code:
+1. Capture what the user wants (their words), who it's for, and why it matters
+2. Define concrete deliverables and 3-7 acceptance criteria
+3. Check constraints from `.shipworthy/architecture.md` if it exists
+4. Save to `.shipworthy/specs/[feature-name].md`
+5. For non-technical users: do this silently. For engineers: show for approval.
+
+Skip for quick fixes (typos, config changes, renames).
+
+## Project Diagnosis
+
+At the start of each session, mentally check:
+- Does `.gitignore` exist and include `.env`?
+- Do tests exist?
+- Is a linter configured?
+- Is CI set up?
+- Does `.shipworthy/architecture.md` exist?
+
+If critical gaps exist (especially .env not in .gitignore), flag them before proceeding.
+
+## Skill Routing
+
+| Task | What To Do |
+|------|-----------|
+| New feature | Generate spec → Understand requirements → Propose approach → Confirm before coding. |
+| Writing code | Write failing test FIRST → minimal code to pass → refactor. |
+| API endpoints | REST conventions, Zod validation, structured error responses, proper status codes. |
+| Database | Migrations only (never manual), indexes on queried columns, no N+1 queries, pagination. |
+| Auth/security | OWASP checks, parameterized queries, auth on every endpoint, rate limiting. |
+| Debugging | Observe → hypothesize → test → fix. Max 3 attempts then reassess. |
+| Completing | Run tests + build. Verify with evidence. Never say "should work." |
+
+## Quality Gates
+
+- **Level 0** (<5 files): Build runs + no secrets.
+- **Level 1** (5+): Tests pass, build clean, no console.log, linter configured.
+- **Level 2** (10+): Coverage >70%, no TODOs without tickets, no any types.
+- **Level 3** (50+): Bundle budgets, no circular imports, API contracts validated.
+- **Level 4** (100+): Performance benchmarks, accessibility, security scan.
+
+## Architecture Memory
+
+If `.shipworthy/architecture.md` exists, its Mandatory Rules are first-class constraints. Follow them on every interaction. If no spec exists, suggest creating one on the first coding request.
+
+## Verification
+
+Before claiming work is complete: identify proof command → run it → read output → confirm it matches claim → then assert. "Should work" = not verified.
