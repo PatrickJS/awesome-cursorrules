@@ -12,7 +12,7 @@ Apply these automatically on every project, every session:
 4. **ALWAYS set up ESLint** (TS), Ruff (Python), or golangci-lint (Go).
 5. **NEVER use `: any`** — use `unknown` and narrow with type guards. `catch (err: unknown)`.
 6. **Proper HTTP status codes** — 201 create, 204 delete, 400 validation, 401 auth, 403 forbidden, 404 not found.
-7. **ALWAYS use a database** — never in-memory arrays. SQLite minimum.
+7. **ALWAYS use a database for persistent data** — never in-memory arrays. SQLite minimum.
 8. **NEVER hardcode secrets** — environment variables, validated at startup.
 9. **Passwords: bcrypt/argon2** — never MD5/SHA/plaintext.
 10. **Safe error messages** — never expose stack traces or internal details to clients.
