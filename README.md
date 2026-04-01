@@ -285,6 +285,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Utilities
 
+- [ContextEngine](https://github.com/strifero/ContextEngine) - CLI that auto-generates .cursorrules, CLAUDE.md, and copilot-instructions from your actual project files. Detects your stack and produces framework-specific rules in one command: `npx @strifero/contextengine`.
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
 ## Directories
