@@ -1,5 +1,8 @@
-<!-- trigger: always -->
-
+---
+description: OSOP session logging - record AI coding sessions as structured .osop + .osoplog.yaml files for reproducibility and observability. Apply after completing multi-step tasks.
+globs:
+alwaysApply: true
+---
 # OSOP Session Logging
 
 After completing a significant task (multi-step work, not trivial one-liners), produce an **OSOP session log** so there is a structured, portable record of what was done.
