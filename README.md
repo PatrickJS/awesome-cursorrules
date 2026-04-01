@@ -286,6 +286,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Utilities
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
+- [OSOP Session Logging](./rules/osop-session-logging-cursorrules-prompt-file/.cursorrules) - Cursor rules for recording AI coding sessions as structured `.osop` + `.osoplog.yaml` workflow logs using the [OSOP protocol](https://github.com/Archie0125/osop-spec). View logs at [osop-editor.vercel.app](https://osop-editor.vercel.app).
 
 ## Directories
 
