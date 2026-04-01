@@ -16,7 +16,7 @@ id: "session-<short-description>"
 name: "<What you did>"
 description: "<1-2 sentence summary>"
 version: "1.0.0"
-tags: [windsurf, <relevant-tags>]
+tags: [cursor, <relevant-tags>]
 
 nodes:
   - id: "<step-id>"
@@ -52,7 +52,7 @@ ended_at: "<ISO timestamp>"
 duration_ms: <total ms>
 
 runtime:
-  agent: "windsurf"
+  agent: "cursor"
   model: "<model>"
 
 node_records:
