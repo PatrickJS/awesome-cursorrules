@@ -287,6 +287,10 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
+## Packs
+
+- [Cursor Rules Pack v2](https://oliviacraftlat.gumroad.com/l/wyaeil) - 50 production-ready .cursorrules with real TypeScript before/after code examples. Covers Next.js App Router, Prisma, Supabase, Stripe, Vercel AI SDK, and multi-tenancy patterns. $27.
+
 ## Directories
 
 - [CursorList](https://cursorlist.com)
