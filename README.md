@@ -291,6 +291,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
+- [LynxPrompt](https://lynxprompt.com) - Open-source platform for managing AI coding rules (AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md) with web marketplace, CLI, VS Code extension, and self-hosting support.
 
 ## How to Use
 
