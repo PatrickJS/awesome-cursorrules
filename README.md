@@ -285,6 +285,8 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Utilities
 
+- [agentlint](https://github.com/Mr-afroverse/agentlint) - A Python linter for AI coding-assistant instruction files (Cursor, GitHub Copilot, Windsurf, Aider, Continue.dev). Statically checks `.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md`, and similar files for forbidden patterns, missing dispatch chains, trigger overlaps, unverified numbers, and broken file references. Available as a CLI (`pip install instruction-lint`) and a GitHub Action with SARIF output for Code Scanning.
+
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
 ## Directories
