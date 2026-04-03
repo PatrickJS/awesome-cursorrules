@@ -280,6 +280,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Documentation
 
+- [Code Tour (AI Walkthrough Generator)](./rules/code-tour-ai-walkthrough-cursorrules-prompt-file/.cursorrules) - Cursor rules for generating CodeTour .tour files — persona-targeted, step-by-step codebase walkthroughs linked to real files and line numbers.
 - [Gherkin Style Testing](./rules/gherkin-style-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Gherkin style testing development with integration.
 - [How-To Documentation](./rules/how-to-documentation-cursorrules-prompt-file/.cursorrules) - Cursor rules for how-to documentation development with integration.
 
