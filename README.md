@@ -285,6 +285,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Utilities
 
+- [Agentify](https://github.com/koriyoshi2041/agentify) - A TypeScript CLI tool that transforms OpenAPI specs into 9 agent interface formats including `.cursorrules`, CLAUDE.md, MCP servers, AGENTS.md, Skills, and more. Run `npx agentify-cli transform <openapi-spec>` to generate `.cursorrules` files automatically from any API specification.
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
 ## Directories
