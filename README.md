@@ -161,6 +161,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [React Native Expo](./rules/react-native-expo-cursorrules-prompt-file/.cursorrules) - Cursor rules for React Native Expo development.
 - [SwiftUI Guidelines](./rules/swiftui-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for SwiftUI development guidelines.
 - [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Expo, Jest, and Detox integration.
+- [Cursor Rules Pack v2](https://github.com/oliviacraft/cursor-rules-pack-sample) - 7 sample production-tested rules (dependency discipline, error handling, state management, webhook security, and more). Full pack: 50 rules for $27.
 - [Android Native (Jetpack Compose)](./rules/android-jetpack-compose-cursorrules-prompt-file/.cursorrules) - Cursor rules for Android development with Jetpack Compose integration.
 - [Flutter Expert](./rules/flutter-app-expert-cursorrules-prompt-file/.cursorrules) - Cursor rules for Flutter development with expert integration.
 - [UIKit Guidelines](./rules/uikit-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for UIKit development guidelines.
