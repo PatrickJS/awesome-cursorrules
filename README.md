@@ -284,6 +284,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [How-To Documentation](./rules/how-to-documentation-cursorrules-prompt-file/.cursorrules) - Cursor rules for how-to documentation development with integration.
 
 ### Utilities
+- [cursor-init](https://github.com/Kabi10/cursor-rules) - An npm package that auto-detects your project's tech stack and generates a composed `.cursorrules` file. Scans for package.json, requirements.txt, pubspec.yaml, and more. Supports 12 modular rule templates and both `.cursorrules` (legacy) and `.cursor/rules/project.mdc` (2026) formats. Zero configuration—just run `npx cursor-init` in your project root.
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
