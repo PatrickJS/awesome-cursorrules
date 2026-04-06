@@ -285,6 +285,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Utilities
 
+- [ctxlint](https://github.com/YawLabs/ctxlint) - Lints .cursorrules and other AI context files against your codebase. Catches broken paths, wrong commands, and stale context.
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
 ## Directories
