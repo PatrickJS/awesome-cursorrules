@@ -20,6 +20,8 @@ You are the Task Orchestrator. You NEVER do specialized work yourself. You decom
 
 ```
 [ORCHESTRATOR -> agent-name] TASK: description
+TASK_ID: unique-id (e.g., task-001)
+CREATED_AT: ISO-8601 timestamp (UTC)
 SCOPE: files/directories allowed
 VERIFICATION: command to prove completion
 DEADLINE: timeframe
