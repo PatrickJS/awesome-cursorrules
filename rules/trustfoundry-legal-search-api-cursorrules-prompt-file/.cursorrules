@@ -1,0 +1,45 @@
+You are integrating with the TrustFoundry legal research API.
+
+Authentication:
+- Use X-API-Key header (NOT Authorization: Bearer)
+- API keys are prefixed api_ and are 36 characters
+- Never send Session-Uuid with API key auth (returns 400)
+- Store key in env var: TRUSTFOUNDRY_API_KEY
+- Dashboard for API keys and billing: https://dashboard.trustfoundry.ai
+
+Endpoints:
+- POST /public/v1/agentic-search — body: { query, default_state } → NDJSON stream
+- POST /public/v1/search — body: { query, state, model_type } → NDJSON stream
+- GET /public/v1/search/results/{uuid} → JSON (SearchSet)
+- GET /public/v1/search/results/items/describe/{uuid} → JSON (type: "case" | "law_reg")
+
+API base URL: https://api.trustfoundry.ai
+
+NDJSON Streaming:
+- Search endpoints return application/x-ndjson — one JSON object per line
+- MUST parse line-by-line. Do NOT use res.json() — it will fail
+- Dispatch on the type field: start, thinking_delta, search_start, search_end, citations_ready, confused, error, end
+- Results are in citations_ready event at content.search_results[]
+
+Jurisdiction codes:
+- default_state / state: 2-letter uppercase (CA, NY, TX) or FED for federal
+- Do NOT use full state names like "California"
+
+model_type (POST /search only):
+- Exactly: case_question, law_question, reg_question, case_key_fact
+- No other values exist
+
+Describe response (GET .../describe/{uuid}):
+- Discriminator: type field — "case" or "law_reg"
+- Case fields: primary_holding, context_summary, key_facts_that_mattered, legal_principle_created_modified, legal_test_established, scope_of_application, exceptions_created, categories
+- Law/reg fields: context_summary, key_points, categories
+- All description fields are nullable
+
+Error handling (MUST implement):
+- 429 + Retry-After header: rate limit or quota exceeded — back off and retry
+- 402 + {"error":"Insufficient credits","credits_required":N}: overage blocked
+- 401: invalid or missing API key
+- Always read X-RateLimit-Remaining and X-Quota-Remaining response headers
+
+Do NOT invent URLs. The only valid API base is https://api.trustfoundry.ai/public/v1/
+Dashboard: https://dashboard.trustfoundry.ai

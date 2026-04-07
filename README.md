@@ -185,6 +185,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Database and API
 
 - [GraphQL (Apollo Client)](./rules/react-graphql-apollo-client-cursorrules-prompt-file/.cursorrules) - Cursor rules for GraphQL development with Apollo Client integration.
+- [TrustFoundry Legal Search API](./rules/trustfoundry-legal-search-api-cursorrules-prompt-file/.cursorrules) - Cursor rules for integrating with TrustFoundry's legal research API with NDJSON streaming, authentication, and error handling.
 - [TypeScript (Axios)](./rules/typescript-axios-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Axios integration.
 
 ### Testing
