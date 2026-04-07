@@ -291,6 +291,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
+- [RemoteOpenClaw](https://remoteopenclaw.com) - Open marketplace for AI skills and personas built on OpenClaw
 
 ## How to Use
 
