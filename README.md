@@ -286,6 +286,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Utilities
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
+- [SpecLock](https://github.com/sgroy10/speclock) - Enforces your .cursorrules, CLAUDE.md, and AGENTS.md — not just suggests. Zero-config: `npx speclock protect` reads your existing rule files, extracts enforceable constraints, and installs a pre-commit hook. 51 MCP tools, 991 tests.
 
 ## Directories
 
