@@ -301,24 +301,28 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 3. Copy the chosen `.cursorrules` file to your project's root directory.
 4. Customize the rules as needed for your specific project requirements.
 
-### Method Two
+### Method Two (cross-host via agent-add)
 
-### Method Three (cross-host via agent-add)
-
-Install any rule from this repo into your AI host (Cursor, Claude Code, Windsurf, and [15 more](https://github.com/pea3nut/agent-get)) with a single command via [agent-add](https://github.com/pea3nut/agent-get):
+[agent-add](https://github.com/pea3nut/agent-get) is a cross-host installer that auto-detects your AI host (18 supported: Cursor, Claude Code, Claude Desktop, Windsurf, GitHub Copilot, Gemini, Roo Code, Kilo Code, Qwen Code, OpenCode, Kiro, Codex, and more) and writes any rule from this repo to the correct location:
 
 ```bash
-# Install a specific rule — replace <rule-dir> with the path shown in the list above
+# Install a specific rule (replace <rule-dir> with any directory from the Rules list above)
 npx -y agent-add --prompt 'https://raw.githubusercontent.com/PatrickJS/awesome-cursorrules/main/rules/<rule-dir>/.cursorrules'
 ```
 
-Example — install the Next.js 15 + React 19 rule:
+Example — install the Next.js 15 + React 19 + Vercel AI + Tailwind rule:
 
 ```bash
 npx -y agent-add --prompt 'https://raw.githubusercontent.com/PatrickJS/awesome-cursorrules/main/rules/nextjs15-react19-vercelai-tailwind-cursorrules-prompt-file/.cursorrules'
 ```
 
-`agent-add` auto-detects your AI host and writes the rule to the correct location (Cursor's `.cursor/rules/` dir, Claude Code's prompt dir, etc.).
+### Method Three
+
+1. Install [Cursor AI](https://cursor.sh/) if you haven't already.
+2. Install [vscode-cursor-rules](https://marketplace.visualstudio.com/items?itemName=BeilunYang.cursor-rules) extension.
+3. Open the command palette (Cmd+Shift+P or Ctrl+Shift+P) and type `Cursor Rules: Add .cursorrules`.
+4. Select and download the `.cursorrules` file that suits your needs.
+5. Customize the rules as needed for your specific project requirements.
 
 ## Contributing
 
