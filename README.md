@@ -267,6 +267,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Other
 
+- [Alpha Skills](https://github.com/VernonOY/alpha-skills) - Quantitative factor research skills for Cursor. Evaluate factors, run backtests, mine new alpha — all through natural language.
 - [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file/.cursorrules) - Cursor rules for ASCII simulation game development.
 - [Code Guidelines](./rules/code-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for code development with guidelines integration.
 - [Code Style Consistency](./rules/code-style-consistency-cursorrules-prompt-file/.cursorrules) - Cursor rules for code development with style consistency integration.
