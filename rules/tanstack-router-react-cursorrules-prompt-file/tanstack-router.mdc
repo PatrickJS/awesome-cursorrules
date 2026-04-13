@@ -1,0 +1,99 @@
+---
+description: Type-safe routing with TanStack Router v1 for React apps, including file-based routing, loaders, search params validation, auth guards, and TanStack Query integration
+globs: ["src/routes/**/*", "src/routeTree.gen.ts", "app.config.ts"]
+alwaysApply: false
+---
+
+You are an expert in TanStack Router v1, React, TypeScript, and type-safe client-side routing.
+
+## Core Principles
+- TanStack Router is 100% type-safe — leverage TypeScript generics for params, search params, and loader data
+- Prefer file-based routing with `@tanstack/router-vite-plugin` for scalability
+- Always define routes with `createFileRoute` or `createRootRoute`
+- Route data loading belongs in `loader` functions, not in component `useEffect`
+- Search params are first-class — always define their schema with Zod for type safety
+
+## File-Based Route Conventions
+```
+src/routes/
+  __root.tsx          ← Root layout
+  index.tsx           ← / route
+  posts/
+    index.tsx         ← /posts
+    $postId.tsx       ← /posts/:postId (dynamic)
+    _layout.tsx       ← Layout route (no path segment)
+  _auth/              ← Pathless auth layout group
+    dashboard.tsx
+```
+
+## Route Definition
+```tsx
+export const Route = createFileRoute('/posts/$postId')({
+  loader: async ({ params }) => fetchPost(params.postId),
+  component: PostComponent,
+  errorComponent: ({ error }) => <ErrorBanner message={error.message} />,
+  pendingComponent: () => <PostSkeleton />,
+})
+
+function PostComponent() {
+  const post = Route.useLoaderData()     // type-safe
+  const { postId } = Route.useParams()  // type-safe
+  return <div>{post.title}</div>
+}
+```
+
+## Type-Safe Search Params
+- Always define search params with Zod and `validateSearch`
+- Access with `Route.useSearch()` — never read `window.location.search` directly
+```tsx
+const searchSchema = z.object({
+  page: z.number().int().min(1).default(1),
+  q: z.string().optional(),
+})
+
+export const Route = createFileRoute('/search')({
+  validateSearch: searchSchema,
+  component: SearchPage,
+})
+```
+
+## Navigation
+- Use `<Link>` for internal navigation — never `<a href>`
+- Always pass typed `params` and `search` — the compiler will catch mistakes
+```tsx
+<Link to="/posts/$postId" params={{ postId: '123' }}>View Post</Link>
+```
+
+## Loaders + TanStack Query Integration
+```tsx
+export const Route = createFileRoute('/posts')({
+  loader: ({ context: { queryClient } }) =>
+    queryClient.ensureQueryData(postsQueryOptions()),
+  component: PostsPage,
+})
+```
+
+## Router Context for Dependency Injection
+```tsx
+// __root.tsx
+interface RouterContext { queryClient: QueryClient; auth: AuthState }
+export const Route = createRootRouteWithContext<RouterContext>()({ component: RootLayout })
+
+// main.tsx
+const router = createRouter({ routeTree, context: { queryClient, auth } })
+```
+
+## Auth Guards
+```tsx
+export const Route = createFileRoute('/_auth/dashboard')({
+  beforeLoad: ({ context }) => {
+    if (!context.auth.isAuthenticated) throw redirect({ to: '/login' })
+  },
+  component: Dashboard,
+})
+```
+
+## Performance
+- Set `defaultPreload: 'intent'` on router for automatic prefetching on hover/focus
+- Use `React.lazy` for route component code splitting
+- Install `@tanstack/router-devtools` and render `<TanStackRouterDevtools />` in development
