@@ -183,6 +183,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [React (Redux, TypeScript)](./rules/react-redux-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with Redux and TypeScript integration.
 - [React (MobX)](./rules/react-mobx-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with MobX integration.
 - [React (React Query)](./rules/react-query-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with React Query integration.
+- [React (TanStack Router + Query)](./rules/react-tanstack-router-query-cursorrules-prompt-file/.cursorrules) - Cursor rules for React SPAs combining TanStack Router v1 and TanStack Query v5 for zero-loading-spinner routing and type-safe server state.
 
 ### Database and API
 
