@@ -210,6 +210,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Hosting and Deployments
 
 - [Netlify](./rules/netlify-official-cursorrules-prompt-file/.cursorrules) - Cursor rules for Netlify development with official integration.
+- [Vercel ](/rules/vercel-deployment-cursorrules-prompt-file/.cursorrules) - Cursor rules for Vercel deployment including serverless functions, Edge Runtime, middleware, caching, CI/CD, and production-ready configuration.
 
 ### Build Tools and Development
 
