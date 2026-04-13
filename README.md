@@ -92,6 +92,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Next.js (React, TypeScript)](./rules/nextjs-react-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with React and TypeScript integration.
 - [Next.js (SEO Development)](./rules/nextjs-seo-dev-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with SEO optimization.
 - [Next.js (Supabase Todo App)](./rules/nextjs-supabase-todo-app-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with Supabase integration for a Todo app.
+- [Next.js (TanStack Query v5)](./rules/nextjs-tanstack-query-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js App Router with TanStack Query v5, covering the HydrationBoundary pattern, Server Actions as mutations, and optimistic updates.
 - [Next.js (Tailwind, TypeScript)](./rules/nextjs-tailwind-typescript-apps-cursorrules-prompt/.cursorrules) - Cursor rules for Next.js development with Tailwind CSS and TypeScript integration.
 - [Next.js (TypeScript App)](./rules/nextjs-typescript-app-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with TypeScript integration.
 - [Next.js (TypeScript)](./rules/nextjs-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with TypeScript integration.
