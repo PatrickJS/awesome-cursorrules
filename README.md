@@ -119,6 +119,8 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Backend and Full-Stack
 
+- [CodeFlow](https://github.com/joinwell52-AI/codeflow-pwa) - Multi-role AI team orchestration for Cursor IDE. Desktop EXE patrols agents with OCR-based self-healing, phone PWA sends tasks via WebSocket relay. Includes .mdc rules for PM/DEV/QA/OPS roles and 3 team templates (dev/media/mvp). 87 person-days in 17 days. [Product page](https://joinwell52-ai.github.io/codeflow-pwa/promotion/) | [Methodology](https://joinwell52-ai.github.io/joinwell52/)
+
 - [Convex best practices](./rules/convex-cursorrules-prompt-file/.cursorrules) - Cursor rules for Convex development with best practices.
 - [Deno Integration](./rules/deno-integration-techniques-cursorrules-prompt-fil/.cursorrules) - Cursor rules for Deno development with integration techniques.
 - [Drupal 11](./rules/drupal-11-cursorrules-promt-file/.cursorrules) - Cursor rules for Drupal 11 development.
