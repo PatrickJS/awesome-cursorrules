@@ -116,7 +116,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Vue 3 (Nuxt 3 Development)](./rules/vue-3-nuxt-3-development-cursorrules-prompt-file/.cursorrules) - Cursor rules for Vue 3 development with Nuxt 3 integration.
 - [Vue 3 (Nuxt 3, TypeScript)](./rules/vue-3-nuxt-3-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Vue 3 development with TypeScript integration.
 - [Vue 3 (Composition API)](./rules/vue3-composition-api-cursorrules-prompt-file/.cursorrules) - Cursor rules for Vue 3 development with Composition API integration.
-- [Vue/Nuxt Full AI Stack](https://github.com/mvtandas/vue-claude-stack) - Complete AI coding setup for Vue 3 & Nuxt 3 — .cursorrules + CLAUDE.md + Copilot instructions + generation skills.
+- [Vue/Nuxt Full AI Stack](./rules/vue-claude-stack/.cursorrules) - Complete AI coding setup for Vue 3 & Nuxt 3 — .cursorrules + CLAUDE.md + Copilot instructions + generation skills.
 
 ### Backend and Full-Stack
 
