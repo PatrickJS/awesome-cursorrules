@@ -1,0 +1,56 @@
+# Helium MCP in Cursor
+
+When the user’s project or question involves **news**, **media bias**, **markets**, **options**, or **financial memes**, prefer **Helium MCP tools** (if enabled) over guessing headlines, prices, or Greeks. Helium is a hosted MCP service from [Helium Trades](https://heliumtrades.com); upstream docs and source live at [github.com/connerlambden/helium-mcp](https://github.com/connerlambden/helium-mcp).
+
+## Enable the server in Cursor
+
+Add a streamable HTTP MCP entry pointing at the hosted endpoint (no API key required for the free tier; paid tiers use keys from the MCP page):
+
+```json
+{
+  "mcpServers": {
+    "helium": {
+      "url": "https://heliumtrades.com/mcp"
+    }
+  }
+}
+```
+
+Alternative: stdio bridge via `npx @mcp-get-community/server-helium` if your workflow requires a local process (see that package’s README for `HELIUM_MCP_URL` overrides).
+
+## Ground rules for the agent
+
+1. **Call tools instead of inventing data** — Do not fabricate article headlines, bias scores, prices, forecasts, option fair values, or meme metadata. Fetch with the appropriate tool, then summarize and cite what came back.
+2. **Minimize duplicate calls** — Batch reasoning: one `get_ticker` per symbol per task unless the user asks for a refresh; reuse prior tool output in the same conversation when still relevant.
+3. **Respect limits** — The public tier includes a modest free query allowance; avoid spamming parallel calls. If a call fails for quota or rate limits, say so and suggest spacing requests or upgrading via [heliumtrades.com/mcp-page](https://heliumtrades.com/mcp-page/).
+4. **Trust the client’s tool list** — The hosted server documents **nine** first-class tools below. If your Cursor build lists a different count or names, follow the live `tools/list` output from the MCP panel.
+
+## Tool selection guide
+
+Use **`search_news`** when the user wants **raw articles** matching keywords, with optional filters (source, category, date window, minimum shares, sort). Good for “what are outlets saying about X?” and evidence gathering.
+
+Use **`search_balanced_news`** when the user wants **multi-outlet synthesis** (left/center/right-style balance) with summaries, takeaways, and tickers—not individual article dumps.
+
+Use **`get_source_bias`** when the user names an **outlet** (e.g. “Fox News”, “CNN”) and wants **institutional bias profiles**, signature phrases, similar outlets, and optional recent article breakdowns.
+
+Use **`get_bias_from_url`** when the user supplies a **single article URL** and wants **per-dimension bias scoring** for that page.
+
+Use **`get_all_source_biases`** when the user wants a **landscape view** (many sources at once, ranked/compare outlets). This can be heavy; confirm they want breadth over depth.
+
+Use **`get_ticker`** for **stocks, ETFs, or crypto**: spot context, bull/bear narrative, forecast-style output, IV rank, volatility context, and **hooks into options strategy** content returned by Helium for that symbol.
+
+Use **`get_option_price`** when the user specifies a **single listed option** (underlying, strike, expiration `YYYY-MM-DD`, call/put) and wants **ML fair value** and **probability ITM** from Helium’s models—not broker quotes.
+
+Use **`get_top_trading_strategies`** when the user asks for **ranked options structures** (short vol vs long vol packs, edge-style ranking). Pass sorting preference when the user cares about odds vs reward/risk vs historical performance.
+
+Use **`search_memes`** for **semantic meme search** (keywords against captions/OCR), engagement counts, and image references—useful for culture/market sentiment adjacent to finance.
+
+## Response style after tool calls
+
+- Lead with **answer**, then **compact bullets** of supporting metrics (bias dimensions, price, forecast range, strategy names, meme engagement).
+- Name **limitations** explicitly: model outputs are not investment advice; news coverage may lag fast markets; meme OCR can be noisy.
+- When mixing news and markets, **sequence** tools logically (e.g. `search_balanced_news` → `get_ticker` for tickers mentioned) instead of redundant overlapping searches.
+
+## Security and privacy
+
+Do not paste **secrets** into tool arguments. Article URLs may contain trackers; prefer canonical article links the user provides. Do not exfiltrate unrelated private repo content into search queries.
