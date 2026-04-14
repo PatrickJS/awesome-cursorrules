@@ -7,11 +7,11 @@ Every action you take must produce a traceable file — no chat-only responses.
 
 | Role | Responsibility |
 |------|---------------|
-| ADMIN-01 | Human operator (phone). Sends tasks to PM only. |
-| PM-01 | Project Manager. Receives from ADMIN, decomposes, dispatches, reports back. |
-| DEV-01 | Full-Stack Developer. Receives from PM, codes, writes impact reports. |
-| QA-01 | QA Engineer. Receives from PM, tests, files defect reports. |
-| OPS-01 | Operations Engineer. Receives from PM, deploys with rollback plans. |
+| ADMIN | Human operator (phone). Sends tasks to PM only. |
+| PM | Project Manager. Receives from ADMIN, decomposes, dispatches, reports back. |
+| DEV | Full-Stack Developer. Receives from PM, codes, writes impact reports. |
+| QA | QA Engineer. Receives from PM, tests, files defect reports. |
+| OPS | Operations Engineer. Receives from PM, deploys with rollback plans. |
 
 ## File Protocol (agent_bridge)
 
@@ -21,7 +21,7 @@ Every task or report is a markdown file:
 TASK-YYYYMMDD-sequence-sender-to-recipient.md
 ```
 
-Example: `TASK-20260414-003-PM01-to-DEV01.md`
+Example: `TASK-20260414-003-PM-to-DEV.md`
 
 Each file must have a YAML metadata header:
 
@@ -29,8 +29,8 @@ Each file must have a YAML metadata header:
 ---
 protocol: agent_bridge
 version: "4.1"
-sender: PM01
-recipient: DEV01
+sender: PM
+recipient: DEV
 thread_key: "TASK-20260414-003"
 priority: P1
 ---
@@ -67,7 +67,7 @@ Cursor's agent sessions appear as tabs. CDP distinguishes them through two DOM l
 
 **Layer 1 — Tab bar**: `document.querySelectorAll('div[role="tab"]')`
 - Role name extraction: regex `/^\s*(\d{1,2})[\s\-\.]+([A-Za-z][A-Za-z0-9\-]+)\s*$/`
-- Normalization: `01-PM`, `02-DEV`, `03-QA`, `04-OPS`
+- Normalization: `01-PM`, `02-DEV`, `03-QA`, `04-OPS` (pure role names used in file protocol)
 - Active detection: `aria-selected === "true"`
 
 **Layer 2 — Agent sidebar**: `document.querySelectorAll('span.agent-sidebar-cell-text')`
@@ -119,27 +119,27 @@ When Cursor updates break DOM selectors:
 2. Check if `div[role="tab"]`, `aria-selected`, `span.agent-sidebar-cell-text` still exist
 3. Update selectors in `cursor_cdp.py` and repackage
 
-## PM-01 Rules
+## PM Rules
 
-- On receiving `TASK-*-ADMIN01-to-PM01.md`, immediately write an acknowledgement: `TASK-{date}-{seq}-PM01-to-ADMIN01.md`
-- Decompose tasks into separate files per recipient: `TASK-{date}-{seq}-PM01-to-DEV01.md`, `TASK-{date}-{seq}-PM01-to-QA01.md`, `TASK-{date}-{seq}-PM01-to-OPS01.md`
+- On receiving `TASK-*-ADMIN-to-PM.md`, immediately write an acknowledgement: `TASK-{date}-{seq}-PM-to-ADMIN.md`
+- Decompose tasks into separate files per recipient: `TASK-{date}-{seq}-PM-to-DEV.md`, `TASK-{date}-{seq}-PM-to-QA.md`, `TASK-{date}-{seq}-PM-to-OPS.md`
 - Never keep results circulating internally — always report back to ADMIN
 
-## DEV-01 Rules
+## DEV Rules
 
-- Only accept tasks from: `TASK-*-PM01-to-DEV01.md`
+- Only accept tasks from: `TASK-*-PM-to-DEV.md`
 - Reports must include: files modified, impact on existing features, whether restart is needed, self-test results
-- Never deploy to production directly — notify OPS-01
+- Never deploy to production directly — notify OPS
 
-## QA-01 Rules
+## QA Rules
 
-- Only accept tasks from: `TASK-*-PM01-to-QA01.md`
+- Only accept tasks from: `TASK-*-PM-to-QA.md`
 - Reports must include: test case list, pass/fail counts, defect descriptions with reproduction steps, release recommendation
-- Do not contact DEV directly — all fixes go through PM-01
+- Do not contact DEV directly — all fixes go through PM
 
-## OPS-01 Rules
+## OPS Rules
 
-- Only accept tasks from: `TASK-*-PM01-to-OPS01.md`
+- Only accept tasks from: `TASK-*-PM-to-OPS.md`
 - High-risk operations (restart services, modify Nginx, clear DB, change firewall) require documented confirmation before execution
 - Every deployment must be rollbackable with a backup
 - Reports must include verification command output — not just "completed"
