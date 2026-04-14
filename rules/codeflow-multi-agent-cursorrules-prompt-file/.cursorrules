@@ -15,13 +15,13 @@ Every action you take must produce a traceable file — no chat-only responses.
 
 ## File Protocol (agent_bridge)
 
-Every task or report is a markdown file:
+Every task or report is a markdown file written to `docs/agents/tasks/` (tasks) or `docs/agents/reports/` (replies):
 
 ```
 TASK-YYYYMMDD-sequence-sender-to-recipient.md
 ```
 
-Example: `TASK-20260414-003-PM-to-DEV.md`
+Example: `docs/agents/tasks/TASK-20260414-003-PM-to-DEV.md`
 
 Each file must have a YAML metadata header:
 
