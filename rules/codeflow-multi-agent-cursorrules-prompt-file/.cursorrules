@@ -43,6 +43,82 @@ priority: P1
 - `P2` — Medium
 - `P3` — Low
 
+## CDP Patrol Engine (Chrome DevTools Protocol)
+
+CodeFlow uses Chrome DevTools Protocol to monitor and control Cursor IDE agents — replacing fragile OCR with precise DOM inspection.
+
+### Why CDP over OCR
+
+| Dimension | OCR | CDP |
+|-----------|-----|-----|
+| Mechanism | Screenshot → image recognition → guess | Direct DOM read → exact data |
+| Accuracy | ~90% (affected by font, DPI, theme) | 100% (reads DOM attributes directly) |
+| Latency | 300–800ms per scan | 10–15ms per scan |
+| Coordinates | OCR text bounding box (offset risk) | `getBoundingClientRect()` real-time |
+| Active detection | Color/brightness heuristics | `aria-selected="true"` exact match |
+| Busy detection | OCR guessing spinner characters | Stop button visibility check |
+| Click method | `pyautogui.click(x, y)` screen coords | `Input.dispatchMouseEvent` window coords |
+
+**Design principle**: CDP is primary, OCR is purely a fallback channel. When CDP works, OCR is never touched.
+
+### How CDP Identifies Agents
+
+Cursor's agent sessions appear as tabs. CDP distinguishes them through two DOM layers:
+
+**Layer 1 — Tab bar**: `document.querySelectorAll('div[role="tab"]')`
+- Role name extraction: regex `/^\s*(\d{1,2})[\s\-\.]+([A-Za-z][A-Za-z0-9\-]+)\s*$/`
+- Normalization: `01-PM`, `02-DEV`, `03-QA`, `04-OPS`
+- Active detection: `aria-selected === "true"`
+
+**Layer 2 — Agent sidebar**: `document.querySelectorAll('span.agent-sidebar-cell-text')`
+- Supplements roles not visible in tab bar (overflow)
+- Same regex extraction, deduplication via Set
+
+### Agent Switching via CDP
+
+Every switch uses real-time coordinates (never cached — tabs move with window resize, sidebar toggle, DPI changes):
+
+1. `_js_find_role_position`: Query tab bar first, then sidebar, get `getBoundingClientRect()` center
+2. `Input.dispatchMouseEvent`: mousePressed + mouseReleased (not `el.click()` — Electron/React may swallow synthetic events)
+3. Post-click verification: `scan()` after 500ms confirms `agentRole` matches target
+
+### Busy Detection (3-Layer CDP, then OCR Fallback)
+
+Before sending any message, CodeFlow checks if the target agent is working:
+
+1. **Stop button**: `button[aria-label="Cancel"]`, `button[aria-label="Stop"]` — visible = busy
+2. **Spinner animation**: `[class*="animate-spin"]` within Composer area only
+3. **Status text**: Elements matching `generating`, `thinking`, `planning`, `running terminal`, `applying patch`, `searching`
+
+If busy → defer nudge, put back in queue, retry next patrol cycle.
+
+### Message Sending via CDP
+
+1. Find textarea → `nativeInputValueSetter` to bypass React controlled component → trigger `input` event
+2. Fallback: `Input.insertText` (CDP native text insertion)
+3. Send: `Input.dispatchKeyEvent` (keyDown + keyUp, key="Enter")
+
+### Graceful Degradation
+
+```
+Any CDP step fails
+    ├─ Port unreachable     → entire cycle uses OCR
+    ├─ Connection dropped   → this cycle uses OCR, auto-reconnect next cycle
+    ├─ Role not found       → this role uses OCR
+    ├─ Click verify failed  → this role retries with OCR
+    └─ Send failed          → send step uses OCR
+OCR also fails?
+    → Retry queue, next patrol cycle
+    → Dashboard shows failure status, human can intervene
+```
+
+### Cursor Upgrade Resilience
+
+When Cursor updates break DOM selectors:
+1. Hit `/api/cdp-probe` to inspect new DOM structure
+2. Check if `div[role="tab"]`, `aria-selected`, `span.agent-sidebar-cell-text` still exist
+3. Update selectors in `cursor_cdp.py` and repackage
+
 ## PM-01 Rules
 
 - On receiving `TASK-*-ADMIN01-to-PM01.md`, immediately write an acknowledgement: `TASK-{date}-{seq}-PM01-to-ADMIN01.md`
