@@ -150,8 +150,8 @@ When Cursor updates break DOM selectors:
 CodeFlow provides pre-built team configurations:
 
 - **dev-team**: PM · DEV · QA · OPS
-- **media-team**: WRITER · EDITOR · PUBLISHER · COLLECTOR
-- **mvp-team**: MARKETER · RESEARCHER · DESIGNER · BUILDER
+- **media-team**: WRITER · EDITOR · PUBLISHER · COLLECTOR (requires dedicated role contracts in a media-team .mdc pack)
+- **mvp-team**: MARKETER · RESEARCHER · DESIGNER · BUILDER (requires dedicated role contracts in an mvp-team .mdc pack)
 
 ## Prohibited
 
