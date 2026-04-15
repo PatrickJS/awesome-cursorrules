@@ -213,6 +213,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Build Tools and Development
 
+- [Ankra CLI (Kubernetes Cluster Management)](./rules-new/ankra-cli.mdc) - Cursor rules for Ankra CLI development with Kubernetes cluster management integration.
 - [Chrome Extension (JavaScript/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules) - Cursor rules for Chrome extension development with JavaScript and TypeScript integration.
 - [Engineering Ticket Template](./rules/engineering-ticket-template-cursorrules-prompt-file/.cursorrules) - Cursor rules for engineering development with ticket template integration.
 - [GitHub Code Quality](./rules/github-code-quality-cursorrules-prompt-file/.cursorrules) - Cursor rules for GitHub development with code quality integration.
