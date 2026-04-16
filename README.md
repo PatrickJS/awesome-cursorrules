@@ -175,7 +175,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [JavaScript (Astro, Tailwind CSS)](./rules/javascript-astro-tailwind-css-cursorrules-prompt-f/.cursorrules) - Cursor rules for JavaScript development with Astro and Tailwind CSS integration.
 - [React (Styled Components)](./rules/react-styled-components-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with Styled Components integration.
 - [React (Chakra UI)](./rules/react-chakra-ui-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with Chakra UI integration.
-- [StyleSeed Design Engine (React, Tailwind v4, shadcn/ui)](./rules/styleseed-design-engine-cursorrules-prompt-file/.cursorrules) - Cursor rules extracted from the StyleSeed design engine. 10 Golden Rules, a font-size-by-context table, semantic color tokens, and Tailwind v4 anti-pattern guards that stop Cursor from generating ugly, generic UI and make it produce Toss / Stripe / Linear quality output.
+- [StyleSeed Design Engine (React, Tailwind v4, shadcn/ui)](./rules/styleseed-design-engine-cursorrules-prompt-file/.cursorrules) - Design rules that make Cursor produce professional React + Tailwind CSS UI.
 
 ### State Management
 
