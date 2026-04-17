@@ -285,8 +285,8 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Utilities
 
-- [contextarch](https://github.com/ksoventures/contextarch-cli) - CLI (`npx contextarch init`) that detects your project stack and generates `.cursorrules`, `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md` from a single interactive wizard. Reads `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, and more to pick opinionated rules tuned to your stack. Supports 30+ stacks including React, Next.js, Vue, SvelteKit, FastAPI, Django, Go, Rust, Electron. MIT licensed.
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
+- [contextarch](https://github.com/ksoventures/contextarch-cli) - CLI (`npx contextarch init`) that auto-detects your project stack from manifests (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, etc.) and generates `.cursorrules`, `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md` from a single wizard. Supports 30+ stacks; MIT licensed.
 
 ## Directories
 
