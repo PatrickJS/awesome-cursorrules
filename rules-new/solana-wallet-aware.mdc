@@ -1,0 +1,83 @@
+---
+description: Guidelines for writing Solana-native code with wallet-security awareness — three-tier wallet architecture, KMS envelope patterns, isolated signer subprocesses, MEV defense, oracle-gating, and Canadian NI 31-103 compliance hygiene. Derived from cipher-starter (https://github.com/cryptomotifs/cipher-starter).
+globs: **/*.{ts,tsx,js,jsx,py,rs}
+---
+
+# Solana Wallet-Aware Coding
+
+When writing Solana on-chain or off-chain code (bots, signers, signal engines, trading tools), apply these rules. Derived from [cipher-starter](https://github.com/cryptomotifs/cipher-starter) — a 150-page solo-dev playbook.
+
+## Wallet architecture
+
+- Never store a raw private key in `.env`, config files, or source. Encrypt with a passphrase-derived key (HKDF-SHA256 + AES-256-GCM, or `eth-account`'s scrypt V3 keystore, or `libsodium`'s sealed-box).
+- Use a three-tier wallet split at $1k+ scale: **hot** (bot-signing, ≤10% of AUM), **warm** (manual-top-up buffer on founder phone, ~30%), **cold** (hardware wallet or Squads 2-of-2 multisig, ~60%, untouchable ≥6 months).
+- Treat the hot wallet as burnable. Any key that ever touched a `.env` file on a dev machine is compromised forever.
+- Isolate the signer in a subprocess with only two capabilities: (a) receive a pre-built transaction over a local Unix socket / stdin, (b) return a signature. No network access, no program-scope escalation, explicit allowlist of program IDs.
+
+## MEV defense on Solana
+
+- Never broadcast swaps to the public mempool. Always use Jito bundles with a per-bundle tip (start at 10k lamports, scale with expected profit).
+- Add an oracle gate: reject a trade if Jupiter's quoted price is > 0.5% off Pyth's spot price. Update threshold dynamically with 1-minute realized volatility.
+- Maintain an illiquidity blocklist: skip any token where the deepest pool has < $1M TVL (use GeckoTerminal or Birdeye API to check).
+- For limit-style orders, prefer Jupiter's limit-order program (built-in MEV protection) over composing your own.
+
+## Program-ID allowlist pattern
+
+When building a signer, hard-code the list of program IDs your bot may invoke. Reject any transaction whose instructions touch a program outside the allowlist. At minimum for a Solana trading bot:
+
+```
+const ALLOWED_PROGRAMS = new Set([
+  "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",  // Jupiter v6
+  "srmqPvymJeFKQ4zGQed1GFppgkRHL9kaELCbyksJtPX",  // OpenBook v2
+  "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",  // SPL Token
+  "ComputeBudget111111111111111111111111111111",  // Compute budget
+  // add your DEX IDs here — NEVER include unknown programs
+]);
+```
+
+## Transaction-safety invariants
+
+Before signing ANY transaction:
+- Deserialize + inspect every instruction. No opaque "signTransaction(bytes)" without parsing.
+- Enforce a max SOL outflow per transaction AND per rolling 24h window (spend-cap circuit breaker).
+- Require a freshness check on the blockhash (slot age < 150 or transaction will likely expire).
+- Compute budget ≤ 200k CU default; require explicit opt-in for higher.
+
+## Canadian NI 31-103 compliance (if selling signals)
+
+- Never use the word "recommend" in any user-facing output. Use "quantitative research" or "market-data analysis."
+- Never personalize output to a user's finances, risk tolerance, or account size.
+- Never custody user funds. Never co-sign user wallets. Never offer copy-trading.
+- These four rules delineate the boundary between the **NI 31-103 research-content exemption** (legal without registration) and triggering Portfolio Manager + Investment Fund Manager + MSB registration (~CAD $500k/yr combined compliance cost).
+
+## SR&ED R&D credit (Canadian solo devs)
+
+Start an R&D logbook on Day 1 of any Solana build. Every design doc, every commit message that references a "technical uncertainty," every rejected-architecture write-up counts as evidence for a 35–43% refundable SR&ED claim on your imputed founder-salary rate. For 4-6 months of solo work a plausible claim is CAD $3k–$10k as a sole proprietor.
+
+## Paper-trade gate (before live capital)
+
+Never deploy a new strategy to live mainnet capital without 30 consecutive days of paper trading on real Jupiter/Pyth quotes (NOT backtest). Gate metrics:
+
+- Sharpe ≥ 0.8
+- Max drawdown < 12%
+- All circuit breakers + kill-switch fault-injection tests pass
+- ≥ 72h of consecutive uptime on the deployed host
+
+If any gate fails, extend paper — do not force-go-live.
+
+## Free-tier infrastructure stack
+
+- Host: Oracle Cloud Always Free (4 ARM cores, 24 GB RAM, 200 GB storage, free forever)
+- RPC: Helius free tier (100k req/day)
+- DB: SQLite WAL locally → Neon Postgres free tier (500 MB) once persistence matters
+- Monitoring: Grafana Cloud Free (metrics + logs + traces), Sentry Free (errors), Healthchecks.io (cron heartbeats), BetterStack (uptime pings)
+- Deploy: Vercel Hobby for any Next.js frontend, Cloudflare Tunnel for the backend (no open ports)
+
+Total runtime cost at $0 P&L = $0/month. At $5k P&L = ≤ $45/month.
+
+## Resources
+
+- Free 150-page playbook: https://github.com/cryptomotifs/cipher-starter
+- Live x402 paid-per-request expansion chapters: https://cipher-x402.vercel.app
+- 10 findings from the solo-dev build: https://dev.to/sai_93caeceb4f6a4d9969910/i-built-a-solana-signal-engine-solo-heres-the-150-page-playbook-246k
+- Three-hour x402 paywall writeup: https://dev.to/sai_93caeceb4f6a4d9969910/i-shipped-an-x402-ai-crawler-paywall-in-3-hours-on-vercels-free-tier-272m
