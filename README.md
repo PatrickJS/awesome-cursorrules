@@ -291,6 +291,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
+- [cursor-product-kit](https://github.com/Natalee21/cursor-product-kit) - Rules, skills and global context for product managers, marketers and vibe-coders. Includes 8 rules, 12 skills and ready mcp.json.
 
 ## How to Use
 
