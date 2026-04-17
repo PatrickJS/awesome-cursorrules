@@ -28,7 +28,7 @@ When building a signer, hard-code the list of program IDs your bot may invoke. R
 ```
 const ALLOWED_PROGRAMS = new Set([
   "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",  // Jupiter v6
-  "srmqPvymJeFKQ4zGQed1GFppgkRHL9kaELCbyksJtPX",  // OpenBook v2
+  "opnb2LAfJYbRMAHHvqjCwQxanZn7ReEHp1k81EohpZb",  // OpenBook v2
   "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",  // SPL Token
   "ComputeBudget111111111111111111111111111111",  // Compute budget
   // add your DEX IDs here — NEVER include unknown programs
