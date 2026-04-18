@@ -288,10 +288,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
 ## Directories
-
-- [CursorList](https://cursorlist.com)
-- [CursorDirectory](https://cursor.directory/)
 - [cursor-product-kit](https://github.com/Natalee21/cursor-product-kit) - Rules, skills and global context for product managers, marketers and vibe-coders. Includes 8 rules, 12 skills and ready mcp.json.
+- [CursorDirectory](https://cursor.directory/)
+- [CursorList](https://cursorlist.com)
 
 ## How to Use
 
