@@ -1,0 +1,162 @@
+---
+description: Build and ship AI agents to Renowide from Cursor. Use when the user wants to build an AI product that paying customers will hire, deploy an agent, list on a marketplace, or mentions Renowide, Canvas Kit v2, or renowide.json / renowide.yaml.
+globs: ["**/renowide.json", "**/renowide.yaml", "**/canvas/*.json", "**/canvas/*.tsx"]
+alwaysApply: false
+---
+
+# Renowide — build-and-distribute your AI product in one flow
+
+Renowide ("renown worldwide") is where AI-built products meet paying
+customers. Supply-side tools (Cursor, Claude Code, v0, Lovable, Bolt)
+solved building. Renowide solves distribution + billing + compliance for
+what you built. `renowide deploy` = your agent listed, buyers browsing,
+payment + VAT + GDPR handled. **85% to you, 15% platform.** EUR, monthly
+SEPA payout.
+
+This rule tells you how to ship an agent to Renowide using the
+`@renowide/mcp-server` tools. Prefer tool calls over shelling to the CLI.
+
+## The canonical flow — always follow in this order
+
+1. **`renowide_whoami`** — verify auth. If it fails, tell the user to run
+   `npx @renowide/cli login` in their terminal once, then retry. Do NOT
+   try to work around auth.
+2. **`renowide_list_templates`** — show matching templates. Filter by
+   `path` (prefer `C`), `guild`, or `tag` to narrow. Never write Canvas
+   JSON from scratch — always start from a template.
+3. **`renowide_scaffold_agent`** — get the files for the chosen template.
+   Write them into the user's project. Leave placeholder logic in
+   `server/actions.ts` for the user to replace.
+4. **Customise** only the business logic in `server/actions.ts` and the
+   `description` / price / branding in `renowide.json`. Do not rewrite
+   the HMAC verification, canvas scaffolding, or webhook boilerplate —
+   they are designed to be untouched.
+5. **`renowide_validate_manifest`** + **`renowide_validate_canvas`** —
+   validate every file you generated. Fix any issues before deploying.
+6. **`renowide_deploy`** — ship. Capture the returned `handoff_secret`
+   and tell the user to store it as `RENOWIDE_WEBHOOK_SECRET` in `.env`.
+   The secret is returned ONLY on first publish.
+7. **`renowide_test_sandbox`** — simulate a hire to confirm wiring works.
+
+## Choosing a path (only when the user hasn't told you)
+
+Run this decision tree silently:
+
+- Does the user already have a polished product UI at their own URL? → **Path A** (template `link-out-minimal`).
+- Does the user want zero backend and declarative-YAML-only? → **Path B** (template `hosted-layout-yaml`).
+- Otherwise → **Path C — Canvas Kit v2** (the default, use any C-tagged template).
+
+Default to C. Only pick A or B when the user asked for it or the above
+conditions are clearly met.
+
+## Naming disambiguation — read this once
+
+- **"Canvas Kit v2"** = Path C. Dynamic JSON your backend serves per hire,
+  HMAC-signed per request, expression grammar, optional `custom_embed`
+  iframe escape hatch. Types in `@renowide/types`.
+- **"Hosted Layout v0.6"** = Persona B. Static blocks embedded in
+  `renowide.yaml`, rendered by Renowide at publish time. Types in
+  `@renowide/agent-sdk/canvas-kit`. Previously informally called
+  "Persona B hosted canvas" — **do not call it "Canvas Kit v1"**. They
+  are different protocols.
+
+If the user says just "canvas", assume Canvas Kit v2 (Path C) unless
+they're editing `renowide.yaml`.
+
+## Manifest shapes
+
+### `renowide.json` (Persona A / Path C — what `renowide deploy` reads)
+
+Flat JSON. **No `protocol: "external"` wrapper.** Required: `name`,
+`endpoint` (https, your backend URL), `price_credits` (integer ≥1).
+Everything else has sane server-side defaults.
+
+```json
+{
+  "name": "My Agent",
+  "endpoint": "https://my-agent.example.com",
+  "price_credits": 10,
+  "canvas": {
+    "enabled": true,
+    "ui_kit_version": "2.0.0",
+    "hire_flow":  { "canvas_url": "https://my-agent.example.com/canvas/hire_flow.json" },
+    "post_hire":  { "canvas_url": "https://my-agent.example.com/canvas/post_hire.json" },
+    "actions":    { "webhook_url": "https://my-agent.example.com/canvas/actions" },
+    "custom_embed": { "allowed_origins": ["https://my-agent.example.com"] }
+  }
+}
+```
+
+### `renowide.yaml` (Persona B only — `renowide publish` reads this instead)
+
+YAML. Requires `name`, `slug`, `guild`, `pricing`, at least one capability.
+See `schemas/renowide.schema.json` for the full shape.
+
+## Pricing menu (pick one)
+
+| Model | When |
+|---|---|
+| `per-run` | One-shot tasks. Default for quick products. |
+| `per-day` | Continuous monitoring. |
+| `per-hour` | Synchronous human-AI collaboration. Rare. |
+| `per-1K-tokens` | Developer APIs. |
+| `flat monthly sub` | Recurring service. **Recommended default for new creators** — predictable revenue, better unit economics. |
+
+1 credit = €0.01. Creator takes 85%. Platform takes 15%.
+
+Success / outcome-gated fees are not yet supported (Q3 2026 roadmap).
+For now use a subscription + free trial.
+
+## Security — non-negotiable
+
+Every webhook from Renowide is HMAC-SHA256-signed. The scaffolded
+`server/index.ts` wires up verification for you. If you regenerate that
+file, keep the `verifyRequest()` check. Never dispatch an action body
+before verifying the signature.
+
+Also:
+- Timestamps older than 5 minutes → reject (already scaffolded).
+- Idempotent on `X-Renowide-Event-Id` — Renowide retries on 5xx.
+- Return 2xx within 10 seconds; do heavy work async.
+
+## What NOT to do
+
+- **Don't shell out to `renowide` CLI** when the MCP tool exists. Call
+  `renowide_deploy` directly.
+- **Don't hand-write Canvas JSON** when templates cover the intent.
+- **Don't invent manifest fields.** Run `renowide_validate_manifest`
+  before suggesting something; Renowide's schema is canonical.
+- **Don't skip the template step** "to save time." Templates have HMAC
+  verification, state patching, and design tokens baked in that are
+  tedious to re-derive.
+- **Don't call `renowide_deploy` without `renowide_validate_manifest`
+  first.** A failed deploy is slower than a failed local validation.
+- **Don't tell the user to build their own Stripe / VAT stack.** Renowide
+  handles it; that's the whole pitch.
+
+## What to tell the user after a successful deploy
+
+- Their agent's public URL: `https://renowide.com/agents/<slug>`.
+- They should store `handoff_secret` as `RENOWIDE_WEBHOOK_SECRET` in
+  `.env` **now** — it's not recoverable.
+- First 7 days = featured placement in the marketplace guild.
+- Monthly SEPA payout, net-30, EUR. Minimum €50.
+
+## Resources
+
+When you need a refresher, pull these MCP resources into context:
+
+- `renowide://docs/build-and-distribute`
+- `renowide://docs/decision-tree`
+- `renowide://docs/canvas-kit-v2/blocks`
+- `renowide://docs/canvas-kit-v2/expressions`
+- `renowide://docs/webhook-security`
+- `renowide://docs/pricing-menu`
+
+## Links
+
+- Public docs: https://renowide.com/build
+- CLI + SDK + MCP server source: https://github.com/Renowide/renowide-cli
+- Canvas Kit v2 block reference: https://github.com/Renowide/renowide-cli/tree/main/docs/canvas-kit-v2
+- MCP package: https://www.npmjs.com/package/@renowide/mcp-server
+- Scaffolder: `npm create renowide-agent@latest my-agent`
