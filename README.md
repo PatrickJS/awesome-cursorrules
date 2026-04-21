@@ -286,6 +286,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Utilities
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
+- [concise](https://github.com/Cpp1022/concise) - Chinese-first concise mode. Ships a `.cursor/rules/concise.mdc` that compresses Cursor agent replies on two layers (expression + content) with auto-relax for safety, multi-step, and parameter-heavy cases. Supports `/concise`, `/concise lite`, `/concise ultra`, and `stop concise`. MIT, no telemetry.
 
 ## Directories
 
