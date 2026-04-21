@@ -9,8 +9,9 @@ in one flow** using the `@renowide/mcp-server` MCP tools.
 [Renowide](https://renowide.com) ("renown worldwide") is the
 distribution counterpart to AI coding assistants: Cursor builds the
 agent, Renowide gives it paying customers — no SEO, no ads, no
-landing-page marketing. 85% revenue to the creator, 15% platform.
-Billing, VAT, GDPR, HMAC-signed webhook delivery all handled.
+landing-page marketing. **You set your own price. Renowide charges a 15%
+commission on each hire** — that's the entire platform fee. Billing, VAT,
+GDPR, HMAC-signed webhook delivery all handled. EUR, monthly SEPA payout.
 
 ## What this rule does
 
@@ -20,7 +21,7 @@ Renowide deploy flow:
 1. **`renowide_whoami`** — verify auth.
 2. **`renowide_list_templates`** — pick a starter template.
 3. **`renowide_scaffold_agent`** — generate a working agent
-   (Canvas Kit v2 by default; link-out / hosted-layout available).
+ (Canvas Kit v2 by default; link-out / hosted-layout available).
 4. Customise business logic only (`server/actions.ts`).
 5. **`renowide_validate_manifest`** + **`renowide_validate_canvas`**.
 6. **`renowide_deploy`** — ship.
@@ -29,11 +30,12 @@ Renowide deploy flow:
 The rule also covers:
 
 - Path A (link-out) vs Path B (Hosted Layout v0.6) vs Path C
-  (Canvas Kit v2 — default) decision tree.
-- Flat `renowide.json` manifest shape + pricing menu.
+ (Canvas Kit v2 — default) decision tree.
+- Flat `renowide.json` manifest shape + pricing menu (you set the
+ price — per-run, per-day, per-hour, per-1K-tokens, or flat monthly).
 - HMAC-SHA256 webhook security.
 - Common mistakes to avoid (hand-writing Canvas JSON, skipping
-  validation, rewriting the HMAC middleware).
+ validation, rewriting the HMAC middleware).
 
 ## Installation
 

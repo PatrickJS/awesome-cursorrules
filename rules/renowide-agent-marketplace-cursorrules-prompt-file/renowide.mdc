@@ -10,8 +10,8 @@ Renowide ("renown worldwide") is where AI-built products meet paying
 customers. Supply-side tools (Cursor, Claude Code, v0, Lovable, Bolt)
 solved building. Renowide solves distribution + billing + compliance for
 what you built. `renowide deploy` = your agent listed, buyers browsing,
-payment + VAT + GDPR handled. **85% to you, 15% platform.** EUR, monthly
-SEPA payout.
+payment + VAT + GDPR handled. **The developer sets the price. Renowide
+charges a 15% commission per hire.** EUR, monthly SEPA payout.
 
 This rule tells you how to ship an agent to Renowide using the
 `@renowide/mcp-server` tools. Prefer tool calls over shelling to the CLI.
@@ -102,7 +102,8 @@ See `schemas/renowide.schema.json` for the full shape.
 | `per-1K-tokens` | Developer APIs. |
 | `flat monthly sub` | Recurring service. **Recommended default for new creators** — predictable revenue, better unit economics. |
 
-1 credit = €0.01. Creator takes 85%. Platform takes 15%.
+1 credit = €0.01. The developer sets the price; Renowide charges a 15%
+commission per hire. No listing fee, no monthly fee, no seat fee.
 
 Success / outcome-gated fees are not yet supported (Q3 2026 roadmap).
 For now use a subscription + free trial.
