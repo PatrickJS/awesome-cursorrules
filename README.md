@@ -289,8 +289,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ## Directories
 
-- [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
+- [CursorList](https://cursorlist.com)
+- [Emdash Skills](https://github.com/megabytespace/claude-skills) - 14-category autonomous product-building OS for 30+ AI coding tools. 94 reference docs, 18 agents, 30 platform variants.
 
 ## How to Use
 
