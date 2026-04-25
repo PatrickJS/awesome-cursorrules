@@ -1,0 +1,72 @@
+# EnigmAgent — Local Encrypted Secrets Vault Rules
+
+You have access to the **enigmagent-mcp** Model Context Protocol server, which provides a local encrypted vault on the user's machine. Vault data is encrypted with AES-256-GCM using an Argon2id-derived key, and never leaves the local filesystem.
+
+## Hard Rules
+
+1. **Never paste secrets into chat or files.** API keys, access tokens, recovery phrases, passwords, private keys, signing keys, JWTs, OAuth refresh tokens, database connection strings with credentials, and any value the user labels "secret", "private", or "sensitive" must go through the vault — never inlined, never echoed back, never written into source files.
+
+2. **Never log, print, or summarize a vault value back to the user.** When you retrieve a secret, use it for the immediate operation only. If you need to confirm the operation succeeded, say "retrieved" — do not display the value.
+
+3. **Detect-and-redirect.** If the user pastes a credential into the conversation, refuse to commit it. Suggest moving it into the vault first:
+   > "I noticed an API key in your message. Let's store it in EnigmAgent instead — that way it stays encrypted on your machine and out of chat history. Should I save it as `<key-name>`?"
+
+4. **No environment-variable substitution from chat.** Never write `process.env.X = "<actual-value>"` or shell-export a literal secret. Always reference it indirectly: read from the vault at runtime, or load through `dotenv` from a gitignored `.env`.
+
+5. **`.gitignore` discipline.** Before any commit, verify `.env`, `.env.local`, `*.pem`, `*.key`, `id_rsa`, and `~/.enigmagent/` are gitignored. Add them if missing.
+
+## Workflow Patterns
+
+### Storing a new secret
+When the user says "save this key" / "remember this credential" / "store this token":
+1. Ask for a stable name (kebab-case): `openai-prod-key`, `stripe-test-secret`, etc.
+2. Call the EnigmAgent MCP `set` tool with `{ name, value }`.
+3. Confirm with name only: "Saved as `openai-prod-key`."
+
+### Reading a secret in code
+When generating code that needs a credential:
+- Prefer reading from `process.env` / `os.environ` populated via dotenv at startup.
+- For agent workflows, call the EnigmAgent `get` tool inline rather than embedding the value.
+- Never cache the retrieved value in a file the user has not explicitly asked you to write.
+
+### Listing or rotating
+- The `list` tool returns names only — safe to display.
+- For rotation, call `set` with the same name and the new value. Suggest deleting the old credential at the source provider.
+
+## Detection Heuristics
+
+Treat any of the following as a "this should be in the vault" trigger:
+
+- Strings matching `sk-[A-Za-z0-9]{20,}`, `ghp_[A-Za-z0-9]{36,}`, `xox[bp]-[A-Za-z0-9-]+`, `AIza[0-9A-Za-z_-]{35}`, `AKIA[0-9A-Z]{16}`
+- 12 or 24 word phrases that look like BIP-39 mnemonics
+- PEM blocks (`-----BEGIN ... PRIVATE KEY-----`)
+- Connection strings with `:password@`
+- Anything the user prefixes with "secret:", "do not commit:", or "private:"
+
+When detected: stop, suggest vault storage, do not write the literal into any file.
+
+## Setup
+
+If the vault is not yet initialized for the project, run once:
+
+```bash
+npx enigmagent-mcp init
+```
+
+To use it as an MCP server in Claude Code or Cursor:
+
+```jsonc
+// ~/.cursor/mcp.json or .mcp.json
+{
+  "mcpServers": {
+    "enigmagent": {
+      "command": "npx",
+      "args": ["-y", "enigmagent-mcp"]
+    }
+  }
+}
+```
+
+Repository: https://github.com/Agnuxo1/enigmagent-mcp
+npm: https://www.npmjs.com/package/enigmagent-mcp
+License: MIT

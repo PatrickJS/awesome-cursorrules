@@ -277,6 +277,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Unity (C#)](./rules/unity-cursor-ai-c-cursorrules-prompt-file/.cursorrules) - Cursor rules for Unity development with C# integration.
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules) - Cursor rules for web app development with optimization integration.
 - [Code Pair Interviews](./rules/code-pair-interviews/.cursorrules) - Cursor rules for code pair interviews development with integration.
+- [EnigmAgent MCP — Local Secrets Vault](./rules/enigmagent-mcp-secrets-cursorrules-prompt-file/.cursorrules) - Cursor rules that teach the agent to route every credential through a local AES-256-GCM encrypted vault (enigmagent-mcp) instead of pasting secrets into chat or source files.
 
 ### Documentation
 
