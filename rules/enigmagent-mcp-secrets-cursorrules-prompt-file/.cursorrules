@@ -78,15 +78,17 @@ To use it as an MCP server in Claude Code or Cursor, add the following to `~/.cu
 }
 ```
 
-A concrete cross-platform example using the default vault location:
+**Important:** `~` and `%USERPROFILE%` are **not** expanded when the MCP host spawns the process — the string is passed verbatim as `argv` and Node.js `fs` does not perform tilde or environment-variable expansion. Always supply a real absolute path. Cross-platform examples:
 
 ```jsonc
-// macOS / Linux
-{ "mcpServers": { "enigmagent": { "command": "npx", "args": ["-y", "enigmagent-mcp", "--vault", "~/.enigmagent/vault.json"] } } }
+// macOS / Linux — replace /Users/<you> with your actual home directory
+{ "mcpServers": { "enigmagent": { "command": "npx", "args": ["-y", "enigmagent-mcp", "--vault", "/Users/<you>/.enigmagent/vault.json"] } } }
 
-// Windows
-{ "mcpServers": { "enigmagent": { "command": "npx", "args": ["-y", "enigmagent-mcp", "--vault", "%USERPROFILE%\.enigmagent\vault.json"] } } }
+// Windows — double backslashes required for valid JSON
+{ "mcpServers": { "enigmagent": { "command": "npx", "args": ["-y", "enigmagent-mcp", "--vault", "C:\\Users\\<you>\\.enigmagent\\vault.json"] } } }
 ```
+
+Alternatively, set the **`ENIGMAGENT_VAULT`** environment variable in the MCP host's env block to avoid hard-coding the path in the config file.
 
 Repository: https://github.com/Agnuxo1/enigmagent-mcp
 npm: https://www.npmjs.com/package/enigmagent-mcp
