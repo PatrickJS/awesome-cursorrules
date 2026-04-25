@@ -1,0 +1,95 @@
+# EnigmAgent — Local Encrypted Secrets Vault Rules
+
+You have access to the **enigmagent-mcp** Model Context Protocol server, which provides a local encrypted vault on the user's machine. Vault data is encrypted with AES-256-GCM using an Argon2id-derived key, and never leaves the local filesystem.
+
+## Hard Rules
+
+1. **Never paste secrets into chat or files.** API keys, access tokens, recovery phrases, passwords, private keys, signing keys, JWTs, OAuth refresh tokens, database connection strings with credentials, and any value the user labels "secret", "private", or "sensitive" must go through the vault — never inlined, never echoed back, never written into source files.
+
+2. **Never log, print, or summarize a vault value back to the user.** When you retrieve a secret, use it for the immediate operation only. If you need to confirm the operation succeeded, say "retrieved" — do not display the value.
+
+3. **Detect-and-redirect.** If the user pastes a credential into the conversation, refuse to commit it. Suggest moving it into the vault first:
+   > "I noticed an API key in your message. Let's store it in EnigmAgent instead — that way it stays encrypted on your machine and out of chat history. Should I save it as `<key-name>`?"
+
+4. **No environment-variable substitution from chat.** Never write `process.env.X = "<actual-value>"` or shell-export a literal secret. Always reference it indirectly: read from the vault at runtime, or load through `dotenv` from a gitignored `.env`.
+
+5. **`.gitignore` discipline — repository level.** Before any commit, verify the project's `.gitignore` lists at minimum: `.env`, `.env.local`, `*.pem`, `*.key`, `id_rsa`. Add them if missing.
+
+6. **System-level secrets directory — separate concern.** The vault file itself (default `~/.enigmagent/`) lives outside the repository. It is **not** a candidate for the project `.gitignore` because the directory is never inside the repo to begin with. Protect it via the user's global gitignore (`git config --global core.excludesfile`) or by simply keeping the path outside any tracked working tree. If you ever see `~/.enigmagent/` proposed as an entry in a project `.gitignore`, that's a hint the user has misplaced their vault — flag it.
+
+## Workflow Patterns
+
+### Storing a new secret
+When the user says "save this key" / "remember this credential" / "store this token":
+1. Ask for a stable name (kebab-case): `openai-prod-key`, `stripe-test-secret`, etc.
+2. Call the EnigmAgent MCP `set` tool with `{ name, value }`.
+3. Confirm with name only: "Saved as `openai-prod-key`."
+
+### Reading a secret in code
+When generating code that needs a credential:
+- Prefer reading from `process.env` / `os.environ` populated via dotenv at startup.
+- For agent workflows, call the EnigmAgent `get` tool inline rather than embedding the value.
+- Never cache the retrieved value in a file the user has not explicitly asked you to write.
+
+### Listing or rotating
+- The `list` tool returns names only — safe to display.
+- For rotation, call `set` with the same name and the new value. Suggest deleting the old credential at the source provider.
+
+## Detection Heuristics
+
+The patterns below are **best-effort triggers, not exhaustive rules** — apply judgment beyond the listed examples and err on the side of pausing when uncertain.
+
+Treat any of the following as a "this should be in the vault" signal:
+
+- **Common API key shapes** (unanchored substring matches — intentionally broad):
+  - OpenAI: `sk-[A-Za-z0-9]{20,}` · Anthropic: `sk-ant-[A-Za-z0-9-]{20,}`
+  - GitHub classic PAT: `ghp_[A-Za-z0-9]{36,}` · Fine-grained PAT: `github_pat_[A-Za-z0-9_]{80,}`
+  - Slack bot/user: `xox[bpas]-[A-Za-z0-9-]+` (includes `xoxa-`, `xoxs-`)
+  - Stripe live key/restricted: `sk_live_[A-Za-z0-9]{20,}` / `rk_live_[A-Za-z0-9]{20,}`
+  - Google API key: `AIza[0-9A-Za-z_-]{35}`
+  - AWS access key: `AKIA[0-9A-Z]{16}`
+- **JWT tokens** — strings starting with `eyJ` that decode to a JSON header
+- **12 or 24 word phrases** that look like BIP-39 mnemonics
+- **PEM blocks** — `-----BEGIN ... PRIVATE KEY-----` or `-----BEGIN CERTIFICATE-----`
+- **Credential connection strings** — pattern `://[^\s:]+:[^\s@]+@` (catches `postgres://user:pass@host`, `mongodb://user:pass@host`, etc.)
+- **Explicit labels** — anything the user prefixes with `"secret:"`, `"do not commit:"`, or `"private:"`
+
+When detected: stop, suggest vault storage, do not write the literal into any file.
+
+## Setup
+
+If the vault is not yet initialized for the project, run once:
+
+```bash
+npx enigmagent-mcp init
+```
+
+To use it as an MCP server in Claude Code or Cursor, add the following to `~/.cursor/mcp.json` (or `.mcp.json` in your project root). **The `--vault` argument is required** — replace the path with the absolute path to your encrypted vault file:
+
+```jsonc
+// ~/.cursor/mcp.json or .mcp.json
+{
+  "mcpServers": {
+    "enigmagent": {
+      "command": "npx",
+      "args": ["-y", "enigmagent-mcp", "--vault", "/absolute/path/to/my.vault.json"]
+    }
+  }
+}
+```
+
+**Important:** `~` and `%USERPROFILE%` are **not** expanded when the MCP host spawns the process — the string is passed verbatim as `argv` and Node.js `fs` does not perform tilde or environment-variable expansion. Always supply a real absolute path. Cross-platform examples:
+
+```jsonc
+// macOS / Linux — replace /Users/<you> with your actual home directory
+{ "mcpServers": { "enigmagent": { "command": "npx", "args": ["-y", "enigmagent-mcp", "--vault", "/Users/<you>/.enigmagent/vault.json"] } } }
+
+// Windows — double backslashes required for valid JSON
+{ "mcpServers": { "enigmagent": { "command": "npx", "args": ["-y", "enigmagent-mcp", "--vault", "C:\\Users\\<you>\\.enigmagent\\vault.json"] } } }
+```
+
+Alternatively, set the **`ENIGMAGENT_VAULT`** environment variable in the MCP host's env block to avoid hard-coding the path in the config file.
+
+Repository: https://github.com/Agnuxo1/enigmagent-mcp
+npm: https://www.npmjs.com/package/enigmagent-mcp
+License: MIT
