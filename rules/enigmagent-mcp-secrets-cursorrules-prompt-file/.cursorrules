@@ -37,13 +37,22 @@ When generating code that needs a credential:
 
 ## Detection Heuristics
 
-Treat any of the following as a "this should be in the vault" trigger:
+The patterns below are **best-effort triggers, not exhaustive rules** — apply judgment beyond the listed examples and err on the side of pausing when uncertain.
 
-- Strings matching `sk-[A-Za-z0-9]{20,}`, `ghp_[A-Za-z0-9]{36,}`, `xox[bp]-[A-Za-z0-9-]+`, `AIza[0-9A-Za-z_-]{35}`, `AKIA[0-9A-Z]{16}`
-- 12 or 24 word phrases that look like BIP-39 mnemonics
-- PEM blocks (`-----BEGIN ... PRIVATE KEY-----`)
-- Connection strings with `:password@`
-- Anything the user prefixes with "secret:", "do not commit:", or "private:"
+Treat any of the following as a "this should be in the vault" signal:
+
+- **Common API key shapes** (unanchored substring matches — intentionally broad):
+  - OpenAI: `sk-[A-Za-z0-9]{20,}` · Anthropic: `sk-ant-[A-Za-z0-9-]{20,}`
+  - GitHub classic PAT: `ghp_[A-Za-z0-9]{36,}` · Fine-grained PAT: `github_pat_[A-Za-z0-9_]{80,}`
+  - Slack bot/user: `xox[bpas]-[A-Za-z0-9-]+` (includes `xoxa-`, `xoxs-`)
+  - Stripe live key/restricted: `sk_live_[A-Za-z0-9]{20,}` / `rk_live_[A-Za-z0-9]{20,}`
+  - Google API key: `AIza[0-9A-Za-z_-]{35}`
+  - AWS access key: `AKIA[0-9A-Z]{16}`
+- **JWT tokens** — strings starting with `eyJ` that decode to a JSON header
+- **12 or 24 word phrases** that look like BIP-39 mnemonics
+- **PEM blocks** — `-----BEGIN ... PRIVATE KEY-----` or `-----BEGIN CERTIFICATE-----`
+- **Credential connection strings** — pattern `://[^\s:]+:[^\s@]+@` (catches `postgres://user:pass@host`, `mongodb://user:pass@host`, etc.)
+- **Explicit labels** — anything the user prefixes with `"secret:"`, `"do not commit:"`, or `"private:"`
 
 When detected: stop, suggest vault storage, do not write the literal into any file.
 
@@ -55,7 +64,7 @@ If the vault is not yet initialized for the project, run once:
 npx enigmagent-mcp init
 ```
 
-To use it as an MCP server in Claude Code or Cursor:
+To use it as an MCP server in Claude Code or Cursor, add the following to `~/.cursor/mcp.json` (or `.mcp.json` in your project root). **The `--vault` argument is required** — replace the path with the absolute path to your encrypted vault file:
 
 ```jsonc
 // ~/.cursor/mcp.json or .mcp.json
@@ -63,10 +72,20 @@ To use it as an MCP server in Claude Code or Cursor:
   "mcpServers": {
     "enigmagent": {
       "command": "npx",
-      "args": ["-y", "enigmagent-mcp"]
+      "args": ["-y", "enigmagent-mcp", "--vault", "/absolute/path/to/my.vault.json"]
     }
   }
 }
+```
+
+A concrete cross-platform example using the default vault location:
+
+```jsonc
+// macOS / Linux
+{ "mcpServers": { "enigmagent": { "command": "npx", "args": ["-y", "enigmagent-mcp", "--vault", "~/.enigmagent/vault.json"] } } }
+
+// Windows
+{ "mcpServers": { "enigmagent": { "command": "npx", "args": ["-y", "enigmagent-mcp", "--vault", "%USERPROFILE%\.enigmagent\vault.json"] } } }
 ```
 
 Repository: https://github.com/Agnuxo1/enigmagent-mcp
