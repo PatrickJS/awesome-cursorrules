@@ -13,7 +13,9 @@ You have access to the **enigmagent-mcp** Model Context Protocol server, which p
 
 4. **No environment-variable substitution from chat.** Never write `process.env.X = "<actual-value>"` or shell-export a literal secret. Always reference it indirectly: read from the vault at runtime, or load through `dotenv` from a gitignored `.env`.
 
-5. **`.gitignore` discipline.** Before any commit, verify `.env`, `.env.local`, `*.pem`, `*.key`, `id_rsa`, and `~/.enigmagent/` are gitignored. Add them if missing.
+5. **`.gitignore` discipline.** Before any commit, apply two layers of protection:
+   - **Repository `.gitignore`** — verify that `.env`, `.env.local`, `*.pem`, `*.key`, and `id_rsa` are listed. Add them if missing. These patterns match repository-relative paths and are tracked with the project.
+   - **System-level protection for `~/.enigmagent/`** — the vault directory lives outside the repository and cannot be covered by `.gitignore` (Git does not support tilde expansion or absolute paths in `.gitignore`). Protect it by adding `.enigmagent/` to the user's global gitignore (`~/.gitignore_global`, configured with `git config --global core.excludesfile`) or to `$GIT_DIR/info/exclude` for individual repositories.
 
 ## Workflow Patterns
 
