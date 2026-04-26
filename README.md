@@ -285,6 +285,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Utilities
 
+- [Mem-Forever](https://github.com/ilang-ai/Mem-Forever) - Persistent memory across sessions and tools. Auto-generates a portable profile from conversation, saves decisions and lessons to `.ilang/`, applies preferences in every future session. Template repo — fork once, remember forever.
+- [Imprint](https://github.com/ilang-ai/Imprint) - Your habits, imprinted on AI. One `.cursorrules` replaces eleven skills: memory, onboarding, code review, debugging, planning, progress tracking, testing, git workflow, SEO, and copywriting. Learns how you work and applies it everywhere.
+- [AutoCode](https://github.com/ilang-ai/AutoCode) - You say it, AutoCode ships it. 47 skills in a single `.cursorrules`. Code to deployment in one session. AI makes all technical decisions, you just say yes or no.
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 
 ## Directories
