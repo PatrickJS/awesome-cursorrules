@@ -23,13 +23,13 @@ globs: "**/*.tsx, **/*.ts, **/*.go, web/src/**/*.ts, web/src/**/*.tsx, pkg/**/*.
 - Always guard: `(data || []).map(...)` or `(data || []).join(', ')`
 
 ## No Magic Numbers
-- Every numeric literal must be a named constant
+- Numeric literals should be named constants, except trivial literals (`0`, `1`, `-1`) in clear local contexts
 - Use constants from `lib/constants/` (time.ts, network.ts, ui.ts)
 
 ## Styling
 - Tailwind CSS with `cn()` utility for merging classNames
-- Never use raw hex colors — use semantic classes (`text-foreground`, `bg-primary`)
-- Status colors: green-400 (success), yellow-400 (warning), red-400 (error), cyan-400 (info)
+- Never use raw hex colors — use semantic Tailwind classes (`text-foreground`, `bg-primary`, `bg-card`)
+- Status colors use Tailwind palette classes: `text-green-400` (success), `text-yellow-400` (warning), `text-red-400` (error), `text-cyan-400` (info) — these are the only exception to the semantic-class rule
 
 ## Internationalization
 - All user-facing strings use `t()` from `react-i18next`
