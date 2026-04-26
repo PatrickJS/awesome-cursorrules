@@ -1,6 +1,6 @@
 ---
 description: KubeStellar Console — Multi-cluster Kubernetes dashboard development rules
-globs: "**/*.tsx, **/*.ts, **/*.go, web/src/**/*.ts, web/src/**/*.tsx, pkg/**/*.go, cmd/**/*.go"
+globs: **/*.tsx, **/*.ts, **/*.go, web/src/**/*.ts, web/src/**/*.tsx, pkg/**/*.go, cmd/**/*.go
 ---
 
 # KubeStellar Console Development Rules
@@ -29,7 +29,7 @@ globs: "**/*.tsx, **/*.ts, **/*.go, web/src/**/*.ts, web/src/**/*.tsx, pkg/**/*.
 ## Styling
 - Tailwind CSS with `cn()` utility for merging classNames
 - Never use raw hex colors — use semantic Tailwind classes (`text-foreground`, `bg-primary`, `bg-card`)
-- Status colors use Tailwind palette classes: `text-green-400` (success), `text-yellow-400` (warning), `text-red-400` (error), `text-cyan-400` (info) — these are the only exception to the semantic-class rule
+- Status colors: `text-green-400`/`bg-green-500/10` (success), `text-yellow-400`/`bg-yellow-500/10` (warning), `text-red-400`/`bg-red-500/10` (error), `text-cyan-400`/`bg-cyan-500/10` (info) — these map to the design system's semantic status tokens and are the only permitted palette classes
 
 ## Internationalization
 - All user-facing strings use `t()` from `react-i18next`
