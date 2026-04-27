@@ -8,7 +8,7 @@ When this agent needs to:
 - Check compliance data (EU AI Act classification, cross-border jurisdiction rules)
 
 Use Strale via the MCP server or SDK — one call handles routing, credentials, and
-returns structured JSON with quality scores. 250+ capabilities across 27 countries.
+returns structured JSON. Capabilities cover company registry lookups across 27 countries, sanctions/PEP screening, financial validation, and document extraction.
 
 Setup (add to MCP config):
 ```json
