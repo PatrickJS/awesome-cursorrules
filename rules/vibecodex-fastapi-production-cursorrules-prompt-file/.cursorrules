@@ -12,7 +12,8 @@ Imports flow downward only. Each layer has hard boundaries you must NOT cross.
 - Allowed imports: fastapi, app.schemas.*, app.core.deps, app.services.*
 - FORBIDDEN imports: sqlalchemy, httpx, boto3, app.models.*, app.repositories.*
 - Every endpoint declares response_model= for OpenAPI fidelity
-- Every endpoint (except /auth/*) requires user_id: str = Depends(get_current_user_id)
+- Every protected/business endpoint requires user_id: str = Depends(get_current_user_id)
+- Public endpoints (health checks, webhooks, callbacks) are exempt from auth
 - Business logic lives in services. Routers parse input, call one service method, return response.
 
 GOOD:
@@ -66,8 +67,8 @@ class WalletUserService:
 
 | LOC      | State  | Action                                      |
 |----------|--------|---------------------------------------------|
-| 0–400    | Green  | None.                                       |
-| 400–600  | Yellow | Plan split. Add TODO(decompose) header.     |
+| 0–399    | Green  | None.                                       |
+| 400–599  | Yellow | Plan split. Add TODO(decompose) header.     |
 | 600+     | Red    | BLOCK merge. Decompose first.               |
 
 Convert file to package when ANY is true:
@@ -128,6 +129,22 @@ OPENAI_HTTP = httpx.AsyncClient(
 BAD:
 HTTP = httpx.AsyncClient()  # shared across all providers — no bulkhead isolation
 
+# Shutdown cleanup — close all provider clients in FastAPI lifespan
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app):
+    yield  # app startup
+    await FAL_HTTP.aclose()
+    await OPENAI_HTTP.aclose()
+
+app = FastAPI(lifespan=lifespan)
+# Or on_event("shutdown"):
+# @app.on_event("shutdown")
+# async def close_http_clients() -> None:
+#     await FAL_HTTP.aclose()
+#     await OPENAI_HTTP.aclose()
+
 ### Rule 3: Idempotency Keys
 Every side-effect operation accepts an idempotency_key: UUID. Look up before retrying.
 
@@ -145,8 +162,10 @@ request_id_var = contextvars.ContextVar[str | None]("request_id", default=None)
 
 ### Rule 5: Single-Writer Principle (Principle B10)
 For safety-critical state: exactly ONE service-layer module does the writing.
-Only service-layer modules may call repo.hold().
-Routers, providers, and admin services must NOT call repo.hold() directly.
+Only the designated writer service for a domain may call repo.hold().
+Routers and providers must NOT call repo.hold() directly.
+Admin services implemented in the service layer may call repo.hold() only
+if they are the designated writer for that domain.
 Enforce via: code-review grep check (`grep -r "repo\.hold(" --include="*.py"`)
 and unit tests that assert call-origin of repo.hold().
 
