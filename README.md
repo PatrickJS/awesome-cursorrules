@@ -103,6 +103,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Qwik (Basic Setup with TypeScript and Vite)](./rules/qwik-basic-cursorrules-prompt-file/.cursorrules) - Cursor rules for Qwik development with TypeScript and Vite integration.
 - [Qwik (with Tailwind CSS)](./rules/qwik-tailwind-cursorrules-prompt-file/.cursorrules) - Cursor rules for Qwik development with Tailwind CSS integration.
 - [React Components Creation](./rules/react-components-creation-cursorrules-prompt-file/.cursorrules) - Cursor rules for React component creation and development.
+- [React (FormEngine AI Form Builder)](./rules/react-formengine-ai-form-builder-cursorrules-prompt-file/.cursorrules) - Cursor rules for generating React forms from screenshots, PDFs, HTML, or text descriptions with validated FormEngine JSON schema. Renders through RSuite, Material UI, or Mantine.
 - [React (Next.js UI Development)](./rules/react-nextjs-ui-development-cursorrules-prompt-fil/.cursorrules) - Cursor rules for React development with Next.js UI integration.
 - [React (TypeScript, Next.js, Node.js)](./rules/react-typescript-nextjs-nodejs-cursorrules-prompt-/.cursorrules) - Cursor rules for React development with TypeScript, Next.js, and Node.js integration.
 - [React (TypeScript, Symfony)](./rules/react-typescript-symfony-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with TypeScript and Symfony integration.
