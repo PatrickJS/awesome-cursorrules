@@ -148,12 +148,12 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Python (Django Best Practices)](./rules/python-django-best-practices-cursorrules-prompt-fi/.cursorrules) - Cursor rules for Python Django development with best practices.
 - [Python (FastAPI Best Practices)](./rules/python-fastapi-best-practices-cursorrules-prompt-f/.cursorrules) - Cursor rules for Python FastAPI development with best practices.
 - [Python (FastAPI Scalable API)](./rules/python-fastapi-scalable-api-cursorrules-prompt-fil/.cursorrules) - Cursor rules for Python FastAPI development with scalable API integration.
-- [vibecodex FastAPI Production](./rules/vibecodex-fastapi-production-cursorrules-prompt-file/.cursorrules) - Production architecture rules: Router→Service→Repository, ACL, bulkhead isolation, single-writer principle
 - [Python (Flask JSON Guide)](./rules/python-flask-json-guide-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python Flask development with JSON guide.
 - [Python LLM & ML Workflow](./rules/python-llm-ml-workflow-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python LLM & ML development with workflow integration.
 - [Salesforce (Apex)](./rules/salesforce-apex-cursorrules-prompt-file/.cursorrules.txt) - Cursor rules for Salesforce development with Apex integration.
 - [TypeScript (NestJS Best Practices)](./rules/typescript-nestjs-best-practices-cursorrules-promp/.cursorrules) - Cursor rules for TypeScript development with NestJS best practices.
 - [TYPO3 CMS Extension](./rules/typo3cms-extension-cursorrules-prompt-file/.cursorrules) - Cursor rules for TYPO3 CMS development with extension integration.
+- [vibecodex FastAPI Production](./rules/vibecodex-fastapi-production-cursorrules-prompt-file/.cursorrules) - Production architecture rules: Router→Service→Repository, ACL, bulkhead isolation, single-writer principle
 - [WordPress (PHP, Guzzle, Gutenberg)](./rules/wordpress-php-guzzle-gutenberg-cursorrules-prompt-/.cursorrules) - Cursor rules for WordPress development with PHP, Guzzle, and Gutenberg integration.
 - [WordPress (macOS)](./rules/cursorrules-cursor-ai-wordpress-draft-macos-prompt/.cursorrules) - Cursor rules for WordPress development on macOS.
 

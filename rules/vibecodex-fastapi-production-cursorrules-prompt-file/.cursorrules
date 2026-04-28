@@ -22,7 +22,11 @@ async def charge(
     user_id: str = Depends(get_current_user_id),
     svc: WalletUserService = Depends(get_wallet_service),
 ) -> WalletResponse:
-    wallet = await svc.charge(user_id=user_id, amount=req.amount, key=req.idempotency_key)
+    wallet = await svc.charge(
+        user_id=user_id,
+        amount=req.amount,
+        idempotency_key=req.idempotency_key,
+    )
     return WalletResponse.from_domain(wallet)
 
 BAD (business logic + SQL in router):
@@ -130,13 +134,21 @@ Every side-effect operation accepts an idempotency_key: UUID. Look up before ret
 ### Rule 4: Structured Logging with contextvars
 Use ContextVar to thread provider, user_id, request_id through async call stacks.
 
-provider_var = contextvars.ContextVar[str | None]("provider", default=None)
-user_id_var = contextvars.ContextVar[str | None]("user_id", default=None)
+import contextvars
+
+provider_var   = contextvars.ContextVar[str | None]("provider", default=None)
+user_id_var    = contextvars.ContextVar[str | None]("user_id", default=None)
+request_id_var = contextvars.ContextVar[str | None]("request_id", default=None)
+
+# Read in logs: provider_var.get(), user_id_var.get(), request_id_var.get()
+# JSON formatter picks these up automatically via extra={} or ContextVar.get()
 
 ### Rule 5: Single-Writer Principle (Principle B10)
-For safety-critical state: exactly ONE function does the writing.
-repo.hold() may only be called from services/credits/user.py.
-No router, no admin service, no provider may call repo.hold() directly.
+For safety-critical state: exactly ONE service-layer module does the writing.
+Only service-layer modules may call repo.hold().
+Routers, providers, and admin services must NOT call repo.hold() directly.
+Enforce via: code-review grep check (`grep -r "repo\.hold(" --include="*.py"`)
+and unit tests that assert call-origin of repo.hold().
 
 ## ANTI-PATTERNS — REJECT ON SIGHT
 
