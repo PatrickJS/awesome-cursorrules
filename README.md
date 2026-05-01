@@ -175,6 +175,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [JavaScript (Astro, Tailwind CSS)](./rules/javascript-astro-tailwind-css-cursorrules-prompt-f/.cursorrules) - Cursor rules for JavaScript development with Astro and Tailwind CSS integration.
 - [React (Styled Components)](./rules/react-styled-components-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with Styled Components integration.
 - [React (Chakra UI)](./rules/react-chakra-ui-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with Chakra UI integration.
+- [RTL / Right-to-Left (i18n, Tailwind, React Native)](./rules/rtl-right-to-left-i18n-cursorrules-prompt-file/.cursorrules) - Cursor rules for RTL development with logical CSS properties, Tailwind logical classes, bidirectional text, and automated auditing via rtlify-ai.
 
 ### State Management
 
