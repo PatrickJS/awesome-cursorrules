@@ -79,6 +79,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ## Rules
 
+- [x711 MCP for Cursor](https://x711.io) — add `{"mcpServers":{"x711":{"url":"https://x711.io/mcp"}}}` to Cursor settings to unlock pay-per-use tools.
 ### Frontend Frameworks and Libraries
 
 - [Angular (Novo Elements)](./rules/angular-novo-elements-cursorrules-prompt-file/.cursorrules) - Cursor rules for Angular development with Novo Elements UI library.
