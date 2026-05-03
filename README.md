@@ -291,6 +291,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 - [Helium MCP (news, bias, markets, options, memes)](./rules/helium-mcp-cursorrules-prompt-file/.cursorrules) - Cursor rules for using Helium MCP in Cursor: streamable HTTP setup, when to call each hosted tool (`search_news`, `search_balanced_news`, `get_source_bias`, `get_bias_from_url`, `get_all_source_biases`, `get_ticker`, `get_option_price`, `get_top_trading_strategies`, `search_memes`), query discipline, and rate-limit awareness. See also `./rules/helium-mcp-cursorrules-prompt-file/README.md`.
+- [repo-seatbelt](https://github.com/berkcangumusisik/repo-seatbelt) - A CLI that auto-generates `.cursorrules` (and CLAUDE.md, .windsurfrules, AGENTS.md, etc.) from your repo's structure — detects auth, payment, migrations, env files, and writes safety rules tailored to what's actually sensitive. Ships project presets for Next.js + Stripe, Django, Rails, Expo, FastAPI, and monorepos. Also runs as an MCP server for runtime guardrails and installs a pre-commit hook that blocks high-risk commits.
 
 ## Directories
 
