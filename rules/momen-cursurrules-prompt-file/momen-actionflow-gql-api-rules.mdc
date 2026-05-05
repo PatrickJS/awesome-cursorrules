@@ -1,0 +1,121 @@
+---
+description: How to interact with complex / multi-step backend logic using actionflows in momen.app's backend. 
+alwaysApply: false
+---
+
+# Momen.app Actionflow
+
+## Overview
+Although momen.app already support direct CRUD operations that can be initiated from the frontend, many backend operations are multi-step, can be long-running and sometimes have to be asynchronous. Therefore momen.app also supports actionflows for these scenarios. An actionflow is a directed acyclic graph made up of actionflow nodes. These nodes represent either operations (e.g. insert into databsae, invoke another actionflow) or control flow changes (condition and loop). Actionflows also have two special nodes, input and output, where the arguments and return values of the entire actionflow are defined. 
+
+Actionflows have two modes of operation, sync or async. A synchronous actionflow is executed within a single database transaction, and therefore when an unexpected error is encountered, will rollback all database changes. Synchronous actionflows have runtime limits to avoid hogging database connection. Asynchronous actionflows run each node inside a new database transaction, so they do not have rollback mechanism, but are more suited for long running tasks, like long http calls, especially those made to LLM APIs as they can take minutes. Within actionflows, all nodes of invoking AI agents built in momen.app natively can only be added inside async ones. 
+
+## Actionflow invocation process
+In order to invoke an actionflow, one needs to obtain its id, a list of arguments and optionally its version. They are found inside the project schema. 
+Actionflow invocation differ based on their type. 
+
+### Sync actionflows
+Sync actionflows can be invoked via a regular GraphQL mutation. The results will be returned in the response of the same HTTP request. 
+Request:
+```gql
+mutation someOperationName ($args: Json!) {
+ fz_invoke_action_flow(actionFlowId: "d3ea4f95-5d34-46e1-b940-91c4028caff5", versionId: 3, args: $args)
+}
+```
+
+```json
+{
+  "args": {
+    "yaml": "post_link:\n  url: \"https://momen.app\"\n",
+    "img_id": 1020000000000111
+  }
+}
+```
+Within this query, $args corresponds to the arguments listed in the actionflow's input node. 
+Response:
+```json
+{
+  "data": {
+    "fz_invoke_action_flow": {
+      "img": {
+        "id": 1020000000000090,
+        "url": "https://fz-zion-static.functorz.com/202510252359/a64a7eb4793728a1977d3ea9e7b7e4e8/project/2000000000521152/import/1110000000000001/image/636.jpg"
+      },
+      "url": "https://momen.app"
+    }
+  }
+}
+```
+
+### Async actionflows
+Async actionflows are triggered via a GraphQL mutation but the results are not returned in the response of the same HTTP request. Instead, a fz_create_action_flow_task is returned, containing the id of the corresponding task, which is then used for subscribing to the result in a separate GraphQL subscription. 
+Mutation request:
+```gql
+mutation mh49tgie($args: Json!) {
+ fz_create_action_flow_task(actionFlowId: "2a9068c5-8ee3-4dad-b3a4-5f3a6d365a2f", versionId: 4, args: $args)
+}
+```
+
+```json
+{
+  "args": {
+    "int": 123,
+    "img_id": 1020000000000116,
+    "some_text": "Dreamer",
+    "datetime_with_timezone": "2025-10-23T20:13:00-07:00"
+  }
+}
+```
+Mutation response:
+{
+  "data": {
+    "fz_create_action_flow_task": 1150000000000148
+  }
+}
+
+Subscription request: 
+```gql
+subscription fz_listen_action_flow_result($taskId: Long!) {
+  fz_listen_action_flow_result(taskId: $taskId) {
+    __typename"
+    output
+    status
+  }
+}
+```
+```json
+{ "taskId" : 1150000000000148 }
+```
+Subscription response:
+```json
+{
+  "data": {
+    "fz_listen_action_flow_result": {
+      "__typename": "ActionFlowTaskResult",
+      "output": {
+        "img": {
+          "id": 1020000000000089,
+          "url": "https://fz-zion-static.functorz.com/202510262359/3a5f04371bf68d6c94bb890879101f0a/project/2000000000521152/import/1110000000000001/image/637.jpg"
+        },
+        "xyz": {
+          "type": "Point",
+          "coordinates": [
+            131,
+            22
+          ]
+        }
+      },
+      "status": "COMPLETED"
+    }
+  }
+}
+```
+There might be multiple messages sent by the GraphQL subscription before the final result (inside "output") is returned, and each may contain different status values. 
+The status field has the following transition rules:
+```java
+switch (status) {
+  case CREATED -> Set.of(PROCESSING);
+  case PROCESSING -> Set.of(COMPLETED, FAILED);
+  default -> Set.of();
+};
+```
