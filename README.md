@@ -294,9 +294,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Utilities
 
+- [AgentsMesh (AI Config Sync)](./rules/agentsmesh-ai-config-sync-cursorrules-prompt-file/.cursorrules) - Cursor rules for projects using AgentsMesh — the universal config sync CLI that maintains AI coding agent rules, commands, agents, skills, and MCP servers in a single canonical source and generates native configs for 18+ tools including Cursor, Claude Code, Copilot, and Gemini CLI.
 - [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
 - [Helium MCP (news, bias, markets, options, memes)](./rules/helium-mcp-cursorrules-prompt-file/.cursorrules) - Cursor rules for using Helium MCP in Cursor: streamable HTTP setup, when to call each hosted tool (`search_news`, `search_balanced_news`, `get_source_bias`, `get_bias_from_url`, `get_all_source_biases`, `get_ticker`, `get_option_price`, `get_top_trading_strategies`, `search_memes`), query discipline, and rate-limit awareness. See also `./rules/helium-mcp-cursorrules-prompt-file/README.md`.
-- [AgentsMesh (AI Config Sync)](./rules/agentsmesh-ai-config-sync-cursorrules-prompt-file/.cursorrules) - Cursor rules for projects using AgentsMesh — the universal config sync CLI that maintains AI coding agent rules, commands, agents, skills, and MCP servers in a single canonical source and generates native configs for 18+ tools including Cursor, Claude Code, Copilot, and Gemini CLI.
 
 ## Directories
 
