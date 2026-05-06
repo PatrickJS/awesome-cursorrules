@@ -1,0 +1,72 @@
+# AgentsMesh — Universal AI Agent Config Sync
+
+You are working in a project that uses AgentsMesh to manage AI coding agent
+configurations from a single canonical source.
+
+## Key Concepts
+
+- The `.agentsmesh/` directory is the single source of truth for all AI tool configs.
+- Running `agentsmesh generate` produces native config files for every target tool
+  (Cursor, Claude Code, Copilot, Gemini CLI, Windsurf, Codex CLI, etc.).
+- Running `agentsmesh import --from <target>` brings existing tool configs back
+  into canonical form without loss.
+- Generated files are artifacts — never edit them directly. Always edit canonical
+  files in `.agentsmesh/` and regenerate.
+
+## Project Structure
+
+```
+.agentsmesh/
+├── rules/
+│   ├── _root.md          # Root rules applied globally
+│   └── *.md              # Scoped rules (matched by globs in frontmatter)
+├── commands/
+│   └── *.md              # Slash commands
+├── agents/
+│   └── *.md              # Agent personas
+├── skills/
+│   └── <name>/SKILL.md   # Skills with optional bundled assets
+├── mcp.json              # MCP server configurations
+├── hooks.yaml            # Event-driven hooks
+├── permissions.yaml      # Tool permission policies
+└── ignore                # Patterns to exclude from AI context
+```
+
+## Workflow Rules
+
+1. **Never edit generated files** — files outside `.agentsmesh/` that are managed
+   by agentsmesh (e.g., `.cursor/rules/`, `.claude/`, `.github/copilot-instructions.md`)
+   are regenerated on each `agentsmesh generate` run.
+2. **Edit canonical sources** — make all changes in `.agentsmesh/` then run
+   `agentsmesh generate` to propagate.
+3. **Use `agentsmesh diff`** to preview what generate would change before running it.
+4. **Use `agentsmesh check`** in CI to ensure generated files are not stale.
+5. **Use `agentsmesh lint`** to validate canonical configs and catch silent-drop
+   warnings before generating.
+
+## CLI Commands Reference
+
+- `agentsmesh init` — Scaffold `.agentsmesh/` directory and config files
+- `agentsmesh generate` — Write native configs from canonical sources
+- `agentsmesh import --from <target>` — Read existing tool configs into canonical form
+- `agentsmesh diff` — Preview pending changes
+- `agentsmesh check` — CI gate (exit non-zero on drift)
+- `agentsmesh lint` — Validate canonical config
+- `agentsmesh watch` — Auto-regenerate on file changes
+- `agentsmesh convert --from <src> --to <dst>` — Convert between tool formats
+- `agentsmesh install <source>` — Add community packs
+- `agentsmesh matrix` — Show supported tools and feature coverage
+
+## When Modifying AI Rules or Config
+
+- Add or edit rules in `.agentsmesh/rules/` using markdown with optional
+  frontmatter for globs (`globs: ["src/**/*.ts"]`) and `alwaysApply: true/false`.
+- The `_root.md` file contains project-wide rules applied to all contexts.
+- After any change, run `agentsmesh generate` and commit both canonical and
+  generated files together.
+
+## Configuration File
+
+`agentsmesh.yaml` at the project root selects which targets to generate for
+and which features to enable. `agentsmesh.local.yaml` provides local overrides
+that should be gitignored.
