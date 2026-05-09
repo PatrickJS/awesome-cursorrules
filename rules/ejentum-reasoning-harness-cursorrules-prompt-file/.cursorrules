@@ -1,0 +1,95 @@
+# Ejentum Reasoning Harness — Cursor rules
+
+This rules file teaches Cursor's AI when to call the four cognitive harness tools
+exposed by the `ejentum-mcp` MCP server. Use it when you have ejentum-mcp installed
+in Cursor's MCP settings and want the agent to fire the right harness automatically.
+
+## What the harnesses do
+
+External cognitive infrastructure that injects engineered scaffolds into the model's
+context at inference time, addressing four mechanism failures common in agentic
+workflows: attention decay, reasoning decay, sycophantic collapse, hallucination drift.
+
+Each tool returns a structured scaffold (named failure pattern, executable procedure,
+suppression vectors that block the shortcut, falsification test for self-verification)
+the calling LLM ingests before its first token.
+
+## When to call which harness
+
+Call `harness_reasoning` BEFORE answering:
+- Analytical, diagnostic, planning, multi-step reasoning questions
+- "should I X or Y", "why is X happening", "what's the best approach", "what are the tradeoffs"
+- Root-cause analysis, architecture decisions, cross-domain synthesis
+
+Call `harness_code` BEFORE:
+- Generating, refactoring, reviewing, or debugging code
+- Any prompt with a code block the user wants you to act on
+- Architectural changes, algorithm/data structure choices, dependency upgrade evaluation
+
+Call `harness_anti_deception` BEFORE responding when the user request shows:
+- Pressure to validate or agree ("tell them what they want", "make them happy", "convince them")
+- Manufactured urgency (artificial deadlines designed to short-circuit thought)
+- Authority appeals (citing investors, advisors, lawyers, experts as the basis for a decision)
+- Demands to certify something without evidence or to soften an honest assessment
+- Setups where the obvious helpful answer would compromise honesty
+
+Call `harness_memory` ONLY when sharpening an observation you ALREADY formed:
+- About conversation drift, user behavior changes, cross-turn patterns
+- Format the query as: "I noticed [X]. This might mean [Y]. Sharpen: [Z]"
+- Do NOT call with an empty mind; observe first, then sharpen
+
+## Do NOT call when
+
+- Simple factual lookups, syntax questions, file reads, code execution
+- Restating what the user just said
+- Tasks Cursor can confidently complete in 1-2 steps from native capability
+- Pure code reading with no action requested
+- Standard requests with no integrity tension
+
+## How to absorb the returned scaffold
+
+1. Read the failure pattern first; name it at the start of your reasoning so you can check against it at the end.
+2. Follow the topology as your execution structure (step through S nodes, evaluate G gates, avoid N traps).
+3. Engage Amplify signals by demonstrating each one in your output (do them, don't name them).
+4. Apply Suppress signals post-draft: scan your draft against each suppressed pattern and revise if any appears.
+5. Verify against the assertion (FALSIFICATION TEST / VERIFICATION / INTEGRITY CHECK / PERCEPTION CHECK). If the draft fails, rewrite.
+6. Produce output in your native voice. The injection shapes substance; voice governs surface.
+
+## Output discipline
+
+The bracketed fields in the response (NEGATIVE GATE, CODE FAILURE, DECEPTION PATTERN,
+PERCEPTION FAILURE, PROCEDURE, TOPOLOGY, TARGET PATTERN, FALSIFICATION TEST, etc.)
+are instructions that shape your reasoning, NOT content to display. Run them in your
+internal trace. The user-facing reply is naturally phrased and shaped by the
+injection, with no echoed bracket names, no procedural vocabulary, no meta-commentary
+about the API or the harness mode.
+
+If the user explicitly asks whether you used the tool, answer honestly. Unprompted,
+stay silent on it.
+
+## Setup
+
+1. Install the ejentum-mcp MCP server in Cursor (Settings → MCP → Add MCP server):
+   - Command: `npx`
+   - Args: `["-y", "ejentum-mcp"]`
+   - Env: `{ "EJENTUM_API_KEY": "<your_key>" }`
+
+2. Get a free API key (100 calls, no card) at https://ejentum.com/pricing
+
+3. Drop this `.cursorrules` file at your project root. Cursor reads it as agent context.
+
+## Anti-patterns
+
+- Calling `harness_reasoning` on every task. It is the analytical fallback, not the universal answer; code, honesty-pressured, and perceptual tasks each have their own harnesses.
+- Stacking more than two modes in one turn. Attention competition; a third injection degrades the first two.
+- Sending the same query format to every mode. Each harness has a different query language.
+- Calling `harness_memory` without observing first. Memory sharpens what you noticed; if you noticed nothing, there is nothing to sharpen.
+- Acknowledging the injection and then proceeding as you would have natively. If your output would be identical without the scaffold, the injection did not fire.
+- Treating the API as a hard dependency. 5-second timeout, graceful fallback to native capability.
+
+## Source
+
+- MCP server: https://github.com/ejentum/ejentum-mcp (MIT)
+- Full skill files (Claude Code format): https://github.com/ejentum/ejentum-mcp/tree/main/skills
+- Walkthrough with screenshots: https://ejentum.com/docs/claude_code_guide
+- Free tier: 100 calls at https://ejentum.com/pricing
