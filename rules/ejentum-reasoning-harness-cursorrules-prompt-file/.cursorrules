@@ -1,4 +1,4 @@
-# Ejentum Reasoning Harness — Cursor rules
+# Ejentum Reasoning Harness - Cursor rules
 
 This rules file teaches Cursor's AI when to call the four cognitive harness tools
 exposed by the `ejentum-mcp` MCP server. Use it when you have ejentum-mcp installed
