@@ -235,6 +235,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Tauri (Svelte, TypeScript Guide)](./rules/tauri-svelte-typescript-guide-cursorrules-prompt-f/.cursorrules) - Cursor rules for Tauri development with Svelte and TypeScript guide integration.
 - [TypeScript Code Convention](./rules/typescript-code-convention-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with code convention integration.
 - [VSCode Extension (Electron/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules) - Cursor rules for VSCode extension development with Electron and TypeScript integration.
+- [NotFair](https://notfair.co) - Google Ads MCP server. Connect Claude and AI agents to a Google Ads account: diagnose campaign performance, recommend optimizations, and execute approved changes via the Google Ads API. Source: github.com/nowork-studio/toprank. Free tier available.
 
 ### Language-Specific
 
