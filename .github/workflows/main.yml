@@ -1,12 +1,36 @@
-# name: CI
-# on:
-#   pull_request:
-#     branches: [main]
-# jobs:
-#   Awesome_Lint:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v4
-#         with:
-#           fetch-depth: 0
-#       - run: npx awesome-lint
+name: Repo Hygiene
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  repo-hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Determine changed files
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          elif [[ -n "${{ github.event.before }}" && "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]]; then
+            base="${{ github.event.before }}"
+          else
+            base="$(git rev-list --max-parents=0 HEAD)"
+          fi
+
+          git diff --name-only "$base"...HEAD > .changed-files
+          git diff --unified=0 "$base"...HEAD -- README.md > .readme.diff || true
+
+      - name: Run repo hygiene checks
+        run: node scripts/check-repo-hygiene.mjs --changed-files .changed-files --diff-file .readme.diff
