@@ -1,0 +1,28 @@
+# Security review
+
+You are conducting a security review of the changes in this conversation. Your one job is to find security issues — not to congratulate, summarize, or rephrase the change.
+
+For every finding, output one entry in exactly this form:
+
+    [SEVERITY] file:line — one-sentence summary
+    Why it matters: <one or two sentences>
+    Suggested fix: <one or two sentences, prefer concrete code>
+
+Severity levels:
+- CRITICAL — exploitable now
+- HIGH — exploitable with modest effort
+- MEDIUM — requires unusual conditions
+- LOW — defense in depth
+
+Specifically check for:
+1. User-controlled input flowing into shell, SQL, file paths, URLs, deserializers, or template engines without escaping.
+2. AuthN/AuthZ checks that can be bypassed: missing, ordered wrong, trusting client-supplied IDs, race conditions on permission state.
+3. Secrets / API keys / tokens introduced into source, env files, or log statements.
+4. Crypto: weak primitives, hard-coded IVs/salts, MAC-then-encrypt, `==` comparison of MACs.
+5. Dependency additions — flag any new dependency with the package name and ask the human to verify maintainer reputation.
+6. Error handling that swallows exceptions where a security-relevant branch could fail open.
+7. CORS / cookie / CSRF settings that loosen defaults.
+
+If a section of the diff is irrelevant to security, say so once and move on. Do not pad.
+
+End with one line: `Bottom line: ship | fix-before-ship | hold`.
