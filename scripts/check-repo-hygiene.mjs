@@ -14,7 +14,7 @@ const failures = [];
 const filesToCheck = changedFiles ?? listFiles(root);
 
 if (!changedFiles || changedFiles.includes("README.md")) {
-  checkReadmeLinks();
+  checkReadme();
 }
 
 checkIssueTemplateGuardrails();
@@ -83,11 +83,22 @@ function relativeToRoot(filePath) {
   return normalize(filePath).slice(normalize(root).length + 1);
 }
 
-function checkReadmeLinks() {
+function checkReadme() {
   const readmePath = join(root, "README.md");
   if (!existsSync(readmePath)) return;
 
   const readme = readFileSync(readmePath, "utf8");
+  checkReadmeSections(readme);
+  checkReadmeLinks(readme);
+}
+
+function checkReadmeSections(readme) {
+  if (/^###\s+Utilities\s*$/m.test(readme)) {
+    failures.push("README must not include a Utilities section; add reusable rule content to an existing rule category instead.");
+  }
+}
+
+function checkReadmeLinks(readme) {
   const links = extractMarkdownLinks(readme);
 
   for (const link of links) {

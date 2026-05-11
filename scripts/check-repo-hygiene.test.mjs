@@ -49,6 +49,18 @@ test("fails a README with a missing local link", () => {
   }
 });
 
+test("fails a README that reintroduces the Utilities section", () => {
+  const root = makeFixture();
+  try {
+    write(root, "README.md", "### Utilities\n\n- [Promo Tool](https://example.com)\n");
+    const result = run(root);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /must not include a Utilities section/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("fails changed rules-new files without required frontmatter", () => {
   const root = makeFixture();
   try {

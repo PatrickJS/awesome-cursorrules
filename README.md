@@ -68,7 +68,6 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
     - [Security](#security)
     - [Other](#other)
     - [Documentation](#documentation)
-    - [Utilities](#utilities)
   - [Directories](#directories)
   - [How to Use](#how-to-use)
     - [Method One](#method-one)
@@ -221,6 +220,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Playwright Defect Tracking](./rules/playwright-defect-tracking-cursorrules-prompt-file/.cursorrules) - Cursor rules for Playwright development with defect tracking.
 - [Playwright E2E Testing](./rules/playwright-e2e-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Playwright development with E2E testing.
 - [Playwright Integration Testing](./rules/playwright-integration-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Playwright development with integration testing.
+- [PR Review (security / performance / tests / architecture)](./rules/pr-review-cursorrules-prompt-file/.cursorrules) - Cursor rules for focused PR reviews with severity ranking, file and line citations, and separate review angles for security, performance, tests, and architecture.
 - [PR Template](./rules/pr-template-cursorrules-prompt-file/.cursorrules) - Cursor rules for PR development with template integration.
 - [QA Bug Report](./rules/qa-bug-report-cursorrules-prompt-file/.cursorrules) - Cursor rules for QA development with bug report integration.
 - [TestRail Test Case](./rules/testrail-test-case-cursorrules-prompt-file/.cursorrules) - Cursor rules for TestRail development with test case integration.
@@ -315,12 +315,6 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 - [Gherkin Style Testing](./rules/gherkin-style-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Gherkin style testing development with integration.
 - [How-To Documentation](./rules/how-to-documentation-cursorrules-prompt-file/.cursorrules) - Cursor rules for how-to documentation development with integration.
-
-### Utilities
-
-- [Cursor Watchful Headers](https://github.com/johnbenac/cursor-watchful-headers) - A Python-based file watching system that automatically manages headers in text files and maintains a clean, focused project tree structure. Perfect for maintaining consistent file headers and documentation across your project, with special features to help LLMs maintain better project awareness.
-- [PR Review (security / performance / tests / architecture)](./rules/pr-review-cursorrules-prompt-file/.cursorrules) - Four focused PR review angles in one .cursorrules file. Each angle has its own output discipline (severity ranking, file:line citations, verdict line). Companion CLI [prpack](https://github.com/Lucas2944/prpack) automates the full-file-context part of the review.
-- [Helium MCP (news, bias, markets, options, memes)](./rules/helium-mcp-cursorrules-prompt-file/.cursorrules) - Cursor rules for using Helium MCP in Cursor: streamable HTTP setup, when to call each hosted tool (`search_news`, `search_balanced_news`, `get_source_bias`, `get_bias_from_url`, `get_all_source_biases`, `get_ticker`, `get_option_price`, `get_top_trading_strategies`, `search_memes`), query discipline, and rate-limit awareness. See also `./rules/helium-mcp-cursorrules-prompt-file/README.md`.
 
 ## Directories
 
