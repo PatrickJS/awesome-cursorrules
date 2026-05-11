@@ -104,3 +104,61 @@ test("allows external README links when rule content changes too", () => {
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("fails repositories with .github but no issue template guardrail", () => {
+  const root = makeFixture();
+  try {
+    write(root, ".github/pull_request_template.md", "## Summary\n");
+    const result = run(root);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Issue templates must disable blank issues/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("fails issue templates that allow blank issues", () => {
+  const root = makeFixture();
+  try {
+    write(root, ".github/ISSUE_TEMPLATE/config.yml", "blank_issues_enabled: true\n");
+    write(
+      root,
+      ".github/ISSUE_TEMPLATE/rule_request.yml",
+      "name: Rule request\nbody:\n  - type: checkboxes\n    attributes:\n      options:\n        - label: I am not asking for third-party tool support, account sharing, or license bypass help.\n          required: true\n",
+    );
+    const result = run(root);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Issue templates must disable blank issues/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("fails issue forms without required out-of-scope support acknowledgement", () => {
+  const root = makeFixture();
+  try {
+    write(root, ".github/ISSUE_TEMPLATE/config.yml", "blank_issues_enabled: false\n");
+    write(root, ".github/ISSUE_TEMPLATE/rule_request.yml", "name: Rule request\nbody: []\n");
+    const result = run(root);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /must require the out-of-scope support acknowledgement/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("passes issue template guardrails that block license and account-sharing support", () => {
+  const root = makeFixture();
+  try {
+    write(root, ".github/ISSUE_TEMPLATE/config.yml", "blank_issues_enabled: false\n");
+    write(
+      root,
+      ".github/ISSUE_TEMPLATE/rule_request.yml",
+      "name: Rule request\nbody:\n  - type: checkboxes\n    attributes:\n      options:\n        - label: I am not asking for third-party tool support, account sharing, or license bypass help.\n          required: true\n",
+    );
+    const result = run(root);
+    assert.equal(result.status, 0, result.stderr + result.stdout);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});

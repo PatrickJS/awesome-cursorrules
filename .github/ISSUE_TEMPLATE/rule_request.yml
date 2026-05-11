@@ -1,0 +1,52 @@
+name: Cursor rule request
+description: Request a new Cursor rule or a focused change to an existing rule in this repository.
+title: "[Rule]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Awesome Cursor Rules. This repository is for reusable Cursor rule content and repository maintenance, not support for Cursor accounts, subscriptions, third-party tools, license sharing, or license bypasses.
+
+  - type: dropdown
+    id: request_type
+    attributes:
+      label: Request type
+      options:
+        - New Cursor rule
+        - Update to an existing rule
+        - Rule quality or correctness issue
+    validations:
+      required: true
+
+  - type: input
+    id: affected_rule
+    attributes:
+      label: Existing rule path or proposed topic
+      description: For updates, include the existing path. For new rules, name the framework, language, workflow, or tool the rule should cover.
+      placeholder: rules/nextjs-typescript-cursorrules-prompt-file/.cursorrules
+    validations:
+      required: true
+
+  - type: textarea
+    id: cursor_workflow
+    attributes:
+      label: Cursor workflow this improves
+      description: Explain the concrete Cursor coding workflow, failure mode, or repeatable best practice this rule should cover.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_rule
+    attributes:
+      label: Proposed rule content or expected change
+      description: Include draft rule text when possible. Keep it neutral, practical, and specific to Cursor-assisted development.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: scope_acknowledgement
+    attributes:
+      label: Scope acknowledgement
+      options:
+        - label: I am not asking for third-party tool support, account sharing, or license bypass help.
+          required: true

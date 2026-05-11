@@ -17,6 +17,7 @@ if (!changedFiles || changedFiles.includes("README.md")) {
   checkReadmeLinks();
 }
 
+checkIssueTemplateGuardrails();
 checkRuleFiles(filesToCheck);
 checkReadmeOnlyExternalListings(changedFiles, diffText);
 
@@ -137,6 +138,54 @@ function checkRuleFiles(candidateFiles) {
       checkRulesNewFrontmatter(file, trimmed);
     }
   }
+}
+
+function checkIssueTemplateGuardrails() {
+  const githubDir = join(root, ".github");
+  if (!existsSync(githubDir) || !statSync(githubDir).isDirectory()) return;
+
+  const issueTemplateDir = join(githubDir, "ISSUE_TEMPLATE");
+  const configPath = join(issueTemplateDir, "config.yml");
+
+  if (!existsSync(configPath)) {
+    failures.push("Issue templates must disable blank issues with .github/ISSUE_TEMPLATE/config.yml.");
+    return;
+  }
+
+  const config = readFileSync(configPath, "utf8");
+  if (!/^blank_issues_enabled:\s*false\s*$/m.test(config)) {
+    failures.push("Issue templates must disable blank issues with `blank_issues_enabled: false`.");
+  }
+
+  const issueForms = listIssueForms(issueTemplateDir);
+  if (issueForms.length === 0) {
+    failures.push("Issue templates must include at least one issue form.");
+  }
+
+  for (const form of issueForms) {
+    const content = readFileSync(join(issueTemplateDir, form), "utf8");
+    if (!hasOutOfScopeSupportAcknowledgement(content)) {
+      failures.push(
+        `.github/ISSUE_TEMPLATE/${form} must require the out-of-scope support acknowledgement for third-party tool support, account sharing, and license bypass help.`,
+      );
+    }
+  }
+}
+
+function listIssueForms(issueTemplateDir) {
+  if (!existsSync(issueTemplateDir) || !statSync(issueTemplateDir).isDirectory()) {
+    return [];
+  }
+
+  return readdirSync(issueTemplateDir)
+    .filter((entry) => /^.+\.ya?ml$/i.test(entry))
+    .filter((entry) => entry.toLowerCase() !== "config.yml");
+}
+
+function hasOutOfScopeSupportAcknowledgement(content) {
+  return /-\s*label:\s*.*\bthird-party tool support\b.*\baccount sharing\b.*\blicense bypass\b.*\n\s*required:\s*true\b/i.test(
+    content,
+  );
 }
 
 function isRuleFile(file) {

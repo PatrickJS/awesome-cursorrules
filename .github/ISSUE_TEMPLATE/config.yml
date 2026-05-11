@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Cursor product, account, or billing support
+    url: https://docs.cursor.com/
+    about: Use Cursor's official docs, forum, or support channels for editor, account, billing, subscription, and license questions.
