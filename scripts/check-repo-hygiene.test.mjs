@@ -49,12 +49,13 @@ test("fails a README with a missing local link", () => {
   }
 });
 
-test("fails a README that reintroduces the Utilities section", () => {
+test("fails a README that reintroduces a catch-all section", () => {
   const root = makeFixture();
   try {
-    write(root, "README.md", "### Utilities\n\n- [Promo Tool](https://example.com)\n");
+    write(root, "README.md", "### Other\n\n- [Promo Tool](https://example.com)\n\n### Utilities\n\n- [Another Tool](https://example.org)\n");
     const result = run(root);
     assert.equal(result.status, 1);
+    assert.match(result.stderr, /must not include an Other section/);
     assert.match(result.stderr, /must not include a Utilities section/);
   } finally {
     rmSync(root, { recursive: true, force: true });

@@ -93,8 +93,18 @@ function checkReadme() {
 }
 
 function checkReadmeSections(readme) {
-  if (/^###\s+Utilities\s*$/m.test(readme)) {
-    failures.push("README must not include a Utilities section; add reusable rule content to an existing rule category instead.");
+  const bannedSections = [
+    { name: "Other", article: "an" },
+    { name: "Utilities", article: "a" },
+  ];
+
+  for (const section of bannedSections) {
+    const pattern = new RegExp(`^###\\s+${section.name}\\s*$`, "m");
+    if (pattern.test(readme)) {
+      failures.push(
+        `README must not include ${section.article} ${section.name} section; add reusable rule content to a specific rule category instead.`,
+      );
+    }
   }
 }
 
