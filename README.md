@@ -250,6 +250,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Python Best Practices](./rules/python-cursorrules-prompt-file-best-practices/.cursorrules) - Cursor rules for Python development with best practices integration.
 - [Python Developer](./rules/python-developer-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python development with developer integration.
 - [Python Projects Guide](./rules/python-projects-guide-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python development with projects guide integration.
+- [PySpark ETL Best Practices](./rules/pyspark-etl-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for PySpark ETL development with code style, joins, window functions, map operations, and Iceberg patterns.
 - [PyTorch (scikit-learn)](./rules/pytorch-scikit-learn-cursorrules-prompt-file/.cursorrules) - Cursor rules for PyTorch development with scikit-learn integration.
 - [R Best Practices](./rules/r-cursorrules-prompt-file-best-practices/.cursorrules) - Cursor rules for R development with best practices integration.
 - [Solidity (Foundry)](./rules/solidity-foundry-cursorrules-prompt-file/.cursorrules) - Cursor rules for Solidity development with Foundry integration.
