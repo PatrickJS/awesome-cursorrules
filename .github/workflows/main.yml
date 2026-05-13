@@ -19,7 +19,7 @@ jobs:
         with:
           script: |
             const username = context.payload.pull_request.user.login;
-            const allowlist = (process.env.PR_AUTHOR_AGE_ALLOWLIST || "PatrickJS,dependabot[bot]")
+            const allowlist = (process.env.PR_AUTHOR_AGE_ALLOWLIST || "PatrickJS,dependabot[bot],Copilot")
               .split(",")
               .map((entry) => entry.trim().toLowerCase())
               .filter(Boolean);
