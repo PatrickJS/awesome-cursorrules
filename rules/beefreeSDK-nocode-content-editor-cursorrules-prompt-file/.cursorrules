@@ -346,11 +346,7 @@ Guidelines and best practices for building applications with [Beefree SDK](https
     fetch('/api/beefree/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        client_id: 'your_client_id',
-        client_secret: 'your_client_secret',
-        uid: beeConfig.uid
-      })
+      body: JSON.stringify({ uid: beeConfig.uid })
     })
     .then(response => {
       if (!response.ok) throw new Error('Auth failed: ' + response.status);
@@ -515,7 +511,7 @@ Reference the complete project at Beefree SDK [multiple-versions-concept](https:
   </head>
   <body>
     <div id="beefree-sdk-container"></div>
-    <script src="https://app-rsrc.getbee.io/plugin/BeefreeSDK.js"></script>
+    <!-- Bundle the official @beefree.io/sdk package and expose BeefreeSDK from your app entrypoint. -->
     <script type="text/javascript">
       const beeConfig = {
             container: 'beefree-sdk-container',
@@ -533,11 +529,7 @@ Reference the complete project at Beefree SDK [multiple-versions-concept](https:
         fetch('/api/beefree/auth', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            client_id: 'your_client_id',
-            client_secret: 'your_client_secret',
-            uid: beeConfig.uid
-          })
+          body: JSON.stringify({ uid: beeConfig.uid })
         })
         .then(response => response.json())
         .then(data => callback(data))
@@ -547,10 +539,8 @@ Reference the complete project at Beefree SDK [multiple-versions-concept](https:
       }
 
       function initializeBeefree(authResponse) {
-        BeefreeSDK.create(authResponse, beeConfig, function (beefreeSDKInstance) {
-          console.log('Beefree SDK initialized successfully');
-          beefreeSDKInstance.start();
-        });
+        const bee = new BeefreeSDK(authResponse);
+        bee.start(beeConfig, {});
       }
 
       getBeeToken(initializeBeefree);

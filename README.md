@@ -347,14 +347,13 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Method Two
 
 1. Install [Cursor AI](https://cursor.sh/) if you haven't already.
-2. Install [vscode-cursor-rules](https://marketplace.visualstudio.com/items?itemName=beilunyang.cursor-rules) extension.
-3. Open the command palette (Cmd+Shift+P or Ctrl+Shift+P) and type `Cursor Rules: Add .cursorrules`.
-4. Select and download the `.cursorrules` file that suits your needs.
-5. Customize the rules as needed for your specific project requirements.
+2. Open the command palette (Cmd+Shift+P or Ctrl+Shift+P) and run `New Cursor Rule`.
+3. Copy the relevant guidance from this repository into the generated project rule.
+4. Customize the rule as needed for your specific project requirements.
 
 ### Method Three: Cursor .mdc Rule Files
 
-1. Create a `.cursor/rules/` directory in your project.
+1. Follow the [Cursor project rules documentation](https://docs.cursor.com/context/rules) or create a `.cursor/rules/` directory in your project.
 2. Copy only the relevant `.mdc` files into `.cursor/rules/`.
 3. Keep each `.mdc` file's frontmatter so Cursor can apply it by `globs` and `alwaysApply`.
 4. Prefer focused `.mdc` files for framework-specific or directory-specific guidance.
