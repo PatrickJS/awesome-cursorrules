@@ -1,6 +1,7 @@
 ---
 description: KubeStellar Console — Multi-cluster Kubernetes dashboard development rules
 globs: **/*.tsx, **/*.ts, **/*.go, web/src/**/*.ts, web/src/**/*.tsx, pkg/**/*.go, cmd/**/*.go
+alwaysApply: false
 ---
 
 # KubeStellar Console Development Rules

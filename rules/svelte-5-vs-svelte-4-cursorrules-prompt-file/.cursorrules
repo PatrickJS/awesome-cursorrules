@@ -1,5 +1,5 @@
 I'm using svelte 5 instead of svelte 4 here is an overview of the changes.
-# .cursorrunes for Svelte 5
+# .cursorrules for Svelte 5
 
 ## Overview of Changes
 
@@ -28,8 +28,6 @@ In Svelte 5, event handlers are treated as standard HTML properties rather than 
 **After (Svelte 5):**
 ```html
 <script>
-  import { $state, $effect, $derived } from 'svelte';
-  
   // Define state with runes
   let count = $state(0);
   
@@ -64,8 +62,9 @@ In Svelte 5, event handlers are treated as standard HTML properties rather than 
    - Svelte 4: `on:click={handler}`
    - Svelte 5: `onclick={handler}`
 
-3. **Import Runes**: 
-   - All runes must be imported from 'svelte': `import { $state, $effect, $derived, $props, $slots } from 'svelte';`
+3. **Runes are Compiler Syntax**:
+   - Do not import `$state`, `$derived`, `$effect`, `$props`, `$bindable`, or `$inspect`.
+   - Import only regular Svelte utilities that require imports, such as `tick`, `untrack`, `mount`, or `unmount`.
 
 4. **No More Event Modifiers**:
    - Svelte 4: `on:click|preventDefault={handler}`

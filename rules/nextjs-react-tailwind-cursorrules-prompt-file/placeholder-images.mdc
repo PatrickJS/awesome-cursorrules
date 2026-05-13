@@ -1,5 +1,5 @@
 ---
-description: Rule to use placekitten.com for placeholder images in seed data.
+description: Rule for choosing stable placeholder images in seed data.
 globs: **/seed.ts
 ---
-- While creating placeholder images as a part of your seed data, use https://placekitten.com/
+- While creating placeholder images as a part of your seed data, use local fixtures or a stable project-approved image source instead of deprecated placeholder services.

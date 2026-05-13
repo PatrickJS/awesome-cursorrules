@@ -1,5 +1,7 @@
 ---
 description: Gitflow Workflow Rules. These rules should be applied when performing git operations.
+globs: ["**/*"]
+alwaysApply: false
 ---
 # Gitflow Workflow Rules
 
@@ -108,4 +110,4 @@ description: Gitflow Workflow Rules. These rules should be applied when performi
 5. After merge to main:
    - Tag release
    - Merge back to develop
-   - Delete hotfix branch 
+   - Delete hotfix branch

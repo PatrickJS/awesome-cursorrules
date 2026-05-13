@@ -208,19 +208,34 @@ test("fails README-only external directory or utility listings", () => {
     write(root, ".readme.diff", "+- [Promo Tool](https://example.com) - Great tool.\n");
     const result = run(root, ["--changed-files", ".changed-files", "--diff-file", ".readme.diff"]);
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /README-only external listing/);
+    assert.match(result.stderr, /New external README listings require maintainer handling/);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
 });
 
-test("allows external README links when rule content changes too", () => {
+test("fails external README links even when rule content changes too", () => {
   const root = makeFixture();
   try {
     write(root, "README.md", "\n");
     write(root, "rules/tool/.cursorrules", "Useful rule content\n");
     write(root, ".changed-files", "README.md\nrules/tool/.cursorrules\n");
     write(root, ".readme.diff", "+- [Tool](https://example.com) - Rule source.\n");
+    const result = run(root, ["--changed-files", ".changed-files", "--diff-file", ".readme.diff"]);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /New external README listings require maintainer handling/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("allows README local rule links when rule content changes too", () => {
+  const root = makeFixture();
+  try {
+    write(root, "README.md", "- [Tool](./rules/tool/.cursorrules) - Rule source.\n");
+    write(root, "rules/tool/.cursorrules", "Useful rule content\n");
+    write(root, ".changed-files", "README.md\nrules/tool/.cursorrules\n");
+    write(root, ".readme.diff", "+- [Tool](./rules/tool/.cursorrules) - Rule source.\n");
     const result = run(root, ["--changed-files", ".changed-files", "--diff-file", ".readme.diff"]);
     assert.equal(result.status, 0, result.stderr + result.stdout);
   } finally {

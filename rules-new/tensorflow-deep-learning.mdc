@@ -1,0 +1,54 @@
+---
+description: TensorFlow and deep learning rules for building, training, evaluating, and deploying neural network models
+globs: ["**/*.py", "**/*.ipynb", "pyproject.toml", "requirements*.txt", "environment*.yml"]
+alwaysApply: false
+---
+
+# TensorFlow and Deep Learning Rules
+
+## Project Structure
+
+- Separate data loading, model definition, training, evaluation, and serving code.
+- Use `tf.data` pipelines for scalable input processing.
+- Keep model hyperparameters in typed config files or dataclasses.
+- Store checkpoints, logs, and exported models outside source directories.
+- Keep notebooks exploratory; move repeatable training code into modules.
+
+## Model Development
+
+- Start with a small baseline model and a tiny overfit test before scaling.
+- Use Keras layers and models unless lower-level TensorFlow APIs are required.
+- Prefer explicit input shapes and named inputs/outputs.
+- Use callbacks for checkpointing, early stopping, learning-rate scheduling, and TensorBoard logging.
+- Use mixed precision only after validating numerical stability.
+- Pin random seeds where reproducibility matters, while documenting nondeterministic GPU behavior.
+
+## Training
+
+- Validate data shapes, dtypes, label ranges, and class balance before training.
+- Split data before augmentation or normalization fitting.
+- Use validation data for tuning and a separate test set for final reporting.
+- Track loss curves, metrics, learning rate, and resource use.
+- Save the best checkpoint by validation metric, not by final epoch.
+
+## Evaluation
+
+- Report task-appropriate metrics such as AUROC, F1, calibration, perplexity, BLEU/ROUGE, or MAE/RMSE.
+- Include confusion matrices or error slices for classification tasks.
+- Evaluate on edge cases and distribution shifts when data allows.
+- Compare against non-neural baselines when the dataset is small or tabular.
+
+## Deployment
+
+- Export models with clear input signatures.
+- Keep preprocessing consistent between training and serving.
+- Add smoke tests that load the exported model and run inference on sample inputs.
+- Monitor latency, memory, prediction drift, and input schema changes.
+
+## Common Mistakes
+
+- Do not tune architecture before verifying labels and data quality.
+- Do not leak validation data through preprocessing or augmentation.
+- Do not rely on accuracy alone for imbalanced data.
+- Do not deploy a notebook-only model.
+- Do not ignore batch size, dtype, and device differences between training and inference.

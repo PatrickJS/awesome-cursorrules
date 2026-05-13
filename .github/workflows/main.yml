@@ -6,6 +6,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   repo-hygiene:
     runs-on: ubuntu-latest
@@ -72,5 +75,18 @@ jobs:
           git diff --name-only "$base"...HEAD > .changed-files
           git diff --unified=0 "$base"...HEAD -- README.md > .readme.diff || true
 
+      - name: Checkout trusted base checks
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: .trusted-base
+          fetch-depth: 1
+
+      - name: Run trusted repo hygiene checks
+        if: github.event_name == 'pull_request'
+        run: node .trusted-base/scripts/check-repo-hygiene.mjs --root "$GITHUB_WORKSPACE" --changed-files .changed-files --diff-file .readme.diff
+
       - name: Run repo hygiene checks
+        if: github.event_name != 'pull_request'
         run: node scripts/check-repo-hygiene.mjs --changed-files .changed-files --diff-file .readme.diff

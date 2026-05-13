@@ -21,14 +21,14 @@ The goal of this project is to enable a consistent, secure, and efficient develo
 
 2. **Enable in Your Editor:**  
    - If you’re using the Cursor AI editor, make sure that project rules are enabled (usually via a settings toggle).
-   - For VS Code users, install the [Cursor VS Code extension](https://marketplace.visualstudio.com/) and use its command palette to ensure the `.cursorrules` file is recognized.
+   - For current Cursor versions, prefer project rules under `.cursor/rules/`; `.cursorrules` remains a legacy format. See the [Cursor rules documentation](https://docs.cursor.com/context/rules).
 
 3. **Commit the Changes:**  
    Once added, commit the file to your repository so that the rules are shared with your entire development team.
 
 ## References
 
-- [Awesome CursorRules on GitHub](https://github.com/awesome-cursorrules/awesome-cursorrules)
+- [Awesome CursorRules on GitHub](https://github.com/PatrickJS/awesome-cursorrules)
 - [Drupal 11 Documentation](https://www.drupal.org/docs/understanding-drupal)
 - [Drupal Coding Standards (PSR-12)](https://www.drupal.org/docs/develop/standards)
 

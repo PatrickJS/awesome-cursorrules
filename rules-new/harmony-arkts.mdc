@@ -1,0 +1,54 @@
+---
+description: HarmonyOS ArkTS rules for components, state, resources, layout, lifecycle, and accessibility
+globs: ["**/*.ets", "**/*.ts", "**/*.json5", "AppScope/**/*", "entry/src/main/**/*"]
+alwaysApply: false
+---
+
+# HarmonyOS ArkTS Rules
+
+## Component Structure
+
+- Use `@Component` for component definitions and PascalCase for component structs.
+- Keep state declarations near the top of the component.
+- Group lifecycle hooks before `build()`.
+- Place `build()` last and keep it focused on UI composition.
+- Extract complex UI into smaller components.
+
+## State and Data Flow
+
+- Use `@State` for component-owned state.
+- Use `@Prop` for parent-to-child data.
+- Use `@Link` only for intentional two-way binding.
+- Keep derived values in methods or computed helpers rather than duplicating state.
+- Avoid broad global state unless the project has an established app-state pattern.
+
+## Layout and Styling
+
+- Use `Column`, `Row`, `Stack`, `List`, and other ArkUI primitives intentionally.
+- Keep layout properties such as width, height, alignment, and layout weight grouped before visual properties.
+- Use object notation for margin and padding when sides differ.
+- Use logical pixels consistently.
+- Use percentage strings for relative sizes.
+- Keep reusable spacing, colors, and typography in resources when the project supports it.
+
+## Events and Lifecycle
+
+- Use arrow functions for event handlers.
+- Keep event handlers short and delegate complex logic to methods.
+- Handle async failures explicitly and surface user-facing errors where appropriate.
+- Use lifecycle hooks for setup and teardown that genuinely depends on component lifecycle.
+
+## Resources and Accessibility
+
+- Use `$r()` for app resources.
+- Group resource references consistently.
+- Add descriptive labels and focus handling for interactive elements.
+- Maintain color contrast and touch target size.
+- Test on representative device sizes and orientations.
+
+## Common Mistakes
+
+- Do not bury business logic in `build()`.
+- Do not use two-way binding when one-way props are enough.
+- Do not hardcode repeated strings, colors, and dimensions that belong in resources.
+- Do not leave debug `console.log` calls in production code.

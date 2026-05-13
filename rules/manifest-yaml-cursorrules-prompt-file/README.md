@@ -47,6 +47,4 @@ This prompt file guides the generation of backends with Manifest. It embeds your
 
 ## References
 
-- Manifest Docs: https://manifest.build/docs
-
-- JSON Schema: https://schema.manifest.build/schema.json
+- Verify the current Manifest backend documentation and JSON Schema for the version used by your project before configuring editor schema validation.
