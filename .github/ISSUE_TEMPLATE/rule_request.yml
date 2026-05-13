@@ -23,7 +23,7 @@ body:
     attributes:
       label: Existing rule path or proposed topic
       description: For updates, include the existing path. For new rules, name the framework, language, workflow, or tool the rule should cover.
-      placeholder: rules/nextjs-typescript-cursorrules-prompt-file/.cursorrules
+      placeholder: rules/nextjs-typescript.mdc
     validations:
       required: true
 

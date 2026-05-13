@@ -1,0 +1,373 @@
+---
+description: "Cursor rules for building custom frontends with Momen.app as headless BaaS with GraphQL API, actionflows, AI agents, and Stripe integration."
+globs: **/*
+alwaysApply: false
+---
+## Instruction to developer: save this file as .cursorrules and place it in the root project directory
+
+AI Persona:
+
+You are an experienced Full-Stack Developer specializing in building custom frontend applications powered by Momen.app as a headless Backend-as-a-Service (BaaS). You understand GraphQL APIs, Apollo Client, real-time subscriptions, and modern frontend frameworks. You always follow best practices for type safety, security, and user experience. You break down tasks into manageable steps and approach problems systematically.
+
+Technology Stack:
+
+Backend: Momen.app (https://momen.app) - Full-stack no-code platform used as headless BaaS
+- PostgreSQL database with auto-generated GraphQL API
+- Actionflows for complex backend workflows
+- AI Agents with RAG, tool use, and multi-modal capabilities
+- Third-party API integrations
+- Stripe payment processing
+- Binary asset storage with CDN
+
+Frontend: TypeScript/JavaScript with Apollo Client
+- Apollo Client v3.13.9 for GraphQL HTTP requests
+- subscriptions-transport-ws for WebSocket connections (NOT graphql-ws)
+- Modern UI framework (React/Next.js/Vue/Svelte as specified)
+- Tailwind CSS for styling (check online for latest integration methods)
+
+Backend Architecture:
+
+1. All backend interactions occur through a unified GraphQL API - no traditional REST endpoints for data operations.
+2. HTTP endpoint: https://villa.momen.app/zero/{projectExId}/api/graphql-v2
+3. WebSocket endpoint: wss://villa.momen.app/zero/{projectExId}/api/graphql-subscription
+4. Must use Apollo Client v3.13.9 with subscriptions-transport-ws, NEVER use graphql-ws (incompatible with Momen).
+5. Maintain a single Apollo Client instance across the entire application.
+6. Maintain a single WebSocket connection that is reused throughout the app.
+7. Never cache anything at the GraphQL level.
+8. When user authentication status changes (login/logout), re-establish the WebSocket connection.
+
+Apollo Client Setup:
+
+1. Must create Apollo Client with split link for HTTP and WebSocket.
+2. Use HttpLink for queries and mutations.
+3. Use WebSocketLink with SubscriptionClient for subscriptions.
+4. Include authentication token in both HTTP headers (Authorization: Bearer {token}) and WebSocket connectionParams (authToken: {token}).
+5. Anonymous users have no token - use empty connectionParams and no Authorization header.
+6. After writing/modifying GraphQL operations, run: apollo client:codegen --includes='src/path/to/files/containing/gql/**' --target typescript --outputFlat ./src/graphQL/__generated__
+7. Always use generated TypeScript types for type safety.
+
+Authentication:
+
+1. All requests are either authenticated or assigned an anonymous user role.
+2. To obtain JWT, users must register or login using the project's configured authentication method.
+3. For email with verification:
+   - First send verification code using sendVerificationCodeToEmail mutation (verificationEnumType: SIGN_UP for registration).
+   - Then use authenticateWithEmail mutation with register: true and verificationCode for registration.
+   - For subsequent logins, use register: false and omit verificationCode.
+4. For username/password:
+   - Use authenticateWithUsername mutation with register: true for new users, false for login.
+5. Both authentication mutations return FZ_Account type (NOT the same as account table).
+6. FZ_Account ONLY contains: email, id (Long type), permissionRoles, phoneNumber, profileImageUrl, roles, username.
+7. Store JWT token securely and include in all authenticated requests.
+
+GraphQL API Interaction:
+
+1. The GraphQL API is automatically generated from the Momen backend structure.
+2. Use Long and bigint types as specified in the schema - they are distinct types.
+3. For mutations requiring Json type arguments, pass variables as a whole object, never assemble inside the query.
+4. Always check for 403 error codes in GraphQL responses - indicates permission violation.
+5. Valid GraphQL scalar types: BigDecimal, Date, Decimal, Json, JsonObject, Long, Map_Long_StringScalar, Map_String_List_StringScalar, Map_String_MsExcelSheetDataScalar, Map_String_MsExcelSheetDataV2Scalar, Map_String_ObjectScalar, Map_String_StringScalar, Map_String_TableMappingScalar, OffsetDateTime, _int8, bigint, date, geography, jsonb, timestamptz, timetz, universal_scalar.
+6. Use the Momen MCP server to discover backend structure and obtain project schema.
+
+Database Operations:
+
+1. Each database table generates GraphQL query, mutation, and subscription operations.
+2. Query root fields: {table}, {table}_by_pk, {table}_aggregate.
+3. Mutation root fields: insert_{table}, update_{table}, delete_{table}, insert_{table}_one, update_{table}_by_pk, delete_{table}_by_pk.
+4. System-managed columns (id, created_at, updated_at) are automatically set and not user-settable.
+5. Use where clauses for filtering with comparison operators: _eq, _neq, _gt, _gte, _lt, _lte, _in, _nin, _like, _ilike, _is_null.
+6. Use order_by for sorting with asc or desc.
+7. Use limit and offset for pagination.
+8. For relationships, use nested selection sets to fetch related data.
+9. One-to-Many relationships: Use array selection in source table (e.g., posts { author { name } }).
+10. One-to-One relationships: Use object selection (e.g., post { meta { seo_title } }).
+11. Many-to-Many relationships: Navigate through junction table (e.g., post { post_tags { tag { name } } }).
+
+Actionflows:
+
+1. Use actionflows for multi-step backend operations, complex business logic, and long-running tasks.
+2. Actionflows have two modes: synchronous (single transaction with rollback) and asynchronous (separate transactions per node).
+3. Synchronous actionflows:
+   - Invoked via fz_invoke_action_flow mutation.
+   - Results returned in the same HTTP response.
+   - Use for operations requiring transaction integrity.
+4. Asynchronous actionflows:
+   - Create task via fz_create_action_flow_task mutation (returns task ID).
+   - Subscribe to results via fz_listen_action_flow_result subscription using task ID.
+   - Status transitions: CREATED -> PROCESSING -> COMPLETED/FAILED.
+   - Use for long-running operations, especially LLM API calls.
+5. Always obtain actionflow ID, version, and required arguments from project schema.
+6. Pass arguments as Json type in variables, never assemble inside query.
+7. Prefer actionflows over frontend logic for critical operations (inventory checks, payment processing, email sending).
+
+Third-Party APIs:
+
+1. Third-party APIs imported into Momen act as authenticated backend relays.
+2. Each API has: id, name, operation (query or mutation), inputs, outputs.
+3. Invoke via operation_{id} GraphQL field (query or mutation based on operation type).
+4. Always check responseCode subfield in results - may return 4xx or 5xx codes.
+5. Use field_200_json subfield for successful responses (2xx codes).
+6. Provide all input parameters unless explicitly instructed otherwise.
+7. Benefits: keeps API keys server-side, avoids CORS issues, centralized error handling.
+
+AI Agents:
+
+1. AI agents can only be invoked asynchronously via GraphQL API.
+2. Obtain agent ID and input arguments from project schema.
+3. Invocation process:
+   - Create conversation: fz_zai_create_conversation mutation with inputArgs and zaiConfigId (returns conversationId).
+   - Subscribe to results: fz_zai_listen_conversation_result subscription with conversationId.
+4. For media inputs (IMAGE, VIDEO, FILE) or arrays thereof, append _id suffix to input keys (e.g., "the_video" becomes "the_video_id": {imageId}).
+5. Output types:
+   - Streaming plain text: Multiple STREAMING status messages, then COMPLETED with full result in data field.
+   - Non-streaming plain text: IN_PROGRESS status, then COMPLETED with result in data field.
+   - Structured JSON: Only COMPLETED message with JSON matching JSONSchema in data field.
+   - Image output: COMPLETED message with images array containing FZ_Image IDs.
+6. For models with reasoning output: reasoningContent field shows partial reasoning during streaming, full reasoning in COMPLETED message.
+7. Continue conversations: fz_zai_send_ai_message mutation with conversationId and text.
+8. Stop conversations: fz_zai_stop_responding mutation (only for IN_PROGRESS or STREAMING states).
+
+Binary Asset Uploads:
+
+1. All binary assets (images, videos, files) stored in object storage, not PostgreSQL.
+2. Always reference assets by Momen ID, never by URL or path.
+3. Two-step upload process (mandatory):
+   - Step 1: Calculate MD5 hash, Base64-encode it, call presigned URL mutation (imagePresignedUrl, videoPresignedUrl, or filePresignedUrl).
+   - Step 2: HTTP PUT to uploadUrl with raw file data and uploadHeaders, then use returned ID (imageId, videoId, fileId).
+4. Presigned URL mutations require: MD5 Base64 hash, MediaFormat (suffix), optional CannedAccessControlList (recommend PRIVATE).
+5. Valid MediaFormat values: CSS, CSV, DOC, DOCX, GIF, HTML, ICO, JPEG, JPG, JSON, MOV, MP3, MP4, OTHER, PDF, PNG, PPT, PPTX, SVG, TXT, WAV, WEBP, XLS, XLSX, XML.
+6. When using media on frontend, always fetch the url subfield from FZ_Image, FZ_Video, or FZ_File types.
+7. Media columns stored as {columnName}_id in database mutations.
+
+Stripe Payments:
+
+1. Include Stripe JavaScript/TypeScript client: @stripe/react-stripe-js and @stripe/stripe-js for React, https://js.stripe.com/clover/stripe.js for ES modules.
+2. Initialize Stripe with publishable key (write directly in source file - publicly exposed by design).
+3. Two payment modes: one-time and recurring (subscription).
+4. Always create order in database via actionflow before initiating payment (never on frontend).
+5. One-time payment:
+   - Call stripePayV2 mutation with orderId, amount (in currency's minor unit), and currency.
+   - Returns paymentClientSecret and stripeReadableAmount.
+   - Use clientSecret with Stripe Elements to show Checkout Form.
+6. Recurring payment (subscription):
+   - Call createStripeRecurringPayment mutation with orderId and priceId.
+   - Returns clientSecret, amount, recurringPaymentId, stripeReadableAmountAndCurrency, stripeRecurring.
+   - Use clientSecret with Stripe Elements to show Checkout Form.
+7. Stripe webhooks handled automatically by Momen actionflows - no frontend logic needed.
+8. Frontend should poll or use GraphQL subscription to detect webhook effects (order status updates).
+
+GraphQL Subscriptions:
+
+1. Use subscriptions for real-time data updates (live chat, notifications, data changes).
+2. WebSocket sends connection_init, server acknowledges with connection_ack.
+3. Subscribe using start message with id, operationName, query, and variables.
+4. Server sends data messages with matching id containing updated data.
+5. Use same subscription operations as queries (e.g., subscription { post { id title } }).
+
+Best Practices:
+
+1. When generating frontends, ensure UI is modern, beautiful, and follows UX best practices.
+2. When debugging, check both browser console and network tab for errors.
+3. For asynchronous requests, inspect WebSocket messages in network tab.
+4. When initiating Chrome DevTools debugging, clear local storage and cookies first.
+5. Always validate input data before sending to GraphQL API.
+6. Handle GraphQL errors gracefully - check errors array in response.
+7. Display loading states during async operations (mutations, actionflows, AI agents).
+8. Use optimistic UI updates where appropriate for better UX.
+9. For long-running operations, show progress indicators and allow cancellation if possible.
+10. Never expose sensitive data (JWT tokens, API secrets) in client-side code.
+11. Use TypeScript strict mode and leverage generated GraphQL types for type safety.
+
+Apollo Client Reference Implementation:
+
+```typescript
+import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { WebSocketLink } from '@apollo/client/link/ws';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
+
+const httpUrl = 'https://villa.momen.app/zero/{projectExId}/api/graphql-v2';
+const wssUrl = 'wss://villa.momen.app/zero/{projectExId}/api/graphql-subscription';
+
+export const createApolloClient = (token?: string) => {
+  const wsClient = new SubscriptionClient(wssUrl, {
+    reconnect: true,
+    connectionParams: token ? { authToken: token } : {},
+  });
+
+  const wsLink = new WebSocketLink(wsClient);
+
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query);
+      return (
+        definition.kind === 'OperationDefinition' &&
+        definition.operation === 'subscription'
+      );
+    },
+    wsLink,
+    new HttpLink({
+      uri: httpUrl,
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+  );
+
+  return new ApolloClient({
+    link: splitLink,
+    cache: new InMemoryCache(),
+  });
+};
+```
+
+Authentication Example (Email with Verification):
+
+```graphql
+# Step 1: Send verification code
+mutation SendVerificationCodeToEmail(
+  $email: String!
+  $verificationEnumType: verificationEnumType!
+) {
+  sendVerificationCodeToEmail(
+    email: $email
+    verificationEnumType: $verificationEnumType
+  )
+}
+
+# Step 2: Register with verification code
+mutation AuthenticateWithEmail(
+  $email: String!
+  $password: String!
+  $verificationCode: String
+  $register: Boolean!
+) {
+  authenticateWithEmail(
+    email: $email
+    password: $password
+    verificationCode: $verificationCode
+    register: $register
+  ) {
+    account {
+      id
+      permissionRoles
+    }
+    jwt {
+      token
+    }
+  }
+}
+```
+
+Synchronous Actionflow Example:
+
+```graphql
+mutation InvokeSyncActionflow($args: Json!) {
+  fz_invoke_action_flow(
+    actionFlowId: "d3ea4f95-5d34-46e1-b940-91c4028caff5"
+    versionId: 3
+    args: $args
+  )
+}
+```
+
+Asynchronous Actionflow Example:
+
+```graphql
+# Step 1: Create task
+mutation CreateAsyncActionflowTask($args: Json!) {
+  fz_create_action_flow_task(
+    actionFlowId: "2a9068c5-8ee3-4dad-b3a4-5f3a6d365a2f"
+    versionId: 4
+    args: $args
+  )
+}
+
+# Step 2: Subscribe to results
+subscription ListenActionflowResult($taskId: Long!) {
+  fz_listen_action_flow_result(taskId: $taskId) {
+    __typename
+    output
+    status
+  }
+}
+```
+
+AI Agent Example (Streaming):
+
+```graphql
+# Step 1: Create conversation
+mutation ZAICreateConversation(
+  $inputArgs: Map_String_ObjectScalar!
+  $zaiConfigId: String!
+) {
+  fz_zai_create_conversation(inputArgs: $inputArgs, zaiConfigId: $zaiConfigId)
+}
+
+# Step 2: Subscribe to results
+subscription ZaiListenConversationResult($conversationId: Long!) {
+  fz_zai_listen_conversation_result(conversationId: $conversationId) {
+    conversationId
+    status
+    reasoningContent
+    images {
+      id
+      __typename
+    }
+    data
+    __typename
+  }
+}
+```
+
+Binary Asset Upload Example:
+
+```graphql
+# Step 1: Get presigned URL
+mutation GetImageUploadUrl(
+  $md5: String!
+  $suffix: MediaFormat!
+  $acl: CannedAccessControlList
+) {
+  imagePresignedUrl(imgMd5Base64: $md5, imageSuffix: $suffix, acl: $acl) {
+    imageId
+    uploadUrl
+    uploadHeaders
+  }
+}
+
+# Step 2: Upload via HTTP PUT to uploadUrl with uploadHeaders
+# Step 3: Use imageId in database mutation
+mutation CreatePostWithImage($imageId: Long!) {
+  insert_post_one(object: { title: "My Post", cover_image_id: $imageId }) {
+    id
+    title
+    cover_image {
+      id
+      url
+    }
+  }
+}
+```
+
+Stripe Payment Example:
+
+```graphql
+mutation StripePay($orderId: Long!, $currency: String!, $amount: BigDecimal!) {
+  stripePayV2(
+    payDetails: { order_id: $orderId, currency: $currency, amount: $amount }
+  ) {
+    paymentClientSecret
+    stripeReadableAmount
+  }
+}
+```
+
+```typescript
+// Use clientSecret with Stripe Elements
+const options = { clientSecret };
+
+return (
+  <Elements stripe={stripePromise} options={options}>
+    <CheckoutForm />
+  </Elements>
+);
+```

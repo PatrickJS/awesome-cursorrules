@@ -8,7 +8,7 @@
 
 - [ ] New Cursor rule file or rules folder
 - [ ] Update/fix to an existing rule
-- [ ] New `rules-new/*.mdc` rule
+- [ ] New `rules/*.mdc` rule
 - [ ] Documentation or README cleanup
 
 ## Value To Cursor Users
@@ -24,8 +24,8 @@
 ## Quality Checklist
 
 - [ ] The contribution includes original rule content, or clearly credits the source.
-- [ ] New rule folders use the `technology-focus-cursorrules-prompt-file` naming pattern where applicable.
-- [ ] New `rules-new/*.mdc` files include frontmatter with a non-empty `description`, relevant `globs`, and `alwaysApply: false` unless the rule is universal.
+- [ ] New rule files use a descriptive kebab-case filename, such as `react-typescript.mdc`.
+- [ ] New `rules/*.mdc` files include frontmatter with a non-empty `description`, relevant `globs`, and `alwaysApply: false` unless the rule is universal.
 - [ ] README links are relative for repo files and point to the correct category.
 - [ ] The text is neutral and useful, not sales copy.
 - [ ] This is not a standalone external tool, product, directory, marketplace, or service listing.

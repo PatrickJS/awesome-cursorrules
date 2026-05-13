@@ -1,0 +1,53 @@
+---
+description: GameMaker Language (GML) rules for scripts, objects, events, rooms, data structures, and performance-minded game code
+globs: ["**/*.gml", "**/*.yy", "**/*.yyp"]
+alwaysApply: false
+---
+
+# GameMaker GML Rules
+
+## Code Organization
+
+- Keep object event code short and move reusable behavior into scripts or functions.
+- Use clear prefixes or naming conventions for scripts, objects, sprites, rooms, and globals.
+- Prefer functions over copy-pasted event blocks.
+- Keep create-step-draw responsibilities separate.
+- Put initialization in Create, simulation in Step, and rendering-only work in Draw.
+
+## GML Style
+
+- Use descriptive variable names and avoid one-letter names outside small loops.
+- Prefer local variables with `var` or function-scoped declarations over unnecessary instance variables.
+- Use constants, enums, and macros for repeated identifiers, layer names, states, and collision groups.
+- Guard optional instance references with `instance_exists`.
+- Keep global state minimal and document it.
+
+## Gameplay Architecture
+
+- Use finite state machines for player, enemy, UI, and game-flow states.
+- Keep collision logic explicit and deterministic.
+- Separate input collection from action execution.
+- Use alarms, timelines, or explicit timers consistently; do not mix patterns without reason.
+- Store save data through structured maps/structs and version the save format.
+
+## Performance
+
+- Avoid expensive searches such as broad `instance_find` or repeated collision scans in every Step event.
+- Cache frequently used asset IDs, layer IDs, and object references when safe.
+- Destroy data structures when no longer needed.
+- Use object pooling for frequent projectiles, particles, or short-lived effects when allocation becomes costly.
+- Profile before optimizing and keep hot-path code simple.
+
+## Debugging and Testing
+
+- Add debug overlays for collision boxes, state, velocity, and AI decisions when useful.
+- Use assertions or explicit guard clauses for impossible states.
+- Test room transitions, pause/resume, save/load, and controller/keyboard input separately.
+- Keep reproducible test rooms for complex mechanics.
+
+## Common Mistakes
+
+- Do not put game logic in Draw events.
+- Do not create data structures without destroying them.
+- Do not rely on room editor instance order for critical behavior.
+- Do not hardcode magic numeric state IDs.

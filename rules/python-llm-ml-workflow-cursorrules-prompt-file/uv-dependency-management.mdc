@@ -1,5 +1,0 @@
----
-description: Specifies uv (preferred) or Poetry for dependency management in Python projects.
-globs: **/pyproject.toml
----
-- **Dependency Management:** uv (preferred) / Poetry

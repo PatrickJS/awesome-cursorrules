@@ -1,0 +1,12 @@
+{
+  "name": "awesome-cursorrules",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test scripts/*.test.mjs",
+    "cleanup:legacy": "node scripts/cleanup-legacy-artifacts.mjs"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1"
+  }
+}

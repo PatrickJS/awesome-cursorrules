@@ -9,9 +9,9 @@
   </a>
 </p>
 
-Configuration files that enhance Cursor AI editor experience with custom rules and behaviors
+Curated Cursor rules that enhance Cursor AI editor behavior with project-specific guidance and reusable coding standards.
 
-[Cursor AI](https://cursor.sh/) is an AI-powered code editor. `.cursorrules` files define custom rules for Cursor AI to follow when generating code, allowing you to tailor its behavior to your specific needs and preferences.
+[Cursor AI](https://cursor.sh/) is an AI-powered code editor. Cursor Project Rules are Markdown-based `.mdc` files that live in `.cursor/rules/` and tell Cursor how to behave for specific projects, file types, frameworks, and workflows.
 
 ## Sponsorships
 <p align="center">
@@ -30,29 +30,29 @@ Configuration files that enhance Cursor AI editor experience with custom rules a
 </p>
 
 
-## Why .cursorrules?
+## Why Cursor Rules?
 
-`.cursorrules` is a powerful feature in Cursor AI that allows developers to define project-specific instructions for the AI. Here's why you might want to use it:
+Cursor rules help developers define project-specific instructions for Cursor AI. This repository uses the modern `.mdc` Project Rules format.
 
-1. **Customized AI Behavior**: `.cursorrules` files help tailor the AI's responses to your project's specific needs, ensuring more relevant and accurate code suggestions.
+1. **Customized AI Behavior**: Project rules help tailor Cursor's responses to your project's specific needs, ensuring more relevant and accurate code suggestions.
 
-2. **Consistency**: By defining coding standards and best practices in your `.cursorrules` file, you can ensure that the AI generates code that aligns with your project's style guidelines.
+2. **Consistency**: By defining coding standards and best practices in `.mdc` files, you can help Cursor generate code that aligns with your project's style guidelines.
 
 3. **Context Awareness**: You can provide the AI with important context about your project, such as commonly used methods, architectural decisions, or specific libraries, leading to more informed code generation.
 
 4. **Improved Productivity**: With well-defined rules, the AI can generate code that requires less manual editing, speeding up your development process.
 
-5. **Team Alignment**: For team projects, a shared `.cursorrules` file ensures that all team members receive consistent AI assistance, promoting cohesion in coding practices.
+5. **Team Alignment**: For team projects, shared `.cursor/rules/*.mdc` files help all team members receive consistent AI assistance.
 
 6. **Project-Specific Knowledge**: You can include information about your project's structure, dependencies, or unique requirements, helping the AI to provide more accurate and relevant suggestions.
 
-By creating a `.cursorrules` file in your project's root directory, you can leverage these benefits and enhance your coding experience with Cursor AI.
+By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules directly in your project.
 
 ## Contents
 
 - [Awesome Cursor Rules ](#awesome-cursor-rules-)
   - [Sponsorships](#sponsorships)
-  - [Why .cursorrules?](#why-cursorrules)
+  - [Why Cursor Rules?](#why-cursor-rules)
   - [Contents](#contents)
   - [Rules](#rules)
     - [Frontend Frameworks and Libraries](#frontend-frameworks-and-libraries)
@@ -70,8 +70,6 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
     - [Documentation](#documentation)
   - [Directories](#directories)
   - [How to Use](#how-to-use)
-    - [Method One](#method-one)
-    - [Method Two](#method-two)
   - [Contributing](#contributing)
   - [Sponsorships](#sponsorships-1)
   - [License](#license)
@@ -80,231 +78,243 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Frontend Frameworks and Libraries
 
-- [Angular (Novo Elements)](./rules/angular-novo-elements-cursorrules-prompt-file/.cursorrules) - Cursor rules for Angular development with Novo Elements UI library.
-- [Angular (TypeScript)](./rules/angular-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Angular development with TypeScript integration.
-- [Astro (TypeScript)](./rules/astro-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Astro development with TypeScript integration.
-- [Beefree SDK (TypeScript, JavaScript, CSS, HTML, React, Angular, Vue)](./rules/beefreeSDK-nocode-content-editor-cursorrules-prompt-file/.cursorrules) - Cursor rules for embedding Beefree SDK's no-code content editors (for emails, pages, and popups) into a web application.
-- [Cursor AI (React, TypeScript, shadcn/ui)](./rules/cursor-ai-react-typescript-shadcn-ui-cursorrules-p/.cursorrules) - Cursor rules for Cursor AI development with React, TypeScript, and shadcn/ui integration.
-- [Next.js 15 (React 19, Vercel AI, Tailwind)](./rules/nextjs15-react19-vercelai-tailwind-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with React 19, Vercel AI, and Tailwind CSS integration.
-- [Next.js 15 (Supabase, TypeScript, Security)](./rules/nextjs15-supabase-cursorrules-prompt-file/.cursorrules) - 27 architecture rules preventing AI hallucinations: insecure auth (getSession vs getUser), synchronous params, deprecated imports, missing RLS, and Stripe key exposure. Built for Cursor Agent and Claude Code.
-- [Next.js 14 (Tailwind, SEO)](./rules/cursorrules-cursor-ai-nextjs-14-tailwind-seo-setup/.cursorrules) - Cursor rules for Next.js development with Tailwind CSS and SEO optimization.
-- [Next.js (React, Tailwind)](./rules/nextjs-react-tailwind-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with React and Tailwind CSS integration.
-- [Next.js (React, TypeScript)](./rules/nextjs-react-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with React and TypeScript integration.
-- [Next.js (SEO Development)](./rules/nextjs-seo-dev-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with SEO optimization.
-- [Next.js (Supabase Todo App)](./rules/nextjs-supabase-todo-app-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with Supabase integration for a Todo app.
-- [Next.js (TanStack Query v5)](./rules/nextjs-tanstack-query-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js App Router with TanStack Query v5, covering the HydrationBoundary pattern, Server Actions as mutations, and optimistic updates.
-- [Next.js (Type LLM)](./rules/next-type-llm/.cursorrules) - Cursor rules for Next.js development with Type LLM integration.
-- [Next.js (Tailwind, TypeScript)](./rules/nextjs-tailwind-typescript-apps-cursorrules-prompt/.cursorrules) - Cursor rules for Next.js development with Tailwind CSS and TypeScript integration.
-- [Next.js (TypeScript App)](./rules/nextjs-typescript-app-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with TypeScript integration.
-- [Next.js (TypeScript)](./rules/nextjs-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with TypeScript integration.
-- [Next.js (TypeScript, Tailwind)](./rules/nextjs-typescript-tailwind-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with TypeScript and Tailwind CSS integration.
-- [Next.js (Vercel, Supabase)](./rules/nextjs-vercel-supabase-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with Vercel and Supabase integration.
-- [Next.js (Vercel, TypeScript)](./rules/nextjs-vercel-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with Vercel and TypeScript integration.
-- [Next.js (App Router)](./rules/nextjs-app-router-cursorrules-prompt-file/.cursorrules) - Cursor rules for Next.js development with App Router integration.
-- [Next.js (Material UI, Tailwind CSS)](./rules/nextjs-material-ui-tailwind-css-cursorrules-prompt/.cursorrules) - Cursor rules for Next.js development with Material UI and Tailwind CSS integration.
-- [Qwik (Basic Setup with TypeScript and Vite)](./rules/qwik-basic-cursorrules-prompt-file/.cursorrules) - Cursor rules for Qwik development with TypeScript and Vite integration.
-- [Qwik (with Tailwind CSS)](./rules/qwik-tailwind-cursorrules-prompt-file/.cursorrules) - Cursor rules for Qwik development with Tailwind CSS integration.
-- [React Components Creation](./rules/react-components-creation-cursorrules-prompt-file/.cursorrules) - Cursor rules for React component creation and development.
-- [React (FormEngine AI Form Builder)](./rules/react-formengine-ai-form-builder-cursorrules-prompt-file/.cursorrules) - Cursor rules for generating React forms from screenshots, PDFs, HTML, or text descriptions with validated FormEngine JSON schema. Renders through RSuite, Material UI, or Mantine.
-- [React (Next.js UI Development)](./rules/react-nextjs-ui-development-cursorrules-prompt-fil/.cursorrules) - Cursor rules for React development with Next.js UI integration.
-- [React (TypeScript, Next.js, Node.js)](./rules/react-typescript-nextjs-nodejs-cursorrules-prompt-/.cursorrules) - Cursor rules for React development with TypeScript, Next.js, and Node.js integration.
-- [React (TypeScript, Symfony)](./rules/react-typescript-symfony-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with TypeScript and Symfony integration.
-- [Semiotic (React, D3, Data Visualization)](./rules/semiotic-react-dataviz-cursorrules-prompt-file/.cursorrules) - Cursor rules for Semiotic data visualization library with 30+ chart types, MCP server, and AI-assisted chart generation.
-- [Shopify Theme (Liquid, JavaScript, CSS)](./rules-new/shopify-theme-dev-liquid.mdc) - Cursor rules for Shopify theme development with Liquid templates, section schemas, frontend assets, performance, and accessibility.
-- [Solid.js (Basic Setup)](./rules/solidjs-basic-cursorrules-prompt-file/.cursorrules) - Cursor rules for Solid.js development with basic setup.
-- [Solid.js (TypeScript)](./rules/solidjs-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Solid.js development with TypeScript integration.
-- [Solid.js (Tailwind CSS)](./rules/solidjs-tailwind-cursorrules-prompt-file/.cursorrules) - Cursor rules for Solid.js development with Tailwind CSS integration.
-- [Svelte 5 vs Svelte 4](./rules/svelte-5-vs-svelte-4-cursorrules-prompt-file/.cursorrules) - Cursor rules for comparing Svelte 5 and Svelte 4 development.
-- [SvelteKit (RESTful API, Tailwind CSS)](./rules/sveltekit-restful-api-tailwind-css-cursorrules-pro/.cursorrules) - Cursor rules for SvelteKit development with RESTful API and Tailwind CSS integration.
-- [SvelteKit (Tailwind CSS, TypeScript)](./rules/sveltekit-tailwindcss-typescript-cursorrules-promp/.cursorrules) - Cursor rules for SvelteKit development with Tailwind CSS and TypeScript integration.
-- [SvelteKit (TypeScript Guide)](./rules/sveltekit-typescript-guide-cursorrules-prompt-file/.cursorrules) - Cursor rules for SvelteKit development with TypeScript integration.
-- [TanStack Router (React)](./rules/tanstack-router-react-cursorrules-prompt-file/.cursorrules) - Cursor rules for TanStack Router v1 with file-based routing, typed params, search validation, loaders, auth guards, and route preloading.
-- [Vue 3 (Nuxt 3 Development)](./rules/vue-3-nuxt-3-development-cursorrules-prompt-file/.cursorrules) - Cursor rules for Vue 3 development with Nuxt 3 integration.
-- [Vue 3 (Nuxt 3, TypeScript)](./rules/vue-3-nuxt-3-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Vue 3 development with TypeScript integration.
-- [Vue 3 (Composition API)](./rules/vue3-composition-api-cursorrules-prompt-file/.cursorrules) - Cursor rules for Vue 3 development with Composition API integration.
-- [Vue/Nuxt Full AI Stack](./rules/vue-claude-stack/.cursorrules) - Complete AI coding setup for Vue 3 & Nuxt 3 — .cursorrules + CLAUDE.md + Copilot instructions + generation skills.
+- [Angular (Novo Elements)](./rules/angular-novo-elements-cursorrules-prompt-file.mdc) - Cursor rules for Angular development with Novo Elements UI library.
+- [Angular (TypeScript)](./rules/angular-typescript-cursorrules-prompt-file.mdc) - Cursor rules for Angular development with TypeScript integration.
+- [Astro (TypeScript)](./rules/astro-typescript-cursorrules-prompt-file.mdc) - Cursor rules for Astro development with TypeScript integration.
+- [Beefree SDK (TypeScript, JavaScript, CSS, HTML, React, Angular, Vue)](./rules/beefreeSDK-nocode-content-editor-cursorrules-prompt-file.mdc) - Cursor rules for embedding Beefree SDK's no-code content editors (for emails, pages, and popups) into a web application.
+- [Cursor AI (React, TypeScript, shadcn/ui)](./rules/cursor-ai-react-typescript-shadcn-ui-cursorrules-p.mdc) - Cursor rules for Cursor AI development with React, TypeScript, and shadcn/ui integration.
+- [Next.js 15 (React 19, Vercel AI, Tailwind)](./rules/nextjs15-react19-vercelai-tailwind-cursorrules-prompt-file.mdc) - Cursor rules for Next.js development with React 19, Vercel AI, and Tailwind CSS integration.
+- [Next.js 15 (Supabase, TypeScript, Security)](./rules/nextjs15-supabase-cursorrules-prompt-file.mdc) - 27 architecture rules preventing AI hallucinations: insecure auth (getSession vs getUser), synchronous params, deprecated imports, missing RLS, and Stripe key exposure. Built for Cursor Agent and Claude Code.
+- [Next.js 14 (Tailwind, SEO)](./rules/cursorrules-cursor-ai-nextjs-14-tailwind-seo-setup.mdc) - Cursor rules for Next.js development with Tailwind CSS and SEO optimization.
+- [Next.js (React, Tailwind)](./rules/nextjs-react-tailwind-cursorrules-prompt-file.mdc) - Cursor rules for Next.js development with React and Tailwind CSS integration.
+- [Next.js (React, TypeScript)](./rules/nextjs-react-typescript-cursorrules-prompt-file.mdc) - Cursor rules for Next.js development with React and TypeScript integration.
+- [Next.js (SEO Development)](./rules/nextjs-seo-dev-cursorrules-prompt-file.mdc) - Cursor rules for Next.js development with SEO optimization.
+- [Next.js (Supabase Todo App)](./rules/nextjs-supabase-todo-app-cursorrules-prompt-file.mdc) - Cursor rules for Next.js development with Supabase integration for a Todo app.
+- [Next.js (TanStack Query v5)](./rules/nextjs-tanstack-query-cursorrules-prompt-file.mdc) - Cursor rules for Next.js App Router with TanStack Query v5, covering the HydrationBoundary pattern, Server Actions as mutations, and optimistic updates.
+- [Next.js (Type LLM)](./rules/next-type-llm.mdc) - Cursor rules for Next.js development with Type LLM integration.
+- [Next.js (Tailwind, TypeScript)](./rules/nextjs-tailwind-typescript-apps-cursorrules-prompt.mdc) - Cursor rules for Next.js development with Tailwind CSS and TypeScript integration.
+- [Next.js (TypeScript App)](./rules/nextjs-typescript-app-cursorrules-prompt-file.mdc) - Cursor rules for Next.js development with TypeScript integration.
+- [Next.js (TypeScript)](./rules/nextjs-typescript-cursorrules-prompt-file.mdc) - Cursor rules for Next.js development with TypeScript integration.
+- [Next.js (TypeScript, Tailwind)](./rules/nextjs-typescript-tailwind-cursorrules-prompt-file.mdc) - Cursor rules for Next.js development with TypeScript and Tailwind CSS integration.
+- [Next.js (Vercel, Supabase)](./rules/nextjs-vercel-supabase-cursorrules-prompt-file.mdc) - Cursor rules for Next.js development with Vercel and Supabase integration.
+- [Next.js (Vercel, TypeScript)](./rules/nextjs-vercel-typescript-cursorrules-prompt-file.mdc) - Cursor rules for Next.js development with Vercel and TypeScript integration.
+- [Next.js (App Router)](./rules/nextjs-app-router-cursorrules-prompt-file.mdc) - Cursor rules for Next.js development with App Router integration.
+- [Next.js (Material UI, Tailwind CSS)](./rules/nextjs-material-ui-tailwind-css-cursorrules-prompt.mdc) - Cursor rules for Next.js development with Material UI and Tailwind CSS integration.
+- [Qwik (Basic Setup with TypeScript and Vite)](./rules/qwik-basic-cursorrules-prompt-file.mdc) - Cursor rules for Qwik development with TypeScript and Vite integration.
+- [Qwik (with Tailwind CSS)](./rules/qwik-tailwind-cursorrules-prompt-file.mdc) - Cursor rules for Qwik development with Tailwind CSS integration.
+- [React Components Creation](./rules/react-components-creation-cursorrules-prompt-file.mdc) - Cursor rules for React component creation and development.
+- [React (FormEngine AI Form Builder)](./rules/react-formengine-ai-form-builder-cursorrules-prompt-file.mdc) - Cursor rules for generating React forms from screenshots, PDFs, HTML, or text descriptions with validated FormEngine JSON schema. Renders through RSuite, Material UI, or Mantine.
+- [React (Next.js UI Development)](./rules/react-nextjs-ui-development-cursorrules-prompt-fil.mdc) - Cursor rules for React development with Next.js UI integration.
+- [React Router v7](./rules/react-router-v7.mdc) - Cursor rules for React Router v7 framework mode, data routers, loaders, actions, route modules, and progressive enhancement.
+- [React (TypeScript, Next.js, Node.js)](./rules/react-typescript-nextjs-nodejs-cursorrules-prompt-.mdc) - Cursor rules for React development with TypeScript, Next.js, and Node.js integration.
+- [React (TypeScript, Symfony)](./rules/react-typescript-symfony-cursorrules-prompt-file.mdc) - Cursor rules for React development with TypeScript and Symfony integration.
+- [Semiotic (React, D3, Data Visualization)](./rules/semiotic-react-dataviz-cursorrules-prompt-file.mdc) - Cursor rules for Semiotic data visualization library with 30+ chart types, MCP server, and AI-assisted chart generation.
+- [Shopify Theme (Liquid, JavaScript, CSS)](./rules/shopify-theme-dev-liquid.mdc) - Cursor rules for Shopify theme development with Liquid templates, section schemas, frontend assets, performance, and accessibility.
+- [Solid.js (Basic Setup)](./rules/solidjs-basic-cursorrules-prompt-file.mdc) - Cursor rules for Solid.js development with basic setup.
+- [Solid.js (TypeScript)](./rules/solidjs-typescript-cursorrules-prompt-file.mdc) - Cursor rules for Solid.js development with TypeScript integration.
+- [Solid.js (Tailwind CSS)](./rules/solidjs-tailwind-cursorrules-prompt-file.mdc) - Cursor rules for Solid.js development with Tailwind CSS integration.
+- [Svelte 5 vs Svelte 4](./rules/svelte-5-vs-svelte-4-cursorrules-prompt-file.mdc) - Cursor rules for comparing Svelte 5 and Svelte 4 development.
+- [SvelteKit (RESTful API, Tailwind CSS)](./rules/sveltekit-restful-api-tailwind-css-cursorrules-pro.mdc) - Cursor rules for SvelteKit development with RESTful API and Tailwind CSS integration.
+- [SvelteKit (Tailwind CSS, TypeScript)](./rules/sveltekit-tailwindcss-typescript-cursorrules-promp.mdc) - Cursor rules for SvelteKit development with Tailwind CSS and TypeScript integration.
+- [SvelteKit (TypeScript Guide)](./rules/sveltekit-typescript-guide-cursorrules-prompt-file.mdc) - Cursor rules for SvelteKit development with TypeScript integration.
+- [TanStack Router (React)](./rules/tanstack-router-react-cursorrules-prompt-file.mdc) - Cursor rules for TanStack Router v1 with file-based routing, typed params, search validation, loaders, auth guards, and route preloading.
+- [Vue 3 (Nuxt 3 Development)](./rules/vue-3-nuxt-3-development-cursorrules-prompt-file.mdc) - Cursor rules for Vue 3 development with Nuxt 3 integration.
+- [Vue 3 (Nuxt 3, TypeScript)](./rules/vue-3-nuxt-3-typescript-cursorrules-prompt-file.mdc) - Cursor rules for Vue 3 development with TypeScript integration.
+- [Vue 3 (Composition API)](./rules/vue3-composition-api-cursorrules-prompt-file.mdc) - Cursor rules for Vue 3 development with Composition API integration.
+- [Vue/Nuxt Full AI Stack](./rules/vue-claude-stack.mdc) - Complete AI coding setup for Vue 3 & Nuxt 3 with Cursor Project Rules, CLAUDE.md, Copilot instructions, and generation skills.
 
 ### Backend and Full-Stack
 
-- [Cloudflare Workers (Hono, Angular)](./rules/cloudflare-workers-hono-angular-saas-cursorrules-prompt-file/.cursorrules) - Cursor rules for full-stack SaaS applications on Cloudflare Workers with Hono APIs, Angular frontends, typed RPC, D1/Neon, and production observability.
-- [Convex best practices](./rules/convex-cursorrules-prompt-file/.cursorrules) - Cursor rules for Convex development with best practices.
-- [Deno Integration](./rules/deno-integration-techniques-cursorrules-prompt-fil/.cursorrules) - Cursor rules for Deno development with integration techniques.
-- [Drupal 11](./rules/drupal-11-cursorrules-prompt-file/.cursorrules) - Cursor rules for Drupal 11 development.
-- [Elixir Engineer Guidelines](./rules/elixir-engineer-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for Elixir development with engineer guidelines.
-- [Elixir (Phoenix, Docker)](./rules/elixir-phoenix-docker-setup-cursorrules-prompt-fil/.cursorrules) - Cursor rules for Elixir development with Phoenix and Docker integration.
-- [ES Module (Node.js)](./rules/es-module-nodejs-guidelines-cursorrules-prompt-fil/.cursorrules) - Cursor rules for ES Module development with Node.js guidelines.
-- [Go Backend Scalability](./rules/go-backend-scalability-cursorrules-prompt-file/.cursorrules) - Cursor rules for Go development with backend scalability.
-- [Go ServeMux REST API](./rules/go-servemux-rest-api-cursorrules-prompt-file/.cursorrules) - Cursor rules for Go development with ServeMux REST API integration.
-- [Go (Basic Setup)](./rules/htmx-go-basic-cursorrules-prompt-file/.cursorrules) - Cursor rules for Go development with basic setup.
-- [Go with Fiber](./rules/htmx-go-fiber-cursorrules-prompt-file/.cursorrules) - Cursor rules for Go development with Fiber integration.
-- [Go Temporal DSL](./rules/go-temporal-dsl-prompt-file/.cursorrules) - Cursor rules for Go development with Temporal DSL integration.
-- [HOL (Hedera TypeScript SDK)](./rules/hol-hedera-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for Hashgraph Online development with TypeScript, building AI agents on Hedera with RegistryBrokerClient.
-- [HTMX (Basic Setup)](./rules/htmx-basic-cursorrules-prompt-file/.cursorrules) - Cursor rules for HTMX development with basic setup.
-- [HTMX (Flask)](./rules/htmx-flask-cursorrules-prompt-file/.cursorrules) - Cursor rules for HTMX development with Flask integration.
-- [HTMX (Django)](./rules/htmx-django-cursorrules-prompt-file/.cursorrules) - Cursor rules for HTMX development with Django integration.
-- [Java (Springboot, JPA)](./rules/java-springboot-jpa-cursorrules-prompt-file/.cursorrules) - Cursor rules for Java development with Springboot and JPA integration.
-- [Knative (Istio, Typesense, GPU)](./rules/knative-istio-typesense-gpu-cursorrules-prompt-fil/.cursorrules) - Cursor rules for Knative development with Istio, Typesense, and GPU integration.
-- [Kotlin Ktor Development](./rules/kotlin-ktor-development-cursorrules-prompt-file/.cursorrules) - Cursor rules for Kotlin development with Ktor integration.
-- [Laravel (PHP 8.3)](./rules/laravel-php-83-cursorrules-prompt-file/.cursorrules) - Cursor rules for Laravel development with PHP 8.3 integration.
-- [Laravel (TALL Stack)](./rules/laravel-tall-stack-best-practices-cursorrules-prom/.cursorrules) - Cursor rules for Laravel development with TALL Stack best practices.
-- [Manifest](./rules/manifest-yaml-cursorrules-prompt-file/.cursorrules) - Cursor rules for manifest development with YAML integration.
-- [Momen.app (Backend-as-a-Service)](./rules/momen-cursurrules-prompt-file/.cursorrules) - Cursor rules for building custom frontends with Momen.app as headless BaaS with GraphQL API, actionflows, AI agents, and Stripe integration.
-- [Node.js (MongoDB)](./rules/nodejs-mongodb-cursorrules-prompt-file-tutorial/.cursorrules) - Cursor rules for Node.js development with MongoDB integration.
-- [Node.js (MongoDB, JWT, Express, React)](./rules/nodejs-mongodb-jwt-express-react-cursorrules-promp/.cursorrules) - Cursor rules for Node.js development with MongoDB, JWT, Express, and React integration.
-- [Rails 8 (Basic Setup)](./rules/rails-cursorrules-prompt-file/rails-basics.mdx) - Cursor rules for Rails development with basic setup.
-- [Python (FastAPI)](./rules/py-fast-api/.cursorrules) - Cursor rules for Python FastAPI backend development and best practices.
-- [Python 3.12 (FastAPI Best Practices)](./rules/python-312-fastapi-best-practices-cursorrules-prom/.cursorrules) - Cursor rules for Python FastAPI development with best practices.
-- [Python (Django Best Practices)](./rules/python-django-best-practices-cursorrules-prompt-fi/.cursorrules) - Cursor rules for Python Django development with best practices.
-- [Python (FastAPI Best Practices)](./rules/python-fastapi-best-practices-cursorrules-prompt-f/.cursorrules) - Cursor rules for Python FastAPI development with best practices.
-- [Python (FastAPI Scalable API)](./rules/python-fastapi-scalable-api-cursorrules-prompt-fil/.cursorrules) - Cursor rules for Python FastAPI development with scalable API integration.
-- [Python (FastAPI Production Architecture)](./rules/fastapi-production-architecture-cursorrules-prompt-file/.cursorrules) - Cursor rules for FastAPI services with router/service/repository boundaries, typed provider adapters, bulkhead isolation, idempotency, and domain exceptions.
-- [Python (Flask JSON Guide)](./rules/python-flask-json-guide-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python Flask development with JSON guide.
-- [Python LLM & ML Workflow](./rules/python-llm-ml-workflow-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python LLM & ML development with workflow integration.
-- [Salesforce (Apex)](./rules/salesforce-apex-cursorrules-prompt-file/.cursorrules.txt) - Cursor rules for Salesforce development with Apex integration.
-- [TanStack Start](./rules/tanstack-start-cursorrules-prompt-file/.cursorrules) - Cursor rules for TanStack Start full-stack React framework including server functions, API routes, streaming with defer(), SSR, and multi-platform deployment.
-- [TypeScript (NestJS Anti-Hallucination)](./rules/nestjs-anti-hallucination-cursorrules-prompt-file/.cursorrules.mdc) - Cursor rules that block deprecated, phantom, or incorrect NestJS imports, decorators, providers, modules, and testing patterns.
-- [TypeScript (NestJS Best Practices)](./rules/typescript-nestjs-best-practices-cursorrules-promp/.cursorrules) - Cursor rules for TypeScript development with NestJS best practices.
-- [TYPO3 CMS Extension](./rules/typo3cms-extension-cursorrules-prompt-file/.cursorrules) - Cursor rules for TYPO3 CMS development with extension integration.
-- [WordPress (PHP, Guzzle, Gutenberg)](./rules/wordpress-php-guzzle-gutenberg-cursorrules-prompt-/.cursorrules) - Cursor rules for WordPress development with PHP, Guzzle, and Gutenberg integration.
-- [WordPress (macOS)](./rules/cursorrules-cursor-ai-wordpress-draft-macos-prompt/.cursorrules) - Cursor rules for WordPress development on macOS.
-- [WordPress Full AI Stack](./rules/wordpress-claude-stack/.cursorrules) - Complete AI coding setup for WordPress — themes, plugins, Gutenberg, WooCommerce, ACF, REST API with .cursorrules + CLAUDE.md + Copilot instructions + 5 generation skills.
+- [Cloudflare Workers (Hono, Angular)](./rules/cloudflare-workers-hono-angular-saas-cursorrules-prompt-file.mdc) - Cursor rules for full-stack SaaS applications on Cloudflare Workers with Hono APIs, Angular frontends, typed RPC, D1/Neon, and production observability.
+- [Convex best practices](./rules/convex-cursorrules-prompt-file.mdc) - Cursor rules for Convex development with best practices.
+- [Deno Integration](./rules/deno-integration-techniques-cursorrules-prompt-fil.mdc) - Cursor rules for Deno development with integration techniques.
+- [Drupal 11](./rules/drupal-11-cursorrules-prompt-file.mdc) - Cursor rules for Drupal 11 development.
+- [Elixir Engineer Guidelines](./rules/elixir-engineer-guidelines-cursorrules-prompt-file.mdc) - Cursor rules for Elixir development with engineer guidelines.
+- [Elixir (Phoenix, Docker)](./rules/elixir-phoenix-docker-setup-cursorrules-prompt-fil.mdc) - Cursor rules for Elixir development with Phoenix and Docker integration.
+- [ES Module (Node.js)](./rules/es-module-nodejs-guidelines-cursorrules-prompt-fil.mdc) - Cursor rules for ES Module development with Node.js guidelines.
+- [Go Backend Scalability](./rules/go-backend-scalability-cursorrules-prompt-file.mdc) - Cursor rules for Go development with backend scalability.
+- [Go ServeMux REST API](./rules/go-servemux-rest-api-cursorrules-prompt-file.mdc) - Cursor rules for Go development with ServeMux REST API integration.
+- [Go (Basic Setup)](./rules/htmx-go-basic-cursorrules-prompt-file.mdc) - Cursor rules for Go development with basic setup.
+- [Go with Fiber](./rules/htmx-go-fiber-cursorrules-prompt-file.mdc) - Cursor rules for Go development with Fiber integration.
+- [Go Temporal DSL](./rules/go-temporal-dsl-prompt-file.mdc) - Cursor rules for Go development with Temporal DSL integration.
+- [Google ADK](./rules/google-adk.mdc) - Cursor rules for Google Agent Development Kit agents, tools, sessions, memory, artifacts, evaluation, and deployment.
+- [HOL (Hedera TypeScript SDK)](./rules/hol-hedera-typescript-cursorrules-prompt-file.mdc) - Cursor rules for Hashgraph Online development with TypeScript, building AI agents on Hedera with RegistryBrokerClient.
+- [HTMX (Basic Setup)](./rules/htmx-basic-cursorrules-prompt-file.mdc) - Cursor rules for HTMX development with basic setup.
+- [HTMX (Flask)](./rules/htmx-flask-cursorrules-prompt-file.mdc) - Cursor rules for HTMX development with Flask integration.
+- [HTMX (Django)](./rules/htmx-django-cursorrules-prompt-file.mdc) - Cursor rules for HTMX development with Django integration.
+- [Java (Springboot, JPA)](./rules/java-springboot-jpa-cursorrules-prompt-file.mdc) - Cursor rules for Java development with Springboot and JPA integration.
+- [Knative (Istio, Typesense, GPU)](./rules/knative-istio-typesense-gpu-cursorrules-prompt-fil.mdc) - Cursor rules for Knative development with Istio, Typesense, and GPU integration.
+- [Kotlin Ktor Development](./rules/kotlin-ktor-development-cursorrules-prompt-file.mdc) - Cursor rules for Kotlin development with Ktor integration.
+- [Laravel (PHP 8.3)](./rules/laravel-php-83-cursorrules-prompt-file.mdc) - Cursor rules for Laravel development with PHP 8.3 integration.
+- [Laravel (TALL Stack)](./rules/laravel-tall-stack-best-practices-cursorrules-prom.mdc) - Cursor rules for Laravel development with TALL Stack best practices.
+- [Manifest](./rules/manifest-yaml-cursorrules-prompt-file.mdc) - Cursor rules for manifest development with YAML integration.
+- [Momen.app (Backend-as-a-Service)](./rules/momen-cursurrules-prompt-file.mdc) - Cursor rules for building custom frontends with Momen.app as headless BaaS with GraphQL API, actionflows, AI agents, and Stripe integration.
+- [Node.js (MongoDB)](./rules/nodejs-mongodb-cursorrules-prompt-file-tutorial.mdc) - Cursor rules for Node.js development with MongoDB integration.
+- [Node.js (MongoDB, JWT, Express, React)](./rules/nodejs-mongodb-jwt-express-react-cursorrules-promp.mdc) - Cursor rules for Node.js development with MongoDB, JWT, Express, and React integration.
+- [Rails 8 (Basic Setup)](./rules/rails-cursorrules-prompt-file.mdc) - Cursor rules for Rails development with basic setup.
+- [Python (FastAPI)](./rules/py-fast-api.mdc) - Cursor rules for Python FastAPI backend development and best practices.
+- [Python 3.12 (FastAPI Best Practices)](./rules/python-312-fastapi-best-practices-cursorrules-prom.mdc) - Cursor rules for Python FastAPI development with best practices.
+- [Python (Django Best Practices)](./rules/python-django-best-practices-cursorrules-prompt-fi.mdc) - Cursor rules for Python Django development with best practices.
+- [Python (FastAPI Best Practices)](./rules/python-fastapi-best-practices-cursorrules-prompt-f.mdc) - Cursor rules for Python FastAPI development with best practices.
+- [Python (FastAPI Scalable API)](./rules/python-fastapi-scalable-api-cursorrules-prompt-fil.mdc) - Cursor rules for Python FastAPI development with scalable API integration.
+- [Python (FastAPI Production Architecture)](./rules/fastapi-production-architecture-cursorrules-prompt-file.mdc) - Cursor rules for FastAPI services with router/service/repository boundaries, typed provider adapters, bulkhead isolation, idempotency, and domain exceptions.
+- [Python (Flask JSON Guide)](./rules/python-flask-json-guide-cursorrules-prompt-file.mdc) - Cursor rules for Python Flask development with JSON guide.
+- [Python LLM & ML Workflow](./rules/python-llm-ml-workflow-cursorrules-prompt-file.mdc) - Cursor rules for Python LLM & ML development with workflow integration.
+- [Salesforce (Apex)](./rules/salesforce-apex-cursorrules-prompt-file.mdc) - Cursor rules for Salesforce development with Apex integration.
+- [TanStack Start](./rules/tanstack-start-cursorrules-prompt-file.mdc) - Cursor rules for TanStack Start full-stack React framework including server functions, API routes, streaming with defer(), SSR, and multi-platform deployment.
+- [TypeScript (NestJS Anti-Hallucination)](./rules/nestjs-anti-hallucination-cursorrules-prompt-file.mdc) - Cursor rules that block deprecated, phantom, or incorrect NestJS imports, decorators, providers, modules, and testing patterns.
+- [TypeScript (NestJS Best Practices)](./rules/typescript-nestjs-best-practices-cursorrules-promp.mdc) - Cursor rules for TypeScript development with NestJS best practices.
+- [TYPO3 CMS Extension](./rules/typo3cms-extension-cursorrules-prompt-file.mdc) - Cursor rules for TYPO3 CMS development with extension integration.
+- [WordPress (PHP, Guzzle, Gutenberg)](./rules/wordpress-php-guzzle-gutenberg-cursorrules-prompt-.mdc) - Cursor rules for WordPress development with PHP, Guzzle, and Gutenberg integration.
+- [WordPress (macOS)](./rules/cursorrules-cursor-ai-wordpress-draft-macos-prompt.mdc) - Cursor rules for WordPress development on macOS.
+- [WordPress Full AI Stack](./rules/wordpress-claude-stack.mdc) - Complete AI coding setup for WordPress — themes, plugins, Gutenberg, WooCommerce, ACF, REST API with Cursor Project Rules, CLAUDE.md, Copilot instructions, and 5 generation skills.
 
 ### Mobile Development
 
-- [Android Native (Jetpack Compose)](./rules/android-jetpack-compose-cursorrules-prompt-file/.cursorrules) - Cursor rules for Android development with Jetpack Compose integration.
-- [Cursor Rules Pack v2](./rules/cursor-rules-pack-v2-cursorrules-prompt-file/.cursorrules) - 7 sample production-tested rules (dependency discipline, error handling, state management, webhook security, and more). See the pack README for full-pack details.
-- [Flutter Expert](./rules/flutter-app-expert-cursorrules-prompt-file/.cursorrules) - Cursor rules for Flutter development with expert integration.
-- [NativeScript](./rules/nativescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for NativeScript development.
-- [React Native Expo](./rules/react-native-expo-cursorrules-prompt-file/.cursorrules) - Cursor rules for React Native Expo development.
-- [SwiftUI Guidelines](./rules/swiftui-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for SwiftUI development guidelines.
-- [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Expo, Jest, and Detox integration.
-- [UIKit Guidelines](./rules/uikit-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for UIKit development guidelines.
+- [Android Native (Jetpack Compose)](./rules/android-jetpack-compose-cursorrules-prompt-file.mdc) - Cursor rules for Android development with Jetpack Compose integration.
+- [Cursor Rules Pack v2](./rules/cursor-rules-pack-v2-cursorrules-prompt-file.mdc) - 7 sample production-tested rules (dependency discipline, error handling, state management, webhook security, and more). See the pack README for full-pack details.
+- [Flutter Expert](./rules/flutter-app-expert-cursorrules-prompt-file.mdc) - Cursor rules for Flutter development with expert integration.
+- [HarmonyOS ArkTS](./rules/harmony-arkts.mdc) - Cursor rules for HarmonyOS ArkTS components, state, resources, lifecycle, layout, and accessibility.
+- [NativeScript](./rules/nativescript-cursorrules-prompt-file.mdc) - Cursor rules for NativeScript development.
+- [React Native Expo](./rules/react-native-expo-cursorrules-prompt-file.mdc) - Cursor rules for React Native Expo development.
+- [SwiftUI Guidelines](./rules/swiftui-guidelines-cursorrules-prompt-file.mdc) - Cursor rules for SwiftUI development guidelines.
+- [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file.mdc) - Cursor rules for TypeScript development with Expo, Jest, and Detox integration.
+- [UIKit Guidelines](./rules/uikit-guidelines-cursorrules-prompt-file.mdc) - Cursor rules for UIKit development guidelines.
 
 ### Games and Graphics
 
-- [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file/.cursorrules) - Cursor rules for ASCII simulation game development.
-- [DragonRuby Best Practices](./rules/dragonruby-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for DragonRuby development with best practices integration.
-- [Graphical Apps Development](./rules/graphical-apps-development-cursorrules-prompt-file/.cursorrules) - Cursor rules for graphical apps development with integration.
-- [Unity (C#)](./rules/unity-cursor-ai-c-cursorrules-prompt-file/.cursorrules) - Cursor rules for Unity development with C# integration.
+- [ASCII Simulation Game](./rules/ascii-simulation-game-cursorrules-prompt-file.mdc) - Cursor rules for ASCII simulation game development.
+- [Blender Python Add-ons](./rules/blender-python-addon.mdc) - Cursor rules for Blender Python add-ons, operators, panels, properties, registration, and API-safe scripting.
+- [DragonRuby Best Practices](./rules/dragonruby-best-practices-cursorrules-prompt-file.mdc) - Cursor rules for DragonRuby development with best practices integration.
+- [GameMaker GML](./rules/gamemaker-gml.mdc) - Cursor rules for GameMaker Language projects, objects, events, rooms, data structures, and performance-minded gameplay code.
+- [Graphical Apps Development](./rules/graphical-apps-development-cursorrules-prompt-file.mdc) - Cursor rules for graphical apps development with integration.
+- [Unity (C#)](./rules/unity-cursor-ai-c-cursorrules-prompt-file.mdc) - Cursor rules for Unity development with C# integration.
 
 ### CSS and Styling
 
-- [Landing Page Image Quality](./rules/landing-page-image-quality-cursorrules-prompt-file/.cursorrules) - Cursor rules for avoiding placeholder or broken image URLs, using stable visual assets, and checking alt text, dimensions, licensing, and responsive behavior.
-- [Tailwind CSS (Next.js Guide)](./rules/tailwind-css-nextjs-guide-cursorrules-prompt-file/.cursorrules) - Cursor rules for Tailwind CSS development with Next.js integration.
-- [Tailwind (React, Firebase)](./rules/tailwind-react-firebase-cursorrules-prompt-file/.cursorrules) - Cursor rules for Tailwind development with React and Firebase integration.
-- [Tailwind (shadcn/ui Integration)](./rules/tailwind-shadcn-ui-integration-cursorrules-prompt-/.cursorrules) - Cursor rules for Tailwind development with shadcn/ui integration.
-- [HTML (Tailwind CSS, JavaScript)](./rules/html-tailwind-css-javascript-cursorrules-prompt-fi/.cursorrules) - Cursor rules for HTML development with Tailwind CSS and JavaScript integration.
-- [JavaScript (Astro, Tailwind CSS)](./rules/javascript-astro-tailwind-css-cursorrules-prompt-f/.cursorrules) - Cursor rules for JavaScript development with Astro and Tailwind CSS integration.
-- [React (Styled Components)](./rules/react-styled-components-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with Styled Components integration.
-- [React (Chakra UI)](./rules/react-chakra-ui-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with Chakra UI integration.
-- [RTL / Right-to-Left (i18n, Tailwind, React Native)](./rules/rtl-right-to-left-i18n-cursorrules-prompt-file/.cursorrules) - Cursor rules for RTL development with logical CSS properties, Tailwind logical classes, bidirectional text, and automated auditing via rtlify-ai.
+- [Landing Page Image Quality](./rules/landing-page-image-quality-cursorrules-prompt-file.mdc) - Cursor rules for avoiding placeholder or broken image URLs, using stable visual assets, and checking alt text, dimensions, licensing, and responsive behavior.
+- [Tailwind CSS (Next.js Guide)](./rules/tailwind-css-nextjs-guide-cursorrules-prompt-file.mdc) - Cursor rules for Tailwind CSS development with Next.js integration.
+- [Tailwind (React, Firebase)](./rules/tailwind-react-firebase-cursorrules-prompt-file.mdc) - Cursor rules for Tailwind development with React and Firebase integration.
+- [Tailwind (shadcn/ui Integration)](./rules/tailwind-shadcn-ui-integration-cursorrules-prompt-.mdc) - Cursor rules for Tailwind development with shadcn/ui integration.
+- [HTML (Tailwind CSS, JavaScript)](./rules/html-tailwind-css-javascript-cursorrules-prompt-fi.mdc) - Cursor rules for HTML development with Tailwind CSS and JavaScript integration.
+- [JavaScript (Astro, Tailwind CSS)](./rules/javascript-astro-tailwind-css-cursorrules-prompt-f.mdc) - Cursor rules for JavaScript development with Astro and Tailwind CSS integration.
+- [React (Styled Components)](./rules/react-styled-components-cursorrules-prompt-file.mdc) - Cursor rules for React development with Styled Components integration.
+- [React (Chakra UI)](./rules/react-chakra-ui-cursorrules-prompt-file.mdc) - Cursor rules for React development with Chakra UI integration.
+- [RTL / Right-to-Left (i18n, Tailwind, React Native)](./rules/rtl-right-to-left-i18n-cursorrules-prompt-file.mdc) - Cursor rules for RTL development with logical CSS properties, Tailwind logical classes, bidirectional text, and automated auditing via rtlify-ai.
+- [Toss-Style Design System](./rules/toss-style-design-system.mdc) - Cursor rules for disciplined product UI with restrained color, grayscale hierarchy, typography, cards, metrics, dark mode, and accessibility.
 
 ### State Management
 
-- [React (Redux, TypeScript)](./rules/react-redux-typescript-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with Redux and TypeScript integration.
-- [React (MobX)](./rules/react-mobx-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with MobX integration.
-- [React (React Query)](./rules/react-query-cursorrules-prompt-file/.cursorrules) - Cursor rules for React development with React Query integration.
-- [React (TanStack Router + Query)](./rules/react-tanstack-router-query-cursorrules-prompt-file/.cursorrules) - Cursor rules for React SPAs combining TanStack Router v1 and TanStack Query v5 for zero-loading-spinner routing and type-safe server state.
-- [TanStack Query v5](./rules/tanstack-query-v5-cursorrules-prompt-file/.cursorrules) - Cursor rules for TanStack Query v5 with query options, query key factories, mutations, optimistic updates, infinite queries, Suspense, and prefetching.
+- [React (Redux, TypeScript)](./rules/react-redux-typescript-cursorrules-prompt-file.mdc) - Cursor rules for React development with Redux and TypeScript integration.
+- [React (MobX)](./rules/react-mobx-cursorrules-prompt-file.mdc) - Cursor rules for React development with MobX integration.
+- [React (React Query)](./rules/react-query-cursorrules-prompt-file.mdc) - Cursor rules for React development with React Query integration.
+- [React (TanStack Router + Query)](./rules/react-tanstack-router-query-cursorrules-prompt-file.mdc) - Cursor rules for React SPAs combining TanStack Router v1 and TanStack Query v5 for zero-loading-spinner routing and type-safe server state.
+- [TanStack Query v5](./rules/tanstack-query-v5-cursorrules-prompt-file.mdc) - Cursor rules for TanStack Query v5 with query options, query key factories, mutations, optimistic updates, infinite queries, Suspense, and prefetching.
 
 ### Database and API
 
-- [GraphQL (Apollo Client)](./rules/react-graphql-apollo-client-cursorrules-prompt-file/.cursorrules) - Cursor rules for GraphQL development with Apollo Client integration.
-- [Snowflake Cortex AI](./rules/snowflake-cortex-ai-cursorrules-prompt-file/.cursorrules) - Cursor rules for Snowflake Cortex AI Functions (AI_COMPLETE, AI_CLASSIFY, AI_EXTRACT, etc.) and Cortex Search for RAG applications.
-- [Snowflake Data Engineering](./rules/snowflake-data-engineering-cursorrules-prompt-file/.cursorrules) - Cursor rules for Snowflake SQL, data pipelines (Dynamic Tables, Streams, Tasks, Snowpipe), semi-structured data, Snowflake Postgres, and cost optimization.
-- [Snowflake Snowpark Python & dbt](./rules/snowflake-snowpark-dbt-cursorrules-prompt-file/.cursorrules) - Cursor rules for Snowpark Python (DataFrames, UDFs, stored procedures) and dbt with the Snowflake adapter.
-- [TypeScript (Axios)](./rules/typescript-axios-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Axios integration.
+- [GraphQL (Apollo Client)](./rules/react-graphql-apollo-client-cursorrules-prompt-file.mdc) - Cursor rules for GraphQL development with Apollo Client integration.
+- [Snowflake Cortex AI](./rules/snowflake-cortex-ai-cursorrules-prompt-file.mdc) - Cursor rules for Snowflake Cortex AI Functions (AI_COMPLETE, AI_CLASSIFY, AI_EXTRACT, etc.) and Cortex Search for RAG applications.
+- [Snowflake Data Engineering](./rules/snowflake-data-engineering-cursorrules-prompt-file.mdc) - Cursor rules for Snowflake SQL, data pipelines (Dynamic Tables, Streams, Tasks, Snowpipe), semi-structured data, Snowflake Postgres, and cost optimization.
+- [Snowflake Snowpark Python & dbt](./rules/snowflake-snowpark-dbt-cursorrules-prompt-file.mdc) - Cursor rules for Snowpark Python (DataFrames, UDFs, stored procedures) and dbt with the Snowflake adapter.
+- [TypeScript (Axios)](./rules/typescript-axios-cursorrules-prompt-file.mdc) - Cursor rules for TypeScript development with Axios integration.
 
 ### Testing
 
-- [Cypress API Testing](./rules/cypress-api-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Cypress development with API testing.
-- [Cypress Accessibility Testing](./rules/cypress-accessibility-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Cypress development with accessibility testing.
-- [Cypress Defect Tracking](./rules/cypress-defect-tracking-cursorrules-prompt-file/.cursorrules) - Cursor rules for Cypress development with defect tracking.
-- [Cypress E2E Testing](./rules/cypress-e2e-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Cypress development with E2E testing.
-- [Cypress Integration Testing](./rules/cypress-integration-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Cypress development with integration testing.
-- [Jest Unit Testing](./rules/jest-unit-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Jest development with unit testing.
-- [Playwright API Testing](./rules/playwright-api-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Playwright development with API testing.
-- [Playwright Accessibility Testing](./rules/playwright-accessibility-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Playwright development with accessibility testing.
-- [Playwright Defect Tracking](./rules/playwright-defect-tracking-cursorrules-prompt-file/.cursorrules) - Cursor rules for Playwright development with defect tracking.
-- [Playwright E2E Testing](./rules/playwright-e2e-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Playwright development with E2E testing.
-- [Playwright Integration Testing](./rules/playwright-integration-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Playwright development with integration testing.
-- [PR Review (security / performance / tests / architecture)](./rules/pr-review-cursorrules-prompt-file/.cursorrules) - Cursor rules for focused PR reviews with severity ranking, file and line citations, and separate review angles for security, performance, tests, and architecture.
-- [PR Template](./rules/pr-template-cursorrules-prompt-file/.cursorrules) - Cursor rules for PR development with template integration.
-- [QA Bug Report](./rules/qa-bug-report-cursorrules-prompt-file/.cursorrules) - Cursor rules for QA development with bug report integration.
-- [TestRail Test Case](./rules/testrail-test-case-cursorrules-prompt-file/.cursorrules) - Cursor rules for TestRail development with test case integration.
-- [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Expo, Jest, and Detox integration.
-- [Vitest Unit Testing](./rules/vitest-unit-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Vitest development with unit testing.
-- [Xray Test Case](./rules/xray-test-case-cursorrules-prompt-file/.cursorrules) - Cursor rules for Xray development with test case integration.
+- [Cypress API Testing](./rules/cypress-api-testing-cursorrules-prompt-file.mdc) - Cursor rules for Cypress development with API testing.
+- [Cypress Accessibility Testing](./rules/cypress-accessibility-testing-cursorrules-prompt-file.mdc) - Cursor rules for Cypress development with accessibility testing.
+- [Cypress Defect Tracking](./rules/cypress-defect-tracking-cursorrules-prompt-file.mdc) - Cursor rules for Cypress development with defect tracking.
+- [Cypress E2E Testing](./rules/cypress-e2e-testing-cursorrules-prompt-file.mdc) - Cursor rules for Cypress development with E2E testing.
+- [Cypress Integration Testing](./rules/cypress-integration-testing-cursorrules-prompt-file.mdc) - Cursor rules for Cypress development with integration testing.
+- [Jest Unit Testing](./rules/jest-unit-testing-cursorrules-prompt-file.mdc) - Cursor rules for Jest development with unit testing.
+- [Playwright API Testing](./rules/playwright-api-testing-cursorrules-prompt-file.mdc) - Cursor rules for Playwright development with API testing.
+- [Playwright Accessibility Testing](./rules/playwright-accessibility-testing-cursorrules-prompt-file.mdc) - Cursor rules for Playwright development with accessibility testing.
+- [Playwright Defect Tracking](./rules/playwright-defect-tracking-cursorrules-prompt-file.mdc) - Cursor rules for Playwright development with defect tracking.
+- [Playwright E2E Testing](./rules/playwright-e2e-testing-cursorrules-prompt-file.mdc) - Cursor rules for Playwright development with E2E testing.
+- [Playwright Integration Testing](./rules/playwright-integration-testing-cursorrules-prompt-file.mdc) - Cursor rules for Playwright development with integration testing.
+- [PR Review (security / performance / tests / architecture)](./rules/pr-review-cursorrules-prompt-file.mdc) - Cursor rules for focused PR reviews with severity ranking, file and line citations, and separate review angles for security, performance, tests, and architecture.
+- [PR Template](./rules/pr-template-cursorrules-prompt-file.mdc) - Cursor rules for PR development with template integration.
+- [QA Bug Report](./rules/qa-bug-report-cursorrules-prompt-file.mdc) - Cursor rules for QA development with bug report integration.
+- [TestRail Test Case](./rules/testrail-test-case-cursorrules-prompt-file.mdc) - Cursor rules for TestRail development with test case integration.
+- [TypeScript (Expo, Jest, Detox)](./rules/typescript-expo-jest-detox-cursorrules-prompt-file.mdc) - Cursor rules for TypeScript development with Expo, Jest, and Detox integration.
+- [Vitest Unit Testing](./rules/vitest-unit-testing-cursorrules-prompt-file.mdc) - Cursor rules for Vitest development with unit testing.
+- [Xray Test Case](./rules/xray-test-case-cursorrules-prompt-file.mdc) - Cursor rules for Xray development with test case integration.
 
 ### Hosting and Deployments
 
-- [Cloudflare Email to Telegram](./rules/cloudflare-email-telegram-cursorrules-prompt-file/.cursorrules) - Cursor rules for setting up email-to-Telegram forwarding via Cloudflare Email Routing and Workers using the mail2tg CLI.
-- [Netlify](./rules/netlify-official-cursorrules-prompt-file/.cursorrules) - Cursor rules for Netlify development with official integration.
-- [Vercel](./rules/vercel-deployment-cursorrules-prompt-file/.cursorrules) - Cursor rules for Vercel deployment including serverless functions, Edge Runtime, middleware, caching, CI/CD, and production-ready configuration.
+- [Cloudflare Email to Telegram](./rules/cloudflare-email-telegram-cursorrules-prompt-file.mdc) - Cursor rules for setting up email-to-Telegram forwarding via Cloudflare Email Routing and Workers using the mail2tg CLI.
+- [Netlify](./rules/netlify-official-cursorrules-prompt-file.mdc) - Cursor rules for Netlify development with official integration.
+- [Vercel](./rules/vercel-deployment-cursorrules-prompt-file.mdc) - Cursor rules for Vercel deployment including serverless functions, Edge Runtime, middleware, caching, CI/CD, and production-ready configuration.
 
 ### Build Tools and Development
 
-- [AI Agent Specialist](./rules/ai-agent-specialist/.cursorrules) - Cursor rules for TypeScript, React, Node.js, clean architecture, testing, and WHY-oriented engineering guidance.
-- [Alpha Skills](./rules/alpha-skills-quant-factor-research/.cursorrules) - Quantitative factor research skills for Cursor. Evaluate factors, run backtests, mine new alpha through natural language.
-- [Anti-Over-Engineering](./rules-new/anti-overengineering.mdc) - Cursor rules for keeping changes scoped, simple, and directly tied to the user's request.
-- [Chrome Extension (JavaScript/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules) - Cursor rules for Chrome extension development with JavaScript and TypeScript integration.
-- [Code Guidelines](./rules/code-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for code development with guidelines integration.
-- [Code Pair Interviews](./rules/code-pair-interviews/.cursorrules) - Cursor rules for code pair interviews development with integration.
-- [Code Style Consistency](./rules/code-style-consistency-cursorrules-prompt-file/.cursorrules) - Cursor rules for code development with style consistency integration.
-- [Engineering Ticket Template](./rules/engineering-ticket-template-cursorrules-prompt-file/.cursorrules) - Cursor rules for engineering development with ticket template integration.
-- [GitHub Code Quality](./rules/github-code-quality-cursorrules-prompt-file/.cursorrules) - Cursor rules for GitHub development with code quality integration.
-- [GitHub Instructions](./rules/github-cursorrules-prompt-file-instructions/.cursorrules) - Cursor rules for GitHub development with instructions integration.
-- [Git Commit Messages](./rules/git-conventional-commit-messages/.cursorrules) - Cursor rules for Git development with conventional commit messages integration.
-- [Kubernetes (MkDocs Documentation)](./rules/kubernetes-mkdocs-documentation-cursorrules-prompt/.cursorrules) - Cursor rules for Kubernetes development with MkDocs documentation integration.
-- [Linux (NVIDIA CUDA, Python)](./rules/linux-nvidia-cuda-python-cursorrules-prompt-file/.cursorrules) - Cursor rules for Linux development with NVIDIA CUDA and Python integration.
-- [Optimize (DRY, SOLID Principles)](./rules/optimize-dry-solid-principles-cursorrules-prompt-f/.cursorrules) - Cursor rules for optimization development with DRY and SOLID principles integration.
-- [Project Epic Template](./rules/project-epic-template-cursorrules-prompt-file/.cursorrules) - Cursor rules for project development with epic template integration.
-- [Python Containerization](./rules/python-containerization-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python development with containerization integration.
-- [Python (GitHub Setup)](./rules/python-github-setup-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python development with GitHub setup integration.
-- [Tauri (Svelte, TypeScript Guide)](./rules/tauri-svelte-typescript-guide-cursorrules-prompt-f/.cursorrules) - Cursor rules for Tauri development with Svelte and TypeScript guide integration.
-- [TypeScript Code Convention](./rules/typescript-code-convention-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with code convention integration.
-- [VSCode Extension (Electron/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules) - Cursor rules for VSCode extension development with Electron and TypeScript integration.
-- [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules) - Cursor rules for web app development with optimization integration.
-- [Ankra CLI (Kubernetes Cluster Management)](./rules-new/ankra-cli.mdc) - Cursor rules for Ankra CLI development with Kubernetes cluster management integration.
+- [AI Agent Specialist](./rules/ai-agent-specialist.mdc) - Cursor rules for TypeScript, React, Node.js, clean architecture, testing, and WHY-oriented engineering guidance.
+- [Alpha Skills](./rules/alpha-skills-quant-factor-research.mdc) - Quantitative factor research skills for Cursor. Evaluate factors, run backtests, mine new alpha through natural language.
+- [Anti-Over-Engineering](./rules/anti-overengineering.mdc) - Cursor rules for keeping changes scoped, simple, and directly tied to the user's request.
+- [Chrome Extension (JavaScript/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro.mdc) - Cursor rules for Chrome extension development with JavaScript and TypeScript integration.
+- [Code Guidelines](./rules/code-guidelines-cursorrules-prompt-file.mdc) - Cursor rules for code development with guidelines integration.
+- [Code Pair Interviews](./rules/code-pair-interviews.mdc) - Cursor rules for code pair interviews development with integration.
+- [Code Style Consistency](./rules/code-style-consistency-cursorrules-prompt-file.mdc) - Cursor rules for code development with style consistency integration.
+- [Embedded MCU / STM32 / HAL](./rules/embedded-stm32-hal.mdc) - Cursor rules for embedded C/C++ development with STM32 HAL, interrupts, DMA, memory constraints, and hardware-focused testing.
+- [Engineering Ticket Template](./rules/engineering-ticket-template-cursorrules-prompt-file.mdc) - Cursor rules for engineering development with ticket template integration.
+- [GitHub Code Quality](./rules/github-code-quality-cursorrules-prompt-file.mdc) - Cursor rules for GitHub development with code quality integration.
+- [GitHub Instructions](./rules/github-cursorrules-prompt-file-instructions.mdc) - Cursor rules for GitHub development with instructions integration.
+- [Git Commit Messages](./rules/git-conventional-commit-messages.mdc) - Cursor rules for Git development with conventional commit messages integration.
+- [Kubernetes (MkDocs Documentation)](./rules/kubernetes-mkdocs-documentation-cursorrules-prompt.mdc) - Cursor rules for Kubernetes development with MkDocs documentation integration.
+- [Linux (NVIDIA CUDA, Python)](./rules/linux-nvidia-cuda-python-cursorrules-prompt-file.mdc) - Cursor rules for Linux development with NVIDIA CUDA and Python integration.
+- [Optimize (DRY, SOLID Principles)](./rules/optimize-dry-solid-principles-cursorrules-prompt-f.mdc) - Cursor rules for optimization development with DRY and SOLID principles integration.
+- [Project Epic Template](./rules/project-epic-template-cursorrules-prompt-file.mdc) - Cursor rules for project development with epic template integration.
+- [Python Containerization](./rules/python-containerization-cursorrules-prompt-file.mdc) - Cursor rules for Python development with containerization integration.
+- [Python (GitHub Setup)](./rules/python-github-setup-cursorrules-prompt-file.mdc) - Cursor rules for Python development with GitHub setup integration.
+- [ROS / ROS2](./rules/ros-ros2.mdc) - Cursor rules for ROS and ROS2 packages, nodes, launch files, messages, services, actions, simulation, and testing.
+- [Tauri (Svelte, TypeScript Guide)](./rules/tauri-svelte-typescript-guide-cursorrules-prompt-f.mdc) - Cursor rules for Tauri development with Svelte and TypeScript guide integration.
+- [TypeScript Code Convention](./rules/typescript-code-convention-cursorrules-prompt-file.mdc) - Cursor rules for TypeScript development with code convention integration.
+- [VSCode Extension (Electron/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro.mdc) - Cursor rules for VSCode extension development with Electron and TypeScript integration.
+- [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file.mdc) - Cursor rules for web app development with optimization integration.
+- [Ankra CLI (Kubernetes Cluster Management)](./rules/ankra-cli.mdc) - Cursor rules for Ankra CLI development with Kubernetes cluster management integration.
     
 ### Language-Specific
 
-- [JavaScript/TypeScript Code Quality](./rules/javascript-typescript-code-quality-cursorrules-pro/.cursorrules) - Cursor rules for JavaScript and TypeScript development with code quality integration.
-- [JavaScript (Chrome APIs)](./rules/javascript-chrome-apis-cursorrules-prompt-file/.cursorrules) - Cursor rules for JavaScript development with Chrome APIs integration.
-- [Optimize (Rell Blockchain Code)](./rules/optimize-rell-blockchain-code-cursorrules-prompt-f/.cursorrules) - Cursor rules for optimization development with Rell Blockchain code integration.
-- [Pandas (scikit-learn Guide)](./rules/pandas-scikit-learn-guide-cursorrules-prompt-file/.cursorrules) - Cursor rules for Pandas development with scikit-learn guide integration.
-- [Plasticode (Telegram API)](./rules/plasticode-telegram-api-cursorrules-prompt-file/.cursorrules) - Cursor rules for Plasticode development with Telegram API integration.
-- [PyQt6 (EEG Processing)](./rules/pyqt6-eeg-processing-cursorrules-prompt-file/.cursorrules) - Cursor rules for PyQt6 development with EEG processing integration.
-- [Python/TypeScript Guide](./rules/python--typescript-guide-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python development with TypeScript guide integration.
-- [Python Best Practices](./rules/python-cursorrules-prompt-file-best-practices/.cursorrules) - Cursor rules for Python development with best practices integration.
-- [Python Developer](./rules/python-developer-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python development with developer integration.
-- [Python Projects Guide](./rules/python-projects-guide-cursorrules-prompt-file/.cursorrules) - Cursor rules for Python development with projects guide integration.
-- [PySpark ETL Best Practices](./rules/pyspark-etl-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for PySpark ETL development with code style, joins, window functions, map operations, and Iceberg patterns.
-- [PyTorch (scikit-learn)](./rules/pytorch-scikit-learn-cursorrules-prompt-file/.cursorrules) - Cursor rules for PyTorch development with scikit-learn integration.
-- [R Best Practices](./rules/r-cursorrules-prompt-file-best-practices/.cursorrules) - Cursor rules for R development with best practices integration.
-- [Solidity (Foundry)](./rules/solidity-foundry-cursorrules-prompt-file/.cursorrules) - Cursor rules for Solidity development with Foundry integration.
-- [Solidity (Hardhat)](./rules/solidity-hardhat-cursorrules-prompt-file/.cursorrules) - Cursor rules for Solidity development with Hardhat integration.
-- [Solidity (React Blockchain Apps)](./rules/solidity-react-blockchain-apps-cursorrules-prompt-/.cursorrules) - Cursor rules for Solidity development with React Blockchain apps integration.
-- [Solana Wallet-Aware Coding](./rules-new/solana-wallet-aware.mdc) - Cursor rules for Solana wallet safety, isolated signers, program allowlists, MEV-aware transaction handling, and operational guardrails.
-- [TypeScript (LLM Tech Stack)](./rules/typescript-llm-tech-stack-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with LLM tech stack integration.
-- [TypeScript (Node.js, Next.js, AI)](./rules/typescript-nodejs-nextjs-ai-cursorrules-prompt-fil/.cursorrules) - Cursor rules for TypeScript development with Node.js, Next.js, and AI integration.
-- [TypeScript (Node.js, Next.js, React, UI, CSS)](./rules/typescript-nodejs-nextjs-react-ui-css-cursorrules-/.cursorrules) - Cursor rules for TypeScript development with Node.js, Next.js, React, UI, and CSS integration.
-- [TypeScript (Node.js, React, Vite)](./rules/typescript-nodejs-react-vite-cursorrules-prompt-fi/.cursorrules) - Cursor rules for TypeScript development with Node.js, React, and Vite integration.
-- [TypeScript (React, Next.js, Cloudflare)](./rules/typescript-react-nextjs-cloudflare-cursorrules-pro/.cursorrules) - Cursor rules for TypeScript development with React, Next.js, and Cloudflare integration.
-- [TypeScript (React, NextUI, Supabase)](./rules/typescript-react-nextui-supabase-cursorrules-promp/.cursorrules) - Cursor rules for TypeScript development with React, NextUI, and Supabase integration.
-- [TypeScript (shadcn/ui, Next.js)](./rules/typescript-shadcn-ui-nextjs-cursorrules-prompt-fil/.cursorrules) - Cursor rules for TypeScript development with shadcn/ui and Next.js integration.
-- [TypeScript (Vite, Tailwind)](./rules/typescript-vite-tailwind-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Vite and Tailwind integration.
-- [TypeScript (Vue.js)](./rules/typescript-vuejs-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Vue.js integration.
-- [TypeScript (Zod, Tailwind, Next.js)](./rules/typescript-zod-tailwind-nextjs-cursorrules-prompt-/.cursorrules) - Cursor rules for TypeScript development with Zod, Tailwind, and Next.js integration.
-- [WebAssembly (Z80 Cellular Automata)](./rules/webassembly-z80-cellular-automata-cursorrules-prom/.cursorrules) - Cursor rules for WebAssembly development with Z80 Cellular Automata integration.
-- [TypeScript (Next.js)](./rules/typescript-nextjs-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Next.js integration.
-- [TypeScript (Next.js, React)](./rules/typescript-nextjs-react-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Next.js and React integration.
-- [TypeScript (Next.js, React, Tailwind, Supabase)](./rules/typescript-nextjs-react-tailwind-supabase-cursorru/.cursorrules) - Cursor rules for TypeScript development with Next.js, React, Tailwind, and Supabase integration.
-- [TypeScript (Next.js, Supabase)](./rules/typescript-nextjs-supabase-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Next.js and Supabase integration.
-- [TypeScript (Node.js, Next.js App)](./rules/typescript-nodejs-nextjs-app-cursorrules-prompt-fi/.cursorrules) - Cursor rules for TypeScript development with Node.js and Next.js app integration.
-- [TypeScript (React)](./rules/typescript-react-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with React integration.
-- [TypeScript (Clasp App Script)](./rules/typescript-clasp-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with Clasp app script integration.
-- [C++ Programming Guidelines](./rules/cpp-programming-guidelines-cursorrules-prompt-file/.cursorrules) - Cursor rules for C++ development with programming guidelines integration.
+- [AutoML and Hyperparameter Optimization](./rules/automl-hyperparameter-optimization.mdc) - Cursor rules for Python ML model search, validation design, search spaces, experiment tracking, and time-series AutoML.
+- [Fortran](./rules/fortran.mdc) - Cursor rules for modern Fortran scientific computing, modules, explicit interfaces, kind parameters, memory safety, and testing.
+- [JavaScript/TypeScript Code Quality](./rules/javascript-typescript-code-quality-cursorrules-pro.mdc) - Cursor rules for JavaScript and TypeScript development with code quality integration.
+- [JavaScript (Chrome APIs)](./rules/javascript-chrome-apis-cursorrules-prompt-file.mdc) - Cursor rules for JavaScript development with Chrome APIs integration.
+- [Optimize (Rell Blockchain Code)](./rules/optimize-rell-blockchain-code-cursorrules-prompt-f.mdc) - Cursor rules for optimization development with Rell Blockchain code integration.
+- [Pandas (scikit-learn Guide)](./rules/pandas-scikit-learn-guide-cursorrules-prompt-file.mdc) - Cursor rules for Pandas development with scikit-learn guide integration.
+- [Plasticode (Telegram API)](./rules/plasticode-telegram-api-cursorrules-prompt-file.mdc) - Cursor rules for Plasticode development with Telegram API integration.
+- [PyQt6 (EEG Processing)](./rules/pyqt6-eeg-processing-cursorrules-prompt-file.mdc) - Cursor rules for PyQt6 development with EEG processing integration.
+- [Python/TypeScript Guide](./rules/python--typescript-guide-cursorrules-prompt-file.mdc) - Cursor rules for Python development with TypeScript guide integration.
+- [Python Best Practices](./rules/python-cursorrules-prompt-file-best-practices.mdc) - Cursor rules for Python development with best practices integration.
+- [Python Developer](./rules/python-developer-cursorrules-prompt-file.mdc) - Cursor rules for Python development with developer integration.
+- [Python Projects Guide](./rules/python-projects-guide-cursorrules-prompt-file.mdc) - Cursor rules for Python development with projects guide integration.
+- [PySpark ETL Best Practices](./rules/pyspark-etl-best-practices-cursorrules-prompt-file.mdc) - Cursor rules for PySpark ETL development with code style, joins, window functions, map operations, and Iceberg patterns.
+- [PyTorch (scikit-learn)](./rules/pytorch-scikit-learn-cursorrules-prompt-file.mdc) - Cursor rules for PyTorch development with scikit-learn integration.
+- [R Best Practices](./rules/r-cursorrules-prompt-file-best-practices.mdc) - Cursor rules for R development with best practices integration.
+- [Rust](./rules/rust-general.mdc) - Cursor rules for safe, idiomatic Rust application and library development.
+- [Solidity (Foundry)](./rules/solidity-foundry-cursorrules-prompt-file.mdc) - Cursor rules for Solidity development with Foundry integration.
+- [Solidity (Hardhat)](./rules/solidity-hardhat-cursorrules-prompt-file.mdc) - Cursor rules for Solidity development with Hardhat integration.
+- [Solidity (React Blockchain Apps)](./rules/solidity-react-blockchain-apps-cursorrules-prompt-.mdc) - Cursor rules for Solidity development with React Blockchain apps integration.
+- [Solana Wallet-Aware Coding](./rules/solana-wallet-aware.mdc) - Cursor rules for Solana wallet safety, isolated signers, program allowlists, MEV-aware transaction handling, and operational guardrails.
+- [TypeScript (LLM Tech Stack)](./rules/typescript-llm-tech-stack-cursorrules-prompt-file.mdc) - Cursor rules for TypeScript development with LLM tech stack integration.
+- [TypeScript (Node.js, Next.js, AI)](./rules/typescript-nodejs-nextjs-ai-cursorrules-prompt-fil.mdc) - Cursor rules for TypeScript development with Node.js, Next.js, and AI integration.
+- [TypeScript (Node.js, Next.js, React, UI, CSS)](./rules/typescript-nodejs-nextjs-react-ui-css-cursorrules-.mdc) - Cursor rules for TypeScript development with Node.js, Next.js, React, UI, and CSS integration.
+- [TypeScript (Node.js, React, Vite)](./rules/typescript-nodejs-react-vite-cursorrules-prompt-fi.mdc) - Cursor rules for TypeScript development with Node.js, React, and Vite integration.
+- [TypeScript (React, Next.js, Cloudflare)](./rules/typescript-react-nextjs-cloudflare-cursorrules-pro.mdc) - Cursor rules for TypeScript development with React, Next.js, and Cloudflare integration.
+- [TypeScript (React, NextUI, Supabase)](./rules/typescript-react-nextui-supabase-cursorrules-promp.mdc) - Cursor rules for TypeScript development with React, NextUI, and Supabase integration.
+- [TypeScript (shadcn/ui, Next.js)](./rules/typescript-shadcn-ui-nextjs-cursorrules-prompt-fil.mdc) - Cursor rules for TypeScript development with shadcn/ui and Next.js integration.
+- [TypeScript (Vite, Tailwind)](./rules/typescript-vite-tailwind-cursorrules-prompt-file.mdc) - Cursor rules for TypeScript development with Vite and Tailwind integration.
+- [TypeScript (Vue.js)](./rules/typescript-vuejs-cursorrules-prompt-file.mdc) - Cursor rules for TypeScript development with Vue.js integration.
+- [TypeScript (Zod, Tailwind, Next.js)](./rules/typescript-zod-tailwind-nextjs-cursorrules-prompt-.mdc) - Cursor rules for TypeScript development with Zod, Tailwind, and Next.js integration.
+- [WebAssembly (Z80 Cellular Automata)](./rules/webassembly-z80-cellular-automata-cursorrules-prom.mdc) - Cursor rules for WebAssembly development with Z80 Cellular Automata integration.
+- [TypeScript (Next.js)](./rules/typescript-nextjs-cursorrules-prompt-file.mdc) - Cursor rules for TypeScript development with Next.js integration.
+- [TypeScript (Next.js, React)](./rules/typescript-nextjs-react-cursorrules-prompt-file.mdc) - Cursor rules for TypeScript development with Next.js and React integration.
+- [TypeScript (Next.js, React, Tailwind, Supabase)](./rules/typescript-nextjs-react-tailwind-supabase-cursorru.mdc) - Cursor rules for TypeScript development with Next.js, React, Tailwind, and Supabase integration.
+- [TypeScript (Next.js, Supabase)](./rules/typescript-nextjs-supabase-cursorrules-prompt-file.mdc) - Cursor rules for TypeScript development with Next.js and Supabase integration.
+- [TypeScript (Node.js, Next.js App)](./rules/typescript-nodejs-nextjs-app-cursorrules-prompt-fi.mdc) - Cursor rules for TypeScript development with Node.js and Next.js app integration.
+- [TypeScript (React)](./rules/typescript-react-cursorrules-prompt-file.mdc) - Cursor rules for TypeScript development with React integration.
+- [TypeScript (Clasp App Script)](./rules/typescript-clasp-cursorrules-prompt-file.mdc) - Cursor rules for TypeScript development with Clasp app script integration.
+- [C++ Programming Guidelines](./rules/cpp-programming-guidelines-cursorrules-prompt-file.mdc) - Cursor rules for C++ development with programming guidelines integration.
+- [TensorFlow and Deep Learning](./rules/tensorflow-deep-learning.mdc) - Cursor rules for TensorFlow model development, training, evaluation, export, and deployment.
 
 ### Security
 
@@ -312,9 +322,9 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ### Documentation
 
-- [Gherkin Style Testing](./rules/gherkin-style-testing-cursorrules-prompt-file/.cursorrules) - Cursor rules for Gherkin style testing development with integration.
-- [How-To Documentation](./rules/how-to-documentation-cursorrules-prompt-file/.cursorrules) - Cursor rules for how-to documentation development with integration.
-- [README Best Practices](./rules/readme-best-practices-cursorrules-prompt-file/.cursorrules) - Cursor rules for README documentation with best practices integration.
+- [Gherkin Style Testing](./rules/gherkin-style-testing-cursorrules-prompt-file.mdc) - Cursor rules for Gherkin style testing development with integration.
+- [How-To Documentation](./rules/how-to-documentation-cursorrules-prompt-file.mdc) - Cursor rules for how-to documentation development with integration.
+- [README Best Practices](./rules/readme-best-practices-cursorrules-prompt-file.mdc) - Cursor rules for README documentation with best practices integration.
 
 ## Directories
 
@@ -323,31 +333,22 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 
 ## How to Use
 
-### Method One
+### Project Rules
 
 1. Install [Cursor AI](https://cursor.sh/) if you haven't already.
-2. Browse the rules above to find a `.cursorrules` file that suits your needs.
-3. Copy the chosen `.cursorrules` file to your project's root directory.
-4. Customize the rules as needed for your specific project requirements.
-
-### Method Two
-
-1. Install [Cursor AI](https://cursor.sh/) if you haven't already.
-2. Install [vscode-cursor-rules](https://marketplace.visualstudio.com/items?itemName=BeilunYang.cursor-rules) extension.
-3. Open the command palette (Cmd+Shift+P or Ctrl+Shift+P) and type `Cursor Rules: Add .cursorrules`.
-4. Select and download the `.cursorrules` file that suits your needs.
-5. Customize the rules as needed for your specific project requirements.
+2. Browse the rules above to find an `.mdc` rule that suits your needs.
+3. Create a `.cursor/rules/` directory in your project if it does not already exist.
+4. Copy the chosen `.mdc` file into `.cursor/rules/`.
+5. Customize the rule as needed for your specific project requirements.
 
 ## Contributing
 
-Contributions are welcome! If you have a great `.cursorrules` file to share:
+Contributions are welcome! If you have a great Cursor rule to share:
 
 1. Fork this repository.
-2. Create a new folder in the `rules` directory. The folder name should follow this pattern:
-   `technology-focus-cursorrules-prompt-file`
-   For example: `react-typescript-cursorrules-prompt-file`
-3. Add your `.cursorrules` file to the new folder, or add a new `.mdc` rule under `rules-new/`.
-4. New `rules-new/*.mdc` files must start with frontmatter like this:
+2. Choose a descriptive slug for the rule, such as `react-typescript` or `python-fastapi`.
+3. Add the canonical `.mdc` rule under `rules/`.
+4. New `rules/*.mdc` files must start with frontmatter like this:
 
    ```yaml
    ---
@@ -362,12 +363,11 @@ Contributions are welcome! If you have a great `.cursorrules` file to share:
    - `alwaysApply: false` keeps the rule scoped to matching or requested context.
    - `alwaysApply: true` makes the rule apply to every request; use it only for universal guidance.
 
-5. Optionally, include a README.md in the folder to provide credit and a brief description.
-6. Update the main README.md file, adding your contribution to the appropriate category.
-7. Ensure your contribution follows the guidelines in the [`.cursorrules`](./.cursorrules) file at the root of this repository.
-8. Submit a pull request.
+5. Update the main README.md file, adding your contribution to the appropriate category.
+6. Ensure your contribution follows the repository formatting and naming guidelines.
+7. Submit a pull request.
 
-Please ensure your contribution is original or properly credited if based on existing work. Refer to the `.cursorrules` file in the root of this repository for detailed guidelines on formatting, naming conventions, and best practices for contributions.
+Please ensure your contribution is original or properly credited if based on existing work. Keep descriptions neutral, practical, and focused on reusable Cursor rule value.
 
 ## Sponsorships
 <p align="center">
