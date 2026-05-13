@@ -1,0 +1,55 @@
+---
+description: Embedded C/C++ rules for MCU, STM32, HAL, interrupts, DMA, memory constraints, and hardware-focused testing
+globs: ["**/*.c", "**/*.h", "**/*.cpp", "**/*.hpp", "**/*.ioc", "CMakeLists.txt", "Makefile", "platformio.ini"]
+alwaysApply: false
+---
+
+# Embedded MCU, STM32, and HAL Rules
+
+## Project Structure
+
+- Keep board support, drivers, middleware, application logic, and tests separate.
+- Isolate generated CubeMX or vendor code from hand-written application code.
+- Put hardware abstraction behind narrow interfaces so logic can be tested without hardware.
+- Document clock tree, pin mappings, peripheral ownership, and interrupt priorities.
+
+## STM32 HAL and Peripherals
+
+- Initialize peripherals in one place and avoid hidden reconfiguration.
+- Check return values from HAL calls and handle timeout/error cases.
+- Keep blocking HAL calls out of time-critical paths.
+- Use DMA for high-throughput UART, SPI, I2C, ADC, or timer capture paths when appropriate.
+- Document buffer ownership and lifetime for DMA operations.
+- Use `volatile` only for memory shared with ISRs or hardware registers.
+
+## Interrupts and Concurrency
+
+- Keep ISRs short and deterministic.
+- Defer heavy work from interrupts to the main loop, RTOS task, or event queue.
+- Protect shared data with critical sections, atomics, queues, or RTOS primitives.
+- Avoid dynamic allocation in interrupts.
+- Make interrupt priority decisions explicit.
+
+## Memory and Timing
+
+- Avoid heap allocation in firmware unless the project explicitly allows it.
+- Check stack usage for ISRs and RTOS tasks.
+- Keep lookup tables `const` so they can live in flash.
+- Use fixed-width integer types for hardware-facing code.
+- Add timeouts for hardware waits.
+- Treat watchdog configuration as part of application design, not a late add-on.
+
+## Testing and Debugging
+
+- Unit test pure logic on host builds.
+- Use hardware-in-the-loop tests for peripheral behavior.
+- Add assertions for impossible hardware states in debug builds.
+- Use SWD/JTAG, logic analyzers, and serial logs with rate limits.
+- Keep fault handlers useful: capture reset reason, fault registers, and build version when possible.
+
+## Common Mistakes
+
+- Do not modify generated files unless the workflow preserves changes.
+- Do not busy-wait forever on hardware flags.
+- Do not share buffers between DMA and CPU without synchronization.
+- Do not assume peripheral reset state after low-power modes.

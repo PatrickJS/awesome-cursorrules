@@ -1,6 +1,7 @@
 ---
 description: Svelte best practices and patterns for modern web applications
 globs: **/*.svelte, src/**/*.ts, src/**/*.js
+alwaysApply: false
 ---
 
 # Svelte Best Practices

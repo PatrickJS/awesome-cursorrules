@@ -1,0 +1,66 @@
+---
+description: Modern Fortran rules for scientific computing, modules, explicit interfaces, kind parameters, memory safety, and testing
+globs: ["**/*.f", "**/*.f90", "**/*.f95", "**/*.f03", "**/*.f08", "**/*.for", "**/*.ftn", "CMakeLists.txt", "*.cmake", "Makefile"]
+alwaysApply: false
+---
+
+# Fortran Programming Guidelines
+
+## Basic Principles
+
+- Use modern Fortran standards such as Fortran 2003, 2008, or newer.
+- Use `implicit none` in every program unit.
+- Put procedures in modules to provide explicit interfaces.
+- Keep modules focused and place each major module in its own file.
+- Prefer clear, structured code over clever language tricks.
+- Avoid obsolete features such as COMMON blocks, GOTO-heavy control flow, and numeric labels.
+
+## Kinds and Types
+
+- Define numeric kind parameters in one shared module, such as `kind_mod`.
+- Use `real(kind=dp)` or the project-approved real kind for floating point values.
+- Use `integer(kind=i4)` or the project-approved integer kind for integer values.
+- Define constants such as pi explicitly.
+- Include units in comments for physical quantities.
+- Use derived types to group related data instead of passing many primitive arguments.
+
+## Naming and Style
+
+- Use lowercase for language keywords and most identifiers.
+- Use underscores for multi-word names.
+- Avoid names that differ only by case.
+- Use descriptive names for procedures and state.
+- Repeat the procedure or module name after `end` statements.
+- Keep indentation consistent in `do`, `if`, `select case`, and module blocks.
+
+## Procedures
+
+- Keep subroutines and functions short and single-purpose.
+- Use `intent(in)`, `intent(out)`, or `intent(inout)` for every dummy argument.
+- Keep functions free of side effects whenever possible.
+- Prefer early validation and clear returns over deep nesting.
+- Use `use, only:` when importing from modules.
+
+## Memory and Arrays
+
+- Prefer allocatable arrays over pointers unless pointer semantics are required.
+- Check allocation state and array sizes before use.
+- Deallocate allocatable arrays when their lifetime is not naturally scoped.
+- Specify array bounds clearly when they matter.
+- Avoid unnecessary dynamic allocation in hot loops.
+
+## Testing and Build
+
+- Use CMake, fpm, Make, or the project-standard build system consistently.
+- Compile with warnings enabled and treat important warnings as failures in CI.
+- Add unit tests for public procedures and integration tests for numerical workflows.
+- Test boundary conditions, invalid inputs, and representative scientific cases.
+- Verify numerical tolerances explicitly rather than relying on exact floating point equality.
+
+## Common Mistakes
+
+- Do not declare variables after executable code unless using a block construct.
+- Do not assume `random_number` is a function; it is a subroutine.
+- Do not write to stdout from pure procedures.
+- Do not declare the same variable twice in the same scope.
+- Do not assume pi, dp, or project kinds already exist without importing or defining them.

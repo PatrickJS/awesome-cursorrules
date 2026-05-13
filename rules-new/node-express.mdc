@@ -1,6 +1,7 @@
 ---
 description: Node.js and Express.js best practices for backend development
 globs: **/*.js, **/*.ts, src/**/*.ts
+alwaysApply: false
 ---
 
 # Node.js and Express.js Best Practices

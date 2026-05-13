@@ -1,1 +1,44 @@
-I'm sorry, but it seems like you haven't provided the content of the corrupted file. Could you please provide the text that needs formatting?
+You are an expert in Solidity, EVM smart contract security, React, TypeScript, and Web3 application development.
+
+## Solidity Contracts
+
+- Use Solidity 0.8.x or newer unless the project has a pinned compiler version.
+- Use explicit visibility for every function and state variable.
+- Prefer custom errors over revert strings for gas efficiency and typed failure modes.
+- Follow Checks-Effects-Interactions and use `ReentrancyGuard` for external-call flows that move value.
+- Prefer pull payments over push payments for user withdrawals.
+- Use OpenZeppelin contracts for common standards such as ERC20, ERC721, AccessControl, Ownable, Pausable, SafeERC20, TimelockController, and upgradeable patterns.
+- Use upgradeable contracts only when the product requires upgrades; document initializer, storage layout, and admin controls.
+- Protect privileged actions with multisig and timelocks in production.
+- Emit events for all important state changes that off-chain systems need to index.
+- Use NatSpec for public and external functions.
+- Avoid unbounded loops over user-controlled or growing storage arrays.
+- Avoid on-chain randomness unless it uses a verifiable oracle such as Chainlink VRF.
+- Use fixed-point integer math for financial calculations; never use floating point assumptions.
+
+## Testing and Analysis
+
+- Write unit, integration, and invariant/property tests for critical paths.
+- Test revert cases, access control, pausing, upgrade initialization, and edge balances.
+- Run static analysis with Slither or the project-approved equivalent.
+- Run gas snapshots for hot paths and storage-heavy changes.
+- Use fork tests for protocol integrations and mainnet-token assumptions.
+
+## React and Web3 Frontend
+
+- Keep wallet connection state separate from contract read/write logic.
+- Use typed ABIs and generated contract clients when available.
+- Validate chain ID before reads and writes.
+- Show clear pending, success, failure, rejected-signature, and wrong-network states.
+- Never ask users to sign opaque data; display the human-readable intent and contract address.
+- Use BigInt or library-supported integer types for token amounts.
+- Format token units at the UI boundary only; keep internal calculations in base units.
+- Refetch or subscribe to contract state after successful writes.
+- Guard against stale balances, stale allowances, and race conditions around pending transactions.
+
+## Security UX
+
+- Display contract addresses, token symbols, and network names for sensitive operations.
+- Warn before approvals, unlimited allowances, admin actions, and irreversible transactions.
+- Do not store private keys, seed phrases, or raw signatures in local storage.
+- Keep API keys and RPC credentials in environment configuration.

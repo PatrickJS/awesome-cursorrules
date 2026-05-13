@@ -259,9 +259,6 @@ function parseFrontmatter(content) {
 function checkReadmeOnlyExternalListings(files, diff) {
   if (!files || !diff || !files.includes("README.md")) return;
 
-  const changesRuleContent = files.some((file) => file.startsWith("rules/") || file.startsWith("rules-new/"));
-  if (changesRuleContent) return;
-
   const addedExternalListings = diff
     .split(/\r?\n/)
     .filter((line) => line.startsWith("+") && !line.startsWith("+++"))
@@ -269,7 +266,7 @@ function checkReadmeOnlyExternalListings(files, diff) {
 
   for (const line of addedExternalListings) {
     failures.push(
-      `README-only external listing needs accompanying rule content or maintainer discussion: ${line.slice(1).trim()}`,
+      `New external README listings require maintainer handling instead of contributor-added primary links: ${line.slice(1).trim()}`,
     );
   }
 }

@@ -1,6 +1,7 @@
 ---
 description: Rust best practices for Solana smart contract development using Anchor framework and Solana SDK
 globs: programs/**/*.rs, src/**/*.rs, tests/**/*.ts
+alwaysApply: false
 ---
 
 # Rust + Solana (Anchor) Best Practices

@@ -1,6 +1,7 @@
 ---
 description: Vue.js best practices and patterns for modern web applications
 globs: **/*.vue, **/*.ts, components/**/*
+alwaysApply: false
 ---
 
 # Vue.js Best Practices

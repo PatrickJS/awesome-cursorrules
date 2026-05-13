@@ -1,6 +1,7 @@
 ---
 description: Database best practices focusing on Prisma and Supabase integration
 globs: prisma/**/*, src/db/**/*, **/*.prisma, supabase/**/*
+alwaysApply: false
 ---
 
 # Database Best Practices

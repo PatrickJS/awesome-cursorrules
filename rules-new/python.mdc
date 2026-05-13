@@ -1,6 +1,7 @@
 ---
 description: Python best practices and patterns for modern software development with Flask and SQLite
 globs: **/*.py, src/**/*.py, tests/**/*.py
+alwaysApply: false
 ---
 
 # Python Best Practices
