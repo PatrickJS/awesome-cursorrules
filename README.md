@@ -266,7 +266,8 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [TypeScript Code Convention](./rules/typescript-code-convention-cursorrules-prompt-file/.cursorrules) - Cursor rules for TypeScript development with code convention integration.
 - [VSCode Extension (Electron/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro/.cursorrules) - Cursor rules for VSCode extension development with Electron and TypeScript integration.
 - [Web App Optimization](./rules/web-app-optimization-cursorrules-prompt-file/.cursorrules) - Cursor rules for web app development with optimization integration.
-
+- [Ankra CLI (Kubernetes Cluster Management)](./rules-new/ankra-cli.mdc) - Cursor rules for Ankra CLI development with Kubernetes cluster management integration.
+    
 ### Language-Specific
 
 - [JavaScript/TypeScript Code Quality](./rules/javascript-typescript-code-quality-cursorrules-pro/.cursorrules) - Cursor rules for JavaScript and TypeScript development with code quality integration.

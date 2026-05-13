@@ -62,7 +62,7 @@ test("fails a README that reintroduces a catch-all section", () => {
   }
 });
 
-test("fails changed rules-new files without required frontmatter", () => {
+test("fails changed rules-new files without required frontmatter and explains how to fix it", () => {
   const root = makeFixture();
   try {
     write(root, "README.md", "\n");
@@ -70,7 +70,27 @@ test("fails changed rules-new files without required frontmatter", () => {
     write(root, ".changed-files", "rules-new/bad.mdc\n");
     const result = run(root, ["--changed-files", ".changed-files"]);
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /missing frontmatter field `alwaysApply`/);
+    assert.match(result.stderr, /missing required YAML frontmatter field `alwaysApply`/);
+    assert.match(result.stderr, /Required fields for rules-new\/\*\.mdc: `description`, `globs`, `alwaysApply`/);
+    assert.match(result.stderr, /Use `alwaysApply: false` for scoped rules/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("fails changed rules-new files without YAML frontmatter and explains required structure", () => {
+  const root = makeFixture();
+  try {
+    write(root, "README.md", "\n");
+    write(root, "rules-new/bad.mdc", "# Missing frontmatter\n");
+    write(root, ".changed-files", "rules-new/bad.mdc\n");
+    const result = run(root, ["--changed-files", ".changed-files"]);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /is missing YAML frontmatter/);
+    assert.match(
+      result.stderr,
+      /rules-new\/\*\.mdc files must begin with YAML frontmatter that includes `description`, `globs`, and `alwaysApply` \(true\/false\)/,
+    );
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
