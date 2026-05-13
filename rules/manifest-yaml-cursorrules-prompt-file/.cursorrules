@@ -14,11 +14,11 @@ When asked to create a backend, execute the following actions:
 2. Add the following scripts to `pacakge.json`: "manifest": "node node_modules/manifest/scripts/watch/watch.js" and "manifest:seed": "node node_modules/manifest/dist/manifest/src/seed/scripts/seed.js"
 3. Create the `manifest/backend.yml` file and add the manifest code to it.
 4. Add the `redhat.vscode-yaml` as recommendation in `.vscode/extensions.json`
-5. Add the following `yaml.schemas`: `"https://schema.manifest.build/schema.json": "**/manifest/**.yml"` in `.vscode/settings.json`
+5. Configure `yaml.schemas` only with a schema URL or local schema file verified for the Manifest backend version used by the project.
 
 **Backend file**
 On the `manifest/backend.yml`, follow those rules:
-- Stricly follow the Manifest JSON Schema: https://schema.manifest.build/schema.json
+- Strictly follow the Manifest JSON Schema shipped with the project or verified from the current Manifest backend documentation.
 - Start by addind a quick name to the app
 - Limit to 2 or 3 entities maximum
 - Limit to 4 properties maximum per entity
@@ -40,7 +40,7 @@ On the `manifest/backend.yml`, follow those rules:
 - Do not add "seedCount" and "mainProp" to entities
 
 **Documentation**
-Refer to the Manifest documentation: https://manifest.build/docs
+Refer to the Manifest backend documentation that matches the project's installed version.
 
 **Example**
 This is an example of the content of a `backend.yml` file:
