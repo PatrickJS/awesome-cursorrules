@@ -374,11 +374,26 @@ Contributions are welcome! If you have a great `.cursorrules` file to share:
 2. Create a new folder in the `rules` directory. The folder name should follow this pattern:
    `technology-focus-cursorrules-prompt-file`
    For example: `react-typescript-cursorrules-prompt-file`
-3. Add your `.cursorrules` file to the new folder.
-4. Optionally, include a README.md in the folder to provide credit and a brief description.
-5. Update the main README.md file, adding your contribution to the appropriate category.
-6. Ensure your contribution follows the guidelines in the [`.cursorrules`](./.cursorrules) file at the root of this repository.
-7. Submit a pull request.
+3. Add your `.cursorrules` file to the new folder, or add a new `.mdc` rule under `rules-new/`.
+4. New `rules-new/*.mdc` files must start with frontmatter like this:
+
+   ```yaml
+   ---
+   description: One-line summary of what this rule helps Cursor do
+   globs: **/*.ts, **/*.tsx
+   alwaysApply: false
+   ---
+   ```
+
+   - `description` explains the rule's purpose to Cursor and contributors.
+   - `globs` lists the file patterns where the rule should auto-attach.
+   - `alwaysApply: false` keeps the rule scoped to matching or requested context.
+   - `alwaysApply: true` makes the rule apply to every request; use it only for universal guidance.
+
+5. Optionally, include a README.md in the folder to provide credit and a brief description.
+6. Update the main README.md file, adding your contribution to the appropriate category.
+7. Ensure your contribution follows the guidelines in the [`.cursorrules`](./.cursorrules) file at the root of this repository.
+8. Submit a pull request.
 
 Please ensure your contribution is original or properly credited if based on existing work. Refer to the `.cursorrules` file in the root of this repository for detailed guidelines on formatting, naming conventions, and best practices for contributions.
 

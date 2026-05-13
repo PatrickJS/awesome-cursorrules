@@ -25,7 +25,7 @@
 
 - [ ] The contribution includes original rule content, or clearly credits the source.
 - [ ] New rule folders use the `technology-focus-cursorrules-prompt-file` naming pattern where applicable.
-- [ ] New `.mdc` files include frontmatter with `description`, `globs`, and `alwaysApply`.
+- [ ] New `rules-new/*.mdc` files include frontmatter with a non-empty `description`, relevant `globs`, and `alwaysApply: false` unless the rule is universal.
 - [ ] README links are relative for repo files and point to the correct category.
 - [ ] The text is neutral and useful, not sales copy.
 - [ ] This is not a standalone external tool, product, directory, marketplace, or service listing.

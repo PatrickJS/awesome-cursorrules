@@ -10,6 +10,14 @@ const changedFiles = args.changedFiles
   : null;
 const diffText = args.diffFile ? readOptional(resolve(root, args.diffFile)) : "";
 const failures = [];
+const requiredRulesNewFrontmatterFields = ["description", "globs", "alwaysApply"];
+const rulesNewFrontmatterExample = [
+  "---",
+  "description: One-line summary of what this rule helps Cursor do",
+  "globs: **/*.ts, **/*.tsx",
+  "alwaysApply: false",
+  "---",
+].join("\n");
 
 const filesToCheck = changedFiles ?? listFiles(root);
 
@@ -230,18 +238,41 @@ function checkRulesNewFrontmatter(file, content) {
   const frontmatter = parseFrontmatter(content);
   if (!frontmatter) {
     failures.push(
-      `${file} is missing YAML frontmatter. rules-new/*.mdc files must begin with YAML frontmatter that includes \`description\`, \`globs\`, and \`alwaysApply\` (true/false).`,
+      `${file} is missing YAML frontmatter. rules-new/*.mdc files must begin with YAML frontmatter that includes \`description\`, \`globs\`, and \`alwaysApply\` (true/false). Copy this example and adjust the values:\n${rulesNewFrontmatterExample}`,
     );
     return;
   }
 
-  for (const field of ["description", "globs", "alwaysApply"]) {
-    const pattern = new RegExp(`^${field}\\s*:`, "m");
-    if (!pattern.test(frontmatter)) {
+  const fields = {};
+  for (const field of requiredRulesNewFrontmatterFields) {
+    const value = readFrontmatterField(frontmatter, field);
+    if (value === null) {
       failures.push(
-        `${file} is missing required YAML frontmatter field \`${field}\`. Required fields for rules-new/*.mdc: \`description\`, \`globs\`, \`alwaysApply\`. Use \`alwaysApply: false\` for scoped rules, and \`alwaysApply: true\` only for rules that should always apply.`,
+        `${file} is missing required YAML frontmatter field \`${field}\`. Required fields for rules-new/*.mdc: \`description\`, \`globs\`, \`alwaysApply\`. Add \`alwaysApply: false\` for scoped rules, and \`alwaysApply: true\` only for rules that should always apply.`,
       );
+      continue;
     }
+    fields[field] = value;
+  }
+
+  if (fields.description !== undefined && stripYamlQuotes(fields.description).trim().length === 0) {
+    failures.push(
+      `${file} frontmatter field \`description\` is empty. Add a short explanation of what the rule helps Cursor do.`,
+    );
+  }
+
+  if (fields.alwaysApply !== undefined && !["true", "false"].includes(fields.alwaysApply)) {
+    failures.push(`${file} frontmatter field \`alwaysApply\` must be exactly \`true\` or \`false\`.`);
+  }
+
+  if (
+    fields.globs !== undefined &&
+    stripYamlQuotes(fields.globs).trim().length === 0 &&
+    fields.alwaysApply !== "true"
+  ) {
+    failures.push(
+      `${file} frontmatter field \`globs\` is empty. Add file patterns such as \`**/*.ts\` or use \`alwaysApply: true\` only for universal rules.`,
+    );
   }
 }
 
@@ -254,6 +285,38 @@ function parseFrontmatter(content) {
   const end = normalized.indexOf("\n---", 4);
   if (end === -1) return null;
   return normalized.slice(4, end);
+}
+
+function readFrontmatterField(frontmatter, field) {
+  const pattern = new RegExp(`^${field}\\s*:(.*)$`);
+  const lines = frontmatter.split("\n");
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const match = lines[index].match(pattern);
+    if (!match) continue;
+
+    const values = [match[1].trim()];
+    for (const line of lines.slice(index + 1)) {
+      if (!/^\s+/.test(line)) break;
+      const trimmed = line.trim();
+      if (trimmed.length > 0) values.push(trimmed);
+    }
+
+    return values.filter(Boolean).join(" ");
+  }
+
+  return null;
+}
+
+function stripYamlQuotes(value) {
+  const trimmed = value.trim();
+  if (
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+  ) {
+    return trimmed.slice(1, -1);
+  }
+  return trimmed;
 }
 
 function checkReadmeOnlyExternalListings(files, diff) {
