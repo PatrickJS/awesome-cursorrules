@@ -1,0 +1,35 @@
+---
+description: "Cursor rules for avoiding placeholder or broken image URLs, using stable visual assets, and checking alt text, dimensions, licensing, and responsive behavior."
+globs: **/*
+alwaysApply: false
+---
+# Landing Page Image Quality
+
+When generating or editing user-facing pages, use real, relevant visual assets instead of placeholder image services.
+
+## Image Sources
+
+- Do not commit `placehold.co`, `via.placeholder.com`, `dummyimage.com`, `picsum.photos`, random image URLs, or broken/deprecated image services.
+- Prefer committed project assets, product screenshots, generated assets approved by the user, or stable URLs from an approved image provider.
+- Before using a third-party image, confirm the license and attribution requirements are compatible with the project.
+- Avoid hotlinking images from arbitrary websites.
+
+## Asset Quality
+
+- Match images to the actual content, product, place, object, or user state they represent.
+- Do not use vague atmospheric images when the user needs to inspect a product, feature, workflow, or interface.
+- Use consistent aspect ratios for repeated cards or gallery items.
+- Provide explicit `width` and `height` attributes or CSS aspect-ratio constraints to prevent layout shift.
+- Use optimized formats and sizes appropriate for the target framework.
+
+## Accessibility
+
+- Every informative image must have specific `alt` text that describes the image's purpose in context.
+- Decorative images must use empty alt text and should not be announced to assistive technology.
+- Do not put essential text only inside an image.
+
+## Implementation Checks
+
+- Ensure image paths resolve in the built application.
+- Check responsive behavior at mobile and desktop widths.
+- Verify that loading, error, and empty states do not leave broken image icons in production UI.

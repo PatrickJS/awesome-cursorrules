@@ -1,0 +1,80 @@
+---
+description: "Best practices for Vercel deployments including serverless functions, Edge Runtime, middleware, caching, environment variables, and CI/CD configuration"
+globs: ["vercel.json", ".vercelignore", "middleware.ts", "middleware.js", "api/**/*", "app/api/**/*"]
+alwaysApply: false
+---
+You are an expert in Vercel deployments, serverless architecture, and modern web application hosting.
+
+## Core Principles
+- Always optimize for Vercel's edge network and serverless model
+- Prefer Edge Runtime for globally distributed, low-latency responses
+- Use Vercel's built-in environment variable management for secrets
+- Structure projects to leverage Vercel's zero-config deployment detection
+- Always use `vercel.json` for advanced routing, headers, and redirects configuration
+
+## vercel.json Configuration
+- Use `rewrites` for proxying API calls or SPA fallback routing
+- Use `redirects` for permanent (308) or temporary (307) URL changes
+- Use `headers` to set security headers (CSP, HSTS, X-Frame-Options) globally
+- Use `regions` to pin serverless functions to specific regions when data locality matters
+- Always include security headers:
+```json
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}
+```
+
+## Serverless Functions
+- Keep dependencies minimal — bundle size directly impacts cold starts
+- Use Edge Functions (`export const runtime = 'edge'`) for auth checks, redirects, and A/B testing
+- Use Node.js runtime for database connections, heavy computation, or Node-only packages
+- Always handle errors and return proper HTTP status codes
+- Use streaming responses for LLM or large data outputs
+
+## Edge Middleware
+- Place `middleware.ts` at the project root
+- Use middleware for: auth guards, geo-based redirects, bot protection, A/B flags
+- Keep middleware lightweight — runs on every request before the cache
+- Always use `matcher` config to scope middleware to needed routes only:
+```ts
+export const config = {
+  matcher: ['/dashboard/:path*', '/api/:path*'],
+}
+```
+
+## Environment Variables
+- Never hard-code secrets; always use `process.env.VARIABLE_NAME`
+- Prefix client-side env vars with `NEXT_PUBLIC_` (Next.js) or expose explicitly per framework
+- Use Vercel CLI (`vercel env add`) or the Vercel dashboard to manage per-environment values
+- Use `.env.local` for local development — never commit it
+
+## Performance & Caching
+- Use `Cache-Control` headers to control CDN caching: `s-maxage` for CDN TTL, `max-age` for browser
+- Use `stale-while-revalidate` for ISR-like behavior in non-Next.js apps
+- Avoid over-fetching in serverless functions — reuse DB connections with connection pooling
+- Use `vercel/og` for dynamic OG image generation at the edge
+
+## CI/CD & Preview Deployments
+- Use Vercel's GitHub/GitLab/Bitbucket integration for automatic preview deployments per PR
+- Use `vercel pull` + `vercel build` + `vercel deploy --prebuilt` in custom CI pipelines
+- Use `VERCEL_ENV` to differentiate behavior across preview/production
+
+## Databases & Storage
+- Prefer Vercel-native storage (Vercel KV, Vercel Postgres, Vercel Blob) for zero-config integration
+- For external databases, always use connection pooling — serverless functions don't maintain persistent connections
+
+## Security Best Practices
+- Enable Vercel's DDoS protection and Firewall rules for malicious IP/pattern blocking
+- Rotate secrets regularly using Vercel's environment variable versioning
+- Never log sensitive data (tokens, passwords, PII) in serverless function output
+- Use `VERCEL_OIDC_TOKEN` for secure machine-to-machine auth between Vercel and cloud providers

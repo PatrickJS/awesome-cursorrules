@@ -1,9 +1,8 @@
 ---
-description: Enforce DevSecOps, SSDLC, and AppSec best practices for all code generated in this project.
+description: "Cursor rules for secure coding, secret handling, dependency hygiene, authentication, authorization, security testing, and compliance documentation."
 globs: ["**/*.py", "**/*.js", "**/*.ts", "**/*.go", "**/*.java", "**/*.rb", "**/*.php", "**/*.cs", "**/*.sh"]
 alwaysApply: true
 ---
-
 # DevSecOps + SSDLC + AppSec Cursor Rule
 
 ## General Security Principles

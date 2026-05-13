@@ -12,6 +12,10 @@ Do not open issues asking for help with Cursor accounts, billing, subscriptions,
 
 Pull requests from GitHub accounts younger than 30 days are blocked by CI by default. Maintainers can override known-good contributors with the `PR_AUTHOR_AGE_ALLOWLIST` repository variable, and can adjust the threshold with `PR_AUTHOR_MINIMUM_AGE_DAYS`.
 
+## Rule format
+
+New and updated rules should use the modern Cursor Project Rules format: one `.mdc` file under `rules/` with `description`, `globs`, and `alwaysApply` frontmatter.
+
 ## Adding an awesome list
 
 Please ensure your pull request adheres to the [list of guidelines](pull_request_template.md).

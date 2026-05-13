@@ -1,0 +1,107 @@
+---
+description: "TanStack Query v5 (React Query) patterns including queryOptions helper, query key factories, mutations, optimistic updates, infinite queries, Suspense mode, and prefetching"
+globs: ["src/**/*.tsx", "src/**/*.ts", "src/queries/**/*"]
+alwaysApply: false
+---
+You are an expert in TanStack Query v5 (React Query), TypeScript, and async state management.
+
+## Core Principles
+- TanStack Query manages server state — NOT a general client state manager
+- Every query needs a stable, serializable query key that uniquely describes the data
+- Mutations handle writes; queries handle reads — never blur this boundary
+- Use `queryOptions()` helper (v5) for reusable, co-located query definitions
+- v5 breaking change: `useQuery` only accepts options object form — no positional args
+
+## QueryClient Setup
+```tsx
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60,
+      retry: (count, error: any) => error?.status !== 404 && count < 2,
+    },
+  },
+})
+```
+
+## Query Key Factory Pattern
+```ts
+export const postKeys = {
+  all: ['posts'] as const,
+  lists: () => [...postKeys.all, 'list'] as const,
+  list: (filters?: PostFilters) => [...postKeys.lists(), filters] as const,
+  details: () => [...postKeys.all, 'detail'] as const,
+  detail: (id: string) => [...postKeys.details(), id] as const,
+}
+```
+
+## queryOptions Helper (v5)
+```ts
+export const postQueryOptions = (id: string) =>
+  queryOptions({
+    queryKey: postKeys.detail(id),
+    queryFn: () => fetchPost(id),
+    staleTime: 1000 * 60 * 5,
+  })
+
+// In component
+const { data } = useQuery(postQueryOptions(postId))
+
+// In router loader
+loader: ({ params, context: { queryClient } }) =>
+  queryClient.ensureQueryData(postQueryOptions(params.postId))
+```
+
+## Mutations
+```tsx
+const { mutate, isPending } = useMutation({
+  mutationFn: (input: CreatePostInput) => createPost(input),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: postKeys.lists() })
+  },
+  onError: (error) => toast.error(error.message),
+})
+```
+
+## Optimistic Updates
+```tsx
+const mutation = useMutation({
+  mutationFn: updatePost,
+  onMutate: async (updated) => {
+    await queryClient.cancelQueries({ queryKey: postKeys.detail(updated.id) })
+    const previous = queryClient.getQueryData(postKeys.detail(updated.id))
+    queryClient.setQueryData(postKeys.detail(updated.id), updated)
+    return { previous }
+  },
+  onError: (_, updated, ctx) => {
+    queryClient.setQueryData(postKeys.detail(updated.id), ctx?.previous)
+  },
+  onSettled: (_, __, updated) => {
+    queryClient.invalidateQueries({ queryKey: postKeys.detail(updated.id) })
+  },
+})
+```
+
+## Infinite Queries
+```tsx
+const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+  queryKey: postKeys.lists(),
+  queryFn: ({ pageParam }) => fetchPosts({ cursor: pageParam }),
+  initialPageParam: undefined as string | undefined,
+  getNextPageParam: (lastPage) => lastPage.nextCursor,
+})
+const allPosts = data?.pages.flatMap((p) => p.items) ?? []
+```
+
+## Suspense Mode (v5)
+```tsx
+// useSuspenseQuery — no isLoading needed, Suspense handles it
+const { data } = useSuspenseQuery(postQueryOptions(postId))
+// Wrap with <Suspense fallback={<Skeleton />}> + <ErrorBoundary>
+```
+
+## Key Rules
+- Always define `queryOptions` outside components — never inline in `useQuery()`
+- Never use `useEffect` to fetch data — use loaders or `useQuery`
+- Use `placeholderData: keepPreviousData` for pagination to avoid layout shifts
+- Instantiate `QueryClient` once at app root — never inside a component

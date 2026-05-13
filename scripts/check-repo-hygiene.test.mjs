@@ -27,8 +27,8 @@ function run(root, args = []) {
 test("passes a README with valid local links", () => {
   const root = makeFixture();
   try {
-    write(root, "README.md", "- [Rule](./rules/example/.cursorrules)\n");
-    write(root, "rules/example/.cursorrules", "Useful rule content\n");
+    write(root, "README.md", "- [Rule](./rules/example.mdc)\n");
+    write(root, "rules/example.mdc", "---\ndescription: Example rule\nglobs: **/*.ts\nalwaysApply: false\n---\nUseful rule content\n");
     const result = run(root);
     assert.equal(result.status, 0, result.stderr + result.stdout);
   } finally {
@@ -39,11 +39,11 @@ test("passes a README with valid local links", () => {
 test("fails a README with a missing local link", () => {
   const root = makeFixture();
   try {
-    write(root, "README.md", "- [Missing](./rules/missing/.cursorrules)\n");
+    write(root, "README.md", "- [Missing](./rules/missing.mdc)\n");
     const result = run(root);
     assert.equal(result.status, 1);
     assert.match(result.stderr, /README local link is missing/);
-    assert.match(result.stderr, /rules\/missing\/\.cursorrules/);
+    assert.match(result.stderr, /rules\/missing\.mdc/);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -62,28 +62,28 @@ test("fails a README that reintroduces a catch-all section", () => {
   }
 });
 
-test("fails changed rules-new files without required frontmatter and explains how to fix it", () => {
+test("fails changed canonical rules files without required frontmatter and explains how to fix it", () => {
   const root = makeFixture();
   try {
     write(root, "README.md", "\n");
-    write(root, "rules-new/bad.mdc", "---\ndescription: Bad rule\nglobs: **/*.ts\n---\n");
-    write(root, ".changed-files", "rules-new/bad.mdc\n");
+    write(root, "rules/bad.mdc", "---\ndescription: Bad rule\nglobs: **/*.ts\n---\n");
+    write(root, ".changed-files", "rules/bad.mdc\n");
     const result = run(root, ["--changed-files", ".changed-files"]);
     assert.equal(result.status, 1);
     assert.match(result.stderr, /missing required YAML frontmatter field `alwaysApply`/);
-    assert.match(result.stderr, /Required fields for rules-new\/\*\.mdc: `description`, `globs`, `alwaysApply`/);
+    assert.match(result.stderr, /Required fields for rules\/\*\.mdc: `description`, `globs`, `alwaysApply`/);
     assert.match(result.stderr, /Add `alwaysApply: false` for scoped rules/);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
 });
 
-test("fails changed rules-new files without YAML frontmatter and explains required structure", () => {
+test("fails changed canonical rules files without YAML frontmatter and explains required structure", () => {
   const root = makeFixture();
   try {
     write(root, "README.md", "\n");
-    write(root, "rules-new/bad.mdc", "# Missing frontmatter\n");
-    write(root, ".changed-files", "rules-new/bad.mdc\n");
+    write(root, "rules/bad.mdc", "# Missing frontmatter\n");
+    write(root, ".changed-files", "rules/bad.mdc\n");
     const result = run(root, ["--changed-files", ".changed-files"]);
     assert.equal(result.status, 1);
     assert.match(result.stderr, /is missing YAML frontmatter/);
@@ -99,12 +99,12 @@ test("fails changed rules-new files without YAML frontmatter and explains requir
   }
 });
 
-test("fails changed rules-new files with invalid alwaysApply values", () => {
+test("fails changed canonical rules files with invalid alwaysApply values", () => {
   const root = makeFixture();
   try {
     write(root, "README.md", "\n");
-    write(root, "rules-new/bad.mdc", "---\ndescription: Bad rule\nglobs: **/*.ts\nalwaysApply: maybe\n---\n");
-    write(root, ".changed-files", "rules-new/bad.mdc\n");
+    write(root, "rules/bad.mdc", "---\ndescription: Bad rule\nglobs: **/*.ts\nalwaysApply: maybe\n---\n");
+    write(root, ".changed-files", "rules/bad.mdc\n");
     const result = run(root, ["--changed-files", ".changed-files"]);
     assert.equal(result.status, 1);
     assert.match(result.stderr, /frontmatter field `alwaysApply` must be exactly `true` or `false`/);
@@ -113,12 +113,12 @@ test("fails changed rules-new files with invalid alwaysApply values", () => {
   }
 });
 
-test("fails changed rules-new files with empty descriptions", () => {
+test("fails changed canonical rules files with empty descriptions", () => {
   const root = makeFixture();
   try {
     write(root, "README.md", "\n");
-    write(root, "rules-new/bad.mdc", "---\ndescription:\nglobs: **/*.ts\nalwaysApply: false\n---\n");
-    write(root, ".changed-files", "rules-new/bad.mdc\n");
+    write(root, "rules/bad.mdc", "---\ndescription:\nglobs: **/*.ts\nalwaysApply: false\n---\n");
+    write(root, ".changed-files", "rules/bad.mdc\n");
     const result = run(root, ["--changed-files", ".changed-files"]);
     assert.equal(result.status, 1);
     assert.match(result.stderr, /frontmatter field `description` is empty/);
@@ -128,12 +128,12 @@ test("fails changed rules-new files with empty descriptions", () => {
   }
 });
 
-test("fails scoped changed rules-new files with empty globs", () => {
+test("fails scoped changed canonical rules files with empty globs", () => {
   const root = makeFixture();
   try {
     write(root, "README.md", "\n");
-    write(root, "rules-new/bad.mdc", "---\ndescription: Bad rule\nglobs:\nalwaysApply: false\n---\n");
-    write(root, ".changed-files", "rules-new/bad.mdc\n");
+    write(root, "rules/bad.mdc", "---\ndescription: Bad rule\nglobs:\nalwaysApply: false\n---\n");
+    write(root, ".changed-files", "rules/bad.mdc\n");
     const result = run(root, ["--changed-files", ".changed-files"]);
     assert.equal(result.status, 1);
     assert.match(result.stderr, /frontmatter field `globs` is empty/);
@@ -143,12 +143,12 @@ test("fails scoped changed rules-new files with empty globs", () => {
   }
 });
 
-test("passes scoped changed rules-new files with valid frontmatter", () => {
+test("passes scoped changed canonical rules files with valid frontmatter", () => {
   const root = makeFixture();
   try {
     write(root, "README.md", "\n");
-    write(root, "rules-new/good.mdc", "---\ndescription: Good rule\nglobs: **/*.ts\nalwaysApply: false\n---\n\n# Rule\n");
-    write(root, ".changed-files", "rules-new/good.mdc\n");
+    write(root, "rules/good.mdc", "---\ndescription: Good rule\nglobs: **/*.ts\nalwaysApply: false\n---\n\n# Rule\n");
+    write(root, ".changed-files", "rules/good.mdc\n");
     const result = run(root, ["--changed-files", ".changed-files"]);
     assert.equal(result.status, 0, result.stderr + result.stdout);
   } finally {
@@ -156,16 +156,16 @@ test("passes scoped changed rules-new files with valid frontmatter", () => {
   }
 });
 
-test("passes scoped changed rules-new files with YAML list globs", () => {
+test("passes scoped changed canonical rules files with YAML list globs", () => {
   const root = makeFixture();
   try {
     write(root, "README.md", "\n");
     write(
       root,
-      "rules-new/good.mdc",
+      "rules/good.mdc",
       "---\ndescription: Good rule\nglobs:\n  - **/*.ts\n  - **/*.tsx\nalwaysApply: false\n---\n\n# Rule\n",
     );
-    write(root, ".changed-files", "rules-new/good.mdc\n");
+    write(root, ".changed-files", "rules/good.mdc\n");
     const result = run(root, ["--changed-files", ".changed-files"]);
     assert.equal(result.status, 0, result.stderr + result.stdout);
   } finally {
@@ -173,12 +173,12 @@ test("passes scoped changed rules-new files with YAML list globs", () => {
   }
 });
 
-test("passes universal changed rules-new files with empty globs and alwaysApply true", () => {
+test("passes universal changed canonical rules files with empty globs and alwaysApply true", () => {
   const root = makeFixture();
   try {
     write(root, "README.md", "\n");
-    write(root, "rules-new/good.mdc", "---\ndescription: Universal rule\nglobs:\nalwaysApply: true\n---\n\n# Rule\n");
-    write(root, ".changed-files", "rules-new/good.mdc\n");
+    write(root, "rules/good.mdc", "---\ndescription: Universal rule\nglobs:\nalwaysApply: true\n---\n\n# Rule\n");
+    write(root, ".changed-files", "rules/good.mdc\n");
     const result = run(root, ["--changed-files", ".changed-files"]);
     assert.equal(result.status, 0, result.stderr + result.stdout);
   } finally {
@@ -186,12 +186,12 @@ test("passes universal changed rules-new files with empty globs and alwaysApply 
   }
 });
 
-test("fails changed rule files that are empty or AI apology placeholders", () => {
+test("fails changed canonical rule files that are empty or AI apology placeholders", () => {
   const root = makeFixture();
   try {
     write(root, "README.md", "\n");
-    write(root, "rules/bad/.cursorrules", "I'm sorry, but it seems like you forgot the file.\n");
-    write(root, ".changed-files", "rules/bad/.cursorrules\n");
+    write(root, "rules/bad.mdc", "I'm sorry, but it seems like you forgot the file.\n");
+    write(root, ".changed-files", "rules/bad.mdc\n");
     const result = run(root, ["--changed-files", ".changed-files"]);
     assert.equal(result.status, 1);
     assert.match(result.stderr, /looks like an AI error message/);
@@ -218,8 +218,8 @@ test("fails external README links even when rule content changes too", () => {
   const root = makeFixture();
   try {
     write(root, "README.md", "\n");
-    write(root, "rules/tool/.cursorrules", "Useful rule content\n");
-    write(root, ".changed-files", "README.md\nrules/tool/.cursorrules\n");
+    write(root, "rules/tool.mdc", "---\ndescription: Tool rule\nglobs: **/*.ts\nalwaysApply: false\n---\nUseful rule content\n");
+    write(root, ".changed-files", "README.md\nrules/tool.mdc\n");
     write(root, ".readme.diff", "+- [Tool](https://example.com) - Rule source.\n");
     const result = run(root, ["--changed-files", ".changed-files", "--diff-file", ".readme.diff"]);
     assert.equal(result.status, 1);
@@ -232,10 +232,10 @@ test("fails external README links even when rule content changes too", () => {
 test("allows README local rule links when rule content changes too", () => {
   const root = makeFixture();
   try {
-    write(root, "README.md", "- [Tool](./rules/tool/.cursorrules) - Rule source.\n");
-    write(root, "rules/tool/.cursorrules", "Useful rule content\n");
-    write(root, ".changed-files", "README.md\nrules/tool/.cursorrules\n");
-    write(root, ".readme.diff", "+- [Tool](./rules/tool/.cursorrules) - Rule source.\n");
+    write(root, "README.md", "- [Tool](./rules/tool.mdc) - Rule source.\n");
+    write(root, "rules/tool.mdc", "---\ndescription: Tool rule\nglobs: **/*.ts\nalwaysApply: false\n---\nUseful rule content\n");
+    write(root, ".changed-files", "README.md\nrules/tool.mdc\n");
+    write(root, ".readme.diff", "+- [Tool](./rules/tool.mdc) - Rule source.\n");
     const result = run(root, ["--changed-files", ".changed-files", "--diff-file", ".readme.diff"]);
     assert.equal(result.status, 0, result.stderr + result.stdout);
   } finally {

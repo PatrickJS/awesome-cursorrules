@@ -10,8 +10,8 @@ const changedFiles = args.changedFiles
   : null;
 const diffText = args.diffFile ? readOptional(resolve(root, args.diffFile)) : "";
 const failures = [];
-const requiredRulesNewFrontmatterFields = ["description", "globs", "alwaysApply"];
-const rulesNewFrontmatterExample = [
+const requiredRuleFrontmatterFields = ["description", "globs", "alwaysApply"];
+const ruleFrontmatterExample = [
   "---",
   "description: One-line summary of what this rule helps Cursor do",
   "globs: **/*.ts, **/*.tsx",
@@ -163,8 +163,8 @@ function checkRuleFiles(candidateFiles) {
       failures.push(`${file} looks like an AI error message, not rule content.`);
     }
 
-    if (isRulesNewMdc(file)) {
-      checkRulesNewFrontmatter(file, trimmed);
+    if (isCanonicalMdcRule(file)) {
+      checkRuleFrontmatter(file, trimmed);
     }
   }
 }
@@ -218,11 +218,11 @@ function hasOutOfScopeSupportAcknowledgement(content) {
 }
 
 function isRuleFile(file) {
-  if (!file.startsWith("rules/") && !file.startsWith("rules-new/")) {
+  if (!file.startsWith("rules/")) {
     return false;
   }
   if (/\/README\.md$/i.test(file)) return false;
-  return /(\.cursorrules(?:\..*)?|\.mdc|\.mdx)$/i.test(file);
+  return /\.mdc$/i.test(file);
 }
 
 function looksLikeAiErrorMessage(content) {
@@ -230,25 +230,25 @@ function looksLikeAiErrorMessage(content) {
   return /\bI'm sorry\b/i.test(firstLine) && /(forgot|unable|cannot|can't|seems like)/i.test(firstLine);
 }
 
-function isRulesNewMdc(file) {
-  return file.startsWith("rules-new/") && file.endsWith(".mdc");
+function isCanonicalMdcRule(file) {
+  return file.startsWith("rules/") && file.endsWith(".mdc");
 }
 
-function checkRulesNewFrontmatter(file, content) {
+function checkRuleFrontmatter(file, content) {
   const frontmatter = parseFrontmatter(content);
   if (!frontmatter) {
     failures.push(
-      `${file} is missing YAML frontmatter. rules-new/*.mdc files must begin with YAML frontmatter that includes \`description\`, \`globs\`, and \`alwaysApply\` (true/false). Copy this example and adjust the values:\n${rulesNewFrontmatterExample}`,
+      `${file} is missing YAML frontmatter. rules/*.mdc files must begin with YAML frontmatter that includes \`description\`, \`globs\`, and \`alwaysApply\` (true/false). Copy this example and adjust the values:\n${ruleFrontmatterExample}`,
     );
     return;
   }
 
   const fields = {};
-  for (const field of requiredRulesNewFrontmatterFields) {
+  for (const field of requiredRuleFrontmatterFields) {
     const value = readFrontmatterField(frontmatter, field);
     if (value === null) {
       failures.push(
-        `${file} is missing required YAML frontmatter field \`${field}\`. Required fields for rules-new/*.mdc: \`description\`, \`globs\`, \`alwaysApply\`. Add \`alwaysApply: false\` for scoped rules, and \`alwaysApply: true\` only for rules that should always apply.`,
+        `${file} is missing required YAML frontmatter field \`${field}\`. Required fields for rules/*.mdc: \`description\`, \`globs\`, \`alwaysApply\`. Add \`alwaysApply: false\` for scoped rules, and \`alwaysApply: true\` only for rules that should always apply.`,
       );
       continue;
     }

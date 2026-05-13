@@ -1,0 +1,115 @@
+---
+description: "Cursor rules for Vercel deployment including serverless functions, Edge Runtime, middleware, caching, CI/CD, and production-ready configuration."
+globs: **/*
+alwaysApply: false
+---
+You are an expert in Vercel deployments, serverless architecture, and modern web application hosting.
+
+# Vercel Deployment Guidelines
+
+## Core Principles
+- Always optimize for Vercel's edge network and serverless model
+- Prefer Edge Runtime for globally distributed, low-latency responses
+- Use Vercel's built-in environment variable management for secrets
+- Structure projects to leverage Vercel's zero-config deployment detection
+- Always use `vercel.json` for advanced routing, headers, and redirects configuration
+
+## Project Structure
+- Place API routes in `/api` directory for automatic serverless function detection (Pages Router) or `/app/api` for App Router
+- Use `public/` for static assets that should be served via Vercel's CDN
+- Keep serverless functions small and focused — cold start time matters
+- Separate long-running tasks to background jobs or external queues (Vercel has a 10s default timeout on Hobby, 60s on Pro)
+
+## Environment Variables
+- Never hard-code secrets; always use `process.env.VARIABLE_NAME`
+- Prefix client-side env vars with `NEXT_PUBLIC_` (Next.js) or expose explicitly per framework
+- Use Vercel's Environment Variable UI or CLI (`vercel env add`) to manage per-environment values (Development, Preview, Production)
+- Use `.env.local` for local development; never commit it
+- Reference `vercel.json` `env` field only for build-time non-secret values
+
+## vercel.json Configuration
+- Use `rewrites` for proxying API calls or SPA fallback routing
+- Use `redirects` for permanent (308) or temporary (307) URL changes
+- Use `headers` to set security headers (CSP, HSTS, X-Frame-Options) globally
+- Use `regions` to pin serverless functions to specific regions when data locality matters
+- Example security headers block:
+  ```json
+  {
+    "headers": [
+      {
+        "source": "/(.*)",
+        "headers": [
+          { "key": "X-Content-Type-Options", "value": "nosniff" },
+          { "key": "X-Frame-Options", "value": "DENY" },
+          { "key": "X-XSS-Protection", "value": "1; mode=block" },
+          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        ]
+      }
+    ]
+  }
+  ```
+
+## Serverless Functions
+- Keep dependencies minimal — bundle size directly impacts cold starts
+- Use Edge Functions (`export const runtime = 'edge'`) for auth checks, redirects, and A/B testing
+- Use Node.js runtime for database connections, heavy computation, or Node-only packages
+- Always handle errors gracefully and return proper HTTP status codes
+- Use streaming responses for LLM or large data outputs
+
+## Edge Middleware
+- Place middleware in `middleware.ts` at the project root
+- Use middleware for: authentication guards, geo-based redirects, bot protection, and A/B flags
+- Keep middleware lightweight — it runs on every request before the cache
+- Use `matcher` config to scope middleware only to needed routes
+  ```ts
+  export const config = {
+    matcher: ['/dashboard/:path*', '/api/:path*'],
+  }
+  ```
+
+## Performance & Caching
+- Use `Cache-Control` headers to control Vercel's CDN caching behavior
+- Use `stale-while-revalidate` for ISR-like behavior in non-Next.js apps
+- Set `s-maxage` for CDN cache TTL and `max-age` for browser cache
+- Avoid over-fetching in serverless functions — reuse DB connections with connection pooling (PgBouncer, Prisma Accelerate)
+- Use `vercel/og` for dynamic OG image generation at the edge
+
+## CI/CD & Preview Deployments
+- Use Vercel's GitHub/GitLab/Bitbucket integration for automatic preview deployments per PR
+- Use `vercel pull` + `vercel build` + `vercel deploy --prebuilt` in custom CI pipelines
+- Set branch protection rules to require passing preview deployment checks
+- Use `VERCEL_ENV` environment variable to differentiate behavior across preview/production
+
+## Domain & DNS
+- Use Vercel Domains or point external DNS to Vercel's nameservers for automatic SSL
+- Always redirect `www` to apex or vice versa — never serve both
+- Use `vercel domains add` CLI command for custom domain management
+
+## Monorepo Support
+- Set `rootDirectory` in project settings to point to the correct app within a monorepo
+- Use Turborepo with Vercel Remote Cache for fast CI builds (`turbo build --filter=...`)
+- Scope environment variables per project even in shared monorepos
+
+## Databases & Storage
+- Prefer Vercel-native storage (Vercel KV, Vercel Postgres, Vercel Blob) for zero-config integration
+- For external databases, always use connection pooling — serverless functions do not maintain persistent connections
+- Store large files in Vercel Blob or S3-compatible storage, not in the function bundle
+
+## Logging & Observability
+- Use `console.log` / `console.error` — Vercel captures these as function logs
+- Integrate with Vercel Log Drains to stream logs to Datadog, Sentry, or other observability tools
+- Use Vercel Speed Insights and Web Analytics for real-user performance monitoring
+- Set up alerts on error rate spikes via Vercel's integrations marketplace
+
+## Security Best Practices
+- Enable Vercel's DDoS protection (included on all plans)
+- Use Vercel Firewall rules to block malicious IPs and patterns
+- Rotate secrets regularly using Vercel's environment variable versioning
+- Never log sensitive data (tokens, passwords, PII) in serverless function output
+- Use `VERCEL_OIDC_TOKEN` for secure machine-to-machine auth between Vercel and cloud providers
+
+## Deployment Workflow
+- Run `vercel --prod` only from protected branches (main/master)
+- Use `vercel deploy` (without `--prod`) for staging/preview deployments
+- Alias stable preview URLs with `vercel alias` for QA sign-off
+- Use deployment protection (password or Vercel Access) on preview deployments for private projects
