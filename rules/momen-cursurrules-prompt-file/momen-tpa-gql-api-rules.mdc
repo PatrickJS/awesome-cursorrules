@@ -1,0 +1,105 @@
+---
+description: How to invoke third-party APIs via a Momen.app project's backend
+alwaysApply: false
+---
+# Third Party APIs
+
+## Overview
+A project built on Momen.app can have many third-party HTTP APIs imported. These are separated into two categories: query or mutation, roughly (though not always the case) corresponding to the semantics of HTTP GET vs POST.  
+Each API is stored in the following data structure:
+```typescript
+type ScalarType = 'string' | 'boolean' | 'number' | 'integer';
+type TypeDefinition =
+  | ScalarType
+  | { [key: string]: TypeDefinition | TypeDefinition[] };
+
+interface ThirdPartyApiConfig {
+  id: string;
+  name: string;
+  operation: 'query' | 'mutation';
+  inputs: { [key: string]: TypeDefinition };
+  outputs: { [key: string]: TypeDefinition };
+}
+```
+N.B. The value of the operation field within ThirdPartyApiConfig determines the root GraphQL field. i.e. query -> query operation_${id}, and mutation -> mutation operation_${id}.
+
+## Invocation process
+Each input should be provided unless the user asks to remove it.  
+e.g. 
+Given TPA configuration as follows:
+```json
+      {
+        "id": "lzb3ownk",
+        "inputs": {
+          "body": {
+            "summary": "string",
+            "location": "string",
+            "description": "string",
+            "start": {
+              "dateTime": "string",
+              "timeZone": "string"
+            },
+            "end": {
+              "dateTime": "string",
+              "timeZone": "string"
+            },
+            "attendees": [
+              "string"
+            ]
+          },
+          "Authorization": "string"
+        },
+        "outputs": {
+          "body": {
+            "kind": "string",
+            "etag": "string",
+            "id": "string",
+            "status": "string",
+            "htmlLink": "string",
+            "created": "string",
+            "updated": "string",
+            "summary": "string",
+            "description": "string",
+            "location": "string",
+            "creator": {
+              "email": "string",
+              "self": "boolean"
+            },
+            "organizer": {
+              "email": "string",
+              "self": "boolean"
+            },
+            "start": {
+              "dateTime": "string",
+              "timeZone": "string"
+            },
+            "end": {
+              "dateTime": "string",
+              "timeZone": "string"
+            },
+            "iCalUID": "string",
+            "sequence": "number",
+            "reminders": {
+              "useDefault": "boolean"
+            },
+            "eventType": "string"
+          }
+        },
+        "operation": "mutation"
+      }
+```
+The corresponding GraphQL query should be
+```gql
+mutation request_${nonce}($summary: String, $location: String, $description: String, $start_dateTime: String, $start_timeZone: String, $end_dateTime: String, $end_timeZone: String, $attendees:[String], $Authorization: String) {
+  operation_lzb3ownk(fz_body: {}, arg1: $_1, arg2: $_2) {
+    responseCode
+    field_200_json {
+      {subFieldSelections}
+    }
+ }
+}
+```
+field_200_json is a fixed fields for all third-party API derived GraphQL operation. It means the response that's valid for all 2xx response codes. 
+
+The responseCode subfield should always be checked, in case 5xx or 4xx codes are returned, which means field_200_json would be empty. 
+

@@ -1,0 +1,37 @@
+name: Repository maintenance
+description: Report a broken link, duplicate entry, categorization problem, or repository hygiene issue.
+title: "[Maintenance]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for issues with this repository itself. Do not use it for Cursor product support, account or billing questions, third-party tools, license sharing, or license bypasses.
+
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: Issue type
+      options:
+        - Broken README link
+        - Duplicate or near-duplicate rule
+        - Incorrect category
+        - Rule file formatting problem
+        - Repository hygiene problem
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Include the relevant file path, README section, link, or rule name and explain what needs maintainer attention.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: scope_acknowledgement
+    attributes:
+      label: Scope acknowledgement
+      options:
+        - label: I am not asking for third-party tool support, account sharing, or license bypass help.
+          required: true

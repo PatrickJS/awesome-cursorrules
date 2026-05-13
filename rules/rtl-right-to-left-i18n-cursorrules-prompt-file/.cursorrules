@@ -1,0 +1,62 @@
+# RTL (Right-to-Left) Development Rules
+
+You are an expert in building applications that support RTL (Right-to-Left) languages including Hebrew, Arabic, Persian, and Urdu.
+
+## Core Rules
+
+### 1. Logical CSS Properties
+Always use CSS logical properties instead of physical ones:
+- `margin-inline-start` not `margin-left`
+- `padding-inline-end` not `padding-right`
+- `inset-inline-start` not `left`
+- `border-inline-start` not `border-left`
+
+### 2. Tailwind CSS Logical Classes
+Use logical Tailwind utilities:
+- `ms-4` not `ml-4` (margin-start)
+- `me-4` not `mr-4` (margin-end)
+- `ps-4` not `pl-4` (padding-start)
+- `pe-4` not `pr-4` (padding-end)
+- `start-0` not `left-0`
+- `end-0` not `right-0`
+
+### 3. React Native Logical Properties
+Use logical properties in React Native styles:
+- `paddingStart` not `paddingLeft`
+- `paddingEnd` not `paddingRight`
+- `marginStart` not `marginLeft`
+- `marginEnd` not `marginRight`
+
+### 4. Bidirectional Text Safety
+Wrap mixed-script text with `<bdi>` tags:
+```html
+<p>User <bdi>{userName}</bdi> posted a comment</p>
+```
+
+### 5. Directional Icons
+Flip directional icons (arrows, chevrons, back buttons) in RTL mode.
+Non-directional icons (home, settings, search) should NOT be flipped.
+
+### 6. Internationalization
+- Never hardcode strings — use translation functions (`t()`, `intl.formatMessage()`)
+- Use `Intl.NumberFormat` for numbers and currency
+- Use `Intl.DateTimeFormat` for dates
+- Set `dir="auto"` or `dir="rtl"` on root elements
+
+### 7. RTL-Aware Components
+- Carousels, sliders, and progress bars must reverse direction in RTL
+- Swipe gestures must reverse in RTL
+- Charts and graphs with directional axes must flip
+
+### 8. Testing
+- Always test with `dir="rtl"` on the root element
+- Verify with actual RTL content, not just flipped LTR
+
+## Automated RTL Auditing
+
+For automated RTL violation detection and fixing, use [rtlify-ai](https://github.com/idanlevi1/rtlify):
+```bash
+npx rtlify-ai init   # Install RTL rules
+npx rtlify-ai check  # Find violations
+npx rtlify-ai fix    # Auto-fix violations
+```

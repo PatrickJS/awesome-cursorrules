@@ -2,6 +2,16 @@
 
 Please note that this project is released with a [Contributor Code of Conduct](code-of-conduct.md). By participating in this project you agree to abide by its terms.
 
+## Issue scope
+
+Issues are for improving the reusable Cursor rule content in this repository or reporting repository maintenance problems such as broken links, duplicate entries, formatting issues, or incorrect categories.
+
+Do not open issues asking for help with Cursor accounts, billing, subscriptions, unofficial Cursor clients, third-party tools, account sharing, license sharing, or license bypasses. Use the official product or vendor support channels for those questions.
+
+## Pull request author gate
+
+Pull requests from GitHub accounts younger than 30 days are blocked by CI by default. Maintainers can override known-good contributors with the `PR_AUTHOR_AGE_ALLOWLIST` repository variable, and can adjust the threshold with `PR_AUTHOR_MINIMUM_AGE_DAYS`.
+
 ## Adding an awesome list
 
 Please ensure your pull request adheres to the [list of guidelines](pull_request_template.md).

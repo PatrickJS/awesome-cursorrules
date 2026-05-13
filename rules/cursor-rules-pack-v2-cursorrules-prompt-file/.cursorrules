@@ -1,0 +1,29 @@
+# Cursor Rules Pack v2 — Sample Rules
+# 7 production-tested rules from the full 50-rule pack
+# Full pack: https://oliviacraftlat.gumroad.com/l/wyaeil
+
+## Rule 1 — Dependency Discipline
+Before suggesting a new npm package: (1) state what it does in one sentence, (2) check if it's actively maintained (last publish < 6 months), (3) confirm whether we could implement it in < 30 lines without the dependency. Prefer fewer, well-maintained packages. Never add a dependency for a task under 20 lines of code.
+
+## Rule 2 — Explicit Error Handling
+Always wrap async operations in try/catch. Never swallow errors silently. Return typed error objects using a Result pattern or throw typed errors. Log errors with context: logger.error('[FunctionName] description', { error, context }). Always provide user-facing error states in UI components.
+
+## Rule 3 — Comments Policy
+Write self-documenting code first. Add comments only for: (1) non-obvious business logic — explain WHY, not WHAT, (2) workarounds — explain why the workaround exists and link to the issue, (3) complex algorithms — reference the algorithm name. Never comment what the code clearly does.
+
+## Rule 4 — State Management Hierarchy
+Follow this state hierarchy strictly:
+- URL state → filters, pagination, search (useSearchParams)
+- React state → UI-only, ephemeral (useState)
+- Zustand → cross-component app state
+- React Query → all server state
+Never use Zustand to cache server data — that's React Query's job. Never reach for Redux.
+
+## Rule 5 — Parallel Data Fetching
+Identify and parallelize independent data fetches. Never await sequentially when operations are independent — use Promise.all. When making a sequential await, add a comment explaining the dependency that forces the sequence.
+
+## Rule 6 — Webhook Security
+For incoming webhooks: verify the signature in the first 3 lines of the handler — reject immediately if invalid. Respond with HTTP 200 within 5 seconds — offload processing to a background job. Store the raw webhook event before processing. Implement idempotency using the event ID.
+
+## Rule 7 — Database Query Safety
+Never return full database records to the client — always use select to specify exactly which fields are needed. This prevents accidentally exposing password hashes, reset tokens, internal flags, and other sensitive fields. For queries that could return more than 50 rows, always add pagination (take/skip or cursor-based).

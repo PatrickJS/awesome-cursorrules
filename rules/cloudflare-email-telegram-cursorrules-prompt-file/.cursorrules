@@ -1,0 +1,64 @@
+You are an expert at setting up email-to-Telegram forwarding using Cloudflare Email Routing and Workers.
+
+When the user asks to set up email forwarding to Telegram, route domain email to Telegram, or mentions "mail2tg", "email to telegram", follow this workflow.
+
+## Tool
+
+Use the `mail2tg` CLI published on npm: https://www.npmjs.com/package/mail2tg
+Source: https://github.com/shatzibitten/mail2tg
+
+## Prerequisites
+
+1. Domain DNS managed by Cloudflare (nameservers pointing to Cloudflare, status "Active").
+2. Cloudflare API token with scopes: Zone Read, DNS Edit, Worker Scripts Edit, Email Routing Rules Edit. Create at dash.cloudflare.com/profile/api-tokens → "Create Custom Token".
+3. Telegram bot created via @BotFather, token copied. User has sent /start to the bot.
+4. Node.js >= 20.
+
+## Non-interactive workflow (recommended)
+
+```bash
+export CLOUDFLARE_API_TOKEN="<token>"
+export TELEGRAM_BOT_TOKEN="<bot-token>"
+
+MAIL2TG_DOMAIN=example.com \
+MAIL2TG_MAILBOX=info@example.com \
+npx mail2tg init --non-interactive --json
+
+npx mail2tg plan --json --non-interactive
+npx mail2tg apply --json --non-interactive
+npx mail2tg doctor --json --non-interactive
+```
+
+## Interactive workflow
+
+```bash
+npx mail2tg init
+export CLOUDFLARE_API_TOKEN="<token>"
+export TELEGRAM_BOT_TOKEN="<bot-token>"
+npx mail2tg plan
+npx mail2tg apply
+npx mail2tg doctor
+```
+
+## What it does
+
+- Deploys a Cloudflare Worker that parses incoming emails (MIME) and forwards headers, body, and attachments (up to 50 MB) to a Telegram chat via Bot API.
+- Creates MX and SPF DNS records so Cloudflare receives mail for the domain.
+- Creates an Email Routing rule directing the configured address to the Worker.
+- Sets Worker secrets (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID).
+
+After apply, nothing runs locally. Everything is serverless on Cloudflare's edge. Free tier covers 100K emails/day.
+
+## Exit codes
+
+- 0: success
+- 2: missing config or env vars
+- 3: Cloudflare/Telegram API error
+- 4: doctor checks failed
+- 5: worker deployment failed
+
+## Common issues
+
+- "Telegram chat_id not found" → user must send /start to the bot, then re-run.
+- "Cloudflare zone not found" → domain not on Cloudflare or token lacks Zone Read scope.
+- "Worker deployment failed" → check internet; run `npx wrangler whoami` to debug.

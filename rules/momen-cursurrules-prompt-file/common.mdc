@@ -1,0 +1,11 @@
+---
+alwaysApply: true
+---
+
+When using vite + tailwindcss, check online for newest integration method. 
+When generating frontends, make sure the UI is modern and beautiful. 
+When using graphql subscription, make make sure that is only one active websocket that is reused across the entire app. There should be a single instance of apollo client for the entire app. 
+Never cache anything at the GraphQL level.
+When debugging, make sure to check both console and network when unexpected things occur. When dealing with asynchronous requests, check the messages of the relevant websockets. 
+When using graphql with apollo client 3.x, make sure to run `apollo client:codegen --includes='src/path/to/files/containing/gql/**' --target typescript --outputFlat ./src/graphQL/__generated__` after writing/modifying the requests. Ensure the types are correctly generated. And use the types whenever appropriate.
+When initiating a chrome cdt debugging session, make sure to clear existing state such as local storage or cookies. 

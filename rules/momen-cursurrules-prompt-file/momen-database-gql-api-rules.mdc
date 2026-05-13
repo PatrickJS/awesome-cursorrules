@@ -1,0 +1,1488 @@
+---
+description: Momen.app's database architecture and how corresponding GraphQL schema is generated
+alwaysApply: false
+---
+
+# Data Model Overview
+
+The GraphQL schema is automatically generated directly from the user's data model. To illustrate the general rules for generating this schema, the following explanations will primarily use the post table from the example metadata as a reference point.
+
+Here is the metadata for a simple blogging application. We will use this `post` table and its related tables as the primary example throughout this guide.
+
+- **Columns:**
+
+  - id: bigint (primary key)
+  - created_at: timestamptz
+  - title: text
+  - content: text
+  - author_account: bigint (foreign key to account.id, reference to the author of the post)
+- **Constraints: **
+
+  - post_id_key: unique constraint on (id)
+  - post_pkey: primary key on (id)
+- **Relationships (from the post's perspective):**
+
+  - author (One-to-Many from account to post): The author_account column links each post to one account record
+  - post_tags (One-to-Many from post to post_tag): A post can be associated with multiple tag records through the post_tag join table.
+  - meta (One-to-One from post to post_meta): Each post has a corresponding meta record (post_meta) containing additional information.
+
+**TableMetadata:**
+
+```json
+[
+  {
+    "name": "post",
+    "columnMetadata": [
+      {"name": "id", "type": "BIGINT"},
+      {"name": "created_at","type": "TIMESTAMPTZ"},
+      {"name": "updated_at","type": "TIMESTAMPTZ"},
+      {"name": "title","type": "TEXT"},
+      {"name": "content","type": "TEXT"},
+      {"name": "author_account","type": "BIGINT", "displayName": "Author ID"},
+      {"name": "cover_image", "type": "IMAGE"}
+    ],
+    "constraintMetadata": [
+      {"name": "post_id_key","compositeUniqueColumns": ["id"]},
+      {"name": "post_pkey","primaryKeyColumns": ["id"]}
+    ]
+  },
+  {
+    "name": "tag",
+    "displayName": "Tags on Posts",
+    "columnMetadata": [
+      {"name": "id","type": "BIGINT"},
+      {"name": "created_at","type": "TIMESTAMPTZ"},
+      {"name": "updated_at","type": "TIMESTAMPTZ"},
+      {"name": "name","type": "TEXT"}
+    ],
+    "constraintMetadata": [
+      {"name": "tag_id_key","compositeUniqueColumns": ["id"]},
+      {"name": "tag_pkey","primaryKeyColumns": ["id"]}
+    ]
+  },
+  {
+    "name": "post_tag",
+    "columnMetadata": [
+      {"name": "id","type": "BIGINT"},
+      {"name": "created_at","type": "TIMESTAMPTZ"},
+      {"name": "updated_at","type": "TIMESTAMPTZ"},
+      {"name": "post_post","type": "BIGINT"},
+      {"name": "tag_tag","type": "BIGINT"}
+    ],
+    "constraintMetadata": [
+      {"name": "post_tag_id_key","compositeUniqueColumns": ["id"]},
+      {"name": "post_tag_pkey","primaryKeyColumns": ["id"]}
+    ]
+  },
+  {
+    "name": "post_meta",
+    "displayName": "Post Metadata",
+    "columnMetadata": [
+      {"name": "id","type": "BIGINT"},
+      {"name": "created_at","type": "TIMESTAMPTZ"},
+      {"name": "updated_at","type": "TIMESTAMPTZ"},
+      {"name": "seo_title","type": "TEXT"},
+      {"name": "word_count","type": "BIGINT"},
+      {"name": "post_post","type": "BIGINT"}
+    ],
+    "constraintMetadata": [
+      {"name": "post_meta_id_key","compositeUniqueColumns": ["id"]},
+      {"name": "post_meta_post_post_key","compositeUniqueColumns": ["post_post"]},
+      {"name": "post_meta_pkey","primaryKeyColumns": ["id"]}
+    ]
+  },
+  {
+      "name": "account",
+      "columnMetadata": [
+        {"name": "id", "type": "BIGINT"},
+        {"name": "name", "type": "TEXT"}
+      ],
+      "constraintMetadata": [
+        {"name": "account_pkey", "primaryKeyColumns": ["id"]},
+        {"name": "account_id_key","compositeUniqueColumns": ["id"]}
+      ]
+  }
+]
+```
+
+**RelationMetadata:**
+
+```
+[
+  {
+    "targetTable": "post_tag",
+    "type": "ONE_TO_MANY",
+    "sourceTable": "post",
+    "sourceColumn": "id",
+    "nameInSource": "post_tags",
+    "nameInTarget": "post",
+    "targetColumn": "post_post"
+  },
+  {
+    "targetTable": "post_meta",
+    "type": "ONE_TO_ONE",
+    "sourceTable": "post",
+    "sourceColumn": "id",
+    "nameInSource": "meta",
+    "nameInTarget": "post",
+    "targetColumn": "post_post"
+  },
+  {
+    "targetTable": "post_tag",
+    "type": "ONE_TO_MANY",
+    "sourceTable": "tag",
+    "sourceColumn": "id",
+    "nameInSource": "post_tags",
+    "nameInTarget": "tag",
+    "targetColumn": "tag_tag"
+  },
+  {
+    "targetTable": "post",
+    "type": "ONE_TO_MANY",
+    "sourceTable": "account",
+    "sourceColumn": "id",
+    "nameInSource": "posts",
+    "nameInTarget": "author",
+    "targetColumn": "author_account"
+  }
+]
+```
+
+## Tables
+
+Each table generates a GraphQL object type (for single records) and root operations. For example, a `post` table produces:
+
+- Query and Subscription Root Fields:
+
+  - `post`: Fetch multiple records.
+  - `post_by_pk`: Fetch by primary key (`id`).
+  - `post_aggregate`: Aggregate functions (e.g., count, avg).
+- Mutation Root Fields:
+
+  - Bulk Operations:
+    - `insert_post`
+    - `update_post`
+    - `delete_post`
+  - Single-Record Operations:
+    - `insert_post_one`
+    - `update_post_by_pk`
+    - `delete_post_by_pk`
+
+## Columns
+
+### Primitive Column Types
+
+These types represent fundamental data values and map to GraphQL scalar types. This includes standard GraphQL scalars (like `String`, `Int`, `Boolean`) and custom scalars specific to this platform. The specific mappings from the data model's column type to the corresponding GraphQL scalar type are detailed below:
+
+- `text` -> `String`
+- `integer` -> `Int`
+- `bigint` -> `bigint`
+- `float8` -> `Float8`
+- `decimal` -> `Decimal`
+- `boolean` -> `Boolean`
+- `jsonb` -> `jsonb`
+- `geo_point` -> `geography` (A JSON point structured as `{ "type": "Point", "coordinates": [longitude, latitude] }`, e.g., `{ "type": "Point", "coordinates": [100, 30] }`)
+- `timestamptz` -> `timestamptz` (Represents a timestamp with time zone)
+- `timetz` -> `timetz` (Represents a time of day with time zone)
+- `date` -> `date` (Represents a calendar date)
+
+Column Type Classifications:
+
+1. **Numeric Column Types** (supporting avg and sum aggregation operations): `integer`, `bigint`, `float8`, `decimal`
+2. **Time Column Types**: `timestamptz`, `timetz`, `date`
+3. **Comparable Column Types **(supporting min and max aggregation operations): all numeric column types, time column types, and text types.
+
+### Composite Column Types (Media Assets)
+
+`image` -> `FZ_Image` (Represents an image asset)
+
+```
+type FZ_Image {
+  exId: String
+  external: Boolean!
+  id: Long
+  url(acl: CannedAccessControlList, option: ImageProcessOptionInput): String!
+}
+
+input ImageProcessOptionInput {
+  crop(height: Int, offsetX: Int, offsetY: Int, width: Int)
+  resize(height: Int, mode: ResizeMode, width: Int)
+}
+
+enum ResizeMode {
+  FILL
+  FIT
+  CROP
+}
+
+enum CannedAccessControlList {
+  AUTHENTICATE_READ
+  AWS_EXEC_READ
+  BUCKET_OWNER_FULL_CONTROL
+  BUCKET_OWNER_READ
+  DEFAULT
+  LOG_DELIVERY_WRITE
+  PRIVATE
+  PUBLIC_READ
+  PUBLIC_READ_WRITE
+}
+```
+
+`file` -> `FZ_File` (Represents a generic file asset)
+
+```
+type FZ_File {
+  exId: String
+  external: Boolean!
+  id: Long
+  name: String
+  sizeBytes: Int!
+  suffix: String
+  url(acl: CannedAccessControlList, contentType: ContentType): String!
+}
+
+enum ContentType {
+  APPLICATION_FORM_URLENCODED
+  APPLICATION_JAVA_SCRIPT
+}
+```
+
+`video` -> `FZ_Video` (Represents a video asset)
+
+```
+type FZ_Video {
+  exId: String
+  external: Boolean!
+  id: Long
+  url(acl: CannedAccessControlList): String!
+}
+```
+
+All Media columns (e.g., `cover_image`) are physically stored as `${columnName}_id` columns in PostgreSQL (e.g., `cover_image_id`). These columns store Long IDs that reference the corresponding media records (`FZ_Image`, `FZ_File`, or `FZ_Video`). This acts as a special One-to-Many relationship from the media table to the owner table:
+
+```json
+{
+  "type": "ONE_TO_MANY",
+  "sourceTable": "FZ_Image",
+  "targetTable": "post",
+  "nameInSource": "post",
+  "nameInTarget": "cover_image",
+  "sourceColumn": "id",
+  "targetColumn": "cover_image_id"
+}
+```
+
+### System-Managed Columns
+
+All tables include built-in columns:
+
+- `id` (Primary Key, `bigint`): Automatically generated by the system upon record creation.
+- `created_at` (`timestamptz`): Automatically set to the timestamp of record creation.
+- `updated_at` (`timestamptz`): Automatically set to the timestamp of the last update.
+
+These system-managed columns (`id`, `created_at`, `updated_at`) are not user-settable.
+
+## Relationships
+
+Relationships defined in `RelationMetadata` describe how different tables are connected. These definitions are essential for table connections and generating GraphQL fields, allowing you to navigate related data.
+
+These connections rely on foreign keys. In any such relationship, tables play one of two roles:
+
+1. **The Referencing Table:** This table contains the foreign key column, referencing another table.
+2. **The Referenced Table:** This table's primary key is referenced by the foreign key.
+
+Within RelationMetadata, these roles are specified as:
+
+1. **targetTable**: This is the **Referencing Table**, hosting the foreign key column (defined by `targetColumn`).
+2. **sourceTable**: This is the **Referenced Table**, whose primary key (defined by `sourceColumn`, usually `id`) is targeted by the foreign key.
+
+### One-to-One Relationship (1:1)
+
+A One-to-One relationship signifies that a record in the `sourceTable` is linked to at most one record in the `targetTable`, and conversely, a record in the `targetTable` is linked to exactly one record in the `sourceTable`.
+
+**RelationMetadata Configuration:**
+
+- The `sourceTable` (e.g., `post`) is the **Referenced Table**, with its `sourceColumn` (e.g., `id`) being the primary key that is referenced.
+- The `targetTable` (e.g., `post_meta`) is the **Referencing Table** and contains the foreign key. This foreign key column is named by `targetColumn` (e.g., `post_post`) and references `sourceTable(sourceColumn)`.
+- The `type` field must be `ONE_TO_ONE`.
+- For GraphQL access, `nameInSource` (e.g., `meta`) defines the field on the `sourceTable`'s type to get the related `targetTable` record. `nameInTarget` (e.g., `post`) defines the field on the `targetTable`'s type to get the `sourceTable` record.
+
+**SQL Foreign Key Rule:**
+
+- The `targetTable` (e.g., `post_meta`) must have a column named by `targetColumn` (e.g., `post_post`).
+- This `targetTable.targetColumn` (e.g., `post_meta.post_post`) must be a foreign key referencing `sourceTable.sourceColumn` (e.g., `post.id`).
+- Crucially, for a true 1:1 relationship from the `sourceTable`'s perspective, this `targetTable.targetColumn` must have a unique constraint.
+
+**GraphQL Fields Generated:**
+
+- In the `sourceTable`'s GraphQL type (e.g., `post`): A field named after `nameInSource` (e.g., `post.meta`) accesses the single related `targetTable` record (e.g., `post_meta`).
+- In the `targetTable`'s GraphQL type (e.g., `post_meta`): A field named after `nameInTarget` (e.g., `post_meta.post`) accesses the single related `sourceTable` record (e.g., `post`).
+
+### One-to-Many Relationship (1:N)
+
+A One-to-Many relationship means one record in the `sourceTable` (the "one" side) can be associated with multiple records in the `targetTable` (the "many" side). Conversely, each record in the `targetTable` is associated with exactly one record in the `sourceTable`.
+
+**RelationMetadata Configuration:**
+
+- The `sourceTable` (e.g., `account`) acts as the "one" side (the **Referenced Table**), with its `sourceColumn` (e.g., `id`) as the primary key.
+- The `targetTable` (e.g., `post`) is the "many" side (the **Referencing Table**) and hosts the foreign key. This foreign key column is named by `targetColumn` (e.g., `author_account`) and references `sourceTable(sourceColumn)`.
+- The `type` must be `ONE_TO_MANY`.
+- For GraphQL access, `nameInSource` (e.g., `posts` on the `sourceTable`'s type) allows access to the list of related `targetTable` records. `nameInTarget` (e.g., `author` on the `targetTable`'s type) allows access from a `targetTable` record back to its parent `sourceTable` record.
+
+**SQL Foreign Key Rule:**
+
+- The `targetTable` (e.g., `post` or `post_tag`) must have a column named by `targetColumn` (e.g., `author_account` or `post_post`).
+- This `targetTable.targetColumn` must be a foreign key referencing `sourceTable.sourceColumn` (e.g., `account.id` or `post.id`).
+
+  - Example implication 1: `post.author_account` (FK) references `account.id` (PK).
+  - Example implication 2: `post_tag.post_post` (FK) references `post.id` (PK).
+
+**GraphQL Fields Generated:**
+
+- In the `sourceTable`'s GraphQL type (e.g., `account`, `post`): A field named after `nameInSource` (e.g., `account.posts` or `post.post_tags`) accesses a list of related `targetTable` records (e.g., `[post]` or `[post_tag]`).
+- In the `targetTable`'s GraphQL type (e.g., `post`, `post_tag`): A field named after `nameInTarget` (e.g., `post.author` or `post_tag.post`) accesses the single, parent `sourceTable` record (e.g., `account` or `post`).
+
+## Constraints
+
+For Mutations,** **When inserting or updating data, named Primary Key and Unique constraints are crucial for conflict handling. Operations like `insert` often provide an `on_conflict` argument that uses these constraint names to define resolution strategies (e.g., 'do nothing' or 'update conflicting record')
+
+For example, if a post with the same primary key already exists, it will update the title and content fields instead:
+
+```
+mutation InsertPost($object: post_insert_input!) {
+  insert_post(objects: [$object], on_conflict: {
+    constraint: post_pkey,
+    update_columns: [title, content]
+  }) {
+    id
+  }
+}
+```
+
+# Data Model to GraphQL Schema Mapping
+
+## Notation Conventions and GraphQL Schema Format
+
+This section details the notation used in the schema descriptions that follow.
+
+1. **Placeholders for User-Specific Data: **Placeholders like `${tableName}` or `${columnType}` represent elements derived from the specific user data model. When generating GraphQL queries, replace these placeholders with actual names from the relevant data model (e.g., `todo_list`, `bigint`) or from the core `post` example.
+2. **Enhanced GraphQL Schema Format Conventions:**
+
+   - **Allowed Values ****{}****: **When a field's type is followed by curly braces, it indicates only the listed values are permitted. Example: `column: post_text_column{title, content}` means `column` can only be `title` or `content`.
+   - **Field Arguments ****()****: **Parentheses after a field name list its arguments and types. Example: `date_format(time: post_date_op!, format: post_date_format_enum_op!)`.
+   - **Non-Nullable Fields ****!****: **Standard GraphQL notation. An exclamation mark after a type means the field cannot be null (inputs) or will not return null (outputs).
+   - **@oneOf Directive: **Applied to input types to indicate that one and only one of the fields must be provided.
+
+## Root Operations and Inputs
+
+Root GraphQL fields for query and mutation operations are named systematically based on their corresponding table names. For example, a table named `post` generates query operations like `post`, `post_by_pk`, and `post_aggregate`, as well as mutation operations like `insert_post`, `update_post`, and `delete_post`. This consistent naming pattern applies across all tables in the user's data model, making the API intuitive and predictable.
+
+This consistent naming pattern applies across all tables in the user's data model.
+
+### Query Operations
+
+The `Query` type provides versatile read operations for the `post` entity, such as fetching lists of posts (via the `post` field), retrieving single posts by primary key (`post_by_pk`), and performing data aggregations (`post_aggregate`). All of these GraphQL operations are designed to be efficiently translated into underlying PostgreSQL `SELECT` queries.
+
+```
+type Query {
+  post(where: post_bool_exp, order_by: [post_order_by!], distinct_on: [post_select_column!], offset: Int, limit: Int): [post!]!
+  post_by_pk(id: bigint!): post
+  post_aggregate(where: post_bool_exp, order_by: [post_order_by!], distinct_on: [post_select_column!], offset: Int, limit: Int): post_aggregate!
+}
+```
+
+### Query Inputs
+
+The generated GraphQL queries provide powerful data shaping capabilities through these input parameters, each directly mapping to native PostgreSQL features.
+
+#### Filtering (where)
+
+Will be comprehensively covered in the dedicated "Filtering Capability" section
+
+#### Pagination (limit and offset)
+
+Controls result set size and position using:
+
+1. **limit** (Int): Maximum records returned (PostgreSQL LIMIT)
+2. **offset** (Int): Records to skip before returning results (PostgreSQL OFFSET)
+
+#### Sorting (order_by)
+
+To sort query results, use the `order_by` argument. It takes a list of `post_order_by` objects, allowing you to specify multiple sorting criteria. Each criterion uses the `order_by` enum for direction:
+
+```
+enum order_by {
+  asc
+  asc_nulls_first
+  asc_nulls_last
+  desc
+  desc_nulls_first
+  desc_nulls_last
+}
+```
+
+The `post_order_by` input type allows sorting by `post` columns, and by data from related records:
+
+1. **Direct Column Sorting:** Fields like `id`, `title`, etc., allow sorting directly by the `post` table's columns. Their type is `order_by` enum.
+2. **To-One Relationship Sorting:**
+
+   - Fields like `author` and `meta` enable sorting `post` records based on columns of their single related `account` or `post_meta` record.
+   - The type for these fields is `${relatedTableName}_order_by` (e.g., `account_order_by`, `post_meta_order_by`), which in turn lists the columns of that related table for sorting.
+3. **To-Many Relationship Aggregate Sorting:**
+
+   - Fields like `post_tags_aggregate` allow sorting `post` records based on aggregate calculations over their related `post_tag` records.
+   - The type is `${relatedTableName}_aggregate_order_by` (e.g., `post_tag_aggregate_order_by`).
+
+```
+input post_order_by {
+  # 1. Sort by columns of the 'post' table itself
+  id: order_by
+  created_at: order_by
+  updated_at: order_by
+  title: order_by
+  content: order_by
+  author_account: order_by
+  cover_image_id: order_by 
+
+  # 2. Sort by columns of TO-ONE related records
+  author: account_order_by 
+  meta: post_meta_order_by
+
+  # 3. Sort by AGGREGATES of TO-MANY related records
+  post_tags_aggregate: post_tag_aggregate_order_by
+}
+```
+
+Aggregate ordering allows sorting based on calculations across related records. For example, `post_tags_aggregate` provides multiple ways to order posts based on their tags:
+
+```
+input post_tag_aggregate_order_by {
+  count: order_by
+  avg: post_tag_avg_order_by
+  sum: post_tag_sum_order_by
+  max: post_tag_max_order_by
+  min: post_tag_min_order_by
+}
+
+# there are same fields under post_tag_sum_order_by
+input post_tag_avg_order_by {
+  id: order_by
+  post_post: order_by
+  tag_tag: order_by
+}
+
+# there are same fields under post_tag_min_order_by
+input post_tag_max_order_by {
+  id: order_by
+  created_at: order_by
+  updated_at: order_by
+  post_post: order_by
+  tag_tag: order_by
+}
+```
+
+These aggregate types include fields based on their function:
+
+- Numeric aggregation (`avg`, `sum`) contain only numeric fields
+- Comparison aggregation (`max`, `min`) contain all comparable fields including dates and strings
+- Example: `post_tag_avg_order_by` has numeric fields like `id`, `post_post`, and `tag_tag`
+
+#### Deduplication (distinct_on)
+
+The `post_select_column` enum type defines all column fields in `columnMetadata` of the `post` entity for use in `distinct_on` operations.
+
+```
+enum post_select_column {
+  id
+  created_at
+  updated_at
+  title
+  content
+  author_account
+  cover_image_id
+}
+```
+
+Imagine you want to get the most recent post for each unique `title`. You could use `distinct_on` with `title` and order by `title` and then `created_at` descending:
+
+```
+query GetLatestPostPerTitle {
+  post(
+    distinct_on: [title],
+    order_by: [
+      { title: asc },         
+      { created_at: desc }    
+    ]
+  ) {
+    title
+    content
+    created_at
+  }
+}
+```
+
+### Mutation Operations
+
+The `Mutation` type provides write operations for the `post` entity, including:
+
+1. batch and single-record inserts (`insert_post`, `insert_post_one`)
+2. conditional and primary-key-based updates (`update_post`, `update_post_by_pk`)
+3. conditional or direct deletions (`delete_post`, `delete_post_by_pk`)
+
+With support for conflict resolution (`on_conflict`), partial updates (`_set`, `_inc`), and precise targeting via conditions (`where`) or primary keys (`pk_columns`).
+
+It's crucial to note that for `update_${tableName}` and `delete_${tableName}` operations, the `where` argument is non-nullable (`${tableName}_bool_exp!`), explicitly requiring a filter to prevent unintentional modifications or deletions of all records in a table.
+
+```
+type Mutation {
+  delete_post(where: post_bool_exp!): post_mutation_response
+  delete_post_by_pk(id: bigint!): post
+  insert_post(objects: [post_insert_input!]!, on_conflict: post_on_conflict): post_mutation_response
+  insert_post_one(object: post_insert_input!, on_conflict: post_on_conflict): post
+  update_post(_set: post_set_input, _inc: post_inc_input, where: post_bool_exp!): post_mutation_response
+  update_post_by_pk(_set: post_set_input, _inc: post_inc_input, pk_columns: post_pk_columns_input!): post
+}
+```
+
+### Mutation Inputs
+
+As detailed in the "Columns -> System-Managed Columns" section, the fields `id`, `created_at`, and `updated_at` are built-in and automatically managed by the system. These columns are not user-settable. Consequently, they will not appear as settable fields in the following input types:
+
+- `post_insert_input`
+- `post_update_column` enum (which lists columns that can be updated in an `on_conflict` clause)
+- `post_set_input`
+- `post_inc_input`
+
+**Mutation Column Fields** refer to fields generated from table columns (excluding System-Managed Columns):
+
+- Primitive Columns: Map directly to their corresponding GraphQL scalar types
+- Composite Columns: Media columns (IMAGE, FILE, VIDEO) are represented by their ID fields
+
+#### Insert (post_insert_input)
+
+The `post_insert_input` type defines fields that can be provided when inserting new records. The schema generation follows specific rules to determine which fields are included:
+
+1. `Mutation Column Fields `
+2. Relationship Fields: Enable nested insertion of related records based on the table's role in foreign key relationships (as defined in the "Relationships" section)
+
+   - When Current Table is Referencing Table (targetTable): No relationship fields are generated for insertion, as the foreign key column already appears in `Mutation Column Fields` to establish the relationship (e.g., `author_account: bigint` in `post_insert_input` for the account→post relationship)
+   - When Current Table is Referenced Table (sourceTable): Generate relationship fields for nested insertion of records from tables that reference this table:
+     - One-to-Many Relationships: Generate array relationship input fields using `${targetTable}_arr_rel_insert_input` type (e.g., `post_tags: post_tag_arr_rel_insert_input` for the post→post_tag relationship)
+     - One-to-One Relationships: Generate object relationship input fields using `${targetTable}_obj_rel_insert_input` type (e.g., `meta: post_meta_obj_rel_insert_input` for the post→post_meta relationship)
+     - Field names correspond to the `nameInSource` from the RelationMetadata
+
+```
+input post_insert_input {
+  # Mutation Column Fields (excluding system-managed columns)
+  title: String
+  content: String
+  author_account: bigint
+  cover_image_id: bigint  # Composite column represented by ID
+  
+  # Relationship Fields
+  post_tags: post_tag_arr_rel_insert_input    # One-to-Many: post -> post_tag
+  meta: post_meta_obj_rel_insert_input        # One-to-One: post -> post_meta
+}
+
+# Array relationship input for One-to-Many relationships
+input post_tag_arr_rel_insert_input {
+  data: [post_tag_insert_input!]!
+  on_conflict: post_tag_on_conflict
+}
+
+# Object relationship input for One-to-One relationships  
+input post_meta_obj_rel_insert_input {
+  data: post_meta_insert_input!
+  on_conflict: post_meta_on_conflict
+}
+```
+
+#### Conflict Resolution (post_on_conflict)
+
+The `post_on_conflict` input type enables handling of insert conflicts by specifying which constraint triggered the conflict, which columns to update in case of a conflict, and optional conditions to determine when the conflict resolution should apply.
+
+Field Composition Rules:
+
+1. constraint: Specifies constraint name. Uses the `post_constraint` enum containing all constraints from the table's `constraintMetadata`
+2. update_columns: Defines which columns should be updated when a conflict occurs.  Uses the `post_update_column` enum that contains `Mutation Column Fields`
+3. where: Optional filter to conditionally apply the conflict resolution only when specific conditions are met
+
+```
+input post_on_conflict {
+  constraint: post_constraint!
+  update_columns: [post_update_column!]!
+  where: post_bool_exp
+}
+
+enum post_update_column {
+  title
+  content
+  author_account
+  cover_image_id
+}
+
+enum post_constraint {
+    post_id_key
+    post_pkey
+}
+```
+
+#### Set (post_set_input)
+
+The `post_set_input` type defines fields that can be directly set to specific values during update operations, allowing for precise modification of scalar fields in existing records. The fields are `Mutation Column Fields`.
+
+```
+input post_set_input {
+  title: String
+  content: String
+  author_account: bigint
+  cover_image_id: bigint
+}
+```
+
+#### Increment (post_inc_input)
+
+The `post_inc_input` type specifies fields that can be incrementally modified (increased or decreased) during an update operation, providing a convenient way to perform atomic counter operations. The fields are composed of Numeric Column Type fields from `Mutation Column Fields` (`integer`, `bigint`, `float8`, `decimal`).
+
+```
+input post_inc_input {
+  author_account: bigint
+}
+```
+
+#### Primary Key (post_pk_columns_input)
+
+The `post_pk_columns_input` type defines the fields required to uniquely identify a record by its primary key, used in operations that target specific records such as updates or deletions by primary key.
+
+```
+input post_pk_columns_input {
+  id: bigint
+}
+```
+
+## Core Type Definitions
+
+### Primary Entity Type (post)
+
+The post type represents a single record from the post table and includes the following fields:
+
+1. Column Fields**:** Fields corresponding to all columns of the post table (whether primitive or composite types like `image`, `file`, etc.). For example: `id`, `title`, `created_at`.
+2. Relationship Fields:
+
+   1. One-To-Many Relationships**: **A single post record is associated with multiple records in the related table (post_tag).
+
+   ```
+   ```
+
+post_tags(where: post_tag_bool_exp, order_by: [post_tag_order_by!], distinct_on: [post_tag_select_column!], offset: Int, limit: Int): [post_tag]!
+post_tags_aggregate(where: post_tag_bool_exp, order_by: [post_tag_order_by!], distinct_on: [post_tag_select_column!], offset: Int, limit: Int): post_tag_aggregate!
+
+```
+	1. One-To-One And Many-to-One Relationships**: **A post record references exactly one record in the related table (post_meta or account).
+	```
+meta: post_meta
+author: account
+```
+
+### Aggregate Type (post_aggregate)
+
+**Purpose:** When you query posts, you might want statistical summaries (like how many posts there are, the newest/oldest post date, etc.) in addition to the post data itself. The `post_aggregate` type provides this capability.
+
+**1. Top-Level Structure: ****post_aggregate**
+
+When you perform an aggregation query on posts, the result is structured using the `post_aggregate` type. This type gives you two main pieces of information:
+
+- `nodes`: A list containing the actual `post` records (`[post!]!`) that match your query's filters (`where`), sorting (`order_by`), and pagination (`limit`, `offset`). This is where you get the details of each post.
+- `aggregate`: An object containing the calculated statistical results for the matching posts (using the `post_aggregate_fields` type described next). This gives you the summary view.
+
+```
+# Represents the overall result of an aggregation query for the 'post' table
+type post_aggregate {
+  # The individual post records matching the query criteria
+  nodes: [post!]!
+  # The computed aggregate statistics over the matching posts
+  aggregate: post_aggregate_fields
+}
+```
+
+**2. Aggregate Fields Container: ****post_aggregate_fields**
+
+The `aggregate` field within `post_aggregate` holds the actual statistical results. It provides several fields for different calculations:
+
+- `count`: Calculates the total number of posts matching your criteria.
+
+  - You can optionally provide `columns` (using the `post_select_column` enum) and `distinct: Boolean` to count distinct values in specific columns (e.g., count distinct authors). If you don't provide arguments, it counts all matching posts.
+- `avg`, `sum`: Provide fields for calculating the average and sum. **Importantly, these will only contain fields for the ****Numeric**** columns in the ****post**** table.** Based on the example schema, these are `id` and `author_account`.
+- `max`, `min`: Provide fields for finding the maximum and minimum values. **These will contain fields for the ****Comparable**** columns in the ****post**** table.** This includes numeric columns (`id`, `author_account`), time columns (`created_at`, `updated_at`), and text columns (`title`, `content`).
+
+```
+# Holds the calculated aggregate values for the 'post' table
+type post_aggregate_fields {
+  # Fields for calculating averages (only on numeric 'post' columns: id, author_account)
+  avg: post_avg_fields
+  # Fields for calculating sums (only on numeric 'post' columns: id, author_account)
+  sum: post_sum_fields
+  # Fields for finding maximums (on comparable 'post' columns: id, created_at, updated_at, title, content, author_account)
+  max: post_max_fields
+  # Fields for finding minimums (on comparable 'post' columns: id, created_at, updated_at, title, content, author_account)
+  min: post_min_fields
+  # Calculates the count of 'post' records
+  count(
+    # Optional: specify columns for distinct counting
+    columns: [post_select_column!],
+    # Optional: count only distinct values across specified columns
+    distinct: Boolean
+   ): Int
+}
+```
+
+**3.1** **Statistical Field Types (****post_avg_fields****, ****post_max_fields****, etc.)**
+
+These types define the specific output structure for each statistical calculation (`avg`, `sum`, `max`, `min`) applied to the `post` table's columns.
+
+- `post_avg_fields` / `post_sum_fields`: These types only include fields for the numeric columns of the `post` table: `id` and `author_account`. The return type might be adjusted (e.g., average often returns `Decimal` or `Float`, sum might return `bigint` or `Decimal`).
+- `post_max_fields` / `post_min_fields`: These types include fields for all comparable columns of the `post` table: `id`, `created_at`, `updated_at`, `title`, `content`, and `author_account`. The return type for each field matches the original column's type (e.g., `max.created_at` returns `timestamptz`).
+
+```
+# Average fields for 'post' (only numeric columns included)
+type post_avg_fields {
+  id: Decimal  # Example: Avg might return Decimal
+  author_account: Decimal
+}
+
+# Sum fields for 'post' (only numeric columns included)
+type post_sum_fields {
+  id: bigint # Example: Sum might return bigint or numeric if very large
+  author_account: bigint
+}
+
+# Maximum fields for 'post' (all comparable columns included)
+type post_max_fields {
+  id: bigint
+  created_at: timestamptz
+  updated_at: timestamptz
+  title: String
+  content: String
+  author_account: bigint
+}
+
+# Minimum fields for 'post' (all comparable columns included)
+type post_min_fields {
+  id: bigint
+  created_at: timestamptz
+  updated_at: timestamptz
+  title: String
+  content: String
+  author_account: bigint
+}
+```
+
+**3.2 Column Selection Enum (****post_select_column****)**
+
+This enum lists all column fields on the `post` table. It's used in two main places:
+
+- In the main `post` query's `distinct_on` argument (if you need to select distinct rows based on certain columns).
+- Inside the `aggregate` field, specifically for the `count(columns: ...)` argument when you need to count distinct values.
+
+```
+enum post_select_column {
+  id
+  created_at
+  updated_at
+  title
+  content
+  author_account
+}
+```
+
+### Mutation Response (post_mutation_response)
+
+```
+type post_mutation_response {
+  affected_rows: Int!
+  returning: [post!]!
+}
+```
+
+## Filtering Capability (post_bool_exp)
+
+Filtering is one of the most powerful features in the GraphQL schema. It allows complex queries through three fundamental building blocks:
+
+1. **Comparison Predicates**: The most basic unit. It performs a single comparison that evaluates to true, false, or null. Every predicate starts with a comparison operator (e.g., `_eq`, `_ilike`) and serves as the "atom" of the filter logic. This section will be expanded in detail later.
+2. **Logical Operators**: The "glue" that combines multiple predicates. These operators—`_and`, `_or`, and `_not`—are used to build complex logical statements.
+
+   ```
+   ```
+
+input post_bool_exp {
+_and: [post_bool_exp!]
+_or: [post_bool_exp!]
+_not: post_bool_exp
+}
+
+```
+
+3. **Relation Filters**: The "navigators" for traversing relationships. They allow you to move from a source table to a related one (e.g., from a `post` to its `author`) and apply a new filter clause to the records in the related table.
+	1. To-Many relationships (e.g., `post_tags`): passes if any related row matches (IN semantics)
+	2. To-One relationships (e.g., `meta`, `author`): passes if the single related row matches (EXISTS semantics)
+	```
+input post_bool_exp {
+  post_tags: post_tag_bool_exp
+  meta: post_meta_bool_exp
+  author: account_bool_exp             
+}
+```
+
+### Handling of NULL Values
+
+The entire filtering system adheres to the standard SQL three-valued logic (`TRUE`, `FALSE`, `NULL`), where `NULL` represents an "unknown" value. This has a few key implications for filtering:
+
+- A `where` clause only includes rows where the final expression evaluates to `TRUE`. Rows that evaluate to `FALSE` or `NULL` are excluded.
+- Any direct comparison with `NULL` using operators like `=`, `!=`, `>`, etc., results in `NULL`. To properly check for nullity, you must use the `_is_null` or `_is_not_null` operators.
+- As a general rule, if any argument to a function is `NULL`, the function's output will also be `NULL`.
+
+### The Three Foundational Principles of Comparison Predicates
+
+This section focuses on the three foundational principles you must follow to build a precise **Comparison Predicate**.
+
+#### Principle #1: The Operator-First Pattern
+
+This is the core principle: every `Comparison Predicate` must use a comparison operator as its top-level key. Our system **strictly enforces** this pattern; syntax that places a field name at the top level is not supported.
+
+- Correct: `{ "_eq": { ... } }`
+- Incorrect: `{ "title": { "_eq": ... } }`
+
+This design provides unparalleled flexibility, allowing any value (a column, a literal, or a function result) to be compared against any other value.
+
+#### Principle #2: Type is Determined by Final Value
+
+This principle dictates how you choose the correct operand "wrapper" (e.g., `bigint_operand`, `text_operand`). Its application depends on the type of operator you are using:
+
+- For **generic operators** (e.g., `_eq`, `_gt`) that can compare multiple data types, this principle is critical. You **must** choose the operand type based on the final data type of the values being compared. For instance, extracting the `MONTH` (a number) from a `created_at` (a timestamp) requires wrapping the entire comparison in `bigint_operand`.
+- For **type-specific operators** (e.g., `_ilike`, `_contains`), the operand type is **implicit, **the operand type is implicit. The system already knows that `_ilike` operates on text, so you do not need to specify it.
+
+#### Principle #3: Everything is an Operand
+
+This principle requires that any value in a comparison—whether a literal, a column reference, or a function result—must be explicitly "wrapped" in its corresponding `*_op` input type. This wrapper tells the system precisely how to interpret the value, removing any ambiguity.
+
+- To use a literal value, wrap it as `{ "literal": "some value" }`.
+- To reference the value of a column, wrap it as `{ "column": "field_name" }`.
+- To use the result of a function, wrap it as `{ "function_name": { ... } }`.
+
+This rule is the foundation for building complex and dynamic queries.
+
+#### Summary of the Process
+
+Therefore, the complete process for constructing a single `Comparison Predicate` always follows these three steps:
+
+1. **Choose the operator**: Select an operator (e.g., `_eq`) as the starting point for your predicate based on your comparison intent.
+2. **Determine the operand type**: If it's a generic operator, apply the "Type is Determined by Final Value" principle. If it's a specific operator, this step is skipped.
+3. **Wrap all values**: Apply the "Everything is an Operand" principle to all inputs, using the `{ "literal": ... }`, `{ "column": ... }`, or function structures.
+
+### Building a Filter: A Practical Walkthrough
+
+Let's apply this three-step, operator-first pattern to a real-world scenario.
+
+#### The Goal
+
+An editor wants to find all "Year-End Summary" posts from the last decade that meet a strict set of quality criteria. To qualify, a post must satisfy all of the following conditions:
+
+1. Topic: The title contains "Recap" or "Summary".
+2. Timing: Published in December.
+3. Recency: Published within the last 10 years.
+4. Depth: Word count is over 1500.
+
+#### The Thinking Process
+
+The request requires all four conditions to be true simultaneously, so our top-level Logical Operator must be `_and`. The core of our task is to translate each condition into a valid `Comparison Predicate` to place inside the `_and` array.
+
+- **Condition 1: Title contains "Recap" OR "Summary".**
+
+  - This requires a nested Logical Operator (`_or`) containing two `_ilike` predicates for case-insensitive text matching.
+- **Condition 2: Published in December.**
+
+  - This showcases a key feature: comparing a value as a different type than its source.
+  - Operator: `_eq`
+  - Operand Type: `bigint_operand`. Even though the source column `created_at` is a `TIMESTAMPTZ`, the function `extract_timestamptz(..., 'MONTH')` returns a number (bigint). Therefore, the comparison requires a bigint_operand.
+  - Operands: The `left_operand` uses the `extract_timestamptz` function to get the `MONTH` number from the `created_at` timestamp. The `right_operand` is the literal `12`.
+- **Condition 3: Published within the last 10 years.**
+
+  - This requires a dynamic date comparison.
+  - Operator: `_gte` ("greater than or equal to").
+  - Operand Type: `timestamptz_operand`. We are comparing a full timestamp column with another full timestamp generated by a function.
+  - Operands: The `left_operand` is the `created_at` column. The `right_operand` is a function call, using `adjust(now())` to calculate the date 10 years ago.
+- **Condition 4: The word count is over 1500.**
+
+  - This requires a Relation Filter on `meta` to access a column in a related table.
+  - Operator: `_gt` ("greater than").
+  - Operand Type: `bigint_operand`.  The `word_count` column is a `bigint`, so we compare it against the literal 1500 using a `bigint_operand`.
+  - Operands: The `left_operand` is the `word_count` column (from the `post_meta` table), and the `right_operand` is the literal `1500`.
+
+#### The Final Assembled Query
+
+Combining these four focused, coherent clauses gives us our final `variables` object, which is both powerful and practical.
+
+```json
+{
+  "where": {
+    "_and": [
+      {
+        "_or": [
+          {
+            "_ilike": {
+              "text_operand": {
+                "left_operand": { "column": "title" },
+                "right_operand": { "literal": "%Recap%" }
+              }
+            }
+          },
+          {
+            "_ilike": {
+              "text_operand": {
+                "left_operand": { "column": "title" },
+                "right_operand": { "literal": "%Summary%" }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "_eq": {
+          "bigint_operand": {
+            "left_operand": {
+              "extract_timestamptz": {
+                "time": { "column": "created_at" },
+                "unit": "MONTH"
+              }
+            },
+            "right_operand": { "literal": "12" }
+          }
+        }
+      },
+      {
+        "_gte": {
+          "timestamptz_operand": {
+            "left_operand": {
+              "column": "created_at"
+            },
+            "right_operand": {
+              "adjust": {
+                "timestamptz": {
+                  "nullary_func": "now"
+                },
+                "increase": false,
+                "years": {
+                  "literal": "10"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "meta": {
+          "_gt": {
+            "bigint_operand": {
+              "left_operand": { "column": "word_count" },
+              "right_operand": { "literal": "1500" }
+            }
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+### **Predicate Operators**
+
+The system supports nine `OperandColumnType` values: `bigint`, `decimal`, `text`, `boolean`, `jsonb`, `geo_point`, `timestamptz`, `timetz`, and `date`.
+
+- `integer` column type is treated as `bigint`.
+- `float8` column type is treated as `decimal`.
+
+```
+input post_bool_exp {
+  # 1. Binary Operators
+  # 1.1 Comparison Operators (generic)
+  _eq: post_binary_operand_input
+  _neq: post_binary_operand_input
+  _gt: post_binary_operand_input
+  _lt: post_binary_operand_input
+  _gte: post_binary_operand_input
+  _lte: post_binary_operand_input
+  # 1.2 Array Operations (generic)
+  _in: post_in_or_not_in_operand_input
+  _nin: post_in_or_not_in_operand_input
+  # 1.3 String Pattern Matching (text type)
+  _like: post_text_binary_operand_input
+  _nlike: post_text_binary_operand_input
+  _ilike: post_text_binary_operand_input
+  _nilike: post_text_binary_operand_input
+  _similar: post_text_binary_operand_input
+  _nsimilar: post_text_binary_operand_input
+  # 1.4 Json Operations (jsonb type)
+  _contains: post_jsonb_binary_operand_input
+  _contained_in: post_jsonb_binary_operand_input
+  _has_keys_any: post_has_key_all_or_has_key_any_operand_input
+  _has_key: post_has_key_operand_input
+  _has_keys_all: post_has_key_all_or_has_key_any_operand_input
+  
+  # 2. Unary Operators
+  # 2.1 Null Testing (generic)
+  _is_null: post_unary_operand_input
+  _is_not_null: post_unary_operand_input
+  # 2.2 Boolean Value Testing (boolean type)
+  _is_true: post_boolean_op
+  _is_false: post_boolean_op
+}
+```
+
+For example, to find all `post` records created in the year 2024, you can use the `_eq` operator. We use `bigint_operand` because the `extract_timestamptz` function returns an bigint value (the year number), and we're comparing it with the bigint `2024`. Even though the source column `created_at` is a timestamp, the extracted year value is an bigint, so we choose `bigint_operand` based on the final comparison values. The `variables` defining this `where` clause would be:
+
+```
+{
+  "where": {
+    "_eq": {
+      "bigint_operand": {
+        "left_operand": {
+          "extract_timestamptz": {
+            "time": { "column": "created_at" },
+            "unit": "YEAR"
+          }
+        },
+        "right_operand": {
+          "literal": "2024"
+        }
+      }
+    }
+  }
+}
+```
+
+#### Comparison Operators
+
+Test for equality (_eq), inequality (_neq), greater than (_gt), less than (_lt), greater than or equal (_gte), less than or equal (_lte). Applicable to comparable column types (all numeric column types and time column types).
+
+Input: `${tableName}_binary_operand_input` (Requires `left_operand` and `right_operand` of the appropriate type).
+
+```
+# Example Structure (Conceptual @oneOf applies)
+input post_binary_operand_input @oneOf {
+  text_operand(left_operand: post_text_op!, right_operand: post_text_op!)
+  bigint_operand(left_operand: post_bigint_op!, right_operand: post_bigint_op!)
+  # ... All nine OperandColumnType (timestamptz, bigint, etc.)
+}
+```
+
+#### Null Testing Operators
+
+`_is_null` and `_is_not_null` check if a value is NULL. As unary operators, their operand should be provided directly, not wrapped in `left_operand`.
+
+Correct Usage:` {"_is_not_null": {"bigint_operand": { "column": "id" }}}`
+
+```
+input post_unary_operand_input @oneOf {
+  timestamptz_operand: post_timestamptz_op
+  bigint_operand: post_bigint_op
+  # ... All nine OperandColumnType
+}
+```
+
+#### Boolean Value Testing Operators
+
+`_is_true` and `_is_false` explicitly test boolean field values.
+
+```
+input post_boolean_op @oneOf {
+  literal: Boolean
+  contains(source_text: post_text_op!, search_text: post_text_op!)
+  json_extract_by_dot_notation_jsonpath(json: post_jsonb_op!, path: post_text_op!)
+  max(value0: post_boolean_op!, value1: post_boolean_op!)
+  min(value0: post_boolean_op!, value1: post_boolean_op!)
+  item(array: post_boolean_array_op!, index: post_bigint_op!)
+  first_item: post_boolean_array_op
+  last_item: post_boolean_array_op
+  random_item: post_boolean_array_op
+}
+```
+
+#### String Pattern Matching
+
+1. `_like` and `_nlike` for SQL LIKE pattern matching (case-sensitive)
+2. `_ilike` and `_nilike` for case-insensitive pattern matching
+3. `_similar` and `_nsimilar` for POSIX regular expression matching (case-sensitive)
+
+```
+input tag_text_binary_operand_input {
+  left_operand: tag_text_op!
+  right_operand: tag_text_op!
+}
+```
+
+#### Json Operations
+
+1. `_contains` checks if a JSON value contains another JSON value, `_contained_in` checks if a JSON value is contained within another.
+
+```
+input post_jsonb_binary_operand_input {
+  left_operand: post_jsonb_op!
+  right_operand: post_jsonb_op!
+}
+```
+
+1. `_has_key`, `_has_keys_any`, and `_has_keys_all` test for key existence
+
+```
+# _has_key
+input post_has_key_operand_input {
+  left_operand: post_jsonb_op!
+  right_operand: post_text_op!
+}
+# _has_keys_any, _has_keys_all
+input post_has_key_all_or_has_key_any_operand_input {
+  left_operand: post_jsonb_op!
+  right_operand: post_text_array_op!
+}
+```
+
+#### Array Operations
+
+1. `_in`: Checks if the operand value (implicit left operand) is present in the provided list (right operand, provided via array operand)
+2. `_nin`: Checks if the operand value is not present in the provided list.
+
+```
+input post_in_or_not_in_operand_input @oneOf {
+  geo_point_operand(left_operand: post_geo_point_op!, right_operand: post_geo_point_array_op!)
+  decimal_operand(left_operand: post_decimal_op!, right_operand: post_decimal_array_op!)
+  # ... All nine OperandColumnType
+}
+```
+
+## Operands (Input Value Generation)
+
+The filtering system relies heavily on **Operands**: specialized input types that define how a value (or array of values) is generated for use in predicate operators or functions. These operand types are used as arguments (e.g., `left_operand`, `right_operand`, function parameters) within the operator input types (like `${tableName}_binary_operand_input`) and function calls described elsewhere.
+
+The system supports nine `OperandColumnType` values: `bigint`, `decimal`, `text`, `boolean`, `jsonb`, `geo_point`, `timestamptz`, `timetz`, and `date`.
+
+1. Column Type Operands (`${tableName}_${columnType}_op`): Define ways to generate a **single value** of a specific type.
+
+```
+# Example: post_text_op generates a single String value
+input post_text_op @oneOf {
+  literal: String                  # Direct value
+  column: post_text_column_enum   # Value from another text column
+  conditional: [post_text_conditional!] # Value based on conditions
+  # ... Type-specific text functions (concat, substring, etc.)
+}
+```
+
+1. Column Type Array Operands (`${tableName}_${columnType}_array_op`): Define ways to generate an **array of values** of a specific type.
+
+```
+# Example: post_text_array_op generates a list of Strings
+input post_text_array_op @oneOf {
+  literal: [String!]              # Direct array literal
+  conditional: [post_text_array_conditional!] # Array based on conditions
+  # ... Type-specific array functions (slice, split, etc.)
+}
+```
+
+### Common Fields
+
+All operand types include a consistent set of core fields, with some variations based on whether they're single-value or array-based:
+
+#### Literal Values
+
+Direct specification of a value matching the column type:
+
+- In single value operands: `literal: <ScalarType>`
+- In array operands: `literal: [<ScalarType>!]`
+
+For example, a text operand uses `literal: String`.
+
+#### Column References
+
+Reference values from same-type columns in the current table (available only for single value operands via enum: `column: ${tableName}_${columnType}_column_enum`).
+
+#### Conditional Values
+
+Generate a value based on evaluating conditions sequentially. The `data` from the first matching `condition` is returned. Returns null if no conditions match.
+
+- Single value: `conditional: [${tableName}_${columnType}_conditional!]`
+- Array value: `conditional: [${tableName}_${columnType}_array_conditional!]`
+
+```
+# For single values
+input ${tableName}_${columnType}_conditional {
+  condition: ${tableName}_bool_exp!  # The condition to evaluate
+  data: ${tableName}_${columnType}_op!  # The value if condition is true
+}
+
+# For arrays
+input ${tableName}_${columnType}_array_conditional {
+  condition: ${tableName}_bool_exp!  # The condition to evaluate
+  data: ${tableName}_${columnType}_array_op!  # The array if condition is true
+}
+```
+
+### Function Fields
+
+Access specialized functions based on data type. Functions typically take single value operands, array operands, or enum values as arguments, allowing for complex expressions. (Every table's operands support the same function fields.)
+
+IMPORTANT: When providing a scalar value directly as an operand argument, it must be nested within the `literal` field.
+
+1. Various functions use predefined enums
+
+```
+enum date_format_enum_op {
+  DATE, MONTH_DAY, DATE_TIME,DAY_OF_WEEK,MONTH_DAY_YEAR,SHORT_MONTH_DAY_YEAR,RELATIVE_TIME,ISO8601
+}
+
+enum date_unit_enum_op {
+  YEAR,MONTH,DAY
+}
+
+enum geo_distance_unit_enum_op {
+  METER,KILOMETER,MILE
+}
+
+enum language_enum_op {
+  EN,ZH
+}
+
+enum rounding_mode_enum_op {
+  HALF_EVEN,HALF_UP,HALF_DOWN,UP,DOWN,CEILING,FLOOR
+}
+
+enum time_format_enum_op {
+  ISO8601
+}
+
+enum time_unit_enum_op {
+  HOUR,MINUTE,SECOND,MILLISECOND
+}
+
+enum timestamp_format_enum_op {
+  DATE,MONTH_DAY,DATE_TIME,DAY_OF_WEEK,MONTH_DAY_YEAR,SHORT_MONTH_DAY_YEAR,RELATIVE_TIME,ISO8601
+}
+
+enum timestamp_unit_enum_op {
+  YEAR,MONTH,DAY,HOUR,MINUTE,SECOND,MILLISECOND
+}
+```
+
+1. Array indices for functions like `slice` or `item` start at 0.
+2. `adjust` function: The `increase` parameter is of type `post_boolean_op`, not a simple `Boolean`. Always use `{literal: true}` instead of just `true`.
+3. `json_extract_by_dot_notation_jsonpath` function: The `path` parameter uses dot notation to navigate JSON objects. For example, the path `"a.b.c"` represents accessing `json['a']['b']['c']`, equivalent to the JSON path `json -> 'a' -> 'b' -> 'c'`.
+
+#### Array Operands
+
+All array operands support the `slice` operation, while `text_array` additionally includes a `split` function.
+
+```
+input post_bigint_array_op @oneOf {
+  # Note: Also includes common fields (conditional and literal).
+  slice(array: post_bigint_array_op!, start_index: post_bigint_op!, length: post_bigint_op!)
+}
+
+input post_text_array_op @oneOf {
+  # Note: Also includes common fields (conditional and literal).
+  split(source_text: post_text_op!, delimiter: post_text_op!)
+  slice(array: post_text_array_op!, start_index: post_bigint_op!, length: post_bigint_op!)
+}
+```
+
+#### Text Value Operand
+
+```
+input post_text_op @oneOf {
+  # Note: Also includes common fields (conditional and literal).
+  trim_trailing_zero: post_text_op
+  decimal_format(number: post_decimal_op!, fraction_digits: post_bigint_op!, rounding_mode: rounding_mode_enum_op!, clear_trailing_zeros: post_boolean_op!)
+  concat: [post_text_op!]
+  replace_occurrences(source_text: post_text_op!, search_text: post_text_op!, replace_text: post_text_op!, max_replacements: post_bigint_op!)
+  replace_at_position(source_text: post_text_op!, start_index: post_bigint_op!, length: post_bigint_op!, replace_text: post_text_op!)
+  substring(source_text: post_text_op!, start_index: post_bigint_op!, end_index: post_bigint_op!)
+  left(source_text: post_text_op!, length: post_bigint_op!)
+  right(source_text: post_text_op!, length: post_bigint_op!)
+  lower: post_text_op
+  upper: post_text_op
+  random(min_length: post_bigint_op!, max_length: post_bigint_op!, include_numbers: post_boolean_op!, include_lower_case: post_boolean_op!, include_upper_case: post_boolean_op!)
+  join(array: post_text_array_op!, separator: post_text_op!)
+  timestamptz_format(time: post_timestamptz_op!, format: timestamp_format_enum_op!, language: language_enum_op!)
+  date_format(time: post_date_op!, format: date_format_enum_op!, language: language_enum_op!)
+  timetz_format(time: post_timetz_op!, format: time_format_enum_op!, language: language_enum_op!)
+  json_extract_by_dot_notation_jsonpath(json: post_jsonb_op!, path: post_text_op!)
+  max(value0: post_text_op!, value1: post_text_op!)
+  min(value0: post_text_op!, value1: post_text_op!)
+  item(array: post_text_array_op!, index: post_bigint_op!)
+  first_item: post_text_array_op
+  last_item: post_text_array_op
+  random_item: post_text_array_op
+  cast_from_timetz: post_timetz_op
+  cast_from_boolean: post_boolean_op
+  cast_from_timestamptz: post_timestamptz_op
+  cast_from_decimal: post_decimal_op
+  cast_from_geo_point: post_geo_point_op
+  cast_from_date: post_date_op
+  cast_from_jsonb: post_jsonb_op
+  cast_from_bigint: post_bigint_op
+}
+```
+
+#### Bigint Value Operand
+
+```
+input post_bigint_op @oneOf {
+  # Note: Also includes common fields (conditional and literal).
+  position(source_text: post_text_op!, search_text: post_text_op!)
+  string_len: post_text_op
+  random(min_length: post_bigint_op!, max_length: post_bigint_op!)
+  round_up: post_decimal_op
+  round_down: post_decimal_op
+  extract_date(time: post_date_op!, unit: date_unit_enum_op!)
+  extract_timetz(time: post_timetz_op!, unit: time_unit_enum_op!)
+  extract_timestamptz(time: post_timestamptz_op!, unit: timestamp_unit_enum_op!)
+  extract_date_duration(start_time: post_date_op!, end_time: post_date_op!, unit: date_unit_enum_op!)
+  extract_timetz_duration(start_time: post_timetz_op!, end_time: post_timetz_op!, unit: time_unit_enum_op!)
+  extract_timestamptz_duration(start_time: post_timestamptz_op!, end_time: post_timestamptz_op!, unit: timestamp_unit_enum_op!)
+  json_extract_by_dot_notation_jsonpath(json: post_jsonb_op!, path: post_text_op!)
+  add(value0: post_bigint_op!, value1: post_bigint_op!)
+  subtract(minuend: post_bigint_op!, subtrahend: post_bigint_op!)
+  multiply(value0: post_bigint_op!, value1: post_bigint_op!)
+  divide(dividend: post_bigint_op!, divisor: post_bigint_op!)
+  modulo(dividend: post_bigint_op!, divisor: post_bigint_op!)
+  abs: post_bigint_op
+  pow(base: post_bigint_op!, exponent: post_bigint_op!)
+  max(value0: post_bigint_op!, value1: post_bigint_op!)
+  min(value0: post_bigint_op!, value1: post_bigint_op!)
+  item(array: post_bigint_array_op!, index: post_bigint_op!)
+  first_item: post_bigint_array_op
+  last_item: post_bigint_array_op
+  random_item: post_bigint_array_op
+  cast_from_decimal: post_decimal_op
+}
+```
+
+#### Decimal Value Operand
+
+```
+input post_decimal_op @oneOf {
+  decimal_format(number: post_decimal_op!, fraction_digits: post_bigint_op!, rounding_mode: rounding_mode_enum_op!)
+  geo_distance(point0: post_geo_point_op!, point1: post_geo_point_op!, unit: geo_distance_unit_enum_op!)
+  geo_longitude: post_geo_point_op
+  geo_latitude: post_geo_point_op
+  json_extract_by_dot_notation_jsonpath(json: post_jsonb_op!, path: post_text_op!)
+  add(value0: post_decimal_op!, value1: post_decimal_op!)
+  subtract(minuend: post_decimal_op!, subtrahend: post_decimal_op!)
+  multiply(value0: post_decimal_op!, value1: post_decimal_op!)
+  divide(dividend: post_decimal_op!, divisor: post_decimal_op!)
+  modulo(dividend: post_decimal_op!, divisor: post_decimal_op!)
+  abs: post_decimal_op
+  pow(base: post_decimal_op!, exponent: post_decimal_op!)
+  max(value0: post_decimal_op!, value1: post_decimal_op!)
+  min(value0: post_decimal_op!, value1: post_decimal_op!)
+  item(array: post_decimal_array_op!, index: post_bigint_op!)
+  first_item: post_decimal_array_op
+  last_item: post_decimal_array_op
+  random_item: post_decimal_array_op
+  cast_from_bigint: post_bigint_op
+}
+```
+
+#### Boolean Value Operand
+
+```
+input post_boolean_op @oneOf {
+  contains(source_text: post_text_op!, search_text: post_text_op!)
+  json_extract_by_dot_notation_jsonpath(json: post_jsonb_op!, path: post_text_op!)
+  max(value0: post_boolean_op!, value1: post_boolean_op!)
+  min(value0: post_boolean_op!, value1: post_boolean_op!)
+  item(array: post_boolean_array_op!, index: post_bigint_op!)
+  first_item: post_boolean_array_op
+  last_item: post_boolean_array_op
+  random_item: post_boolean_array_op
+}
+```
+
+#### Jsonb Value Operand
+
+```
+input post_jsonb_op @oneOf {
+  json_extract_by_dot_notation_jsonpath(json: post_jsonb_op!, path: post_text_op!)
+  max(value0: post_jsonb_op!, value1: post_jsonb_op!)
+  min(value0: post_jsonb_op!, value1: post_jsonb_op!)
+  item(array: post_jsonb_array_op!, index: post_bigint_op!)
+  first_item: post_jsonb_array_op
+  last_item: post_jsonb_array_op
+  random_item: post_jsonb_array_op
+}
+```
+
+#### Geo Point Value Operand
+
+```
+input post_geo_point_op @oneOf {
+  max(value0: post_geo_point_op!, value1: post_geo_point_op!)
+  min(value0: post_geo_point_op!, value1: post_geo_point_op!)
+  item(array: post_geo_point_array_op!, index: post_bigint_op!)
+  first_item: post_geo_point_array_op
+  last_item: post_geo_point_array_op
+  random_item: post_geo_point_array_op
+}
+```
+
+#### Timestamptz Value Operand
+
+Note: The `increase` parameter in the `adjust` function is of type `post_boolean_op`, not a simple `Boolean`. Therefore, you should use `{literal: true}` instead of just `true`.
+
+```
+input post_timestamptz_op @oneOf {
+  nullary_func: post_timestamptz_nullary_func{now}
+  conditional: [post_timestamptz_conditional!]
+  from_date_and_timetz(date: post_date_op!, timetz: post_timetz_op!)
+  of(years: post_bigint_op!, seconds: post_bigint_op!, hours: post_bigint_op!, days: post_bigint_op!, milliseconds: post_bigint_op!, minutes: post_bigint_op!, months: post_bigint_op!)
+  adjust(hours: post_bigint_op!, years: post_bigint_op!, seconds: post_bigint_op!, milliseconds: post_bigint_op!, minutes: post_bigint_op!, days: post_bigint_op!, increase: post_boolean_op!, timestamptz: post_timestamptz_op!, months: post_bigint_op!)
+  max(value0: post_timestamptz_op!, value1: post_timestamptz_op!)
+  min(value0: post_timestamptz_op!, value1: post_timestamptz_op!)
+  item(array: post_timestamptz_array_op!, index: post_bigint_op!)
+  first_item: post_timestamptz_array_op
+  last_item: post_timestamptz_array_op
+  random_item: post_timestamptz_array_op
+}
+```
+
+#### Date Value Operand
+
+```
+input post_date_op @oneOf {
+  nullary_func: post_date_nullary_func{now}
+  of(years: post_bigint_op!, months: post_bigint_op!, days: post_bigint_op!)
+  adjust(date: post_date_op!, increase: post_boolean_op!, years: post_bigint_op!, months: post_bigint_op!, days: post_bigint_op!)
+  cast_from_timestamptz: post_timestamptz_op
+  max(value0: post_date_op!, value1: post_date_op!)
+  min(value0: post_date_op!, value1: post_date_op!)
+  item(array: post_date_array_op!, index: post_bigint_op!)
+  first_item: post_date_array_op
+  last_item: post_date_array_op
+  random_item: post_date_array_op
+}
+```
+
+#### Timetz Value Operand
+
+```
+input post_timetz_op @oneOf {
+  nullary_func: post_timetz_nullary_func{now}
+  of(hours: post_bigint_op!, minutes: post_bigint_op!, seconds: post_bigint_op!, milliseconds: post_bigint_op!)
+  adjust(milliseconds: post_bigint_op!, seconds: post_bigint_op!, minutes: post_bigint_op!, hours: post_bigint_op!, increase: post_boolean_op!, timetz: post_timetz_op!)
+  cast_from_timestamptz: post_timestamptz_op
+  max(value0: post_timetz_op!, value1: post_timetz_op!)
+  min(value0: post_timetz_op!, value1: post_timetz_op!)
+  item(array: post_timetz_array_op!, index: post_bigint_op!)
+  first_item: post_timetz_array_op
+  last_item: post_timetz_array_op
+  random_item: post_timetz_array_op
+}
+```
