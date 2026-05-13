@@ -251,6 +251,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [AI Agent Specialist](./rules/ai-agent-specialist.mdc) - Cursor rules for TypeScript, React, Node.js, clean architecture, testing, and WHY-oriented engineering guidance.
 - [Alpha Skills](./rules/alpha-skills-quant-factor-research.mdc) - Quantitative factor research skills for Cursor. Evaluate factors, run backtests, mine new alpha through natural language.
 - [Anti-Over-Engineering](./rules/anti-overengineering.mdc) - Cursor rules for keeping changes scoped, simple, and directly tied to the user's request.
+- [Anti-Sycophancy Code Discipline](./rules/anti-sycophancy-code-discipline-cursorrules-prompt-file.mdc) - 17 directives blocking the most common LLM coding honesty failures: hallucinated APIs, invented signatures, false-confidence validation, manufactured-urgency capitulation, authority-driven softening, and self-referential comments. Drop the `.mdc` in `.cursor/rules/`.
 - [Chrome Extension (JavaScript/TypeScript)](./rules/chrome-extension-dev-js-typescript-cursorrules-pro.mdc) - Cursor rules for Chrome extension development with JavaScript and TypeScript integration.
 - [Code Guidelines](./rules/code-guidelines-cursorrules-prompt-file.mdc) - Cursor rules for code development with guidelines integration.
 - [Code Pair Interviews](./rules/code-pair-interviews.mdc) - Cursor rules for code pair interviews development with integration.
