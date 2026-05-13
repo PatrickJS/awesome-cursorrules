@@ -229,14 +229,18 @@ function isRulesNewMdc(file) {
 function checkRulesNewFrontmatter(file, content) {
   const frontmatter = parseFrontmatter(content);
   if (!frontmatter) {
-    failures.push(`${file} is missing YAML frontmatter.`);
+    failures.push(
+      `${file} is missing YAML frontmatter. rules-new/*.mdc files must begin with YAML frontmatter that includes \`description\`, \`globs\`, and \`alwaysApply\` (true/false).`,
+    );
     return;
   }
 
   for (const field of ["description", "globs", "alwaysApply"]) {
     const pattern = new RegExp(`^${field}\\s*:`, "m");
     if (!pattern.test(frontmatter)) {
-      failures.push(`${file} is missing frontmatter field \`${field}\`.`);
+      failures.push(
+        `${file} is missing required YAML frontmatter field \`${field}\`. Required fields for rules-new/*.mdc: \`description\`, \`globs\`, \`alwaysApply\`. Use \`alwaysApply: false\` for scoped rules, and \`alwaysApply: true\` only for rules that should always apply.`,
+      );
     }
   }
 }

@@ -1,6 +1,7 @@
 ---
 description: Ankra CLI rules and best practices for managing Kubernetes clusters via the Ankra platform
 globs: **/*.sh, **/*.yaml, **/*.yml, Makefile, **/Makefile, **/*.md
+alwaysApply: false
 ---
 
 # Ankra CLI Best Practices
