@@ -63,7 +63,7 @@ BEE_CLIENT_SECRET=your_client_secret_here
 <body>
     <div id="beefree-sdk-container"></div>
     
-    <script src="https://app-rsrc.getbee.io/plugin/BeefreeSDK.js"></script>
+    <!-- Bundle the official @beefree.io/sdk package and expose BeefreeSDK from your app entrypoint. -->
     <script>
         const beeConfig = {
             container: 'beefree-sdk-container',

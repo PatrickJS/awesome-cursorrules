@@ -347,7 +347,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 ### Method Two
 
 1. Install [Cursor AI](https://cursor.sh/) if you haven't already.
-2. Install [vscode-cursor-rules](https://marketplace.visualstudio.com/items?itemName=BeilunYang.cursor-rules) extension.
+2. Install [vscode-cursor-rules](https://marketplace.visualstudio.com/items?itemName=beilunyang.cursor-rules) extension.
 3. Open the command palette (Cmd+Shift+P or Ctrl+Shift+P) and type `Cursor Rules: Add .cursorrules`.
 4. Select and download the `.cursorrules` file that suits your needs.
 5. Customize the rules as needed for your specific project requirements.
