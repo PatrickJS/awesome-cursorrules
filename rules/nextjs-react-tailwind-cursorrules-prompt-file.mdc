@@ -52,7 +52,7 @@ alwaysApply: false
     - Use only for Web API access in small components.
     - Avoid for data fetching or state management.
   - Follow Next.js docs for Data Fetching, Rendering, and Routing.
-  - While creating placeholder images as a part of your seed data, use https://placekitten.com/
+  - While creating placeholder images as a part of your seed data, use local fixtures or a stable project-approved image source instead of deprecated placeholder services.
   - Place both the /app and /components folders under a /src directory. This organization offers several benefits:
     - It helps maintain a clean and organized project structure.
     - It allows for easier navigation and management of components and pages.
