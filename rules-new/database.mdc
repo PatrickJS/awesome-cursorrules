@@ -84,4 +84,4 @@ alwaysApply: false
 - Implement proper versioning
 - Handle errors properly
 - Document schema properly
-- Monitor database health 
+- Monitor database health

@@ -110,4 +110,4 @@ alwaysApply: false
 5. After merge to main:
    - Tag release
    - Merge back to develop
-   - Delete hotfix branch 
+   - Delete hotfix branch

@@ -53,4 +53,4 @@ alwaysApply: false
 ## Version Control
 - Write clear commit messages
 - Make small, focused commits
-- Use meaningful branch names 
+- Use meaningful branch names
