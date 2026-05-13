@@ -244,6 +244,7 @@ By creating a `.cursorrules` file in your project's root directory, you can leve
 - [Vercel](./rules/vercel-deployment-cursorrules-prompt-file/.cursorrules) - Cursor rules for Vercel deployment including serverless functions, Edge Runtime, middleware, caching, CI/CD, and production-ready configuration.
 
 ### Build Tools and Development
+
 - [AI Agent Specialist](./rules/ai-agent-specialist/.cursorrules) - Cursor rules for TypeScript, React, Node.js, clean architecture, testing, and WHY-oriented engineering guidance.
 - [Alpha Skills](./rules/alpha-skills-quant-factor-research/.cursorrules) - Quantitative factor research skills for Cursor. Evaluate factors, run backtests, mine new alpha through natural language.
 - [Anti-Over-Engineering](./rules-new/anti-overengineering.mdc) - Cursor rules for keeping changes scoped, simple, and directly tied to the user's request.
