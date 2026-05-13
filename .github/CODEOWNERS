@@ -1,0 +1,4 @@
+# Require maintainer review for repository automation and policy controls.
+.github/workflows/** @PatrickJS
+scripts/** @PatrickJS
+.github/CODEOWNERS @PatrickJS
