@@ -72,7 +72,7 @@ test("fails changed rules-new files without required frontmatter and explains ho
     assert.equal(result.status, 1);
     assert.match(result.stderr, /missing required YAML frontmatter field `alwaysApply`/);
     assert.match(result.stderr, /Required fields for rules-new\/\*\.mdc: `description`, `globs`, `alwaysApply`/);
-    assert.match(result.stderr, /Use `alwaysApply: false` for scoped rules/);
+    assert.match(result.stderr, /Add `alwaysApply: false` for scoped rules/);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -89,8 +89,98 @@ test("fails changed rules-new files without YAML frontmatter and explains requir
     assert.match(result.stderr, /is missing YAML frontmatter/);
     assert.match(
       result.stderr,
-      /rules-new\/\*\.mdc files must begin with YAML frontmatter that includes `description`, `globs`, and `alwaysApply` \(true\/false\)/,
+      /Copy this example and adjust the values:/,
     );
+    assert.match(result.stderr, /description: One-line summary of what this rule helps Cursor do/);
+    assert.match(result.stderr, /globs: \*\*\/\*\.ts, \*\*\/\*\.tsx/);
+    assert.match(result.stderr, /alwaysApply: false/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("fails changed rules-new files with invalid alwaysApply values", () => {
+  const root = makeFixture();
+  try {
+    write(root, "README.md", "\n");
+    write(root, "rules-new/bad.mdc", "---\ndescription: Bad rule\nglobs: **/*.ts\nalwaysApply: maybe\n---\n");
+    write(root, ".changed-files", "rules-new/bad.mdc\n");
+    const result = run(root, ["--changed-files", ".changed-files"]);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /frontmatter field `alwaysApply` must be exactly `true` or `false`/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("fails changed rules-new files with empty descriptions", () => {
+  const root = makeFixture();
+  try {
+    write(root, "README.md", "\n");
+    write(root, "rules-new/bad.mdc", "---\ndescription:\nglobs: **/*.ts\nalwaysApply: false\n---\n");
+    write(root, ".changed-files", "rules-new/bad.mdc\n");
+    const result = run(root, ["--changed-files", ".changed-files"]);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /frontmatter field `description` is empty/);
+    assert.match(result.stderr, /Add a short explanation of what the rule helps Cursor do/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("fails scoped changed rules-new files with empty globs", () => {
+  const root = makeFixture();
+  try {
+    write(root, "README.md", "\n");
+    write(root, "rules-new/bad.mdc", "---\ndescription: Bad rule\nglobs:\nalwaysApply: false\n---\n");
+    write(root, ".changed-files", "rules-new/bad.mdc\n");
+    const result = run(root, ["--changed-files", ".changed-files"]);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /frontmatter field `globs` is empty/);
+    assert.match(result.stderr, /Add file patterns such as `\*\*\/\*\.ts` or use `alwaysApply: true` only for universal rules/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("passes scoped changed rules-new files with valid frontmatter", () => {
+  const root = makeFixture();
+  try {
+    write(root, "README.md", "\n");
+    write(root, "rules-new/good.mdc", "---\ndescription: Good rule\nglobs: **/*.ts\nalwaysApply: false\n---\n\n# Rule\n");
+    write(root, ".changed-files", "rules-new/good.mdc\n");
+    const result = run(root, ["--changed-files", ".changed-files"]);
+    assert.equal(result.status, 0, result.stderr + result.stdout);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("passes scoped changed rules-new files with YAML list globs", () => {
+  const root = makeFixture();
+  try {
+    write(root, "README.md", "\n");
+    write(
+      root,
+      "rules-new/good.mdc",
+      "---\ndescription: Good rule\nglobs:\n  - **/*.ts\n  - **/*.tsx\nalwaysApply: false\n---\n\n# Rule\n",
+    );
+    write(root, ".changed-files", "rules-new/good.mdc\n");
+    const result = run(root, ["--changed-files", ".changed-files"]);
+    assert.equal(result.status, 0, result.stderr + result.stdout);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("passes universal changed rules-new files with empty globs and alwaysApply true", () => {
+  const root = makeFixture();
+  try {
+    write(root, "README.md", "\n");
+    write(root, "rules-new/good.mdc", "---\ndescription: Universal rule\nglobs:\nalwaysApply: true\n---\n\n# Rule\n");
+    write(root, ".changed-files", "rules-new/good.mdc\n");
+    const result = run(root, ["--changed-files", ".changed-files"]);
+    assert.equal(result.status, 0, result.stderr + result.stdout);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
