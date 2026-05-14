@@ -4,6 +4,9 @@
   "type": "module",
   "scripts": {
     "test": "node --test scripts/*.test.mjs",
+    "check:awesome-list": "node scripts/check-awesome-list.mjs",
+    "links:absolute": "node scripts/convert-readme-links.mjs --to absolute",
+    "links:relative": "node scripts/convert-readme-links.mjs --to relative",
     "cleanup:legacy": "node scripts/cleanup-legacy-artifacts.mjs"
   },
   "devDependencies": {
