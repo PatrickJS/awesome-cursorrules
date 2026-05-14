@@ -3,6 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "// note": "echo \"Note: upstream awesome-lint needs network.\"",
+    "check:awesome-list:upstream": "pnpm dlx awesome-lint",
     "test": "node --test scripts/*.test.mjs",
     "check:awesome-list": "node scripts/check-awesome-list.mjs",
     "links:absolute": "node scripts/convert-readme-links.mjs --to absolute",
