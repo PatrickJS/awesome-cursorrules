@@ -33,8 +33,11 @@ Project-specific configuration files for Cursor AI.
 ## Contents
 
 - [Rules](#rules)
+  - [Frontend Frameworks and Libraries](#frontend-frameworks-and-libraries)
 
 ## Rules
+
+### Frontend Frameworks and Libraries
 
 ${entry}`;
 }
@@ -63,13 +66,33 @@ test("fails when Contents is not the first top-level section", () => {
   }
 });
 
-test("fails nested Contents and forbidden Contents links", () => {
+test("fails flat rule category links and forbidden Contents links", () => {
   const root = makeFixture();
   try {
-    write(root, "README.md", "# Awesome Cursor Rules\n\nDescription.\n\n## Contents\n\n- [Rules](#rules)\n  - [Contributing](#contributing)\n- [Footnotes](#footnotes)\n\n## Rules\n");
+    write(
+      root,
+      "README.md",
+      [
+        "# Awesome Cursor Rules",
+        "",
+        "Description.",
+        "",
+        "## Contents",
+        "",
+        "- [Rules](#rules)",
+        "- [Frontend Frameworks and Libraries](#frontend-frameworks-and-libraries)",
+        "  - [Contributing](#contributing)",
+        "- [Footnotes](#footnotes)",
+        "",
+        "## Rules",
+        "",
+        "### Frontend Frameworks and Libraries",
+        "",
+      ].join("\n"),
+    );
     const result = run(root);
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /Contents must be a flat list/);
+    assert.match(result.stderr, /must nest rule category links under Rules/);
     assert.match(result.stderr, /must not include the Contributing section/);
     assert.match(result.stderr, /must not include the Footnotes section/);
   } finally {

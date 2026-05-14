@@ -13,7 +13,7 @@ Cursor Project Rules enhance Cursor AI editor behavior with project-specific gui
 
 [Cursor AI](https://cursor.sh/) is an AI-powered code editor. Cursor Project Rules are Markdown-based `.mdc` files that live in `.cursor/rules/` and tell Cursor how to behave for specific projects, file types, frameworks, and workflows.
 
-## Sponsorships
+<h2>Sponsorships</h2>
 <p align="center">
     <h3><a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">coderabbit.ai - Cut Code Review Time & Bugs in Half. Instantly.</h3>
 	  <a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules">
@@ -33,19 +33,19 @@ Cursor Project Rules enhance Cursor AI editor behavior with project-specific gui
 
 - [Why Cursor Rules](#why-cursor-rules)
 - [Rules](#rules)
-- [Frontend Frameworks and Libraries](#frontend-frameworks-and-libraries)
-- [Backend and Full-Stack](#backend-and-full-stack)
-- [Mobile Development](#mobile-development)
-- [Games and Graphics](#games-and-graphics)
-- [CSS and Styling](#css-and-styling)
-- [State Management](#state-management)
-- [Database and API](#database-and-api)
-- [Testing](#testing)
-- [Hosting and Deployments](#hosting-and-deployments)
-- [Build Tools and Development](#build-tools-and-development)
-- [Language-Specific](#language-specific)
-- [Security](#security)
-- [Documentation](#documentation)
+  - [Frontend Frameworks and Libraries](#frontend-frameworks-and-libraries)
+  - [Backend and Full-Stack](#backend-and-full-stack)
+  - [Mobile Development](#mobile-development)
+  - [Games and Graphics](#games-and-graphics)
+  - [CSS and Styling](#css-and-styling)
+  - [State Management](#state-management)
+  - [Database and API](#database-and-api)
+  - [Testing](#testing)
+  - [Hosting and Deployments](#hosting-and-deployments)
+  - [Build Tools and Development](#build-tools-and-development)
+  - [Language-Specific](#language-specific)
+  - [Security](#security)
+  - [Documentation](#documentation)
 - [Directories](#directories)
 - [How to Use](#how-to-use)
 
@@ -347,10 +347,7 @@ Contributions are welcome! If you have a great Cursor rule to share:
    ---
    ```
 
-   - `description` explains the rule's purpose to Cursor and contributors.
-   - `globs` lists the file patterns where the rule should auto-attach.
-   - `alwaysApply: false` keeps the rule scoped to matching or requested context.
-   - `alwaysApply: true` makes the rule apply to every request; use it only for universal guidance.
+   The `description` field explains the rule's purpose to Cursor and contributors. The `globs` field lists the file patterns where the rule should auto-attach. Use `alwaysApply: false` to keep the rule scoped to matching or requested context, and use `alwaysApply: true` only for universal guidance that should apply to every request.
 
 5. Update the main README.md file, adding your contribution to the appropriate category.
 6. Ensure your contribution follows the repository formatting and naming guidelines.
@@ -365,7 +362,3 @@ Please ensure your contribution is original or properly credited if based on exi
 - [coderabbit.ai](https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules) - Cut code review time and bugs in half.
 - [Unblocked MCP](https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules) - Team knowledge for Cursor workflows.
 - [Warp](https://go.warp.dev/awesome-cursorrules) - Terminal workflows for coding with multiple AI agents.
-
-## License
-
-[![CC0](https://licensebuttons.net/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)

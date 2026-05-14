@@ -58,16 +58,14 @@ function checkReadmeStructure(readme) {
   if (!contents) {
     failures.push("README must include a Contents section.");
   } else {
-    if (/^\s{2,}-\s+/m.test(contents)) {
-      failures.push("README Contents must be a flat list without nested bullets.");
-    }
-
     for (const forbidden of ["Contributing", "Footnotes"]) {
       const pattern = new RegExp(`\\[[^\\]]*${forbidden}[^\\]]*\\]\\(`, "i");
       if (pattern.test(contents)) {
         failures.push(`README Contents must not include the ${forbidden} section.`);
       }
     }
+
+    checkContentsHierarchy(readme, contents);
   }
 
   if (/^##\s+Licen[cs]e\b/im.test(readme)) {
@@ -81,6 +79,37 @@ function checkReadmeStructure(readme) {
 
 function stripLinkTargets(markdown) {
   return markdown.replace(/\]\([^)]*\)/g, "]()").replace(/\bsrc(set)?=\"[^\"]*\"/g, "");
+}
+
+function checkContentsHierarchy(readme, contents) {
+  const rules = extractSection(readme, "Rules");
+  if (!rules) return;
+
+  const ruleSubheadings = [...rules.matchAll(/^###\s+(.+?)\s*$/gm)].map((match) => match[1].trim());
+  const contentLines = contents.split(/\r?\n/);
+
+  for (const heading of ruleSubheadings) {
+    const anchor = markdownAnchor(heading);
+    const headingPattern = escapeRegExp(heading);
+    const anchorPattern = escapeRegExp(anchor);
+    const topLevelPattern = new RegExp(`^- \\[${headingPattern}\\]\\(#${anchorPattern}\\)\\s*$`);
+    const nestedPattern = new RegExp(`^\\s{2,}- \\[${headingPattern}\\]\\(#${anchorPattern}\\)\\s*$`);
+
+    if (contentLines.some((line) => topLevelPattern.test(line))) {
+      failures.push(`README Contents must nest rule category links under Rules: ${heading}.`);
+    } else if (!contentLines.some((line) => nestedPattern.test(line))) {
+      failures.push(`README Contents must include nested rule category link under Rules: ${heading}.`);
+    }
+  }
+}
+
+function markdownAnchor(heading) {
+  return heading
+    .toLowerCase()
+    .replace(/`/g, "")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
 }
 
 function extractSection(markdown, heading) {
