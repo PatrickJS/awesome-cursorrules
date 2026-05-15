@@ -198,9 +198,9 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [React (MobX)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/react-mobx-cursorrules-prompt-file.mdc) - React development with MobX integration.
 - [React (React Query)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/react-query-cursorrules-prompt-file.mdc) - React development with React Query integration.
 - [React (TanStack Router + Query)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/react-tanstack-router-query-cursorrules-prompt-file.mdc) - React SPAs combining TanStack Router v1 and TanStack Query v5 for zero-loading-spinner routing and type-safe server state.
-- [React (Zustand)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/react-zustand-cursorrules-prompt-file.mdc) - React state management with Zustand stores, selectors, middleware, persistence, and testing.
+- [React (Zustand)](rules/react-zustand-cursorrules-prompt-file.mdc) - React state management with Zustand stores, selectors, middleware, persistence, and testing.
 - [TanStack Query v5](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/tanstack-query-v5-cursorrules-prompt-file.mdc) - Query options, query key factories, mutations, optimistic updates, infinite queries, Suspense, and prefetching.
-- [Vue (Pinia)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/vue-pinia-cursorrules-prompt-file.mdc) - Vue 3 state management with Pinia stores, Composition API usage, SSR, persistence, and testing.
+- [Vue (Pinia)](rules/vue-pinia-cursorrules-prompt-file.mdc) - Vue 3 state management with Pinia stores, Composition API usage, SSR, persistence, and testing.
 
 ### Database and API
 
