@@ -625,7 +625,7 @@ ANY RULES IN THE ProviderContextOverrides SECTION CAN OVERRULE SPECIFIC RULES IN
   Example:
   ```javascript
   const store = getStore({ name: "animals", consistency: "strong" });
-  await store.set("dog", "ðŸ¶");
+  await store.set("dog", "dog");
   const dog = await store.get("dog");
   ```
 
@@ -807,7 +807,7 @@ ANY RULES IN THE ProviderContextOverrides SECTION CAN OVERRULE SPECIFIC RULES IN
 
       # Specific branch context: all deploys from
       # this specific branch will inherit these settings.
-      [context.staging.environment] # â€œstagingâ€ is a branch name
+      [context.staging.environment] # staging is a branch name
         NODE_ENV = "development"
     ```
 

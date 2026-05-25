@@ -27,6 +27,7 @@ if (!changedFiles || changedFiles.includes("README.md")) {
 
 checkIssueTemplateGuardrails();
 checkRuleFiles(filesToCheck);
+checkPromptSafety(filesToCheck);
 checkReadmeOnlyExternalListings(changedFiles, diffText);
 
 if (failures.length > 0) {
@@ -169,6 +170,23 @@ function checkRuleFiles(candidateFiles) {
   }
 }
 
+function checkPromptSafety(candidateFiles) {
+  for (const file of candidateFiles) {
+    const normalizedFile = toPosixPath(file);
+    if (!isPromptSafetyFile(normalizedFile)) continue;
+
+    const fullPath = join(root, normalizedFile);
+    if (!existsSync(fullPath) || !statSync(fullPath).isFile()) continue;
+
+    const content = readFileSync(fullPath, "utf8");
+    checkPromptUnicode(normalizedFile, content);
+
+    if (isAgentInstructionFile(normalizedFile)) {
+      checkAgentInstructionExfiltration(normalizedFile, content);
+    }
+  }
+}
+
 function checkIssueTemplateGuardrails() {
   const githubDir = join(root, ".github");
   if (!existsSync(githubDir) || !statSync(githubDir).isDirectory()) return;
@@ -232,6 +250,140 @@ function looksLikeAiErrorMessage(content) {
 
 function isCanonicalMdcRule(file) {
   return file.startsWith("rules/") && file.endsWith(".mdc");
+}
+
+function isPromptSafetyFile(file) {
+  if (isCanonicalMdcRule(file)) return true;
+  if (/^\.cursor\/rules\/.+\.mdc$/i.test(file)) return true;
+  return isAgentInstructionFile(file);
+}
+
+function isAgentInstructionFile(file) {
+  const lowerFile = file.toLowerCase();
+  const name = lowerFile.split("/").pop();
+
+  if ([".cursorrules", ".clinerules", ".windsurfrules"].includes(name)) {
+    return true;
+  }
+
+  if (/^(agents|claude|codex|cursor|gemini)(\..+)?\.md$/.test(name)) {
+    return true;
+  }
+
+  return (
+    lowerFile === ".github/copilot-instructions.md" ||
+    /\.github\/instructions\/.+\.instructions\.md$/.test(lowerFile)
+  );
+}
+
+function checkPromptUnicode(file, content) {
+  let line = 1;
+  let column = 1;
+
+  for (const char of content) {
+    const codePoint = char.codePointAt(0);
+    const classification = classifyPromptCodePoint(codePoint);
+
+    if (classification) {
+      failures.push(
+        `${file} contains disallowed ${classification} ${formatCodePoint(codePoint)} at ${line}:${column}. AI prompt files must not contain invisible Unicode, bidirectional overrides, or terminal control characters.`,
+      );
+    }
+
+    if (char === "\n") {
+      line += 1;
+      column = 1;
+    } else if (char === "\r") {
+      column = 1;
+    } else {
+      column += 1;
+    }
+  }
+}
+
+function classifyPromptCodePoint(codePoint) {
+  if (isBidirectionalTextControl(codePoint)) {
+    return "bidirectional text control";
+  }
+
+  if (isDisallowedControlCharacter(codePoint)) {
+    return "control character";
+  }
+
+  if (isInvisibleUnicode(codePoint)) {
+    return "invisible Unicode";
+  }
+
+  return null;
+}
+
+function isBidirectionalTextControl(codePoint) {
+  return (
+    codePoint === 0x061c ||
+    codePoint === 0x200e ||
+    codePoint === 0x200f ||
+    inRange(codePoint, 0x202a, 0x202e) ||
+    inRange(codePoint, 0x2066, 0x2069)
+  );
+}
+
+function isDisallowedControlCharacter(codePoint) {
+  if (codePoint === 0x09 || codePoint === 0x0a || codePoint === 0x0d) {
+    return false;
+  }
+
+  return inRange(codePoint, 0x0000, 0x001f) || inRange(codePoint, 0x007f, 0x009f);
+}
+
+function isInvisibleUnicode(codePoint) {
+  return (
+    codePoint === 0x00ad ||
+    codePoint === 0x034f ||
+    inRange(codePoint, 0x115f, 0x1160) ||
+    inRange(codePoint, 0x17b4, 0x17b5) ||
+    codePoint === 0x180e ||
+    inRange(codePoint, 0x200b, 0x200d) ||
+    inRange(codePoint, 0x2060, 0x2064) ||
+    inRange(codePoint, 0x206a, 0x206f) ||
+    codePoint === 0x2800 ||
+    codePoint === 0x3164 ||
+    inRange(codePoint, 0xfe00, 0xfe0f) ||
+    codePoint === 0xfeff ||
+    codePoint === 0xffa0 ||
+    inRange(codePoint, 0xe0000, 0xe007f) ||
+    inRange(codePoint, 0xe0100, 0xe01ef)
+  );
+}
+
+function checkAgentInstructionExfiltration(file, content) {
+  if (!hasNetworkEgressPattern(content) || !hasSensitiveCredentialPattern(content)) {
+    return;
+  }
+
+  failures.push(
+    `${file} contains a suspicious credential exfiltration instruction: network command references sensitive credential material. Remove commands that combine outbound requests with SSH keys, package tokens, cloud credentials, crypto wallets, or environment dumps.`,
+  );
+}
+
+function hasNetworkEgressPattern(content) {
+  return /\b(?:curl|wget|nc|ncat|netcat|scp|sftp|ftp)\b|(?:fetch|XMLHttpRequest)\s*\(|\bInvoke-WebRequest\b|\biwr\b|https?:\/\//i.test(
+    content,
+  );
+}
+
+function hasSensitiveCredentialPattern(content) {
+  const sensitiveCredentialPattern =
+    /(?:^|[^\w])(?:~\/)?\.ssh\/(?:id_rsa|id_ed25519|config)|(?:^|[^\w])(?:~\/)?\.aws\/(?:credentials|config)|(?:^|[^\w])(?:~\/)?\.config\/gh|(?:^|[^\w])\.npmrc\b|(?:^|[^\w])\.pypirc\b|cargo\/credentials|wallet\.dat|(?:^|[^\w])\.env\b|\bprocess\.env\b|\bprintenv\b|\bgh auth token\b|ssh[_ -]?key|private[_ -]?key|api[_ -]?key|access[_ -]?token|secret[_ -]?key|mnemonic|seed phrase/i;
+
+  return sensitiveCredentialPattern.test(content);
+}
+
+function formatCodePoint(codePoint) {
+  return `U+${codePoint.toString(16).toUpperCase().padStart(4, "0")}`;
+}
+
+function inRange(value, min, max) {
+  return value >= min && value <= max;
 }
 
 function checkRuleFrontmatter(file, content) {
@@ -317,6 +469,10 @@ function stripYamlQuotes(value) {
     return trimmed.slice(1, -1);
   }
   return trimmed;
+}
+
+function toPosixPath(file) {
+  return file.split("\\").join("/");
 }
 
 function checkReadmeOnlyExternalListings(files, diff) {
