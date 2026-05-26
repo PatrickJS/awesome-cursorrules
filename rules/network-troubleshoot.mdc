@@ -1,6 +1,7 @@
 ---
 description: Systematic network troubleshooting for developers
 globs:
+  - "**/*"
 alwaysApply: false
 ---
 
@@ -42,12 +43,21 @@ ping -n 4 <host>          # Windows
 curl -v telnet://<host>:<port> --connect-timeout 5   # cross-platform port check
 nc -zv <host> <port>      # Linux/macOS only
 ```
+```powershell
+# Windows PowerShell
+Test-NetConnection -ComputerName <host> -Port <port>
+```
 
 ### DNS
 ```bash
 nslookup <host>
 nslookup <host> 8.8.8.8
 dig <host>                 # Linux/macOS only
+```
+```powershell
+# Windows PowerShell
+Resolve-DnsName <host>
+Resolve-DnsName <host> -Server 8.8.8.8
 ```
 
 ### Proxy
@@ -58,6 +68,13 @@ curl -x http://127.0.0.1:7890 https://www.google.com --connect-timeout 5
 git config --global --get http.proxy
 npm config get proxy
 ```
+```powershell
+# Windows PowerShell
+$env:HTTP_PROXY; $env:HTTPS_PROXY; $env:ALL_PROXY
+Invoke-WebRequest -Proxy http://127.0.0.1:7890 -Uri https://www.google.com -TimeoutSec 5
+git config --global --get http.proxy
+npm config get proxy
+```
 
 ### SSL/TLS
 ```bash
@@ -65,10 +82,24 @@ openssl s_client -connect <host>:443 -showcerts </dev/null
 echo | openssl s_client -connect <host>:443 2>/dev/null | openssl x509 -noout -dates
 curl -vvv https://<host> 2>&1 | grep -E "SSL|TLS|certificate|error"
 ```
+```powershell
+# Windows PowerShell
+ Invoke-WebRequest -Uri https://<host> -SkipCertificateCheck
+# Check cert details:
+[Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
+$req = [Net.HttpWebRequest]::Create("https://<host>")
+$req.GetResponse() | Select-Object -Property StatusCode
+$cert = $req.ServicePoint.Certificate
+[Security.Cryptography.X509Certificates.X509Certificate2UI]::DisplayCertificate($cert)
+```
 
 ### HTTP
 ```bash
 curl -vvv -o /dev/null -w "HTTP %{http_code}\nTime: %{time_total}s\nDNS: %{time_namelookup}s\nConnect: %{time_connect}s\nTLS: %{time_appconnect}s\n" https://<host>/<path>
+```
+```powershell
+# Windows PowerShell
+Measure-Command { Invoke-WebRequest -Uri https://<host>/<path> -UseBasicParsing } | Select-Object TotalSeconds
 ```
 
 ### Package Managers
@@ -77,6 +108,13 @@ npm config list && npm ping
 pip config list
 docker info 2>&1 | grep -i "registry\|proxy"
 git config --list | grep -i proxy
+```
+```powershell
+# Windows PowerShell
+npm config list; npm ping
+pip config list
+docker info 2>&1 | Select-String "registry|proxy"
+git config --list | Select-String "proxy"
 ```
 
 ## Resolution Matrix
@@ -87,7 +125,7 @@ git config --list | grep -i proxy
 | DNS fails | Switch to 8.8.8.8, flush cache, check /etc/resolv.conf |
 | Proxy not running | Start Clash/V2Ray, verify port listening |
 | Target blocked through proxy | Try different proxy node/protocol |
-| SSL cert expired | Renew cert; dev: `NODE_TLS_REJECT_UNAUTHORIZED=0` |
+| SSL cert expired | Renew cert; fix trust chain/clock/CA store; avoid disabling TLS verification |
 | SSL unknown CA | Import CA to trust store |
 | HTTP 407 | Configure proxy credentials |
 | HTTP 403 | Check API key, IP whitelist, CORS headers |
@@ -102,9 +140,20 @@ git config --list | grep -i proxy
 ## China Environment Quick Fix
 
 ```bash
+# Linux/macOS
 export HTTP_PROXY=http://127.0.0.1:7890
 export HTTPS_PROXY=http://127.0.0.1:7890
 export ALL_PROXY=socks5://127.0.0.1:7891
+npm config set registry https://registry.npmmirror.com
+pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
+git config --global http.proxy http://127.0.0.1:7890
+```
+```powershell
+# Windows PowerShell
+$env:HTTP_PROXY = "http://127.0.0.1:7890"
+$env:HTTPS_PROXY = "http://127.0.0.1:7890"
+$env:ALL_PROXY = "socks5://127.0.0.1:7891"
 npm config set registry https://registry.npmmirror.com
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
@@ -115,9 +164,16 @@ git config --global http.proxy http://127.0.0.1:7890
 
 After fix, re-run the failed command and verify:
 ```bash
+# Linux/macOS
 curl -I https://<previously-failing-host>
 nslookup <host>
 curl -x http://127.0.0.1:7890 https://www.google.com -o /dev/null -w "%{http_code}"
+```
+```powershell
+# Windows PowerShell
+Invoke-WebRequest -Method Head -Uri https://<previously-failing-host>
+Resolve-DnsName <host>
+Invoke-WebRequest -Proxy http://127.0.0.1:7890 -Uri https://www.google.com -UseBasicParsing
 ```
 
 ## Error Quick Reference
