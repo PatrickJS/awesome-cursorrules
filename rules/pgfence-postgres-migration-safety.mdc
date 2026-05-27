@@ -1,0 +1,190 @@
+---
+description: Postgres migration safety rules. Apply when generating, reviewing, or editing schema migrations and DDL such as ALTER TABLE, CREATE INDEX, ADD CONSTRAINT, DROP TABLE, ALTER TYPE. Helps prevent migrations that lock production tables, rewrite large tables under ACCESS EXCLUSIVE, or break replication.
+globs: ["**/migrations/**/*.sql", "**/migrations/**/migration.sql", "**/migrations/**/*.ts", "**/migrations/**/*.js", "**/db/migrate/**/*.rb", "**/db/migrate/**/*.sql"]
+alwaysApply: false
+---
+# Postgres migration safety
+
+Rules for writing online-safe Postgres migrations. Sourced from the pgfence
+analyzer (https://pgfence.com). Run `npx @flvmnt/pgfence analyze <files>` for
+the authoritative verdict on any specific migration.
+
+## Always prepend to every migration
+
+```sql
+SET lock_timeout = '2s';
+SET statement_timeout = '5min';
+SET idle_in_transaction_session_timeout = '30s';
+SET application_name = 'migrate:<short-name>';
+```
+
+`lock_timeout` is the single most important safety knob: without it, a blocked
+ALTER queues behind running transactions and blocks every later query on the
+table.
+
+## Lock mode reference
+
+| Lock mode | What it blocks |
+|---|---|
+| ACCESS SHARE | Nothing |
+| ROW SHARE | ROW EXCLUSIVE+ |
+| ROW EXCLUSIVE | SHARE+ |
+| SHARE UPDATE EXCLUSIVE | SHARE UPDATE EXCLUSIVE+ |
+| SHARE | Writes (reads allowed) |
+| SHARE ROW EXCLUSIVE | Most writes |
+| EXCLUSIVE | Everything except ACCESS SHARE |
+| ACCESS EXCLUSIVE | Everything, reads included |
+
+## DDL footguns (refuse to emit these patterns without the safe rewrite)
+
+### Table rewrites under ACCESS EXCLUSIVE
+
+- `ALTER COLUMN ... TYPE` (most narrowing type changes rewrite the table)
+- `ADD COLUMN ... DEFAULT <volatile>` such as `DEFAULT now()` or `DEFAULT uuid_generate_v4()`
+- `ADD COLUMN ... NOT NULL` without a `DEFAULT` on a non-empty table
+- `VACUUM FULL`, `CLUSTER`
+- `ALTER TABLE ... SET LOGGED` / `SET UNLOGGED`
+
+Safe rewrite: expand + backfill + contract. Add the column nullable, backfill
+in batches with `FOR UPDATE SKIP LOCKED`, then enforce NOT NULL via
+`CHECK ... NOT VALID` + `VALIDATE CONSTRAINT`.
+
+Some widening changes are metadata-only (for example `varchar(50)` to
+`varchar(255)`, or `varchar` to `text`). Confirm with `pgfence explain` before
+rewriting every type change as expand/contract.
+
+### Constraints
+
+Most `ADD CONSTRAINT` forms take ACCESS EXCLUSIVE on the target table. Foreign
+keys are the exception and take SHARE ROW EXCLUSIVE on both tables.
+
+Always prefer:
+
+```sql
+ALTER TABLE t ADD CONSTRAINT c ... NOT VALID;
+ALTER TABLE t VALIDATE CONSTRAINT c;
+```
+
+The `NOT VALID` step takes the brief ACCESS EXCLUSIVE; the validation scan
+runs under SHARE UPDATE EXCLUSIVE and does not block writes.
+
+For unique constraints:
+
+```sql
+CREATE UNIQUE INDEX CONCURRENTLY uq_t_col ON t (col);
+ALTER TABLE t ADD CONSTRAINT uq_t_col UNIQUE USING INDEX uq_t_col;
+```
+
+### Indexes
+
+- Never emit `CREATE INDEX` without `CONCURRENTLY` on a non-empty table.
+- `DROP INDEX CONCURRENTLY` over `DROP INDEX`.
+- `REINDEX INDEX CONCURRENTLY` (PG12+) over `REINDEX INDEX`.
+
+`CREATE INDEX CONCURRENTLY` cannot run inside a transaction. If the migration
+tool wraps every file in `BEGIN/COMMIT`, opt out for these statements.
+
+### Production footguns that often slip through review
+
+- `CLUSTER table USING idx`: full table rewrite under ACCESS EXCLUSIVE. Use
+  `pg_repack` instead.
+- `ALTER TABLE t REPLICA IDENTITY FULL`: every UPDATE/DELETE writes the full
+  old row image to WAL. 10x to 100x WAL amplification. Saturates Debezium and
+  pglogical. Use the primary key (default) or a unique non-null index.
+- `ALTER TABLE t ENABLE ROW LEVEL SECURITY` without prior policies: affected
+  non-owner roles see no rows. The application may appear to lose its data.
+- `ALTER TABLE t DISABLE ROW LEVEL SECURITY`: silently exposes every row
+  previously gated by policy.
+- `DROP SCHEMA s CASCADE`: drops every table, view, function, type, and
+  sequence in the schema. Irreversible.
+- `DROP DATABASE`: irreversible. Belongs in an ops runbook, never a migration.
+- `CREATE TYPE x AS ENUM (...)`: Postgres has no `ALTER TYPE x DROP VALUE`.
+  If a value may ever need to be removed, use a lookup table or a `CHECK`
+  constraint instead.
+
+### Enum changes
+
+- `ALTER TYPE ... ADD VALUE` on PG12+: instant, EXCLUSIVE on the type only.
+  Safe.
+- `ALTER TYPE ... DROP VALUE`: does not exist in Postgres. Plan accordingly.
+
+### Refresh materialized view
+
+- `REFRESH MATERIALIZED VIEW CONCURRENTLY`: EXCLUSIVE on the matview. Allows
+  reads, blocks writes. Requires a unique index on the matview.
+- `REFRESH MATERIALIZED VIEW` (non-concurrent): ACCESS EXCLUSIVE. Blocks reads
+  and writes.
+
+### Destructive
+
+- `DROP TABLE`, `TRUNCATE`: ACCESS EXCLUSIVE. Schedule a separate release.
+- `DELETE` with no `WHERE` (or `WHERE TRUE`): writes a row version for every
+  row and generates massive WAL. Batch instead.
+- `DROP COLUMN`: ACCESS EXCLUSIVE. The data is not actually removed; the
+  column is hidden. Reads and writes block while metadata updates.
+
+## Safe rewrite recipes
+
+### Add a NOT NULL column with a default
+
+```sql
+-- Migration 1: nullable, fast metadata-only on PG11+
+ALTER TABLE t ADD COLUMN IF NOT EXISTS col text;
+
+-- Migration 2: batched backfill (separate file, no transaction wrapper)
+DO $$
+DECLARE updated int := 1;
+BEGIN
+  WHILE updated > 0 LOOP
+    WITH batch AS (
+      SELECT ctid FROM t
+      WHERE col IS NULL
+      LIMIT 1000
+      FOR UPDATE SKIP LOCKED
+    )
+    UPDATE t SET col = '<default>'
+    FROM batch
+    WHERE t.ctid = batch.ctid;
+    GET DIAGNOSTICS updated = ROW_COUNT;
+  END LOOP;
+END $$;
+
+-- Migration 3: validated NOT NULL
+ALTER TABLE t ADD CONSTRAINT t_col_nn CHECK (col IS NOT NULL) NOT VALID;
+ALTER TABLE t VALIDATE CONSTRAINT t_col_nn;
+ALTER TABLE t ALTER COLUMN col SET NOT NULL;
+ALTER TABLE t DROP CONSTRAINT t_col_nn;
+```
+
+### Add a foreign key
+
+```sql
+ALTER TABLE child ADD CONSTRAINT fk_child_parent
+  FOREIGN KEY (parent_id) REFERENCES parent (id) NOT VALID;
+ALTER TABLE child VALIDATE CONSTRAINT fk_child_parent;
+```
+
+### Add a unique constraint
+
+```sql
+CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS uq_t_col ON t (col);
+ALTER TABLE t ADD CONSTRAINT uq_t_col UNIQUE USING INDEX uq_t_col;
+```
+
+### Create an index
+
+```sql
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_t_col ON t (col);
+```
+
+Outside any transaction wrapper.
+
+## When in doubt
+
+```bash
+npx @flvmnt/pgfence analyze migrations/*.sql
+npx @flvmnt/pgfence explain "ALTER TABLE t ADD COLUMN x int NOT NULL"
+```
+
+Returns the lock mode, what it blocks, and the safe rewrite recipe for any
+DDL statement.
