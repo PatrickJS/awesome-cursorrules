@@ -2,6 +2,7 @@
 
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, normalize, resolve } from "node:path";
+import { githubBlobPrefix, githubRawPrefix } from "./repo-config.mjs";
 
 const args = parseArgs(process.argv.slice(2));
 const root = resolve(args.root ?? process.cwd());
@@ -10,6 +11,8 @@ const changedFiles = args.changedFiles
   : null;
 const diffText = args.diffFile ? readOptional(resolve(root, args.diffFile)) : "";
 const failures = [];
+const selfRepositoryBlobPrefix = githubBlobPrefix();
+const selfRepositoryRawPrefix = githubRawPrefix();
 const requiredRuleFrontmatterFields = ["description", "globs", "alwaysApply"];
 const ruleFrontmatterExample = [
   "---",
@@ -481,11 +484,17 @@ function checkReadmeOnlyExternalListings(files, diff) {
   const addedExternalListings = diff
     .split(/\r?\n/)
     .filter((line) => line.startsWith("+") && !line.startsWith("+++"))
-    .filter((line) => /^\+\s*-\s*\[[^\]]+\]\(https?:\/\//i.test(line));
+    .filter((line) => /^\+\s*-\s*\[[^\]]+\]\(https?:\/\//i.test(line))
+    .filter((line) => !isSelfRepositoryListing(line));
 
   for (const line of addedExternalListings) {
     failures.push(
       `New external README listings require maintainer handling instead of contributor-added primary links: ${line.slice(1).trim()}`,
     );
   }
+}
+
+function isSelfRepositoryListing(line) {
+  const target = line.match(/\]\(([^)\s]+)/)?.[1] ?? "";
+  return target.startsWith(selfRepositoryBlobPrefix) || target.startsWith(selfRepositoryRawPrefix);
 }

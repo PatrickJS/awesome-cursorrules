@@ -4,6 +4,7 @@ import { mkdtempSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import test from "node:test";
+import { githubRulesPrefix } from "./repo-config.mjs";
 
 const scriptPath = new URL("./check-repo-hygiene.mjs", import.meta.url).pathname;
 
@@ -236,6 +237,20 @@ test("allows README local rule links when rule content changes too", () => {
     write(root, "rules/tool.mdc", "---\ndescription: Tool rule\nglobs: **/*.ts\nalwaysApply: false\n---\nUseful rule content\n");
     write(root, ".changed-files", "README.md\nrules/tool.mdc\n");
     write(root, ".readme.diff", "+- [Tool](./rules/tool.mdc) - Rule source.\n");
+    const result = run(root, ["--changed-files", ".changed-files", "--diff-file", ".readme.diff"]);
+    assert.equal(result.status, 0, result.stderr + result.stdout);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("allows README canonical self-repo rule links", () => {
+  const root = makeFixture();
+  try {
+    const target = `${githubRulesPrefix()}tool.mdc`;
+    write(root, "README.md", `- [Tool](${target}) - Rule source.\n`);
+    write(root, ".changed-files", "README.md\n");
+    write(root, ".readme.diff", `+- [Tool](${target}) - Rule source.\n`);
     const result = run(root, ["--changed-files", ".changed-files", "--diff-file", ".readme.diff"]);
     assert.equal(result.status, 0, result.stderr + result.stdout);
   } finally {
