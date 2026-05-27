@@ -92,6 +92,35 @@ jobs:
         if: github.event_name == 'pull_request'
         run: node .trusted-base/scripts/check-repo-hygiene.mjs --root "$GITHUB_WORKSPACE" --changed-files .changed-files --diff-file .readme.diff
 
+      - name: Run repo hygiene checks
+        if: github.event_name != 'pull_request'
+        run: node scripts/check-repo-hygiene.mjs --changed-files .changed-files --diff-file .readme.diff
+
+  awesome-lint:
+    name: awesome-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.20.0 --activate
+
+      - name: Checkout trusted base checks
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: .trusted-base
+          fetch-depth: 1
+
       - name: Run trusted awesome-list checks
         if: github.event_name == 'pull_request'
         run: |
@@ -107,7 +136,3 @@ jobs:
         run: |
           pnpm run check:awesome-list
           pnpm run check:awesome-list:upstream
-
-      - name: Run repo hygiene checks
-        if: github.event_name != 'pull_request'
-        run: node scripts/check-repo-hygiene.mjs --changed-files .changed-files --diff-file .readme.diff

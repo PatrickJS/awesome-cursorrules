@@ -19,12 +19,17 @@ test("pull request hygiene runs the trusted base copy of the script", () => {
   );
 });
 
-test("pull request hygiene runs trusted awesome-list checks", () => {
+test("workflow has an explicit awesome-lint job for every pull request", () => {
+  assert.match(workflow, /^  awesome-lint:\n\s+name:\s+awesome-lint\n\s+runs-on:\s+ubuntu-latest$/m);
+  assert.match(workflow, /^  pull_request:\n\s+branches:\s+\[main\]$/m);
+});
+
+test("pull requests run trusted awesome-list checks", () => {
   assert.match(workflow, /node \.trusted-base\/scripts\/check-awesome-list\.mjs --root "\$GITHUB_WORKSPACE"/);
   assert.match(workflow, /pnpm dlx awesome-lint "\$GITHUB_WORKSPACE\/README\.md"/);
 });
 
-test("push hygiene runs local awesome-list checks", () => {
+test("pushes run local awesome-list checks", () => {
   assert.match(workflow, /pnpm install --frozen-lockfile/);
   assert.match(workflow, /pnpm run check:awesome-list/);
   assert.match(workflow, /pnpm run check:awesome-list:upstream/);
