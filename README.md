@@ -321,6 +321,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
+- [cursor-rules-live](https://github.com/linny006/cursor-rules-live) - Live, auto-updated index of public .cursorrules and cursorrules.json files on GitHub, refreshed every 15 minutes.
 
 ## How to Use
 
