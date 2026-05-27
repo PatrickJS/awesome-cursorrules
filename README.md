@@ -4,7 +4,7 @@
   <a href="https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules" target="_blank">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="./LOCKUP_VERTICAL_25D_DARK.png">
-      <img alt="Awesome Cursor Logo" src="./LOCKUP_VERTICAL_25D_LIGHT.png">
+      <img alt="Awesome Cursor Logo" src="./LOCKUP_VERTICAL_25D_LIGHT.png" width="500">
     </picture>
   </a>
 </p>
@@ -198,9 +198,9 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [React (MobX)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/react-mobx-cursorrules-prompt-file.mdc) - React development with MobX integration.
 - [React (React Query)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/react-query-cursorrules-prompt-file.mdc) - React development with React Query integration.
 - [React (TanStack Router + Query)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/react-tanstack-router-query-cursorrules-prompt-file.mdc) - React SPAs combining TanStack Router v1 and TanStack Query v5 for zero-loading-spinner routing and type-safe server state.
-- [React (Zustand)](rules/react-zustand-cursorrules-prompt-file.mdc) - React state management with Zustand stores, selectors, middleware, persistence, and testing.
+- [React (Zustand)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/react-zustand-cursorrules-prompt-file.mdc) - React state management with Zustand stores, selectors, middleware, persistence, and testing.
 - [TanStack Query v5](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/tanstack-query-v5-cursorrules-prompt-file.mdc) - Query options, query key factories, mutations, optimistic updates, infinite queries, Suspense, and prefetching.
-- [Vue (Pinia)](rules/vue-pinia-cursorrules-prompt-file.mdc) - Vue 3 state management with Pinia stores, Composition API usage, SSR, persistence, and testing.
+- [Vue (Pinia)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/vue-pinia-cursorrules-prompt-file.mdc) - Vue 3 state management with Pinia stores, Composition API usage, SSR, persistence, and testing.
 
 ### Database and API
 

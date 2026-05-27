@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Check PR author account age
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         env:
           PR_AUTHOR_MINIMUM_AGE_DAYS: ${{ vars.PR_AUTHOR_MINIMUM_AGE_DAYS || '30' }}
           PR_AUTHOR_AGE_ALLOWLIST: ${{ vars.PR_AUTHOR_AGE_ALLOWLIST }}
@@ -53,13 +53,18 @@ jobs:
               `PR author account age check passed: ${username} is ${ageDays} day(s) old; minimum is ${minimumAgeDays} day(s).`,
             );
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
+
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.20.0 --activate
 
       - name: Determine changed files
         shell: bash
@@ -77,7 +82,7 @@ jobs:
 
       - name: Checkout trusted base checks
         if: github.event_name == 'pull_request'
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: ${{ github.event.pull_request.base.sha }}
           path: .trusted-base
@@ -86,6 +91,22 @@ jobs:
       - name: Run trusted repo hygiene checks
         if: github.event_name == 'pull_request'
         run: node .trusted-base/scripts/check-repo-hygiene.mjs --root "$GITHUB_WORKSPACE" --changed-files .changed-files --diff-file .readme.diff
+
+      - name: Run trusted awesome-list checks
+        if: github.event_name == 'pull_request'
+        run: |
+          node .trusted-base/scripts/check-awesome-list.mjs --root "$GITHUB_WORKSPACE"
+          (cd .trusted-base && pnpm dlx awesome-lint "$GITHUB_WORKSPACE/README.md")
+
+      - name: Install dependencies
+        if: github.event_name != 'pull_request'
+        run: pnpm install --frozen-lockfile
+
+      - name: Run awesome-list checks
+        if: github.event_name != 'pull_request'
+        run: |
+          pnpm run check:awesome-list
+          pnpm run check:awesome-list:upstream
 
       - name: Run repo hygiene checks
         if: github.event_name != 'pull_request'

@@ -26,7 +26,7 @@
 - [ ] The contribution includes original rule content, or clearly credits the source.
 - [ ] New rule files use a descriptive kebab-case filename, such as `react-typescript.mdc`.
 - [ ] New `rules/*.mdc` files include frontmatter with a non-empty `description`, relevant `globs`, and `alwaysApply: false` unless the rule is universal.
-- [ ] README links are relative for repo files and point to the correct category.
+- [ ] README links use canonical GitHub URLs for repo files and point to the correct category.
 - [ ] The text is neutral and useful, not sales copy.
 - [ ] This is not a standalone external tool, product, directory, marketplace, or service listing.
 - [ ] No secrets, tokens, affiliate links, tracking links, or unrelated product claims are included.
