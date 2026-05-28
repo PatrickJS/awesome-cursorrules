@@ -42,6 +42,22 @@ test("blocks authors whose accounts are newer than the minimum age", () => {
   assert.match(result.stderr, /PR author account is too new/);
   assert.match(result.stderr, /new-contributor/);
   assert.match(result.stderr, /8 day/);
+  assert.match(result.stderr, /repo trust policy/);
+  assert.match(result.stderr, /spam, prompt-injection, promotional, and other abuse risk/);
+});
+
+test("passes authors exactly at the minimum account age", () => {
+  const result = run([
+    "--username",
+    "boundary-contributor",
+    "--created-at",
+    "2026-04-11T12:00:00Z",
+    "--minimum-age-days",
+    "30",
+  ]);
+
+  assert.equal(result.status, 0, result.stderr + result.stdout);
+  assert.match(result.stdout, /boundary-contributor is 30 day\(s\) old/);
 });
 
 test("allows explicitly allowlisted authors even when the account is new", () => {
@@ -93,4 +109,18 @@ test("fails when account creation date is invalid", () => {
 
   assert.equal(result.status, 1);
   assert.match(result.stderr, /Invalid account creation date/);
+});
+
+test("fails when minimum account age is invalid", () => {
+  const result = run([
+    "--username",
+    "bad-config",
+    "--created-at",
+    "2026-01-01T12:00:00Z",
+    "--minimum-age-days",
+    "not-a-number",
+  ]);
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /Invalid minimum age/);
 });

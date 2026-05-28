@@ -5,23 +5,39 @@ import test from "node:test";
 const workflow = readFileSync(new URL("../.github/workflows/main.yml", import.meta.url), "utf8");
 const codeowners = readFileSync(new URL("../.github/CODEOWNERS", import.meta.url), "utf8");
 const pullRequestTemplate = readFileSync(new URL("../.github/pull_request_template.md", import.meta.url), "utf8");
+const repoHygieneJob = workflow.slice(workflow.indexOf("  repo-hygiene:"), workflow.indexOf("\n  awesome-lint:"));
+const awesomeLintJob = workflow.slice(workflow.indexOf("  awesome-lint:"));
 
 test("repo hygiene workflow grants read-only contents permission", () => {
   assert.match(workflow, /^permissions:\n\s+contents:\s+read\s*$/m);
   assert.doesNotMatch(workflow, /contents:\s*write/);
 });
 
-test("pull request hygiene runs the trusted base copy of the script", () => {
-  assert.match(workflow, /path:\s+\.trusted-base/);
+test("repo hygiene uses a trusted pull_request_target preflight", () => {
   assert.match(
     workflow,
-    /node \.trusted-base\/scripts\/check-repo-hygiene\.mjs --root "\$GITHUB_WORKSPACE" --changed-files \.changed-files --diff-file \.readme\.diff/,
+    /^  pull_request_target:\n\s+branches:\s+\[main\]\n\s+types:\s+\[opened, synchronize, reopened\]$/m,
   );
+  assert.match(repoHygieneJob, /if:\s+github\.event_name == 'pull_request_target' \|\| github\.event_name == 'push'/);
+  assert.match(repoHygieneJob, /path:\s+\.trusted-base/);
+  assert.match(
+    repoHygieneJob,
+    /node \.trusted-base\/scripts\/check-repo-hygiene\.mjs --root "\$GITHUB_WORKSPACE\/pr" --changed-files \.changed-files --diff-file \.readme\.diff/,
+  );
+  assert.doesNotMatch(repoHygieneJob, /github\.event\.pull_request\.base\.sha/);
 });
 
 test("workflow has an explicit awesome-lint job for every pull request", () => {
-  assert.match(workflow, /^  awesome-lint:\n\s+name:\s+awesome-lint\n\s+runs-on:\s+ubuntu-latest$/m);
+  assert.match(awesomeLintJob, /^  awesome-lint:\n\s+name:\s+awesome-lint\n\s+runs-on:\s+ubuntu-latest$/m);
   assert.match(workflow, /^  pull_request:\n\s+branches:\s+\[main\]$/m);
+});
+
+test("repo hygiene does not execute contributor-controlled code", () => {
+  assert.match(repoHygieneJob, /node \.trusted-base\/scripts\/check-pr-author\.mjs/);
+  assert.match(repoHygieneJob, /path:\s+pr/);
+  assert.match(repoHygieneJob, /persist-credentials:\s+false/);
+  assert.doesNotMatch(repoHygieneJob, /\bpnpm\s+(install|dlx|run)\b/);
+  assert.doesNotMatch(repoHygieneJob, /\bcorepack\b/);
 });
 
 test("pull requests run trusted awesome-list checks", () => {

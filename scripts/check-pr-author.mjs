@@ -27,7 +27,11 @@ try {
 
   if (ageDays < minimumAgeDays) {
     fail(
-      `PR author account is too new: ${username} is ${ageDays} day(s) old; minimum is ${minimumAgeDays} day(s).`,
+      [
+        `PR author account is too new: ${username} is ${ageDays} day(s) old; minimum is ${minimumAgeDays} day(s).`,
+        "This repo trust policy blocks very fresh GitHub accounts because they are higher risk for spam, prompt-injection, promotional, and other abuse risk.",
+        "Maintainers can allow trusted exceptions with PR_AUTHOR_AGE_ALLOWLIST.",
+      ].join(" "),
     );
   }
 

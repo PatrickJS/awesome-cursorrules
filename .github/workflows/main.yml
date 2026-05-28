@@ -1,6 +1,9 @@
 name: Repo Hygiene
 
 on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened]
   pull_request:
     branches: [main]
   push:
@@ -12,66 +15,73 @@ permissions:
 jobs:
   repo-hygiene:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request_target' || github.event_name == 'push'
     steps:
-      - name: Check PR author account age
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
-        env:
-          PR_AUTHOR_MINIMUM_AGE_DAYS: ${{ vars.PR_AUTHOR_MINIMUM_AGE_DAYS || '30' }}
-          PR_AUTHOR_AGE_ALLOWLIST: ${{ vars.PR_AUTHOR_AGE_ALLOWLIST }}
-        with:
-          script: |
-            const username = context.payload.pull_request.user.login;
-            const allowlist = (process.env.PR_AUTHOR_AGE_ALLOWLIST || "PatrickJS,dependabot[bot],Copilot")
-              .split(",")
-              .map((entry) => entry.trim().toLowerCase())
-              .filter(Boolean);
-
-            if (allowlist.includes(username.toLowerCase())) {
-              core.info(`PR author account age check passed: ${username} is allowlisted.`);
-              return;
-            }
-
-            const minimumAgeDays = Number.parseInt(process.env.PR_AUTHOR_MINIMUM_AGE_DAYS, 10);
-            if (!Number.isInteger(minimumAgeDays) || minimumAgeDays < 0) {
-              core.setFailed(`Invalid PR_AUTHOR_MINIMUM_AGE_DAYS: ${process.env.PR_AUTHOR_MINIMUM_AGE_DAYS}`);
-              return;
-            }
-
-            const { data: user } = await github.rest.users.getByUsername({ username });
-            const createdTime = Date.parse(user.created_at);
-            const ageDays = Math.floor((Date.now() - createdTime) / 86400000);
-
-            if (ageDays < minimumAgeDays) {
-              core.setFailed(
-                `PR author account is too new: ${username} is ${ageDays} day(s) old; minimum is ${minimumAgeDays} day(s).`,
-              );
-              return;
-            }
-
-            core.info(
-              `PR author account age check passed: ${username} is ${ageDays} day(s) old; minimum is ${minimumAgeDays} day(s).`,
-            );
-
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-        with:
-          fetch-depth: 0
-
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
 
-      - name: Enable pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.20.0 --activate
+      - name: Checkout trusted base checks
+        if: github.event_name == 'pull_request_target'
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          path: .trusted-base
+          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Determine changed files
+      - name: Check PR author account age
+        if: github.event_name == 'pull_request_target'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_AUTHOR_MINIMUM_AGE_DAYS: ${{ vars.PR_AUTHOR_MINIMUM_AGE_DAYS || '30' }}
+          PR_AUTHOR_AGE_ALLOWLIST: ${{ vars.PR_AUTHOR_AGE_ALLOWLIST || 'PatrickJS,dependabot[bot],Copilot' }}
+        run: |
+          node .trusted-base/scripts/check-pr-author.mjs \
+            --username "$PR_AUTHOR" \
+            --minimum-age-days "$PR_AUTHOR_MINIMUM_AGE_DAYS" \
+            --allowlist "$PR_AUTHOR_AGE_ALLOWLIST"
+
+      - name: Checkout pull request content
+        if: github.event_name == 'pull_request_target'
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Determine pull request changed files
+        if: github.event_name == 'pull_request_target'
+        shell: bash
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          git -C pr remote add trusted-base "$GITHUB_SERVER_URL/${{ github.repository }}.git"
+          git -C pr fetch --no-tags trusted-base "$BASE_REF"
+          base="$(git -C pr rev-parse FETCH_HEAD)"
+
+          git -C pr diff --name-only "$base"...HEAD > pr/.changed-files
+          git -C pr diff --unified=0 "$base"...HEAD -- README.md > pr/.readme.diff || true
+
+      - name: Run trusted repo hygiene checks
+        if: github.event_name == 'pull_request_target'
+        run: node .trusted-base/scripts/check-repo-hygiene.mjs --root "$GITHUB_WORKSPACE/pr" --changed-files .changed-files --diff-file .readme.diff
+
+      - name: Checkout push content
+        if: github.event_name == 'push'
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Determine push changed files
+        if: github.event_name == 'push'
         shell: bash
         run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            base="${{ github.event.pull_request.base.sha }}"
-          elif [[ -n "${{ github.event.before }}" && "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]]; then
+          if [[ -n "${{ github.event.before }}" && "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]]; then
             base="${{ github.event.before }}"
           else
             base="$(git rev-list --max-parents=0 HEAD)"
@@ -80,25 +90,14 @@ jobs:
           git diff --name-only "$base"...HEAD > .changed-files
           git diff --unified=0 "$base"...HEAD -- README.md > .readme.diff || true
 
-      - name: Checkout trusted base checks
-        if: github.event_name == 'pull_request'
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-        with:
-          ref: ${{ github.event.pull_request.base.sha }}
-          path: .trusted-base
-          fetch-depth: 1
-
-      - name: Run trusted repo hygiene checks
-        if: github.event_name == 'pull_request'
-        run: node .trusted-base/scripts/check-repo-hygiene.mjs --root "$GITHUB_WORKSPACE" --changed-files .changed-files --diff-file .readme.diff
-
       - name: Run repo hygiene checks
-        if: github.event_name != 'pull_request'
+        if: github.event_name == 'push'
         run: node scripts/check-repo-hygiene.mjs --changed-files .changed-files --diff-file .readme.diff
 
   awesome-lint:
     name: awesome-lint
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request_target'
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
