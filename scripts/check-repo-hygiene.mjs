@@ -306,10 +306,7 @@ function checkPromptSafety(candidateFiles) {
     const content = readFileSync(fullPath, "utf8");
     checkPromptUnicode(normalizedFile, content);
     checkPromptUnsafeDeveloperCommands(normalizedFile, content);
-
-    if (isAgentInstructionFile(normalizedFile)) {
-      checkAgentInstructionExfiltration(normalizedFile, content);
-    }
+    checkPromptCredentialExfiltration(normalizedFile, content);
   }
 }
 
@@ -512,8 +509,12 @@ function isInvisibleUnicode(codePoint) {
   );
 }
 
-function checkAgentInstructionExfiltration(file, content) {
-  if (!hasNetworkEgressPattern(content) || !hasSensitiveCredentialPattern(content)) {
+function checkPromptCredentialExfiltration(file, content) {
+  const hasCredentialExfiltration = isAgentInstructionFile(file)
+    ? hasNetworkEgressPattern(content) && hasSensitiveCredentialPattern(content)
+    : hasRuleFileCredentialExfiltrationPattern(content);
+
+  if (!hasCredentialExfiltration) {
     return;
   }
 
@@ -525,6 +526,47 @@ function checkAgentInstructionExfiltration(file, content) {
     why: "A prompt that combines credential material with network egress can cause an AI agent to leak local secrets during normal task execution.",
     fix: "Remove commands that combine outbound requests with SSH keys, package tokens, cloud credentials, crypto wallets, or environment dumps.",
   });
+}
+
+function hasRuleFileCredentialExfiltrationPattern(content) {
+  return extractRuleInstructionContexts(normalizeShellContinuations(content)).some(
+    (context) =>
+      hasNetworkEgressPattern(context) &&
+      hasSensitiveCredentialPattern(context) &&
+      hasCredentialTransferIntentPattern(context),
+  );
+}
+
+function extractRuleInstructionContexts(content) {
+  const lines = content
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const contexts = [...lines];
+
+  for (let index = 0; index < lines.length; index += 1) {
+    contexts.push(lines.slice(index, index + 3).join(" "));
+  }
+
+  return contexts;
+}
+
+function hasCredentialTransferIntentPattern(content) {
+  if (
+    /\b(?:curl|wget|nc|ncat|netcat|scp|sftp|ftp)\b|\bInvoke-WebRequest\b|\biwr\b|\b(?:send|upload|post|submit|transmit|exfiltrat|leak)\b/i.test(
+      content,
+    )
+  ) {
+    return true;
+  }
+
+  return /(?:fetch|XMLHttpRequest)\s*\(/i.test(content) && hasHighRiskLocalCredentialPattern(content);
+}
+
+function hasHighRiskLocalCredentialPattern(content) {
+  return /(?:^|[^\w])(?:~\/)?\.ssh\/(?:id_rsa|id_ed25519|config)|(?:^|[^\w])(?:~\/)?\.aws\/(?:credentials|config)|(?:^|[^\w])(?:~\/)?\.config\/gh|(?:^|[^\w])\.npmrc\b|(?:^|[^\w])\.pypirc\b|cargo\/credentials|wallet\.dat|(?:^|[^\w])\.env\b|\bprocess\.env\.(?:GITHUB_TOKEN|GH_TOKEN|NPM_TOKEN|NODE_AUTH_TOKEN|OPENAI_API_KEY|ANTHROPIC_API_KEY|STRIPE_SECRET_KEY|AWS_[A-Z0-9_]*(?:SECRET|KEY|TOKEN)[A-Z0-9_]*)\b|\bprintenv\b|\bgh auth token\b/i.test(
+    content,
+  );
 }
 
 function hasNetworkEgressPattern(content) {
@@ -541,6 +583,7 @@ function hasSensitiveCredentialPattern(content) {
 }
 
 function checkPromptUnsafeDeveloperCommands(file, content) {
+  const commandContent = normalizeShellContinuations(content);
   const unsafeCommandChecks = [
     {
       ruleId: "prompt/no-secret-read-command",
@@ -626,7 +669,7 @@ function checkPromptUnsafeDeveloperCommands(file, content) {
   ];
 
   for (const check of unsafeCommandChecks) {
-    if (!check.pattern.test(content)) continue;
+    if (!check.pattern.test(commandContent)) continue;
 
     addFailure({
       ruleId: check.ruleId,
@@ -637,6 +680,10 @@ function checkPromptUnsafeDeveloperCommands(file, content) {
       fix: check.fix,
     });
   }
+}
+
+function normalizeShellContinuations(content) {
+  return content.replace(/\\\r?\n[ \t]*/g, " ");
 }
 
 function formatCodePoint(codePoint) {
