@@ -5,6 +5,11 @@ import { join, normalize, resolve } from "node:path";
 import { githubBlobPrefix, githubRawPrefix } from "./repo-config.mjs";
 
 const args = parseArgs(process.argv.slice(2));
+if (args.help) {
+  console.log(formatUsage(args.only));
+  process.exit(0);
+}
+
 const root = resolve(args.root ?? process.cwd());
 const changedFiles = args.changedFiles
   ? readLines(resolve(root, args.changedFiles))
@@ -61,7 +66,9 @@ function parseArgs(argv) {
   const parsed = {};
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
-    if (arg === "--root") {
+    if (arg === "--help" || arg === "-h") {
+      parsed.help = true;
+    } else if (arg === "--root") {
       parsed.root = argv[++i];
     } else if (arg === "--changed-files") {
       parsed.changedFiles = argv[++i];
@@ -74,6 +81,24 @@ function parseArgs(argv) {
     }
   }
   return parsed;
+}
+
+function formatUsage(only) {
+  const selected = parseConcerns(only);
+  const checkName = describeConcerns(selected);
+
+  return [
+    `${checkName} check`,
+    "",
+    "Usage: node scripts/check-repo-hygiene.mjs [options]",
+    "",
+    "Options:",
+    "  --root <path>           Repository root to check. Defaults to cwd.",
+    "  --changed-files <file>  Newline-delimited changed files, relative to root.",
+    "  --diff-file <file>      Unified diff file used for README-only checks.",
+    "  --only <concerns>       Comma-separated concerns: readme, rules, issues, security.",
+    "  -h, --help              Show this help.",
+  ].join("\n");
 }
 
 function parseConcerns(value) {

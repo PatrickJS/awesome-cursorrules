@@ -110,3 +110,32 @@ test("repo security entrypoint reports only prompt security failures", () => {
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("split check entrypoints print concern-specific help without running checks", () => {
+  const root = makeFixture();
+  const expectedNames = {
+    readme: "README hygiene",
+    rules: "Rule hygiene",
+    issues: "Issue template policy",
+    security: "Repo security",
+  };
+
+  try {
+    write(root, "README.md", "### Other\n\n- [Missing](./rules/missing.mdc)\n");
+    write(root, "rules/bad.mdc", "# Missing frontmatter\n");
+
+    for (const [concern, entrypoint] of Object.entries(entrypoints)) {
+      const result = run(entrypoint, root, ["--help"]);
+
+      assert.equal(result.status, 0);
+      assert.match(result.stdout, /Usage:/);
+      assert.match(result.stdout, new RegExp(`${expectedNames[concern]} check`));
+      assert.match(result.stdout, /--root/);
+      assert.match(result.stdout, /--changed-files/);
+      assert.match(result.stdout, /--diff-file/);
+      assert.equal(result.stderr, "");
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
