@@ -1,14 +1,14 @@
 ---
-description: "Cursor rules for building UIs with gluestack-ui v4 in React Native, Expo, and Next.js. Adapted from the official gluestack/agent-skills repo."
+description: "Cursor rules for building UIs with gluestack-ui in React Native, Expo, and Next.js. Adapted from the official gluestack/agent-skills repo."
 globs: ["**/*.{ts,tsx,js,jsx}"]
 alwaysApply: false
 ---
 
-# gluestack-ui v4
+# gluestack-ui
 
-gluestack-ui v4 is a copy-paste universal component library for React Native, Expo, and Next.js, styled with NativeWind. Components live in `components/ui/` in your repo, not in `node_modules`.
+gluestack-ui is a copy-paste universal component library for React Native, Expo, and Next.js, styled with NativeWind. Components live in `components/ui/` in your repo, not in `node_modules`.
 
-These rules are adapted from the official [gluestack/agent-skills](https://github.com/gluestack/agent-skills) skill (MIT-licensed). When in doubt, verify against the live docs at `https://v4.gluestack.io/ui/docs/components/${componentName}/`.
+These rules are adapted from the official [gluestack/agent-skills](https://github.com/gluestack/agent-skills) skill (MIT-licensed). When in doubt, verify against the live docs at `https://gluestack.io/ui/docs/components/${componentName}/`.
 
 ## Core principles
 
@@ -78,7 +78,7 @@ When choosing how to style something, pick the highest item that works:
 
 - Components are added with the official CLI: `npx gluestack-ui@alpha init -y` then `npx gluestack-ui@alpha add --all -y` (or `add Button` for individual components).
 - Import path is local: `import { Button, ButtonText } from "@/components/ui/button"`.
-- **Don't import from `@gluestack-ui/themed`.** That's the legacy v1/v2 package — not v4.
+- **Don't import from `@gluestack-ui/themed`.** That's the legacy themed package — gluestack-ui now uses the copy-paste model.
 - The app must be wrapped in `<GluestackUIProvider>` at the root (see docs for the platform-specific setup).
 
 ## Cross-platform constraints
@@ -118,7 +118,7 @@ Don't add ad-hoc `cn()` overrides at the call site for the same combinations.
 
 ## Anti-patterns to reject
 
-- Raw colors: `text-blue-600`, `bg-red-500`, `text-neutral-900`, `text-gray-700`, `text-typography-700` (v3 token, not v4).
+- Raw colors: `text-blue-600`, `bg-red-500`, `text-neutral-900`, `text-gray-700`, or legacy tokens like `text-typography-700`.
 - Bare strings inside `<Button>`, `<Alert>`, `<Toast>`, `<Tooltip>` — always use the matching `*Text` sub-component.
 - `<InputIcon>` outside `<InputSlot>`.
 - `<Input>` rendered without `<InputField>` inside it.
@@ -129,6 +129,6 @@ Don't add ad-hoc `cn()` overrides at the call site for the same combinations.
 
 ## Reference
 
-- Live docs: https://v4.gluestack.io/ui/docs
-- Per-component docs: `https://v4.gluestack.io/ui/docs/components/${componentName}/`
+- Live docs: https://gluestack.io/ui/docs
+- Per-component docs: `https://gluestack.io/ui/docs/components/${componentName}/`
 - Official agent skill (source of these rules): https://github.com/gluestack/agent-skills
