@@ -1,0 +1,52 @@
+---
+description: "Cursor rules for building UIs with gluestack-ui v3 in React Native, Expo, and Next.js projects."
+globs: ["**/*.{ts,tsx,js,jsx}"]
+alwaysApply: false
+---
+
+# gluestack-ui
+
+gluestack-ui is a copy-paste universal component library for React Native, Expo, and Next.js, styled with NativeWind. Components live in the user's repo (typically `components/ui/`), not in `node_modules`, so prefer editing the local component over wrapping it.
+
+## Importing components
+
+- Import from the local UI directory, not from a package: `import { Button, ButtonText } from "@/components/ui/button"`.
+- Each component ships its own folder with `index.tsx`, `styles.tsx`, and types. Don't move or rename without updating the rest of the folder.
+- When a component is missing, scaffold it from the docs at https://gluestack.io/ui/docs rather than rolling a new primitive.
+
+## Compound component pattern
+
+gluestack-ui components are compound by design. Wrap text and icons explicitly:
+
+```tsx
+<Button size="md" variant="solid">
+  <ButtonText>Continue</ButtonText>
+  <ButtonIcon as={ArrowRight} />
+</Button>
+```
+
+Never put bare strings inside `<Button>`, `<Alert>`, `<Toast>`, etc. Always use the matching `*Text` sub-component so RN's accessibility and styling apply correctly.
+
+## Styling with NativeWind
+
+- Style via `className` (NativeWind), not `style` props, unless a value must be computed at runtime.
+- Use design tokens (`bg-background-0`, `text-typography-700`, etc.) over raw colors. Token names map to the theme defined in `gluestack-ui.config.ts` / `tailwind.config.js`.
+- Dark mode is class-based (`dark:bg-background-900`). Don't fork components per theme.
+- The `gluestack-ui-nativewind-utils` package handles `tva` variants. When adding a new variant, extend the `tva` call in `styles.tsx` rather than adding ad-hoc `cn()` overrides at the call site.
+
+## Cross-platform constraints
+
+- Code must compile for web (Next.js / Expo Router web) AND native (iOS / Android). Avoid web-only APIs like `document` or `window` inside UI components. Guard with `Platform.OS === 'web'` if needed.
+- Use `Pressable` (or the `Button` primitive) for tap targets, not `<div onClick>`.
+- For lists, use `FlatList` / `SectionList` on native; gluestack does not ship its own list virtualization.
+
+## Forms and accessibility
+
+- Form fields use the `FormControl` + `Input` + `FormControlLabel` + `FormControlError` cluster. Don't render `<Input>` standalone if it has a label or error state.
+- All interactive components accept `accessibilityLabel`. Set it whenever the visible label isn't text (e.g., icon-only buttons).
+
+## Don'ts
+
+- Don't import from `@gluestack-ui/themed`. That's the legacy v1/v2 package. v3 uses copy-paste + NativeWind.
+- Don't mix gluestack-ui with another component library's primitives (e.g., shadcn `Button`) in the same screen.
+- Don't add inline `StyleSheet.create` for components that already expose `className`.
