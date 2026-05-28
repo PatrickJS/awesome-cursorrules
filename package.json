@@ -7,7 +7,12 @@
     "check:awesome-list:upstream": "pnpm dlx awesome-lint",
     "test": "node --test scripts/*.test.mjs",
     "check:awesome-list": "node scripts/check-awesome-list.mjs",
-    "check:prompt-safety": "node scripts/check-repo-hygiene.mjs",
+    "check:repo-hygiene": "node scripts/check-repo-hygiene.mjs",
+    "check:readme-hygiene": "node scripts/check-readme-hygiene.mjs",
+    "check:rule-hygiene": "node scripts/check-rule-hygiene.mjs",
+    "check:issue-template-policy": "node scripts/check-issue-template-policy.mjs",
+    "check:repo-security": "node scripts/check-repo-security.mjs",
+    "check:prompt-safety": "node scripts/check-repo-security.mjs",
     "links:absolute": "node scripts/convert-readme-links.mjs --to absolute",
     "links:relative": "node scripts/convert-readme-links.mjs --to relative",
     "cleanup:legacy": "node scripts/cleanup-legacy-artifacts.mjs"

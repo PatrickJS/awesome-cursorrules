@@ -10,6 +10,8 @@ const changedFiles = args.changedFiles
   ? readLines(resolve(root, args.changedFiles))
   : null;
 const diffText = args.diffFile ? readOptional(resolve(root, args.diffFile)) : "";
+const concerns = parseConcerns(args.only);
+const checkName = describeConcerns(concerns);
 const failures = [];
 const selfRepositoryBlobPrefix = githubBlobPrefix();
 const selfRepositoryRawPrefix = githubRawPrefix();
@@ -24,17 +26,28 @@ const ruleFrontmatterExample = [
 
 const filesToCheck = changedFiles ?? listFiles(root);
 
-if (!changedFiles || changedFiles.includes("README.md")) {
+if (concerns.has("readme") && (!changedFiles || changedFiles.includes("README.md"))) {
   checkReadme();
 }
 
-checkIssueTemplateGuardrails();
-checkRuleFiles(filesToCheck);
-checkPromptSafety(filesToCheck);
-checkReadmeOnlyExternalListings(changedFiles, diffText);
+if (concerns.has("issues")) {
+  checkIssueTemplateGuardrails();
+}
+
+if (concerns.has("rules")) {
+  checkRuleFiles(filesToCheck);
+}
+
+if (concerns.has("security")) {
+  checkPromptSafety(filesToCheck);
+}
+
+if (concerns.has("readme")) {
+  checkReadmeOnlyExternalListings(changedFiles, diffText);
+}
 
 if (failures.length > 0) {
-  console.error("Repo hygiene check failed:\n");
+  console.error(`${checkName} check failed:\n`);
   for (const failure of failures) {
     console.error(formatFailure(failure));
     console.error("");
@@ -42,7 +55,7 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log("Repo hygiene check passed.");
+console.log(`${checkName} check passed.`);
 
 function parseArgs(argv) {
   const parsed = {};
@@ -54,11 +67,48 @@ function parseArgs(argv) {
       parsed.changedFiles = argv[++i];
     } else if (arg === "--diff-file") {
       parsed.diffFile = argv[++i];
+    } else if (arg === "--only") {
+      parsed.only = argv[++i];
     } else {
       throw new Error(`Unknown argument: ${arg}`);
     }
   }
   return parsed;
+}
+
+function parseConcerns(value) {
+  const validConcerns = new Set(["readme", "rules", "issues", "security"]);
+  const selected = new Set((value ?? "readme,rules,issues")
+    .split(",")
+    .map((concern) => concern.trim())
+    .filter(Boolean));
+
+  if (selected.size === 0) {
+    throw new Error("At least one repo check concern is required.");
+  }
+
+  for (const concern of selected) {
+    if (!validConcerns.has(concern)) {
+      throw new Error(`Unknown repo check concern: ${concern}`);
+    }
+  }
+
+  return selected;
+}
+
+function describeConcerns(selected) {
+  if (selected.size === 1) {
+    if (selected.has("readme")) return "README hygiene";
+    if (selected.has("rules")) return "Rule hygiene";
+    if (selected.has("issues")) return "Issue template policy";
+    if (selected.has("security")) return "Repo security";
+  }
+
+  if (!selected.has("security")) {
+    return "Repo hygiene";
+  }
+
+  return "Repo checks";
 }
 
 function readLines(filePath) {
