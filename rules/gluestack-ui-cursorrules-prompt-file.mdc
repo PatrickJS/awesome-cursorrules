@@ -1,52 +1,134 @@
 ---
-description: "Cursor rules for building UIs with gluestack-ui v3 in React Native, Expo, and Next.js projects."
+description: "Cursor rules for building UIs with gluestack-ui v4 in React Native, Expo, and Next.js. Adapted from the official gluestack/agent-skills repo."
 globs: ["**/*.{ts,tsx,js,jsx}"]
 alwaysApply: false
 ---
 
-# gluestack-ui
+# gluestack-ui v4
 
-gluestack-ui is a copy-paste universal component library for React Native, Expo, and Next.js, styled with NativeWind. Components live in the user's repo (typically `components/ui/`), not in `node_modules`, so prefer editing the local component over wrapping it.
+gluestack-ui v4 is a copy-paste universal component library for React Native, Expo, and Next.js, styled with NativeWind. Components live in `components/ui/` in your repo, not in `node_modules`.
 
-## Importing components
+These rules are adapted from the official [gluestack/agent-skills](https://github.com/gluestack/agent-skills) skill (MIT-licensed). When in doubt, verify against the live docs at `https://v4.gluestack.io/ui/docs/components/${componentName}/`.
 
-- Import from the local UI directory, not from a package: `import { Button, ButtonText } from "@/components/ui/button"`.
-- Each component ships its own folder with `index.tsx`, `styles.tsx`, and types. Don't move or rename without updating the rest of the folder.
-- When a component is missing, scaffold it from the docs at https://gluestack.io/ui/docs rather than rolling a new primitive.
+## Core principles
 
-## Compound component pattern
+1. **gluestack components over React Native primitives.** Use `<Box>`, `<HStack>`, `<VStack>`, `<Text>`, `<Heading>`, `<Pressable>` from `@/components/ui/...` instead of bare `<View>` / `<Text>` from `react-native`.
+2. **Component props over className utilities.** When a built-in prop exists (`size`, `variant`, `space`), use it instead of an equivalent `className`.
+3. **Semantic tokens ONLY.** NEVER use `typography-*`, `neutral-*`, `gray-*`, `slate-*`, or numbered colors (`red-500`, `blue-600`, `bg-blue-500`). ONLY use semantic tokens: `text-foreground`, `text-muted-foreground`, `bg-primary`, `bg-card`, `border-border`, `bg-destructive`, etc. Alpha is allowed (`/70`, `/90`).
+4. **className over inline styles.** Inline `style={...}` bypasses optimization and theming. Reserve it for runtime-computed values only.
+5. **Follow the spacing scale.** Use `0, 0.5, 1, 2, 3, 4, 6, 8, ...`. No arbitrary `p-[13px]` values.
+6. **Compound sub-components are required.** Never put bare text/icons inside parent components.
+7. **Use tva for variants** when standardizing repeated style combinations.
+8. **Dark mode via `dark:` prefix.** Uses CSS variables. Don't fork components per theme.
 
-gluestack-ui components are compound by design. Wrap text and icons explicitly:
+## Resolution hierarchy
+
+When choosing how to style something, pick the highest item that works:
+
+1. Component props (`size`, `variant`, `space`)
+2. className utilities (semantic tokens only)
+3. Built-in gluestack component variants
+4. `tva` (Tailwind Variant Authority) for new reusable variants
+5. NativeWind interop (only to enable `className` on third-party components)
+6. Inline `style={...}` — last resort, must be justified in a comment
+
+## Compound component patterns
 
 ```tsx
-<Button size="md" variant="solid">
-  <ButtonText>Continue</ButtonText>
-  <ButtonIcon as={ArrowRight} />
+// Layout with spacing prop
+<VStack space="lg" className="p-4">
+  <Heading size="xl" bold>Title</Heading>
+  <Text size="md" className="text-muted-foreground">Description</Text>
+</VStack>
+
+// Button — always wrap text in ButtonText, icons in ButtonIcon
+<Button variant="outline" size="lg">
+  <ButtonText>Click Me</ButtonText>
+  <ButtonIcon as={ChevronRightIcon} />
 </Button>
+
+// Input — InputIcon MUST be inside InputSlot. This is critical.
+<Input>
+  <InputSlot>
+    <InputIcon as={MailIcon} className="text-muted-foreground" />
+  </InputSlot>
+  <InputField placeholder="Enter email" />
+</Input>
+
+// FormControl cluster — don't render Input standalone if it has a label/error
+<FormControl isInvalid={hasError}>
+  <FormControlLabel>
+    <FormControlLabelText>Email</FormControlLabelText>
+  </FormControlLabel>
+  <Input>
+    <InputField value={email} onChangeText={setEmail} />
+  </Input>
+  <FormControlError>
+    <FormControlErrorText>{errorMessage}</FormControlErrorText>
+  </FormControlError>
+</FormControl>
+
+// Semantic color tokens — never raw colors
+<Box className="bg-primary">
+  <Text className="text-primary-foreground">Content</Text>
+</Box>
 ```
 
-Never put bare strings inside `<Button>`, `<Alert>`, `<Toast>`, etc. Always use the matching `*Text` sub-component so RN's accessibility and styling apply correctly.
+## Setup and imports
 
-## Styling with NativeWind
-
-- Style via `className` (NativeWind), not `style` props, unless a value must be computed at runtime.
-- Use design tokens (`bg-background-0`, `text-typography-700`, etc.) over raw colors. Token names map to the theme defined in `gluestack-ui.config.ts` / `tailwind.config.js`.
-- Dark mode is class-based (`dark:bg-background-900`). Don't fork components per theme.
-- The `gluestack-ui-nativewind-utils` package handles `tva` variants. When adding a new variant, extend the `tva` call in `styles.tsx` rather than adding ad-hoc `cn()` overrides at the call site.
+- Components are added with the official CLI: `npx gluestack-ui@alpha init -y` then `npx gluestack-ui@alpha add --all -y` (or `add Button` for individual components).
+- Import path is local: `import { Button, ButtonText } from "@/components/ui/button"`.
+- **Don't import from `@gluestack-ui/themed`.** That's the legacy v1/v2 package — not v4.
+- The app must be wrapped in `<GluestackUIProvider>` at the root (see docs for the platform-specific setup).
 
 ## Cross-platform constraints
 
-- Code must compile for web (Next.js / Expo Router web) AND native (iOS / Android). Avoid web-only APIs like `document` or `window` inside UI components. Guard with `Platform.OS === 'web'` if needed.
-- Use `Pressable` (or the `Button` primitive) for tap targets, not `<div onClick>`.
-- For lists, use `FlatList` / `SectionList` on native; gluestack does not ship its own list virtualization.
+- Code must compile for web (Next.js / Expo Router web) AND native (iOS / Android). Avoid `document` / `window` in UI components, or guard with `Platform.OS === 'web'`.
+- Use the gluestack `<Pressable>` for tap targets — never `<div onClick>` for native compatibility.
+- For long lists, use `FlatList` / `SectionList` on native. gluestack doesn't ship list virtualization.
+- Use Reanimated for animations; avoid the legacy `Animated` API.
+- Wrap top-level screens in `SafeAreaView` (or use `useSafeAreaInsets`) for notch / status-bar safety.
 
-## Forms and accessibility
+## Variants with tva
 
-- Form fields use the `FormControl` + `Input` + `FormControlLabel` + `FormControlError` cluster. Don't render `<Input>` standalone if it has a label or error state.
-- All interactive components accept `accessibilityLabel`. Set it whenever the visible label isn't text (e.g., icon-only buttons).
+When you find yourself repeating the same className combination across 3+ usages, lift it into a `tva` variant in the component's `styles.tsx`:
 
-## Don'ts
+```tsx
+import { tva } from "@gluestack-ui/nativewind-utils/tva";
 
-- Don't import from `@gluestack-ui/themed`. That's the legacy v1/v2 package. v3 uses copy-paste + NativeWind.
-- Don't mix gluestack-ui with another component library's primitives (e.g., shadcn `Button`) in the same screen.
-- Don't add inline `StyleSheet.create` for components that already expose `className`.
+const badgeStyle = tva({
+  base: "rounded-md px-2 py-1",
+  variants: {
+    tone: {
+      success: "bg-success-100 text-success-700",
+      danger: "bg-destructive/10 text-destructive",
+    },
+    size: { sm: "text-xs", md: "text-sm" },
+  },
+  defaultVariants: { tone: "success", size: "md" },
+});
+```
+
+Don't add ad-hoc `cn()` overrides at the call site for the same combinations.
+
+## Accessibility
+
+- All interactive components accept `accessibilityLabel`. Set it for any icon-only button.
+- `FormControl` automatically wires label/error/help text to the input — keep them inside the cluster so screen readers see the relationship.
+
+## Anti-patterns to reject
+
+- Raw colors: `text-blue-600`, `bg-red-500`, `text-neutral-900`, `text-gray-700`, `text-typography-700` (v3 token, not v4).
+- Bare strings inside `<Button>`, `<Alert>`, `<Toast>`, `<Tooltip>` — always use the matching `*Text` sub-component.
+- `<InputIcon>` outside `<InputSlot>`.
+- `<Input>` rendered without `<InputField>` inside it.
+- Inline `style={{ padding: 16 }}` when `className="p-4"` works.
+- Arbitrary spacing values like `p-[13px]`, `gap-[7px]`.
+- Mixing gluestack-ui primitives with another library's primitives (shadcn, NativeBase v3, react-native-paper) on the same screen.
+- Importing from `@gluestack-ui/themed` (legacy v1/v2 package).
+
+## Reference
+
+- Live docs: https://v4.gluestack.io/ui/docs
+- Per-component docs: `https://v4.gluestack.io/ui/docs/components/${componentName}/`
+- Official agent skill (source of these rules): https://github.com/gluestack/agent-skills
