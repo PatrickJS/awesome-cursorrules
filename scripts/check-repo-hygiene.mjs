@@ -604,6 +604,24 @@ function checkPromptUnsafeDeveloperCommands(file, content) {
       fix: "Replace remote pipe-to-shell, eval, process substitution, or decoded shell bootstraps with instructions to inspect, pin, and run trusted project-local scripts.",
     },
     {
+      ruleId: "prompt/no-production-env-export",
+      title: "Prompt rules must not export production env values to .env",
+      pattern:
+        /\bnetlify\s+env:list\b[^\n`]*(?:--context(?:=|\s+)["']?production["']?)[^\n`]*(?:(?:>\s*|tee\s+(?:-a\s+)?)(?:\.\/)?\.env(?![\w.-]))/i,
+      problem: "production environment export to .env.",
+      why: "Production Netlify environment exports can include secrets, and writing them to a default .env file makes accidental commits or broad local loading more likely.",
+      fix: "List production values to stdout by default. Export only after explicit user confirmation to a gitignored .env.local file, and tell the user not to commit it.",
+    },
+    {
+      ruleId: "prompt/no-unpinned-noninteractive-service-apply",
+      title: "Prompt rules must not run unpinned non-interactive service apply commands",
+      pattern:
+        /(?:\b(?:cloudflare|telegram|email|mail2tg)\b[\s\S]{0,800}\bnpx\s+(?:-y\s+)?mail2tg(?:@latest)?\s+(?:apply|deploy)\b(?=[^\n`]*--non-interactive)|\bnpx\s+(?:-y\s+)?mail2tg(?:@latest)?\s+(?:apply|deploy)\b(?=[^\n`]*--non-interactive)[\s\S]{0,800}\b(?:cloudflare|telegram|email|mail2tg)\b)/i,
+      problem: "unpinned non-interactive service apply or deploy command.",
+      why: "Cloud, email, and messaging setup commands can mutate DNS, Workers, secrets, and routing. Unpinned non-interactive apply examples make agents more likely to deploy without review.",
+      fix: "Pin or review the package version, run a plan first, show the plan to the user, and require explicit approval before apply or deploy.",
+    },
+    {
       ruleId: "prompt/no-persistence-hook",
       title: "Prompt rules must not install persistent hooks",
       pattern:
@@ -680,6 +698,43 @@ function checkPromptUnsafeDeveloperCommands(file, content) {
       fix: check.fix,
     });
   }
+
+  checkTokRepoHostedDiscoveryConsent(file, commandContent);
+}
+
+function checkTokRepoHostedDiscoveryConsent(file, content) {
+  if (!hasMandatoryHostedTokRepoDiscovery(content) || hasTokRepoConsentAndRedactionLanguage(content)) {
+    return;
+  }
+
+  addFailure({
+    ruleId: "prompt/tokrepo-hosted-discovery-consent",
+    title: "Prompt rules must make hosted TokRepo discovery opt-in",
+    file,
+    problem: `${file} contains hosted TokRepo discovery without explicit opt-in and redaction.`,
+    why: "Hosted discovery can send task text or project context outside the local environment. Private or sensitive work needs local-first behavior, redaction, and user consent.",
+    fix: "Prefer local TokRepo discovery or skipping discovery for sensitive work. Use hosted discovery only after explicit user opt-in and redacted task text.",
+  });
+}
+
+function hasMandatoryHostedTokRepoDiscovery(content) {
+  return (
+    /\b(?:MUST|must|required|forces?|mandatory)\b[\s\S]{0,300}\btokrepo_discover\b[\s\S]{0,300}https:\/\/tokrepo\.com\/mcp/i.test(
+      content,
+    ) ||
+    /\b(?:MUST|must|required|forces?|mandatory)\b[\s\S]{0,300}\bnpx\s+-y\s+tokrepo@latest\s+agent-check\b/i.test(
+      content,
+    )
+  );
+}
+
+function hasTokRepoConsentAndRedactionLanguage(content) {
+  return (
+    /\b(?:explicit|user)\s+(?:opt-in|consent|approval|confirmation)\b/i.test(content) &&
+    /\bredact(?:ed|ion)?\b/i.test(content) &&
+    /\b(?:private|sensitive)\b/i.test(content) &&
+    /\b(?:local|skip)\b/i.test(content)
+  );
 }
 
 function normalizeShellContinuations(content) {
