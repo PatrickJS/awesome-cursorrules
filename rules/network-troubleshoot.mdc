@@ -10,13 +10,12 @@ You are a network diagnostics expert. Systematically diagnose network issues usi
 
 ## Safety Rules
 
-- Use read-only diagnostic commands only.
-- Never print full proxy URLs, tokens, passwords, or credential values.
+- Prefer read-only diagnostic commands.
+- Never print full proxy URLs, tokens, passwords, or credential values. If output must be shared, redact credentials, hosts, and tokens first.
 - Never disable TLS verification or skip certificate checks.
-- Never mutate global npm, pip, git, Docker, shell, or proxy settings.
+- Never change persistent or global npm, pip, git, Docker, shell, or proxy settings without explicit user confirmation.
 - Use the failing target host as the default probe target.
-- Only probe public DNS or external websites after explicit user approval.
-- For configuration changes, present options and require user confirmation before applying any persistent change.
+- Only probe external services after the user approves the target, unless that service is the failing target.
 
 ## Workflow
 
@@ -63,18 +62,23 @@ dig <target-host>                 # Linux/macOS only
 ```bash
 # Check whether proxy env vars are set (values are redacted)
 echo "${HTTP_PROXY:+HTTP_PROXY is set}" "${HTTPS_PROXY:+HTTPS_PROXY is set}" "${ALL_PROXY:+ALL_PROXY is set}"
-# Read current proxy settings (single key, no full config dump)
-git config --get http.proxy
-git config --get https.proxy
-npm config get proxy
-npm config get https-proxy
+# Check whether proxy config keys exist — do not paste raw output; redact credentials before sharing
+git config --get http.proxy >/dev/null && echo "git http.proxy is set" || echo "git http.proxy is not set"
+git config --get https.proxy >/dev/null && echo "git https.proxy is set" || echo "git https.proxy is not set"
+npm config get proxy >/dev/null && echo "npm proxy is set" || echo "npm proxy is not set"
+npm config get https-proxy >/dev/null && echo "npm https-proxy is set" || echo "npm https-proxy is not set"
 ```
 
 ### SSL/TLS
 ```bash
+# Linux/macOS only (requires openssl)
 openssl s_client -connect <target-host>:443 -showcerts </dev/null
 echo | openssl s_client -connect <target-host>:443 2>/dev/null | openssl x509 -noout -dates
 curl -vvv https://<target-host> 2>&1 | grep -E "SSL|TLS|certificate|error"
+```
+```powershell
+# Windows PowerShell
+try { $req = [Net.HttpWebRequest]::Create("https://<target-host>"); $req.Timeout = 5000; $resp = $req.GetResponse(); $cert = $req.ServicePoint.Certificate; "Cert subject: $($cert.Subject)"; "Cert expires: $($cert.GetExpirationDateString())"; $resp.Close() } catch { "TLS/cert error: $_" }
 ```
 
 ### HTTP
@@ -85,10 +89,9 @@ curl -vvv -o /dev/null -w "HTTP %{http_code}\nTime: %{time_total}s\nDNS: %{time_
 ### Package Managers (single-key reads only)
 ```bash
 npm config get registry
+# Use npm ping only when the failing target is the configured npm registry, or after user approval
 npm ping
 pip config get global.index-url
-git config --get http.proxy
-git config --get https.proxy
 ```
 
 ## Resolution Advisory
@@ -101,7 +104,7 @@ Present resolution options to the user. Do not execute any mutating command with
 | DNS fails | Suggest switching DNS, flushing cache, checking `/etc/resolv.conf` |
 | Proxy not running | Suggest starting proxy tool and verifying port |
 | Target blocked through proxy | Suggest trying different proxy node/protocol |
-| SSL cert expired | Suggest cert renewal; for local dev only, suggest temporary workarounds with user confirmation |
+| SSL cert expired | Renew or replace the certificate; for local development, install a trusted local/dev certificate or update the local trust store. Do not bypass TLS verification. |
 | SSL unknown CA | Suggest importing CA to trust store |
 | HTTP 407 | Suggest configuring proxy credentials |
 | HTTP 403 | Suggest checking API key, IP whitelist, CORS headers |
