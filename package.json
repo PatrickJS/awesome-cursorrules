@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "// note": "echo \"Note: upstream awesome-lint needs network.\"",
-    "check:awesome-list:upstream": "pnpm dlx awesome-lint",
+    "check:awesome-list:upstream": "pnpm dlx awesome-lint@2.3.0",
     "test": "node --test scripts/*.test.mjs",
     "check:awesome-list": "node scripts/check-awesome-list.mjs",
     "check:repo-hygiene": "node scripts/check-repo-hygiene.mjs",
@@ -16,8 +16,5 @@
     "links:absolute": "node scripts/convert-readme-links.mjs --to absolute",
     "links:relative": "node scripts/convert-readme-links.mjs --to relative",
     "cleanup:legacy": "node scripts/cleanup-legacy-artifacts.mjs"
-  },
-  "devDependencies": {
-    "rimraf": "^6.0.1"
   }
 }

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import { existsSync } from "node:fs";
+import { rm } from "node:fs/promises";
 import { isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { rimraf } from "rimraf";
 
 export const defaultLegacyArtifacts = ["rules-legacy", "rules-new", ".cursorrules"];
 
@@ -20,17 +20,9 @@ export async function cleanupLegacyArtifacts({
   }
 
   const removed = existingTargets.map(({ artifact }) => artifact);
-  const ok = await rimraf(
-    existingTargets.map(({ resolved }) => resolved),
-    {
-      glob: false,
-      preserveRoot: true,
-    },
+  await Promise.all(
+    existingTargets.map(({ resolved }) => rm(resolved, { recursive: true, force: true })),
   );
-
-  if (!ok) {
-    throw new Error(`Unable to remove all legacy artifacts: ${removed.join(", ")}`);
-  }
 
   return removed;
 }

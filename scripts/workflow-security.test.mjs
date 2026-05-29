@@ -9,7 +9,8 @@ const pullRequestTrustJob = jobBlock("pull-request-trust", "readme-hygiene");
 const readmeHygieneJob = jobBlock("readme-hygiene", "rule-hygiene");
 const ruleHygieneJob = jobBlock("rule-hygiene", "issue-template-policy");
 const issueTemplatePolicyJob = jobBlock("issue-template-policy", "repo-security");
-const repoSecurityJob = jobBlock("repo-security", "awesome-lint");
+const repoSecurityJob = jobBlock("repo-security", "test");
+const testJob = jobBlock("test", "awesome-lint");
 const awesomeLintJob = workflow.slice(workflow.indexOf("  awesome-lint:"));
 
 function jobBlock(jobName, nextJobName) {
@@ -104,6 +105,16 @@ test("workflow has an explicit awesome-lint job for every pull request", () => {
   assert.match(workflow, /^  pull_request:\n\s+branches:\s+\[main\]$/m);
 });
 
+test("workflow has an explicit test job for pull requests and pushes", () => {
+  assert.match(testJob, /^  test:\n\s+runs-on:\s+ubuntu-latest$/m);
+  assert.match(testJob, /if:\s+github\.event_name == 'pull_request' \|\| github\.event_name == 'push'/);
+  assert.doesNotMatch(testJob, /pull_request_target/);
+  assert.match(testJob, /persist-credentials:\s+false/);
+  assert.match(testJob, /corepack prepare pnpm@10\.20\.0 --activate/);
+  assert.match(testJob, /pnpm install --frozen-lockfile/);
+  assert.match(testJob, /pnpm test/);
+});
+
 test("trusted PR gates do not execute contributor-controlled code", () => {
   for (const job of [readmeHygieneJob, ruleHygieneJob, issueTemplatePolicyJob, repoSecurityJob]) {
     assert.match(job, /path:\s+pr/);
@@ -119,13 +130,24 @@ test("the old bundled repo-hygiene check is not a required PR concern", () => {
 
 test("pull requests run trusted awesome-list checks", () => {
   assert.match(workflow, /node \.trusted-base\/scripts\/check-awesome-list\.mjs --root "\$GITHUB_WORKSPACE"/);
-  assert.match(workflow, /pnpm dlx awesome-lint "\$GITHUB_WORKSPACE\/README\.md"/);
+  assert.match(workflow, /pnpm dlx awesome-lint@2\.3\.0 "\$GITHUB_WORKSPACE\/README\.md"/);
 });
 
 test("pushes run local awesome-list checks", () => {
   assert.match(workflow, /pnpm install --frozen-lockfile/);
   assert.match(workflow, /pnpm run check:awesome-list/);
   assert.match(workflow, /pnpm run check:awesome-list:upstream/);
+});
+
+test("awesome-lint job uses pinned package code without persistent checkout credentials", () => {
+  const checkoutSteps = awesomeLintJob.match(/uses:\s+actions\/checkout@[a-f0-9]{40}\s+#\s+v4[\s\S]*?(?=\n\s+- uses:|\n\s+- name:|$)/g) ?? [];
+  assert.equal(checkoutSteps.length, 2);
+
+  for (const step of checkoutSteps) {
+    assert.match(step, /persist-credentials:\s+false/);
+  }
+
+  assert.match(awesomeLintJob, /pnpm dlx awesome-lint@2\.3\.0 "\$GITHUB_WORKSPACE\/README\.md"/);
 });
 
 test("external GitHub Actions are pinned to full commit SHAs", () => {

@@ -283,6 +283,30 @@ jobs:
         if: github.event_name == 'push'
         run: node scripts/check-repo-security.mjs --changed-files .changed-files
 
+  test:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.20.0 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: pnpm test
+
   awesome-lint:
     name: awesome-lint
     runs-on: ubuntu-latest
@@ -291,6 +315,7 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 1
+          persist-credentials: false
 
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
@@ -308,12 +333,13 @@ jobs:
           ref: ${{ github.event.pull_request.base.sha }}
           path: .trusted-base
           fetch-depth: 1
+          persist-credentials: false
 
       - name: Run trusted awesome-list checks
         if: github.event_name == 'pull_request'
         run: |
           node .trusted-base/scripts/check-awesome-list.mjs --root "$GITHUB_WORKSPACE"
-          (cd .trusted-base && pnpm dlx awesome-lint "$GITHUB_WORKSPACE/README.md")
+          (cd .trusted-base && pnpm dlx awesome-lint@2.3.0 "$GITHUB_WORKSPACE/README.md")
 
       - name: Install dependencies
         if: github.event_name != 'pull_request'
