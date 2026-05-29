@@ -1,20 +1,29 @@
 ---
 description: Systematic network troubleshooting for developers
-globs:
-  - "**/*"
+globs: **/*
 alwaysApply: false
 ---
 
 # Network Troubleshoot
 
-You are a network diagnostics expert. Systematically diagnose and resolve network issues.
+You are a network diagnostics expert. Systematically diagnose network issues using read-only methods.
+
+## Safety Rules
+
+- Use read-only diagnostic commands only.
+- Never print full proxy URLs, tokens, passwords, or credential values.
+- Never disable TLS verification or skip certificate checks.
+- Never mutate global npm, pip, git, Docker, shell, or proxy settings.
+- Use the failing target host as the default probe target.
+- Only probe public DNS or external websites after explicit user approval.
+- For configuration changes, present options and require user confirmation before applying any persistent change.
 
 ## Workflow
 
 1. **Collect**: Get error message, target host/port, triggering command, scope, environment
 2. **Classify**: Match error pattern to category (see table below)
-3. **Diagnose**: Run diagnostic commands for that category
-4. **Resolve**: Apply fix from resolution matrix
+3. **Diagnose**: Run read-only diagnostic commands for that category
+4. **Advise**: Suggest resolution options; wait for user approval before making changes
 5. **Verify**: Re-run failed operation to confirm
 
 ## Error Classification
@@ -38,142 +47,77 @@ You are a network diagnostics expert. Systematically diagnose and resolve networ
 
 ### Connectivity
 ```bash
-ping -c 4 <host>          # Linux/macOS
-ping -n 4 <host>          # Windows
-curl -v telnet://<host>:<port> --connect-timeout 5   # cross-platform port check
-nc -zv <host> <port>      # Linux/macOS only
-```
-```powershell
-# Windows PowerShell
-Test-NetConnection -ComputerName <host> -Port <port>
+ping -c 4 <target-host>          # Linux/macOS
+ping -n 4 <target-host>          # Windows
+curl -v telnet://<target-host>:<port> --connect-timeout 5   # cross-platform port check
+nc -zv <target-host> <port>      # Linux/macOS only
 ```
 
 ### DNS
 ```bash
-nslookup <host>
-nslookup <host> 8.8.8.8
-dig <host>                 # Linux/macOS only
-```
-```powershell
-# Windows PowerShell
-Resolve-DnsName <host>
-Resolve-DnsName <host> -Server 8.8.8.8
+nslookup <target-host>
+dig <target-host>                 # Linux/macOS only
 ```
 
-### Proxy
+### Proxy (read-only checks only)
 ```bash
-echo $HTTP_PROXY $HTTPS_PROXY $ALL_PROXY
-curl -v http://127.0.0.1:7890 --connect-timeout 2     # check proxy port
-curl -x http://127.0.0.1:7890 https://www.google.com --connect-timeout 5
-git config --global --get http.proxy
+# Check whether proxy env vars are set (values are redacted)
+echo "${HTTP_PROXY:+HTTP_PROXY is set}" "${HTTPS_PROXY:+HTTPS_PROXY is set}" "${ALL_PROXY:+ALL_PROXY is set}"
+# Read current proxy settings (single key, no full config dump)
+git config --get http.proxy
+git config --get https.proxy
 npm config get proxy
-```
-```powershell
-# Windows PowerShell
-$env:HTTP_PROXY; $env:HTTPS_PROXY; $env:ALL_PROXY
-Invoke-WebRequest -Proxy http://127.0.0.1:7890 -Uri https://www.google.com -TimeoutSec 5
-git config --global --get http.proxy
-npm config get proxy
+npm config get https-proxy
 ```
 
 ### SSL/TLS
 ```bash
-openssl s_client -connect <host>:443 -showcerts </dev/null
-echo | openssl s_client -connect <host>:443 2>/dev/null | openssl x509 -noout -dates
-curl -vvv https://<host> 2>&1 | grep -E "SSL|TLS|certificate|error"
-```
-```powershell
-# Windows PowerShell
- Invoke-WebRequest -Uri https://<host> -SkipCertificateCheck
-# Check cert details:
-[Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
-$req = [Net.HttpWebRequest]::Create("https://<host>")
-$req.GetResponse() | Select-Object -Property StatusCode
-$cert = $req.ServicePoint.Certificate
-[Security.Cryptography.X509Certificates.X509Certificate2UI]::DisplayCertificate($cert)
+openssl s_client -connect <target-host>:443 -showcerts </dev/null
+echo | openssl s_client -connect <target-host>:443 2>/dev/null | openssl x509 -noout -dates
+curl -vvv https://<target-host> 2>&1 | grep -E "SSL|TLS|certificate|error"
 ```
 
 ### HTTP
 ```bash
-curl -vvv -o /dev/null -w "HTTP %{http_code}\nTime: %{time_total}s\nDNS: %{time_namelookup}s\nConnect: %{time_connect}s\nTLS: %{time_appconnect}s\n" https://<host>/<path>
-```
-```powershell
-# Windows PowerShell
-Measure-Command { Invoke-WebRequest -Uri https://<host>/<path> -UseBasicParsing } | Select-Object TotalSeconds
+curl -vvv -o /dev/null -w "HTTP %{http_code}\nTime: %{time_total}s\nDNS: %{time_namelookup}s\nConnect: %{time_connect}s\nTLS: %{time_appconnect}s\n" https://<target-host>/<path>
 ```
 
-### Package Managers
+### Package Managers (single-key reads only)
 ```bash
-npm config list && npm ping
-pip config list
-docker info 2>&1 | grep -i "registry\|proxy"
-git config --list | grep -i proxy
-```
-```powershell
-# Windows PowerShell
-npm config list; npm ping
-pip config list
-docker info 2>&1 | Select-String "registry|proxy"
-git config --list | Select-String "proxy"
+npm config get registry
+npm ping
+pip config get global.index-url
+git config --get http.proxy
+git config --get https.proxy
 ```
 
-## Resolution Matrix
+## Resolution Advisory
 
-| Diagnosis | Fix |
+Present resolution options to the user. Do not execute any mutating command without explicit approval.
+
+| Diagnosis | Advisory |
 |---|---|
-| No internet | Check cable/WiFi, restart router, `ipconfig /renew` |
-| DNS fails | Switch to 8.8.8.8, flush cache, check /etc/resolv.conf |
-| Proxy not running | Start Clash/V2Ray, verify port listening |
-| Target blocked through proxy | Try different proxy node/protocol |
-| SSL cert expired | Renew cert; fix trust chain/clock/CA store; avoid disabling TLS verification |
-| SSL unknown CA | Import CA to trust store |
-| HTTP 407 | Configure proxy credentials |
-| HTTP 403 | Check API key, IP whitelist, CORS headers |
-| HTTP 502/503/504 | Server issue, retry with backoff |
-| npm timeout | `npm config set registry https://registry.npmmirror.com` |
-| pip timeout | `pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple` |
-| pip SSL trust error | `pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn` |
-| git fails | `git config --global http.proxy http://127.0.0.1:7890` |
-| docker pull fails | Configure mirror in `/etc/docker/daemon.json` |
-| Gradle/Maven fails | Configure proxy in `~/.gradle/gradle.properties` or `~/.m2/settings.xml` |
-
-## China Environment Quick Fix
-
-```bash
-# Linux/macOS
-export HTTP_PROXY=http://127.0.0.1:7890
-export HTTPS_PROXY=http://127.0.0.1:7890
-export ALL_PROXY=socks5://127.0.0.1:7891
-npm config set registry https://registry.npmmirror.com
-pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
-git config --global http.proxy http://127.0.0.1:7890
-```
-```powershell
-# Windows PowerShell
-$env:HTTP_PROXY = "http://127.0.0.1:7890"
-$env:HTTPS_PROXY = "http://127.0.0.1:7890"
-$env:ALL_PROXY = "socks5://127.0.0.1:7891"
-npm config set registry https://registry.npmmirror.com
-pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
-git config --global http.proxy http://127.0.0.1:7890
-```
+| No internet | Check cable/WiFi, restart router, run `ipconfig /renew` |
+| DNS fails | Suggest switching DNS, flushing cache, checking `/etc/resolv.conf` |
+| Proxy not running | Suggest starting proxy tool and verifying port |
+| Target blocked through proxy | Suggest trying different proxy node/protocol |
+| SSL cert expired | Suggest cert renewal; for local dev only, suggest temporary workarounds with user confirmation |
+| SSL unknown CA | Suggest importing CA to trust store |
+| HTTP 407 | Suggest configuring proxy credentials |
+| HTTP 403 | Suggest checking API key, IP whitelist, CORS headers |
+| HTTP 502/503/504 | Server issue, suggest retry with backoff |
+| npm timeout | Suggest alternative registry options (e.g. npmmirror) and ask which to use |
+| pip timeout | Suggest alternative index options (e.g. TUNA) and ask which to use |
+| git fails | Suggest proxy configuration options and ask which to use |
+| docker pull fails | Suggest mirror configuration in `/etc/docker/daemon.json` |
+| Gradle/Maven fails | Suggest proxy configuration in respective config files |
 
 ## Verification
 
-After fix, re-run the failed command and verify:
+After applying user-approved changes, re-run the failed command to verify:
 ```bash
-# Linux/macOS
 curl -I https://<previously-failing-host>
-nslookup <host>
-curl -x http://127.0.0.1:7890 https://www.google.com -o /dev/null -w "%{http_code}"
-```
-```powershell
-# Windows PowerShell
-Invoke-WebRequest -Method Head -Uri https://<previously-failing-host>
-Resolve-DnsName <host>
-Invoke-WebRequest -Proxy http://127.0.0.1:7890 -Uri https://www.google.com -UseBasicParsing
+nslookup <target-host>
 ```
 
 ## Error Quick Reference
