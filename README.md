@@ -162,9 +162,11 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 
 - [Android Native (Jetpack Compose)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/android-jetpack-compose-cursorrules-prompt-file.mdc) - Android development with Jetpack Compose integration.
 - [Cursor Rules Pack v2](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/cursor-rules-pack-v2-cursorrules-prompt-file.mdc) - 7 sample production-tested rules (dependency discipline, error handling, state management, webhook security, and more). See the pack README for full-pack details.
+- [Expo Router (React Native, Expo)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/expo-router-cursorrules-prompt-file.mdc) - File-based routing patterns for Expo: layouts, route groups, dynamic and catch-all routes, typed routes, modals, auth gating, and web compatibility.
 - [Flutter Expert](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/flutter-app-expert-cursorrules-prompt-file.mdc) - Flutter development with expert integration.
 - [HarmonyOS ArkTS](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/harmony-arkts.mdc) - Components, state, resources, lifecycle, layout, and accessibility.
 - [NativeScript](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/nativescript-cursorrules-prompt-file.mdc) - Cross-platform mobile app development.
+- [NativeWind (React Native, Expo, Tailwind)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/nativewind-cursorrules-prompt-file.mdc) - Tailwind-in-RN setup, className vs style, what does and doesn't translate from web Tailwind, dark mode, semantic tokens, and platform-specific variants.
 - [React Native Expo](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/react-native-expo-cursorrules-prompt-file.mdc) - Expo-based mobile app development.
 - [SwiftUI Guidelines](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/swiftui-guidelines-cursorrules-prompt-file.mdc) - SwiftUI development guidelines.
 - [TypeScript (Expo, Jest, Detox)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/typescript-expo-jest-detox-cursorrules-prompt-file.mdc) - TypeScript development with Expo, Jest, and Detox integration.
