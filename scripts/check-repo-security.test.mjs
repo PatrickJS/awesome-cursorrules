@@ -188,7 +188,7 @@ test("allows bounded network diagnostics with user-provided targets and read-onl
         "",
         "Run `curl -I https://<host>` only after the user provides the target host.",
         "Run `nslookup <host>` for the user-provided host.",
-        "Run `git config --get http.proxy` or `npm config get proxy` without dumping all config.",
+        "Report whether proxy config is set without printing the value.",
         "Ask before making requests to unrelated public services.",
         "",
       ].join("\n"),
@@ -196,6 +196,119 @@ test("allows bounded network diagnostics with user-provided targets and read-onl
     write(root, ".changed-files", "rules/safe-network-diagnostics.mdc\n");
     const result = run(root, ["--changed-files", ".changed-files"]);
     assert.equal(result.status, 0, result.stderr + result.stdout);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("fails rule files that print sensitive network config values", () => {
+  const root = makeFixture();
+  try {
+    write(
+      root,
+      "rules/sensitive-network-config-reads.mdc",
+      [
+        "---",
+        "description: Sensitive network config reads",
+        "globs: **/*",
+        "alwaysApply: false",
+        "---",
+        "",
+        "Debug proxy settings with `git config --get http.proxy`.",
+        "Debug proxy settings with `git config --get https.proxy`.",
+        "Debug scoped Git auth with `git config --get-urlmatch http.extraheader https://example.invalid`.",
+        "Debug package settings with `pip config get global.index-url`.",
+        "Debug package settings with `npm config get proxy`.",
+        "Debug package settings with `yarn config get https-proxy`.",
+        "",
+      ].join("\n"),
+    );
+    write(root, ".changed-files", "rules/sensitive-network-config-reads.mdc\n");
+    const result = run(root, ["--changed-files", ".changed-files"]);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Rule: prompt\/no-sensitive-config-value-read/);
+    assert.match(result.stderr, /credential-bearing proxy, package index, or auth config values/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("fails rule files with ambiguous TLS certificate workaround guidance", () => {
+  const root = makeFixture();
+  try {
+    write(
+      root,
+      "rules/ambiguous-tls-workaround.mdc",
+      [
+        "---",
+        "description: Ambiguous TLS workaround",
+        "globs: **/*",
+        "alwaysApply: false",
+        "---",
+        "",
+        "| SSL cert expired | Suggest cert renewal; for local dev only, suggest temporary workarounds with user confirmation |",
+        "",
+      ].join("\n"),
+    );
+    write(root, ".changed-files", "rules/ambiguous-tls-workaround.mdc\n");
+    const result = run(root, ["--changed-files", ".changed-files"]);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Rule: prompt\/no-ambiguous-tls-workaround/);
+    assert.match(result.stderr, /vague TLS certificate workarounds/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("allows explicit safe TLS certificate remediation guidance", () => {
+  const root = makeFixture();
+  try {
+    write(
+      root,
+      "rules/safe-tls-remediation.mdc",
+      [
+        "---",
+        "description: Safe TLS remediation",
+        "globs: **/*",
+        "alwaysApply: false",
+        "---",
+        "",
+        "For SSL cert expired errors, renew the certificate, fix system time, or use a trusted local CA, and do not disable or bypass TLS verification.",
+        "For SSL cert expired errors, temporary workarounds are allowed only if you do not disable or bypass TLS verification.",
+        "",
+      ].join("\n"),
+    );
+    write(root, ".changed-files", "rules/safe-tls-remediation.mdc\n");
+    const result = run(root, ["--changed-files", ".changed-files"]);
+    assert.equal(result.status, 0, result.stderr + result.stdout);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("fails rule files that present mutating network commands as diagnostics", () => {
+  const root = makeFixture();
+  try {
+    write(
+      root,
+      "rules/mutating-network-diagnostics.mdc",
+      [
+        "---",
+        "description: Mutating network diagnostics",
+        "globs: **/*",
+        "alwaysApply: false",
+        "---",
+        "",
+        "Diagnose DHCP with `ipconfig /renew`.",
+        "Diagnose DNS with `networksetup -setdnsservers Wi-Fi 192.0.2.53`.",
+        "",
+      ].join("\n"),
+    );
+    write(root, ".changed-files", "rules/mutating-network-diagnostics.mdc\n");
+    const result = run(root, ["--changed-files", ".changed-files"]);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Rule: prompt\/no-mutating-network-diagnostic/);
+    assert.match(result.stderr, /network state changes as read-only diagnostics/);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

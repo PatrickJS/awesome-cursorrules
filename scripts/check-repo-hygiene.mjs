@@ -658,6 +658,24 @@ function checkPromptUnsafeDeveloperCommands(file, content) {
       fix: "Prompt rules must not instruct agents to print proxy environment variables or dump npm, pip, git, or Docker config because logs may expose credentials.",
     },
     {
+      ruleId: "prompt/no-sensitive-config-value-read",
+      title: "Prompt rules must not print sensitive network config values",
+      pattern:
+        /\bgit\s+config\s+(?:(?:--global|--system|--local|--worktree)\s+)*(?:(?:--get(?:-all)?|get)\s+https?(?:\.[^\s`|]+)?\.(?:proxy|extraheader)\b|--get-urlmatch\s+http\.(?:proxy|extraheader)\b)|\b(?:npm|pnpm|yarn)\s+config\s+get\s+(?:(?:\/\/[^\s`|]+:)?_authToken|proxy|https-proxy)\b|\bpip\s+config\s+get\s+(?:(?:global|user|site)\.)?(?:index-url|extra-index-url|proxy|cert|client-cert)\b/i,
+      problem: "credential-bearing proxy, package index, or auth config values.",
+      why: "Single-key proxy, package index, and auth config reads can still print credentials or private infrastructure details into terminal logs or AI chat.",
+      fix: "Prompt rules must not print credential-bearing proxy, package index, or auth config values.",
+    },
+    {
+      ruleId: "prompt/no-ambiguous-tls-workaround",
+      title: "Prompt rules must not suggest vague TLS workarounds",
+      pattern:
+        /^(?=[^\n]*(?:TLS|SSL|cert(?:ificate)?))(?=[^\n]*\btemporary\s+workarounds?\b)(?![^\n]*(?:do\s+not|never|not\s+to)[^\n]*(?:disable|bypass|skip)[^\n]*(?:TLS|SSL|cert(?:ificate)?)[^\n]*(?:verification|validation|checks?)?).+$/im,
+      problem: "vague TLS certificate workarounds.",
+      why: "Ambiguous certificate workaround guidance can lead agents to suggest disabling TLS verification instead of safe trust-store or certificate fixes.",
+      fix: "Prompt rules must not suggest vague TLS certificate workarounds; name safe trust-store or certificate-renewal options instead.",
+    },
+    {
       ruleId: "prompt/no-tls-bypass",
       title: "Prompt rules must not normalize TLS verification bypasses",
       pattern:
@@ -674,6 +692,15 @@ function checkPromptUnsafeDeveloperCommands(file, content) {
       problem: "unsafe persistent developer configuration mutation.",
       why: "Global registry, proxy, or trust changes can silently reroute future installs and Git traffic after the immediate task ends.",
       fix: "Prompt rules must not tell agents to reroute package managers, Git, or proxy settings globally or to trust alternate package hosts.",
+    },
+    {
+      ruleId: "prompt/no-mutating-network-diagnostic",
+      title: "Prompt rules must not present network changes as diagnostics",
+      pattern:
+        /\bipconfig\s+\/(?:renew|release)\b|\bnetsh\b[^\n`]*(?:\bset\b|\breset\b)|\bnetworksetup\s+-(?:setwebproxy|setsecurewebproxy|setdnsservers)\b/i,
+      problem: "network state changes as read-only diagnostics.",
+      why: "Commands that renew DHCP leases or rewrite proxy and DNS settings change developer network state and can disrupt future sessions.",
+      fix: "Prompt rules must not present network state changes as read-only diagnostics.",
     },
     {
       ruleId: "prompt/no-hardcoded-public-network-probe",
