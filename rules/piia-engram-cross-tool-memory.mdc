@@ -1,0 +1,70 @@
+---
+description: "Cursor rules for piia-engram — a local-first MCP memory layer that persists user identity, preferences, lessons, and decisions across every AI tool. AI proposes knowledge; the user approves what becomes permanent."
+globs: **/*
+alwaysApply: true
+---
+
+# piia-engram — Cross-Tool & Cross-Chat Memory Rules
+
+You have access to piia-engram, a local-first MCP server that stores the user's identity, preferences, lessons learned, and key decisions in `~/.engram/`. The same memory is shared across Claude Code, Cursor, Codex CLI, Windsurf, and any MCP client — no cloud sync, no account, no lock-in.
+
+## On conversation start
+
+1. Call `mcp_engram_get_user_context` with `level='standard'` to load:
+   - User profile (role, language, technical level, communication style)
+   - Quality standards and validation preferences
+   - Recent verified lessons and decisions
+   - Today's daily log for this project
+2. Cite specific lessons or decisions when relevant to the user's current task.
+3. **Never** re-ask "who are you / what are your preferences" if Engram already has that data — it defeats the entire point.
+
+## When learning something reusable
+
+Call `mcp_engram_add_lesson` when:
+- You discover a workaround, pitfall, or non-obvious solution that will recur
+- The user explicitly says "remember this" / "记住这个"
+- You complete a debug session and identified a root cause that other sessions can avoid
+
+Call `mcp_engram_add_decision` when:
+- The user explicitly chose one option over alternatives ("we'll use X instead of Y")
+- You and the user agreed on an architecture, tool, or process going forward
+- A trade-off was made with reasoning (capture both the choice and the why)
+
+## Governance: AI proposes, user approves
+
+- All new knowledge from `add_lesson` / `add_decision` lands in the **`staging`** tier by default.
+- Items only become **`verified`** after the user explicitly promotes them via `engram review` or the HTML review page.
+- **Never** call methods that auto-promote to verified. This consent step is the entire reason piia-engram exists.
+
+## Privacy boundaries
+
+- **Do not** call `update_identity` for fields the user has not explicitly mentioned in conversation.
+- **Do not** store API keys, passwords, tokens, or personally identifying information in any field.
+- **Do not** copy chat content verbatim into knowledge entries — extract the durable lesson, not the dialogue.
+
+## On long sessions
+
+For conversations with 10+ tool calls or substantial work:
+- Call `mcp_engram_wrap_up_session` with a 2-3 sentence summary describing what was accomplished and any key decisions.
+- piia-engram will auto-extract lessons/decisions into the staging tier; the user reviews later.
+
+For sessions under 5 turns, skip wrap_up — it's noise.
+
+## Cross-tool consistency
+
+- Knowledge added in Cursor is immediately readable by Claude Code, Codex CLI, Windsurf, and any MCP client — they all read the same `~/.engram/` directory.
+- If the user switches tools mid-task, the next AI will see today's daily log with your contributions intact via `mcp_engram_get_resume_brief`.
+
+## Project context vs personal context
+
+- **Personal preferences** (coding style, language, work patterns) → live in identity layer.
+- **Project state** (version, tech stack, known issues) → use `mcp_engram_save_project_snapshot` at major checkpoints, not every conversation.
+- **Repo-specific rules** (build steps, conventions) → use AGENTS.md or .cursorrules itself, not Engram. The two systems complement each other.
+
+## When knowledge feels stale or contradictory
+
+Suggest the user run `engram doctor` — it executes 8 health checks (identity completeness, stale knowledge, decision conflicts, knowledge volume, etc.) and reports drift before it becomes a problem.
+
+## Why this matters
+
+Without a cross-tool memory layer, every conversation in every AI tool starts at zero. The user re-explains their role, repeats their preferences, and re-derives lessons they've already learned. piia-engram exists so that doesn't happen. Treat the user's accumulated knowledge as a first-class resource, not a chat-window artifact.
