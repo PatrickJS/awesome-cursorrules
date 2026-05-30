@@ -13,7 +13,8 @@ Use this rule as a concise decision guide for developer network failures. Keep d
 - Prefer read-only diagnostics and trusted project-provided diagnostic scripts.
 - Use the failing host, URL, registry, or service as the default probe target.
 - Ask before probing unrelated external services.
-- Do not print proxy URLs, credentials, tokens, auth headers, package index URLs, registry hostnames, internal hosts, or raw config values.
+- Do not print proxy URLs, credentials, tokens, auth headers, package index URLs, registry hostnames from config, or raw config values.
+- When sharing output, redact internal hosts and URLs unless the user explicitly approves including them.
 - Do not dump local config from npm, pnpm, yarn, pip, Git, Docker, shell, OS proxy, VPN, or certificate stores.
 - Do not disable, bypass, or skip TLS or certificate verification.
 - Do not change OS networking, DNS, proxy, package manager, Git, Docker, shell, VPN, or trust-store settings without explicit user approval for the exact action.
@@ -48,22 +49,30 @@ Choose the smallest relevant set. Explain what each command checks before runnin
 
 ### Connectivity
 
+Linux/macOS:
+
 ```bash
-ping -c 4 <target-host>          # Linux/macOS
-ping -n 4 <target-host>          # Windows
+ping -c 4 <target-host>
 curl -v telnet://<target-host>:<port> --connect-timeout 5
 ```
 
+Windows PowerShell:
+
 ```powershell
+Test-Connection -ComputerName <target-host> -Count 4
 Test-NetConnection -ComputerName <target-host> -Port <port>
 ```
 
 ### DNS
 
+Linux/macOS:
+
 ```bash
 nslookup <target-host>
 dig <target-host>                # Linux/macOS, if available
 ```
+
+Windows PowerShell:
 
 ```powershell
 Resolve-DnsName <target-host>
@@ -71,9 +80,27 @@ Resolve-DnsName <target-host>
 
 ### HTTP
 
+Linux/macOS:
+
 ```bash
 curl -vvv -o /dev/null -w "HTTP %{http_code}\nTime: %{time_total}s\nDNS: %{time_namelookup}s\nConnect: %{time_connect}s\nTLS: %{time_appconnect}s\n" https://<target-host>/<path>
 curl -I https://<target-host>/<path>
+```
+
+Windows PowerShell:
+
+```powershell
+$uri = "https://<target-host>/<path>"
+try {
+  $resp = Invoke-WebRequest -Uri $uri -Method Head -TimeoutSec 10
+  "HTTP status: $([int]$resp.StatusCode)"
+} catch [Net.WebException] {
+  if ($_.Exception.Response) {
+    "HTTP status: $([int]$_.Exception.Response.StatusCode)"
+  } else {
+    "HTTP request failed: $($_.Exception.Message)"
+  }
+}
 ```
 
 ### TLS
@@ -81,23 +108,36 @@ curl -I https://<target-host>/<path>
 Linux/macOS:
 
 ```bash
-openssl s_client -connect <target-host>:443 -showcerts </dev/null
-echo | openssl s_client -connect <target-host>:443 2>/dev/null | openssl x509 -noout -dates
+openssl s_client -connect <target-host>:<port> -servername <target-host> -showcerts </dev/null
+echo | openssl s_client -connect <target-host>:<port> -servername <target-host> 2>/dev/null | openssl x509 -noout -dates
 ```
 
 Windows PowerShell:
 
 ```powershell
+$uri = "https://<target-host>:<port>/<path>"
+$req = [Net.HttpWebRequest]::Create($uri)
+$req.Method = "HEAD"
+$req.Timeout = 5000
 try {
-  $req = [Net.HttpWebRequest]::Create("https://<target-host>")
-  $req.Timeout = 5000
   $resp = $req.GetResponse()
-  $cert = $req.ServicePoint.Certificate
-  "Cert subject: $($cert.Subject)"
-  "Cert expires: $($cert.GetExpirationDateString())"
+  "HTTP status: $([int]$resp.StatusCode)"
   $resp.Close()
+} catch [Net.WebException] {
+  if ($_.Exception.Response) {
+    "HTTP status: $([int]$_.Exception.Response.StatusCode)"
+    $_.Exception.Response.Close()
+  } else {
+    "TLS or connection error: $($_.Exception.Message)"
+  }
 } catch {
-  "TLS/certificate error: $_"
+  "TLS or connection error: $_"
+} finally {
+  $cert = $req.ServicePoint.Certificate
+  if ($cert) {
+    "Cert subject: $($cert.Subject)"
+    "Cert expires: $($cert.GetExpirationDateString())"
+  }
 }
 ```
 
