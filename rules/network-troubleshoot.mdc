@@ -78,10 +78,14 @@ curl -I https://<target-host>/<path>
 
 ### TLS
 
+Linux/macOS:
+
 ```bash
 openssl s_client -connect <target-host>:443 -showcerts </dev/null
 echo | openssl s_client -connect <target-host>:443 2>/dev/null | openssl x509 -noout -dates
 ```
+
+Windows PowerShell:
 
 ```powershell
 try {
