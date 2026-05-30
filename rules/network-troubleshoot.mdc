@@ -1,138 +1,128 @@
 ---
-description: Systematic network troubleshooting for developers
+description: Systematic, safety-first network troubleshooting for developers
 globs: **/*
 alwaysApply: false
 ---
 
 # Network Troubleshoot
 
-You are a network diagnostics expert. Systematically diagnose network issues using read-only methods.
+Use this rule as a concise decision guide for developer network failures. Keep diagnostics safe, target-scoped, and read-only. Do not turn this rule into an automated remediation toolkit.
 
-## Safety Rules
+## Safety Boundaries
 
-- Prefer read-only diagnostic commands.
-- Never print full proxy URLs, tokens, passwords, or credential values. If output must be shared, redact credentials, hosts, and tokens first.
-- Never disable TLS verification or skip certificate checks.
-- Never change persistent or global npm, pip, git, Docker, shell, or proxy settings without explicit user confirmation.
-- Use the failing target host as the default probe target.
-- Only probe external services after the user approves the target, unless that service is the failing target.
+- Prefer read-only diagnostics and trusted project-provided diagnostic scripts.
+- Use the failing host, URL, registry, or service as the default probe target.
+- Ask before probing unrelated external services.
+- Do not print proxy URLs, credentials, tokens, auth headers, package index URLs, registry hostnames, internal hosts, or raw config values.
+- Do not dump local config from npm, pnpm, yarn, pip, Git, Docker, shell, OS proxy, VPN, or certificate stores.
+- Do not disable, bypass, or skip TLS or certificate verification.
+- Do not change OS networking, DNS, proxy, package manager, Git, Docker, shell, VPN, or trust-store settings without explicit user approval for the exact action.
 
 ## Workflow
 
-1. **Collect**: Get error message, target host/port, triggering command, scope, environment
-2. **Classify**: Match error pattern to category (see table below)
-3. **Diagnose**: Run read-only diagnostic commands for that category
-4. **Advise**: Suggest resolution options; wait for user approval before making changes
-5. **Verify**: Re-run failed operation to confirm
+1. **Collect**: Capture the exact error, failing command, target host/URL/port, OS/shell, proxy/VPN context, and whether the failure affects one target or many.
+2. **Classify**: Match the symptom to the most likely category.
+3. **Diagnose**: Run only read-only checks scoped to the failing target.
+4. **Explain**: Interpret the output before suggesting any fix.
+5. **Advise**: Present remediation options as choices and wait for user approval before changing state.
+6. **Verify**: Re-run the original failing command or an equivalent target-scoped check.
 
 ## Error Classification
 
-| Error Pattern | Category |
+| Error Pattern | Likely Category |
 |---|---|
-| ECONNREFUSED, Connection refused | Connectivity / Port |
-| ECONNRESET, Connection reset | Connectivity / Firewall |
-| ETIMEDOUT, timed out | Timeout / Routing |
-| ENOTFOUND, ERR_NAME_NOT_RESOLVED | DNS |
-| EACCES, EPERM | Firewall / Permissions |
-| ERR_PROXY_CONNECTION_FAILED | Proxy |
-| UNABLE_TO_VERIFY_LEAF_SIGNATURE, CERT_HAS_EXPIRED | SSL/TLS |
-| HTTP 403, 407, 502, 503, 504 | HTTP / Proxy |
-| npm ERR! network, pip timeout | Package Manager |
-| fatal: unable to access (git) | Git / Network |
+| `ECONNREFUSED`, `ERR_CONNECTION_REFUSED`, `Connection refused` | Target service or port is not listening |
+| `ECONNRESET`, `socket hang up`, `Connection reset` | Connection dropped by target, proxy, firewall, or middlebox |
+| `ETIMEDOUT`, `ERR_CONNECTION_TIMED_OUT`, `timed out` | Routing, firewall, proxy, or target availability |
+| `ENOTFOUND`, `EAI_NONAME`, `ERR_NAME_NOT_RESOLVED`, `getaddrinfo` | DNS or hostname issue |
+| `ERR_PROXY_CONNECTION_FAILED`, proxy tunnel errors, HTTP `407` | Proxy configuration or proxy authentication |
+| `UNABLE_TO_VERIFY_LEAF_SIGNATURE`, `CERT_HAS_EXPIRED`, `self signed`, `ERR_CERT_*` | TLS certificate or local trust issue |
+| HTTP `403` | Authorization, IP allowlist, CORS, or policy block |
+| HTTP `502`, `503`, `504` | Upstream service, gateway, CDN, or transient server issue |
+| `npm ERR! network`, package install timeout, `pip` timeout | Package registry, proxy, DNS, or network path issue |
+| `fatal: unable to access`, Git fetch/push timeout | Git remote, proxy, DNS, TLS, or network path issue |
 
-## Diagnostic Commands
+## Safe Target-Scoped Checks
 
-> On Windows Git Bash: `nc`, `dig`, `traceroute` are unavailable. Use `curl`, `nslookup`, `tracert` instead.
+Choose the smallest relevant set. Explain what each command checks before running it.
 
 ### Connectivity
+
 ```bash
 ping -c 4 <target-host>          # Linux/macOS
 ping -n 4 <target-host>          # Windows
-curl -v telnet://<target-host>:<port> --connect-timeout 5   # cross-platform port check
-nc -zv <target-host> <port>      # Linux/macOS only
+curl -v telnet://<target-host>:<port> --connect-timeout 5
+```
+
+```powershell
+Test-NetConnection -ComputerName <target-host> -Port <port>
 ```
 
 ### DNS
+
 ```bash
 nslookup <target-host>
-dig <target-host>                 # Linux/macOS only
+dig <target-host>                # Linux/macOS, if available
 ```
 
-### Proxy (read-only checks only)
-```bash
-# Check whether proxy env vars are set (values are redacted)
-echo "${HTTP_PROXY:+HTTP_PROXY is set}" "${HTTPS_PROXY:+HTTPS_PROXY is set}" "${ALL_PROXY:+ALL_PROXY is set}"
-# Check whether proxy config keys exist — do not paste raw output; redact credentials before sharing
-git config --get http.proxy >/dev/null && echo "git http.proxy is set" || echo "git http.proxy is not set"
-git config --get https.proxy >/dev/null && echo "git https.proxy is set" || echo "git https.proxy is not set"
-npm config get proxy >/dev/null && echo "npm proxy is set" || echo "npm proxy is not set"
-npm config get https-proxy >/dev/null && echo "npm https-proxy is set" || echo "npm https-proxy is not set"
-```
-
-### SSL/TLS
-```bash
-# Linux/macOS only (requires openssl)
-openssl s_client -connect <target-host>:443 -showcerts </dev/null
-echo | openssl s_client -connect <target-host>:443 2>/dev/null | openssl x509 -noout -dates
-curl -vvv https://<target-host> 2>&1 | grep -E "SSL|TLS|certificate|error"
-```
 ```powershell
-# Windows PowerShell
-try { $req = [Net.HttpWebRequest]::Create("https://<target-host>"); $req.Timeout = 5000; $resp = $req.GetResponse(); $cert = $req.ServicePoint.Certificate; "Cert subject: $($cert.Subject)"; "Cert expires: $($cert.GetExpirationDateString())"; $resp.Close() } catch { "TLS/cert error: $_" }
+Resolve-DnsName <target-host>
 ```
 
 ### HTTP
+
 ```bash
 curl -vvv -o /dev/null -w "HTTP %{http_code}\nTime: %{time_total}s\nDNS: %{time_namelookup}s\nConnect: %{time_connect}s\nTLS: %{time_appconnect}s\n" https://<target-host>/<path>
+curl -I https://<target-host>/<path>
 ```
 
-### Package Managers (single-key reads only)
+### TLS
+
 ```bash
-npm config get registry
-# Use npm ping only when the failing target is the configured npm registry, or after user approval
-npm ping
-pip config get global.index-url
+openssl s_client -connect <target-host>:443 -showcerts </dev/null
+echo | openssl s_client -connect <target-host>:443 2>/dev/null | openssl x509 -noout -dates
 ```
 
-## Resolution Advisory
+```powershell
+try {
+  $req = [Net.HttpWebRequest]::Create("https://<target-host>")
+  $req.Timeout = 5000
+  $resp = $req.GetResponse()
+  $cert = $req.ServicePoint.Certificate
+  "Cert subject: $($cert.Subject)"
+  "Cert expires: $($cert.GetExpirationDateString())"
+  $resp.Close()
+} catch {
+  "TLS/certificate error: $_"
+}
+```
 
-Present resolution options to the user. Do not execute any mutating command without explicit approval.
+### Proxy And Package Managers
 
-| Diagnosis | Advisory |
+For proxy, package manager, Git, Docker, and OS network configuration, avoid raw config reads. Report only whether relevant settings appear present when this can be checked without printing values. If the available command would print a URL, token, internal hostname, auth header, or full config value, do not run it.
+
+Only perform package registry probes when the failed operation already targeted that registry, or after the user approves that exact probe target.
+
+## User-Approved Remediation Options
+
+These are options to discuss with the user, not commands to run automatically.
+
+| Diagnosis | Safe Advice |
 |---|---|
-| No internet | Check cable/WiFi, restart router, run `ipconfig /renew` |
-| DNS fails | Suggest switching DNS, flushing cache, checking `/etc/resolv.conf` |
-| Proxy not running | Suggest starting proxy tool and verifying port |
-| Target blocked through proxy | Suggest trying different proxy node/protocol |
-| SSL cert expired | Renew or replace the certificate; for local development, install a trusted local/dev certificate or update the local trust store. Do not bypass TLS verification. |
-| SSL unknown CA | Suggest importing CA to trust store |
-| HTTP 407 | Suggest configuring proxy credentials |
-| HTTP 403 | Suggest checking API key, IP whitelist, CORS headers |
-| HTTP 502/503/504 | Server issue, suggest retry with backoff |
-| npm timeout | Suggest alternative registry options (e.g. npmmirror) and ask which to use |
-| pip timeout | Suggest alternative index options (e.g. TUNA) and ask which to use |
-| git fails | Suggest proxy configuration options and ask which to use |
-| docker pull fails | Suggest mirror configuration in `/etc/docker/daemon.json` |
-| Gradle/Maven fails | Suggest proxy configuration in respective config files |
+| Target service is not listening | Check whether the local or remote service is running and whether the expected port is correct. |
+| DNS lookup fails | Check the hostname, hosts-file expectations, DNS service status, or approved DNS changes. |
+| Proxy appears required or unavailable | Ask whether the user wants to start or adjust the proxy/VPN, then verify only the approved target. |
+| TLS certificate expired | Renew or replace the certificate, fix system time, install a trusted local development CA, or update the trust store. Do not bypass TLS verification. |
+| TLS unknown CA | Import the correct CA into the appropriate trust store after the user confirms the source and scope. |
+| HTTP `407` | Ask the user to confirm proxy authentication requirements before changing credentials or tool settings. |
+| HTTP `403` | Check authentication, API key scope, IP allowlist, CORS policy, or service policy. |
+| HTTP `502`/`503`/`504` | Treat as upstream or gateway instability; check status pages when approved and retry with backoff. |
+| Package install timeout | Discuss approved registry, proxy, or network-path options without printing or changing stored config values. |
+| Git network failure | Discuss approved remote URL, proxy, credential, TLS, or network-path options without changing global Git settings automatically. |
+| Docker pull failure | Discuss approved registry mirror, proxy, or daemon settings as a user-approved configuration change. |
 
 ## Verification
 
-After applying user-approved changes, re-run the failed command to verify:
-```bash
-curl -I https://<previously-failing-host>
-nslookup <target-host>
-```
+After any user-approved change, verify with the original failing command whenever possible. If a smaller check is needed, keep it scoped to the same failing host, URL, registry, or service.
 
-## Error Quick Reference
-
-- `ECONNREFUSED`: Target not listening on that port
-- `ECONNRESET`: Connection dropped — firewall or idle timeout
-- `ETIMEDOUT`: No response — network unreachable or firewall block
-- `ENOTFOUND` / `EAI_NONAME`: DNS resolution failed
-- `EPIPE`: Writing to closed connection
-- `ERR_PROXY_CONNECTION_FAILED`: Proxy not running or wrong config
-- `CERT_HAS_EXPIRED`: Server certificate expired
-- `UNABLE_TO_VERIFY_LEAF_SIGNATURE`: Unknown CA in certificate chain
-- `ERR_OSSL_EVP_UNSUPPORTED`: OpenSSL version mismatch — upgrade Node.js
-
-Always explain what each command does and interpret the output before suggesting fixes.
+Always explain what each diagnostic result means before recommending the next step.
