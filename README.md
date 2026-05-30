@@ -238,6 +238,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 
 ### Build Tools and Development
 
+* [Ano](https://ano.chat) - A collaborative shell with built-in AI integration (Claude Code) and custom CLI/MCP automations designed for elite devs.
 - [AI Agent Specialist](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/ai-agent-specialist.mdc) - TypeScript, React, Node.js, clean architecture, testing, and WHY-oriented engineering guidance.
 - [Alpha Skills](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/alpha-skills-quant-factor-research.mdc) - Quantitative factor research skills for Cursor. Evaluate factors, run backtests, mine new alpha through natural language.
 - [Anti-Over-Engineering](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/anti-overengineering.mdc) - Keeping changes scoped, simple, and directly tied to the user's request.
