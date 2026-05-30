@@ -14,7 +14,7 @@ Use this rule as a concise decision guide for developer network failures. Keep d
 - Use the failing host, URL, registry, or service as the default probe target.
 - Ask before probing unrelated external services.
 - Do not print proxy URLs, credentials, tokens, auth headers, package index URLs, registry hostnames from config, or raw config values in shared output.
-- Internal hosts and URLs may be collected and used for target-scoped local diagnostics, but redact them before sharing logs or reports unless the user explicitly approves including them.
+- Internal hosts and URLs may be collected for target-scoped local diagnostics, but replace them with placeholders before sharing logs or reports unless the user explicitly approves including them.
 - Do not dump local config from npm, pnpm, yarn, pip, Git, Docker, shell, OS proxy, VPN, or certificate stores.
 - Do not disable, bypass, or skip TLS or certificate verification.
 - Do not change OS networking, DNS, proxy, package manager, Git, Docker, shell, VPN, or trust-store settings without explicit user approval for the exact action.
@@ -113,6 +113,8 @@ echo | openssl s_client -connect <target-host>:<port> -servername <target-host> 
 ```
 
 Windows PowerShell:
+
+Use `HEAD` and report HTTP statuses separately from TLS or network errors so non-2xx responses are not mislabeled as certificate failures.
 
 ```powershell
 try {
