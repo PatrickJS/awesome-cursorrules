@@ -333,6 +333,11 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 4. Copy the chosen `.mdc` file into `.cursor/rules/`.
 5. Customize the rule as needed for your specific project requirements.
 
+## XVARY Stock Research
+
+- [XVARY Stock Research](https://github.com/xvary-research/claude-code-stock-analysis-skill) — Claude Code skill for public SEC EDGAR + market data: `/analyze`, `/score`, `/compare`. MIT.
+
+
 ## Contributing
 
 Contributions are welcome! If you have a great Cursor rule to share:
