@@ -13,8 +13,8 @@ Use this rule as a concise decision guide for developer network failures. Keep d
 - Prefer read-only diagnostics and trusted project-provided diagnostic scripts.
 - Use the failing host, URL, registry, or service as the default probe target.
 - Ask before probing unrelated external services.
-- Do not print proxy URLs, credentials, tokens, auth headers, package index URLs, registry hostnames from config, or raw config values.
-- When sharing output, redact internal hosts and URLs unless the user explicitly approves including them.
+- Do not print proxy URLs, credentials, tokens, auth headers, package index URLs, registry hostnames from config, or raw config values in shared output.
+- Internal hosts and URLs may be collected and used for target-scoped local diagnostics, but redact them before sharing logs or reports unless the user explicitly approves including them.
 - Do not dump local config from npm, pnpm, yarn, pip, Git, Docker, shell, OS proxy, VPN, or certificate stores.
 - Do not disable, bypass, or skip TLS or certificate verification.
 - Do not change OS networking, DNS, proxy, package manager, Git, Docker, shell, VPN, or trust-store settings without explicit user approval for the exact action.
@@ -109,35 +109,44 @@ Linux/macOS:
 
 ```bash
 openssl s_client -connect <target-host>:<port> -servername <target-host> -showcerts </dev/null
-echo | openssl s_client -connect <target-host>:<port> -servername <target-host> 2>/dev/null | openssl x509 -noout -dates
+echo | openssl s_client -connect <target-host>:<port> -servername <target-host> 2>/dev/null | openssl x509 -noout -subject -issuer -dates
 ```
 
 Windows PowerShell:
 
 ```powershell
-$uri = "https://<target-host>:<port>/<path>"
-$req = [Net.HttpWebRequest]::Create($uri)
-$req.Method = "HEAD"
-$req.Timeout = 5000
 try {
-  $resp = $req.GetResponse()
-  "HTTP status: $([int]$resp.StatusCode)"
-  $resp.Close()
-} catch [Net.WebException] {
-  if ($_.Exception.Response) {
-    "HTTP status: $([int]$_.Exception.Response.StatusCode)"
-    $_.Exception.Response.Close()
-  } else {
-    "TLS or connection error: $($_.Exception.Message)"
+  $req = [Net.HttpWebRequest]::Create("https://<target-host>:<port>/<path>")
+  $req.Method = "HEAD"
+  $req.Timeout = 5000
+
+  try {
+    $resp = $req.GetResponse()
+  } catch [Net.WebException] {
+    $resp = $_.Exception.Response
+    if ($req.ServicePoint.Certificate) {
+      $cert = $req.ServicePoint.Certificate
+      "Cert subject: $($cert.Subject)"
+      "Cert expires: $($cert.GetExpirationDateString())"
+    }
+    if ($resp) {
+      "HTTP status: $([int]$resp.StatusCode) $($resp.StatusDescription)"
+      $resp.Close()
+    } else {
+      "TLS/network error: $($_.Exception.Message)"
+    }
+    return
   }
-} catch {
-  "TLS or connection error: $_"
-} finally {
+
   $cert = $req.ServicePoint.Certificate
   if ($cert) {
     "Cert subject: $($cert.Subject)"
     "Cert expires: $($cert.GetExpirationDateString())"
   }
+  "HTTP status: $([int]$resp.StatusCode) $($resp.StatusDescription)"
+  $resp.Close()
+} catch {
+  "TLS/network error: $($_.Exception.Message)"
 }
 ```
 
