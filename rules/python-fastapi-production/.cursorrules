@@ -1,0 +1,9 @@
+.cursorrules — Python Production
+
+- Every function signature must include type hints.
+- Never bare except: — catch specific exceptions or re-raise.
+- Pydantic BaseModel for API boundary data. @dataclass for internal structures.
+- Pass dependencies as parameters. No global variables in business logic.
+- Always pathlib.Path. / operator for path joining.
+- Never time.sleep() in async. Use asyncio.sleep().
+- Validate env vars at startup. No os.environ.get() silent defaults.
