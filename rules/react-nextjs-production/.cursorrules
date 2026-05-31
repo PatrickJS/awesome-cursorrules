@@ -1,0 +1,9 @@
+.cursorrules — React + Next.js App Router
+
+- Default to Server Components. Add "use client" only for hooks/browser APIs/event handlers.
+- Fetch data in Server Components. Never fetch in useEffect.
+- Use server actions for mutations, not client-side API route calls.
+- One component per file. File name = component name (PascalCase).
+- Define explicit interface Props. Never use any as prop type.
+- Every async route needs a sibling loading.tsx and error.tsx.
+- Use next/image instead of img. Use next/font instead of Google Fonts link tags.
