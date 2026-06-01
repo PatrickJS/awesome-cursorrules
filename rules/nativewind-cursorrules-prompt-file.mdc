@@ -1,0 +1,84 @@
+---
+description: "Cursor rules for styling React Native and Expo apps with NativeWind (Tailwind CSS for RN)."
+globs: ["**/*.{ts,tsx,js,jsx}"]
+alwaysApply: false
+---
+
+# NativeWind
+
+NativeWind brings Tailwind CSS to React Native. You write `className="px-4 bg-primary"` on RN components, and NativeWind compiles to RN styles at build time.
+
+## Setup essentials
+
+- Babel: add `"nativewind/babel"` to plugins in `babel.config.js`.
+- Metro: wrap the config with `withNativeWind(config, { input: "./global.css" })`.
+- `global.css` must contain the three Tailwind directives (`@tailwind base; @tailwind components; @tailwind utilities;`) and be imported once from the root layout.
+- `tailwind.config.js` must include `content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"]` — missing paths means classes are tree-shaken away in production.
+- Add `nativewind-env.d.ts` referencing `nativewind/types` so `className` is typed on RN components.
+
+## className vs style
+
+- Prefer `className` for everything that can be expressed statically. The compiler hoists styles, so it's faster than inline `style={...}`.
+- Use `style` only for runtime-computed values (Reanimated shared values, dynamic positioning from gestures, theme tokens not yet expressed in Tailwind).
+- Don't mix the two for the same property — pick one source of truth per style attribute.
+
+## What does and doesn't translate to RN
+
+NativeWind covers a strict subset of Tailwind. These work:
+
+- Layout: `flex`, `flex-row`, `items-center`, `justify-between`, `gap-2`
+- Spacing: `p-*`, `m-*`, `px-*`, `py-*`
+- Sizing: `w-*`, `h-*`, `w-full`, `max-w-md`
+- Colors and typography: `bg-*`, `text-*`, `font-bold`, `text-lg`
+- Borders and radius: `border`, `border-2`, `rounded-md`, `border-border`
+- Opacity, shadow (web only — for native use `shadow-*` with explicit color)
+- State variants on `Pressable`: `active:bg-primary/80`
+
+These do NOT work natively (web only):
+
+- Pseudo-classes like `:hover`, `:focus-visible`, `:before`, `:after`
+- CSS Grid (`grid`, `grid-cols-*`)
+- `transition-*` / `animate-*` (use Reanimated instead)
+- `cursor-*`, `select-*`
+
+When you need cross-platform: guard with the `web:` prefix or `Platform.OS === 'web'`.
+
+## Dark mode
+
+- Class strategy is the default. Set `darkMode: 'class'` in `tailwind.config.js` (or `'media'` to auto-track system).
+- Use `dark:bg-background-900` style classes — no per-theme component forking.
+- Read the active scheme with `useColorScheme()` from `nativewind` (not from `react-native`), so the class toggles correctly.
+
+## Theme tokens
+
+- Define semantic tokens in `tailwind.config.js` `theme.extend.colors` — e.g., `primary`, `foreground`, `muted`, `card`. Reference these everywhere instead of raw `blue-500`, `gray-700`.
+- Spacing scale uses Tailwind defaults (`0`, `0.5`, `1`, `2`, ... `96`). Don't introduce arbitrary values like `p-[13px]` — extend the scale instead.
+- Tokens map to CSS variables on web automatically, so the same `bg-primary` works in browser and native.
+
+## Platform-specific classes
+
+NativeWind supports platform variants:
+
+```tsx
+<View className="p-4 ios:pt-6 android:pt-4 web:hover:bg-muted" />
+```
+
+Useful for status-bar offsets, hover states (web only), and Android-specific tap feedback.
+
+## Performance
+
+- Keep classNames static where possible. Conditional classes via `cn()` (clsx + tailwind-merge) are fine, but constructing className strings inside render hot paths with template literals leaks compile-time optimization.
+- Lists: don't put complex className on every row in a large `FlatList` if the row recomputes. Extract a memoized row component.
+- Animations: NativeWind cannot animate `bg-*` or other utility classes. Use Reanimated's `useAnimatedStyle` and inline `style` for the animated properties.
+
+## Common pitfalls
+
+- "Class doesn't apply": check that the file path is in `tailwind.config.js` `content` array, and that `global.css` is imported once from the root layout.
+- "Type error on className": missing `nativewind-env.d.ts` or `tsconfig.json` not including it.
+- "Colors look different on web vs native": likely raw RGB / hex vs CSS variable mismatch. Define colors with `hsl(var(--primary))` pattern to share definitions cleanly.
+- "Reanimated values don't animate": don't try to animate Tailwind classes. Use `style={useAnimatedStyle(...)}` for the animated parts.
+
+## Reference
+
+- Docs: https://www.nativewind.dev
+- Repo: https://github.com/nativewind/nativewind

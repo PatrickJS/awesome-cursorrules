@@ -1,0 +1,94 @@
+---
+description: "Cursor rules for file-based routing with Expo Router in React Native and Expo apps (web + native)."
+globs: ["app/**/*.{ts,tsx,js,jsx}", "**/_layout.{ts,tsx}"]
+alwaysApply: false
+---
+
+# Expo Router
+
+Expo Router is file-based routing for React Native. Every file inside `app/` becomes a route. Layouts wrap nested routes. The same code runs on iOS, Android, and web.
+
+## Directory structure
+
+- `app/_layout.tsx` is the root layout. It runs once at app start and must render `<Slot />`, `<Stack />`, `<Tabs />`, or `<Drawer />`.
+- `app/index.tsx` is the home route (`/`).
+- Nested folders create nested URLs: `app/settings/profile.tsx` → `/settings/profile`.
+- `app/_layout.tsx` inside a subfolder defines a layout scoped to that subtree.
+- Files starting with `_` are not routes (they're layouts or helpers).
+- Files starting with `+` are special (e.g., `+not-found.tsx`, `+native-intent.tsx`).
+
+## Layouts: Stack, Tabs, and groups
+
+```tsx
+// app/_layout.tsx
+import { Stack } from "expo-router";
+export default function RootLayout() {
+  return (
+    <Stack>
+      <Stack.Screen name="index" options={{ title: "Home" }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+    </Stack>
+  );
+}
+```
+
+- Use `<Tabs>` for bottom tab navigators, `<Stack>` for pushed screens, `<Drawer>` for side drawers (requires `expo-router/drawer`).
+- Wrap a layout in a route group `(name)` to share a layout without affecting the URL: `app/(tabs)/home.tsx` → `/home`. Groups are how you avoid `/tabs/home` URLs.
+
+## Dynamic and catch-all routes
+
+- `app/post/[id].tsx` → `/post/123`. Read with `useLocalSearchParams<{ id: string }>()`.
+- `app/blog/[...slug].tsx` is a catch-all, captures `slug` as `string[]`.
+- Optional catch-all: `app/blog/[[...slug]].tsx` matches both `/blog` and `/blog/a/b`.
+
+## Linking and navigation
+
+- `<Link href="/settings">` is the declarative way. It compiles to `<a>` on web, `<Pressable>` on native.
+- `useRouter()` gives imperative `router.push()`, `router.replace()`, `router.back()`, `router.dismiss()`.
+- Prefer `<Link>` for static destinations — it gets correct accessibility on web.
+- Use `router.replace()` for auth flows so the user can't swipe-back to the login screen.
+
+## Search params and typed routes
+
+- Read query params with `useLocalSearchParams<{ q?: string }>()`. They are always strings.
+- For type safety across the whole router, enable typed routes in `app.json`: `"experiments": { "typedRoutes": true }`. Then `href` is autocompleted and unknown paths are type errors.
+- `useGlobalSearchParams` (rarely needed) reads params from the closest matching route, not the current screen.
+
+## Modals and presentation styles
+
+- Modal: `<Stack.Screen name="modal" options={{ presentation: "modal" }} />`. On iOS this slides up; on web it renders as a normal page (style yourself if you want overlay behavior).
+- Transparent modal: `presentation: "transparentModal"` with a Pressable backdrop.
+- Always provide a close affordance — modals on Android close on hardware back, but not all web browsers respect that.
+
+## Authentication patterns
+
+- Use `<Redirect href="/login" />` inside layouts to gate subtrees.
+- For an auth context, wrap providers in `app/_layout.tsx` so they're available to every route.
+- After login, call `router.replace("/(tabs)")` so the auth stack isn't in history.
+- Don't read auth state inside the layout's render and conditionally render `<Redirect>` and routes in the same pass — extract a guard component to avoid flicker.
+
+## Web compatibility
+
+- Files must compile for native AND web. Don't import native-only APIs at the top of a route file — lazy-load with `Platform.OS === 'web'` checks or use `.web.tsx` / `.native.tsx` extensions.
+- For SEO on web, set `<head>` tags inside the route: `import { Stack } from "expo-router"; <Stack.Screen options={{ title: "Page title" }} />` translates to `<title>` on web.
+- Deep linking: configure `scheme` in `app.json`. The router uses the same URL structure on web and native — `/post/123` matches both.
+
+## Common pitfalls
+
+- "Route not found": every leaf route file must default-export a component. Layouts must default-export too.
+- "useLocalSearchParams undefined": params are strings only. Parse to numbers manually. They are `undefined` on the first render of a freshly-pushed route — guard for it.
+- "Two routes match": avoid having both `app/post/[id].tsx` and `app/post/index.tsx` if the index should redirect — use `<Redirect>` explicitly.
+- "Tabs render briefly during auth check": move the auth check into a layout that renders a loading state, not into the tab screens themselves.
+- "Web hot reload loses scroll": expected — use `scrollRestoration` patterns or `react-native-screens` scroll restoration on web.
+
+## Don'ts
+
+- Don't use React Navigation `useNavigation()` types directly. Use `useRouter()` from `expo-router` so types match.
+- Don't manually call `useEffect(() => router.push(...))` for redirects on first render. Use `<Redirect>` instead — it's synchronous and SSR-safe.
+- Don't put business logic in `_layout.tsx`. Layouts should be thin and only set up navigators, providers, and gates.
+
+## Reference
+
+- Docs: https://docs.expo.dev/router/introduction/
+- API: https://docs.expo.dev/router/reference/
