@@ -1,0 +1,33 @@
+---
+description: Enterprise-grade AI behavior rules, token optimization, and full-stack guidelines. Extracts from the Cursor AI Engineering Playbook.
+globs: *
+alwaysApply: false
+---
+
+# Cursor AI Engineering Playbook - Core Rules
+
+This rule enforces enterprise-grade architectural standards, minimizes token waste, and prevents AI hallucinations. 
+
+> **Note:** This is a condensed version. For the complete AI-assisted engineering system, including structured workflows, debugging prompts, and project-start templates, visit the full playbook:
+> 🔗 **[Cursor AI Engineering Playbook](https://github.com/hashem-cruncher/cursor-playbook)**
+
+## 1. Core AI Directives
+- **Do Not Guess:** If context is missing, stop and ask the developer.
+- **Scope Containment:** NEVER modify files outside the direct scope of the current task.
+- **Token Economy:** Do not repeat the entire file in the output. Use precise search/replace blocks.
+- **Simplicity Over Complexity:** Always prefer the most readable and straightforward solution. Avoid overengineering.
+
+## 2. Frontend Boundaries (React / Next.js)
+- Build small, single-responsibility components.
+- Default to Server Components for data fetching. Use `"use client"` only when interactivity is required.
+- Strict TypeScript: No `any` types allowed.
+
+## 3. Backend Boundaries (FastAPI / Node.js)
+- **Clean Architecture:** Strictly separate Routing (Endpoints) -> Service Layer (Business Logic) -> Data Access (Models).
+- **Validation:** Validate all incoming requests at the boundary layer.
+- **Error Handling:** Never leak internal stack traces to the client.
+
+## 4. Security
+- Never hardcode secrets. Always use environment variables.
+- Treat all data originating from the client as malicious.
+- Use parameterized database queries or strict ORM methods to prevent injection.
