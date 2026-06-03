@@ -1,0 +1,9 @@
+.cursorrules — TypeScript Strict Mode
+
+- tsconfig.json must have "strict": true. Never disable strict checks.
+- No any. Use unknown + type guards, or as Type only at I/O boundaries.
+- Every exported function needs explicit return type including async (Promise<T>).
+- Model state as discriminated unions: { status: "loading" } | { status: "success"; data: T }.
+- Readonly<T> for immutable data. as const for config objects.
+- Validate env vars at startup. Never process.env.FOO in business logic.
+- No TypeScript enum. Use const object + typeof union.

@@ -1,0 +1,9 @@
+.cursorrules — Go Production
+
+- Never ignore returned error with _. Handle or return every error.
+- Wrap with context: fmt.Errorf("functionName: %w", err).
+- Define interfaces at the consumer package. Keep interfaces to 1-2 methods.
+- ctx context.Context as first parameter in every I/O function.
+- Every goroutine has a clear owner and shutdown path. Use errgroup.
+- Always name struct fields. No positional initialization.
+- Table-driven tests with t.Run(tt.name, ...).
