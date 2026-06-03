@@ -1,4 +1,4 @@
-.cursorrules — Python Production
+.cursorrules — Python FastAPI Production
 
 - Every function signature must include type hints.
 - Never bare except: — catch specific exceptions or re-raise.
