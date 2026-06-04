@@ -1,0 +1,44 @@
+---
+description: Enforce recorded architectural decisions (ADRs) so AI-generated code does not contradict prior choices. Prevents architectural drift, silent rebuilds, and reintroduced dependencies.
+globs: ["**/*"]
+alwaysApply: false
+---
+
+# Architectural Decision Governance
+
+This codebase records architectural decisions. Treat them as binding
+constraints, not suggestions. Check generated code against them before you write.
+
+## Rules
+
+1. Respect recorded decisions. If the project documents a decision (in
+   `docs/adr/`, `ADR.md`, `DECISIONS.md`, `.cursor/rules/`, or an
+   `ARCHITECTURE`/`CONTEXT` file), follow it. Do not generate code that
+   contradicts one.
+2. Extend, do not rebuild. If an abstraction already exists for a purpose,
+   reuse or extend it. Do not stand up a parallel implementation.
+3. Do not reintroduce rejected choices. If a dependency, pattern, or approach
+   was explicitly ruled out, leave it out. If you think it is now warranted,
+   say so and ask first.
+4. Stay inside the chosen stack. Do not add a new library, datastore, or
+   pattern when an approved one already covers the need.
+5. Surface conflicts early. If a request collides with a recorded decision,
+   stop and name the decision it violates instead of silently generating the
+   conflicting code.
+
+## Before you write code
+
+1. Identify which recorded decisions apply to the files you are touching.
+2. State, in one line, the decision(s) you are working under.
+3. Generate code consistent with them.
+4. If the choice is architecturally significant and no decision covers it
+   (a new dependency, a new boundary, a data-model change), propose the
+   decision and ask before committing to it.
+
+## When you cannot comply
+
+Do not proceed. Explain which decision blocks the request, what the request
+would require, and the options: comply, amend the decision, or escalate.
+
+---
+Source: [Mneme HQ](https://mnemehq.com/) architectural governance ruleset.
