@@ -1,0 +1,374 @@
+---
+description: "FastAPI with SQLAlchemy 2.0 Mapped columns, Pydantic v2 ConfigDict, async sessions, and service-layer architecture — 8 production rules with DO/DON'T examples"
+globs: **/*.py
+alwaysApply: false
+---
+
+# Python FastAPI + SQLAlchemy 2.0 + Pydantic v2
+
+Production rules for FastAPI. These target version-specific patterns that AI models trained on SQLAlchemy 1.x / Pydantic v1 frequently get wrong.
+
+**Stack:** FastAPI · SQLAlchemy 2.0 · Pydantic v2 · asyncpg · Alembic · Python 3.12+
+
+---
+
+## Rule 1 — SQLAlchemy 2.0: Mapped[] Columns, Not Column()
+
+SQLAlchemy 2.0 uses the `Mapped` annotation syntax. The old `Column()` style still works but loses type safety and IDE support.
+
+```python
+# ✅ DO — SQLAlchemy 2.0 Mapped style
+from datetime import datetime
+from sqlalchemy import String, Text, ForeignKey
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    full_name: Mapped[str] = mapped_column(String(255))
+    bio: Mapped[str | None] = mapped_column(Text, nullable=True)
+    is_active: Mapped[bool] = mapped_column(default=True)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+
+    posts: Mapped[list["Post"]] = relationship(back_populates="author")
+```
+
+```python
+# ❌ DON'T — SQLAlchemy 1.x Column style (no type safety)
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True)
+    email = Column(String(255), unique=True)
+    is_active = Column(Boolean, default=True)
+    # No type annotations — IDE can't infer user.email type
+```
+
+---
+
+## Rule 2 — Pydantic v2: ConfigDict, Not class Config
+
+Pydantic v2 replaced the inner `class Config` with `model_config = ConfigDict(...)`. Using the old style raises a deprecation warning (and breaks in strict mode).
+
+```python
+# ✅ DO — Pydantic v2 ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
+
+
+class AppSchema(BaseModel):
+    """Base schema all project schemas inherit from."""
+    model_config = ConfigDict(
+        from_attributes=True,      # Replaces orm_mode = True
+        str_strip_whitespace=True,
+        str_min_length=1,
+    )
+
+
+class UserResponse(AppSchema):
+    id: int
+    email: EmailStr
+    full_name: str
+    bio: str | None
+    is_active: bool
+    created_at: datetime
+```
+
+```python
+# ❌ DON'T — Pydantic v1 inner Config class
+class UserSchema(BaseModel):
+    class Config:
+        orm_mode = True          # Deprecated — use from_attributes=True
+        schema_extra = {...}     # Deprecated — use json_schema_extra
+    email: str
+```
+
+---
+
+## Rule 3 — Separate Create / Update / Response Schemas
+
+Never use one schema for all three operations. Leaks internal fields and prevents partial updates.
+
+```python
+# ✅ DO — three schemas per domain entity
+from pydantic import Field, field_validator
+
+
+class UserCreate(AppSchema):
+    email: EmailStr
+    password: str = Field(min_length=8, max_length=128)
+    full_name: str = Field(max_length=255)
+
+    @field_validator("password")
+    @classmethod
+    def password_complexity(cls, v: str) -> str:
+        if not any(c.isupper() for c in v):
+            raise ValueError("Password must contain an uppercase letter")
+        if not any(c.isdigit() for c in v):
+            raise ValueError("Password must contain a digit")
+        return v
+
+
+class UserUpdate(AppSchema):
+    model_config = ConfigDict(from_attributes=True, str_min_length=None)
+    email: EmailStr | None = None
+    full_name: str | None = Field(default=None, max_length=255)
+    bio: str | None = None
+
+
+class UserResponse(AppSchema):
+    id: int
+    email: EmailStr
+    full_name: str
+    bio: str | None
+    is_active: bool
+    created_at: datetime
+    # NOTE: password / hashed_password never declared here
+```
+
+```python
+# ❌ DON'T — one schema for everything
+class User(BaseModel):
+    id: int | None = None
+    email: str
+    password: str         # Exposed in response!
+    hashed_password: str  # Internal field leaked
+    full_name: str
+```
+
+---
+
+## Rule 4 — Async Session with expire_on_commit=False
+
+`expire_on_commit=True` (the default) causes `MissingGreenlet` errors when you access attributes after `await session.commit()`. Always disable it.
+
+```python
+# ✅ DO — app/database.py
+from sqlalchemy.ext.asyncio import (
+    AsyncSession, async_sessionmaker, create_async_engine,
+)
+
+engine = create_async_engine(
+    settings.database_url,          # postgresql+asyncpg://...
+    pool_size=10,
+    max_overflow=20,
+    pool_pre_ping=True,
+    pool_recycle=3600,
+)
+
+async_session_factory = async_sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False,         # ← Critical for async — prevents MissingGreenlet
+)
+
+# ✅ DO — dependency with commit/rollback
+from collections.abc import AsyncIterator
+
+async def get_db() -> AsyncIterator[AsyncSession]:
+    async with async_session_factory() as session:
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
+```
+
+```python
+# ❌ DON'T — synchronous driver or missing expire_on_commit=False
+engine = create_engine("postgresql://user:pass@host/db")  # Blocks the event loop
+
+# ❌ DON'T — accessing attributes after commit without expire_on_commit=False
+user = User(email="a@b.com")
+session.add(user)
+await session.commit()
+print(user.email)  # MissingGreenlet crash!
+```
+
+---
+
+## Rule 5 — Service Layer Architecture
+
+Routers are thin. Business logic lives in service classes injected via `Depends`.
+
+```python
+# ✅ DO — app/domain/users/service.py
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+
+class UserService:
+    def __init__(self, db: AsyncSession) -> None:
+        self.db = db
+
+    async def get_by_id(self, user_id: int) -> User | None:
+        return await self.db.get(User, user_id)
+
+    async def get_by_email(self, email: str) -> User | None:
+        result = await self.db.execute(select(User).where(User.email == email))
+        return result.scalar_one_or_none()
+
+    async def create(self, data: UserCreate, hashed_password: str) -> User:
+        user = User(
+            email=data.email,
+            full_name=data.full_name,
+            hashed_password=hashed_password,
+        )
+        self.db.add(user)
+        await self.db.flush()   # Get the id without committing
+        return user
+
+
+# ✅ DO — app/domain/users/router.py
+from fastapi import APIRouter, Depends, HTTPException
+from app.dependencies import get_db
+
+router = APIRouter(prefix="/users", tags=["users"])
+
+async def get_user_service(db: AsyncSession = Depends(get_db)) -> UserService:
+    return UserService(db)
+
+UserServiceDep = Annotated[UserService, Depends(get_user_service)]
+
+@router.get("/{user_id}", response_model=UserResponse)
+async def get_user(user_id: int, service: UserServiceDep) -> UserResponse:
+    user = await service.get_by_id(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return UserResponse.model_validate(user)
+```
+
+```python
+# ❌ DON'T — database queries in the router
+@router.get("/{user_id}")
+async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+    # Business logic + DB queries leaking into the transport layer
+```
+
+---
+
+## Rule 6 — Typed Route Responses, Never dict
+
+Always declare a `response_model` or return type annotation. Returning `dict` skips validation and produces broken OpenAPI docs.
+
+```python
+# ✅ DO — explicit response model, validated output
+@router.get("/", response_model=list[UserResponse])
+async def list_users(service: UserServiceDep) -> list[UserResponse]:
+    users = await service.list_all()
+    return [UserResponse.model_validate(u) for u in users]
+
+# ✅ DO — paginated response with generic schema
+@router.get("/search")
+async def search_users(
+    q: str = Query(min_length=1),
+    page: int = Query(ge=1, default=1),
+    service: UserServiceDep,
+) -> PaginatedResponse[UserResponse]:
+    items, total = await service.search(q, page)
+    return PaginatedResponse(
+        items=[UserResponse.model_validate(u) for u in items],
+        total=total, page=page, page_size=20,
+        pages=-(-total // 20),
+    )
+```
+
+```python
+# ❌ DON'T — dict return skips Pydantic validation and breaks docs
+@router.get("/{user_id}")
+async def get_user(user_id: int) -> dict:
+    return {"id": user_id, "maybee_name": "typo"}  # No validation, typos slip through
+```
+
+---
+
+## Rule 7 — Async Routes for I/O; Plain def for CPU
+
+`async def` routes run on the event loop. An `async def` that does blocking I/O freezes all concurrent requests.
+
+```python
+# ✅ DO — async for DB / HTTP / file I/O
+@router.get("/{user_id}")
+async def get_user(user_id: int, service: UserServiceDep) -> UserResponse:
+    user = await service.get_by_id(user_id)
+    return UserResponse.model_validate(user)
+
+# ✅ DO — plain def for CPU-only work (FastAPI runs it in a thread pool)
+@router.get("/hash")
+def compute_hash(data: str) -> dict[str, str]:
+    import hashlib
+    return {"hash": hashlib.sha256(data.encode()).hexdigest()}
+
+# ✅ DO — httpx for async outbound HTTP
+import httpx
+
+@router.get("/proxy")
+async def proxy(url: str) -> dict:
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url, timeout=10)
+        return resp.json()
+```
+
+```python
+# ❌ DON'T — blocking calls inside async functions
+@router.get("/data")
+async def get_data():
+    import requests
+    response = requests.get("https://api.example.com/data")  # Blocks event loop!
+    return response.json()
+```
+
+---
+
+## Rule 8 — Pydantic Settings for Configuration
+
+Use `pydantic-settings` for config. Never `os.getenv()` scattered across files.
+
+```python
+# ✅ DO — app/config.py
+from pydantic import PostgresDsn, computed_field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+
+    database_url: PostgresDsn
+    secret_key: str
+    debug: bool = False
+    db_pool_size: int = 10
+    db_max_overflow: int = 20
+
+    @computed_field
+    @property
+    def async_database_url(self) -> str:
+        return str(self.database_url).replace("postgresql://", "postgresql+asyncpg://")
+
+
+settings = Settings()
+```
+
+```python
+# ❌ DON'T — os.getenv() scattered everywhere
+import os
+
+DATABASE_URL = os.getenv("DATABASE_URL")  # No validation, no type safety
+SECRET_KEY = os.getenv("SECRET_KEY", "changeme")  # Dangerous default
+```
+
+---
+
+**Full 8-rule set with detailed examples:** https://github.com/thebuilderlabs/ship-with-ai
