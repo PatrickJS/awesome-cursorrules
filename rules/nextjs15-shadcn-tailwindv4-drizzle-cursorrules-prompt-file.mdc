@@ -1,0 +1,380 @@
+---
+description: "Next.js 15 App Router with shadcn/ui, Tailwind v4 CSS-first config, Drizzle ORM, and server actions — 8 production rules with DO/DON'T examples"
+globs: **/*.ts, **/*.tsx
+alwaysApply: false
+---
+
+# Next.js 15 + shadcn/ui + Tailwind v4 + Drizzle
+
+Production rules for Next.js 15 App Router. These target the version-specific patterns that AI models trained on older Next.js frequently get wrong.
+
+**Stack:** Next.js 15 · React 19 · shadcn/ui · Tailwind CSS v4 · Drizzle ORM 0.38+ · TypeScript
+
+---
+
+## Rule 1 — Async Params Are Required in Next.js 15
+
+Next.js 15 changed `params` and `searchParams` to be Promises. Accessing them synchronously is a **build error**.
+
+```tsx
+// ✅ DO — await params before use
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const post = await db.query.posts.findFirst({
+    where: (posts, { eq }) => eq(posts.slug, slug),
+  });
+  return <PostView post={post} />;
+}
+
+// ✅ DO — same for searchParams
+export default async function SearchPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; page?: string }>;
+}) {
+  const { q = "", page = "1" } = await searchParams;
+  // ...
+}
+```
+
+```tsx
+// ❌ DON'T — synchronous params (Next.js 14 style, breaks in v15)
+export default function PostPage({ params }: { params: { slug: string } }) {
+  const { slug } = params; // Runtime error in Next.js 15
+}
+```
+
+---
+
+## Rule 2 — Server Components by Default; Push "use client" to Leaves
+
+Every file in `app/` is a React Server Component unless marked `"use client"`. Never make a whole page client-side just to use one stateful widget.
+
+```tsx
+// ✅ DO — RSC fetches data, passes it to a small client leaf
+// app/dashboard/page.tsx (server component — no directive needed)
+import { db } from "@/lib/db";
+import { RevenueChart } from "@/components/revenue-chart"; // client component
+
+export default async function DashboardPage() {
+  const revenue = await db.query.revenue.findMany({ limit: 30 });
+  return (
+    <main className="p-6">
+      <h1 className="text-2xl font-semibold">Dashboard</h1>
+      <RevenueChart data={revenue} /> {/* Only this leaf is client */}
+    </main>
+  );
+}
+```
+
+```tsx
+// ❌ DON'T — entire page becomes a client component for one useState
+"use client";
+import { useState, useEffect } from "react";
+
+export default function DashboardPage() {
+  const [revenue, setRevenue] = useState([]);
+  useEffect(() => {
+    fetch("/api/revenue").then((r) => r.json()).then(setRevenue);
+  }, []);
+  // No streaming, no caching, no direct DB access, extra roundtrip
+}
+```
+
+**Rule:** If a component needs `useState`, `useEffect`, event handlers, or browser APIs — extract just that piece into a `"use client"` component. Keep the parent RSC.
+
+---
+
+## Rule 3 — Server Actions with Zod Validation
+
+Mutations go through server actions, not route handlers. Every action validates input with Zod before touching the database.
+
+```ts
+// ✅ DO — lib/actions/posts.ts
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { z } from "zod";
+import { db } from "@/lib/db";
+import { posts } from "@/lib/db/schema";
+import { getCurrentUser } from "@/lib/auth";
+
+const createPostSchema = z.object({
+  title: z.string().min(3).max(255),
+  content: z.string().min(10),
+  published: z.boolean().default(false),
+});
+
+export type ActionState = { errors: Record<string, string[]>; message: string };
+
+export async function createPost(
+  _prev: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const user = await getCurrentUser();
+  if (!user) redirect("/sign-in");
+
+  const result = createPostSchema.safeParse({
+    title: formData.get("title"),
+    content: formData.get("content"),
+    published: formData.get("published") === "on",
+  });
+
+  if (!result.success) {
+    return { errors: result.error.flatten().fieldErrors, message: "Validation failed" };
+  }
+
+  await db.insert(posts).values({ ...result.data, authorId: user.id });
+  revalidatePath("/dashboard/posts");
+  return { errors: {}, message: "Post created" };
+}
+```
+
+```ts
+// ❌ DON'T — mutation in a route handler with no validation
+// app/api/posts/route.ts
+export async function POST(req: Request) {
+  const body = await req.json(); // Unvalidated user input
+  await db.insert(posts).values(body); // Direct DB write — dangerous
+  return Response.json({ ok: true });
+}
+```
+
+---
+
+## Rule 4 — shadcn/ui: Wrap, Don't Edit
+
+shadcn/ui components live in `components/ui/`. The CLI can regenerate them. Wrap to extend; never edit the source files.
+
+```tsx
+// ✅ DO — components/submit-button.tsx
+"use client";
+
+import { Button, type ButtonProps } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { useFormStatus } from "react-dom";
+
+export function SubmitButton({ children, ...props }: ButtonProps) {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending} {...props}>
+      {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      {children}
+    </Button>
+  );
+}
+```
+
+```tsx
+// ✅ DO — compose Card primitives for feature cards
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+export function PlanCard({ name, price, isPopular }: PlanCardProps) {
+  return (
+    <Card className={isPopular ? "border-primary" : undefined}>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle>{name}</CardTitle>
+          {isPopular && <Badge>Popular</Badge>}
+        </div>
+      </CardHeader>
+      <CardContent>${price}/month</CardContent>
+    </Card>
+  );
+}
+```
+
+```tsx
+// ❌ DON'T — editing components/ui/button.tsx directly
+// npx shadcn@latest add button will overwrite your changes
+```
+
+---
+
+## Rule 5 — Tailwind v4: CSS-First, No tailwind.config.js
+
+Tailwind v4 reads configuration from CSS `@theme` blocks. There is no `tailwind.config.js`. Creating one will be silently ignored.
+
+```css
+/* ✅ DO — app/globals.css */
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-brand-50: oklch(0.97 0.01 250);
+  --color-brand-500: oklch(0.55 0.2 250);
+  --color-brand-900: oklch(0.25 0.1 250);
+  --breakpoint-xs: 30rem;
+}
+
+/* shadcn/ui semantic tokens — use @theme inline so they reference CSS vars */
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-border: hsl(var(--border));
+}
+```
+
+```js
+// ❌ DON'T — tailwind.config.js/ts is Tailwind v3 syntax; ignored in v4
+module.exports = {
+  content: ["./app/**/*.tsx"],
+  theme: { extend: { colors: { brand: "#4f46e5" } } },
+};
+```
+
+Also: use `@import "tailwindcss"` — not the old v3 directives:
+
+```css
+/* ❌ DON'T — v3 directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+---
+
+## Rule 6 — Drizzle ORM: Relational Queries and Typed Schema
+
+Use `db.query.*` for reads and export `$inferSelect` / `$inferInsert` types everywhere.
+
+```ts
+// ✅ DO — lib/db/schema.ts
+import { pgTable, uuid, varchar, text, boolean, timestamp, index } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+
+export const posts = pgTable(
+  "posts",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    title: varchar("title", { length: 255 }).notNull(),
+    slug: varchar("slug", { length: 255 }).notNull().unique(),
+    content: text("content"),
+    published: boolean("published").notNull().default(false),
+    authorId: uuid("author_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [index("posts_author_id_idx").on(t.authorId)]
+);
+
+export type Post = typeof posts.$inferSelect;
+export type NewPost = typeof posts.$inferInsert;
+
+// ✅ DO — relational query (generates optimal JOIN)
+const postsWithAuthors = await db.query.posts.findMany({
+  where: (posts, { eq }) => eq(posts.published, true),
+  with: { author: { columns: { id: true, name: true } } },
+  orderBy: (posts, { desc }) => [desc(posts.createdAt)],
+  limit: 20,
+});
+```
+
+```ts
+// ❌ DON'T — creating a Pool manually (unnecessary in Drizzle 0.38+)
+import { Pool } from "pg";
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+export const db = drizzle(pool, { schema });
+
+// ✅ DO — pass connection string directly
+export const db = drizzle(process.env.DATABASE_URL!, { schema });
+```
+
+---
+
+## Rule 7 — cn() for Conditional Classes
+
+Always merge Tailwind classes through `cn()` (clsx + tailwind-merge) to avoid class conflicts.
+
+```tsx
+// ✅ DO — components/ui/badge.tsx pattern
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
+
+const badgeVariants = cva(
+  "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground",
+        secondary: "bg-secondary text-secondary-foreground",
+        destructive: "bg-destructive text-destructive-foreground",
+      },
+    },
+    defaultVariants: { variant: "default" },
+  }
+);
+
+interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}
+
+export function Badge({ className, variant, ...props }: BadgeProps) {
+  return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
+}
+```
+
+```tsx
+// ❌ DON'T — string concatenation causes class conflicts
+<div className={`bg-primary ${className}`} /> // className="bg-red-500" won't override
+```
+
+---
+
+## Rule 8 — Loading / Error Boundaries Per Route Segment
+
+Every data-fetching route segment needs a `loading.tsx`. Every route group needs an `error.tsx`.
+
+```tsx
+// ✅ DO — app/(dashboard)/loading.tsx
+import { Skeleton } from "@/components/ui/skeleton";
+
+export default function DashboardLoading() {
+  return (
+    <div className="flex flex-col gap-4 p-6">
+      <Skeleton className="h-8 w-48" />
+      <div className="grid grid-cols-3 gap-4">
+        <Skeleton className="h-32" />
+        <Skeleton className="h-32" />
+        <Skeleton className="h-32" />
+      </div>
+    </div>
+  );
+}
+
+// ✅ DO — app/(dashboard)/error.tsx
+"use client";
+export default function DashboardError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-4 p-6">
+      <p className="text-destructive">Something went wrong: {error.message}</p>
+      <button onClick={reset} className="underline">Try again</button>
+    </div>
+  );
+}
+```
+
+```tsx
+// ❌ DON'T — unhandled async errors crash the page with no recovery
+export default async function DashboardPage() {
+  const data = await db.query.metrics.findMany(); // If this throws — white screen
+  return <MetricsGrid data={data} />;
+}
+```
+
+---
+
+**Full 8-rule set with detailed examples:** https://github.com/thebuilderlabs/ship-with-ai

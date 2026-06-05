@@ -1,0 +1,388 @@
+---
+description: "React Native Expo SDK 52 with Expo Router v4, Pressable, FlashList, expo-image, Gesture API v2, Reanimated, and Zustand + TanStack Query — 8 production rules with DO/DON'T examples"
+globs: **/*.ts, **/*.tsx
+alwaysApply: false
+---
+
+# React Native Expo SDK 52 + Expo Router v4
+
+Production rules for Expo SDK 52. These target version-specific patterns that AI models trained on older React Native or Expo SDKs frequently get wrong.
+
+**Stack:** Expo SDK 52 · React Native 0.76 (New Architecture) · React 19 · Expo Router v4 · TypeScript
+
+---
+
+## Rule 1 — Pressable Over TouchableOpacity
+
+`TouchableOpacity`, `TouchableHighlight`, and `TouchableNativeFeedback` are legacy APIs. `Pressable` is the current, flexible primitive for all touchable elements.
+
+```tsx
+// ✅ DO — Pressable with dynamic style and ripple
+import { Pressable, Text, StyleSheet } from "react-native";
+
+export function Button({ title, onPress }: { title: string; onPress: () => void }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.button,
+        { opacity: pressed ? 0.75 : 1 },
+      ]}
+      android_ripple={{ color: "rgba(255,255,255,0.2)" }}
+      accessibilityRole="button"
+      accessibilityLabel={title}
+    >
+      {({ pressed }) => (
+        <Text style={[styles.label, pressed && styles.labelPressed]}>{title}</Text>
+      )}
+    </Pressable>
+  );
+}
+
+const styles = StyleSheet.create({
+  button: { backgroundColor: "#0066FF", borderRadius: 8, paddingVertical: 12, paddingHorizontal: 20 },
+  label: { color: "#fff", fontWeight: "600", textAlign: "center" },
+  labelPressed: { color: "rgba(255,255,255,0.8)" },
+});
+```
+
+```tsx
+// ❌ DON'T — deprecated Touchable components
+import { TouchableOpacity, TouchableHighlight } from "react-native";
+
+// TouchableOpacity — no render prop, limited customization
+<TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+  <Text>{title}</Text>
+</TouchableOpacity>
+```
+
+---
+
+## Rule 2 — FlashList Over FlatList
+
+`@shopify/flash-list` significantly outperforms `FlatList` for long lists. It recycles cells by component type rather than by index.
+
+```tsx
+// ✅ DO — FlashList with estimatedItemSize (required for optimization)
+import { FlashList } from "@shopify/flash-list";
+import { memo } from "react";
+
+interface Post { id: string; title: string; excerpt: string }
+
+// Extract renderItem to a stable memoized component
+const PostCard = memo(function PostCard({ post }: { post: Post }) {
+  return (
+    <View style={styles.card}>
+      <Text style={styles.title}>{post.title}</Text>
+      <Text style={styles.excerpt}>{post.excerpt}</Text>
+    </View>
+  );
+});
+
+function PostList({ posts }: { posts: Post[] }) {
+  return (
+    <FlashList
+      data={posts}
+      renderItem={({ item }) => <PostCard post={item} />}
+      estimatedItemSize={120}        // ← Required; measure a typical item
+      keyExtractor={(item) => item.id}
+      contentContainerStyle={{ paddingHorizontal: 16 }}
+      ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+      ListEmptyComponent={<Text style={styles.empty}>No posts yet</Text>}
+    />
+  );
+}
+```
+
+```tsx
+// ❌ DON'T — FlatList for long lists, or FlashList without estimatedItemSize
+import { FlatList } from "react-native";
+
+<FlatList data={posts} renderItem={({ item }) => <PostCard post={item} />} />
+
+// ❌ DON'T — inline renderItem (creates new function every render)
+<FlashList
+  data={posts}
+  renderItem={({ item }) => <View><Text>{item.title}</Text></View>}
+  // Missing estimatedItemSize — FlashList warns and can't optimize
+/>
+```
+
+---
+
+## Rule 3 — expo-image Over React Native Image
+
+`expo-image` provides disk caching, blurhash placeholders, smooth transitions, and better performance. React Native's built-in `Image` does none of this.
+
+```tsx
+// ✅ DO — expo-image with blurhash placeholder and cache
+import { Image } from "expo-image";
+
+const BLURHASH = "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WB";
+
+function Avatar({ uri, size = 48 }: { uri: string; size?: number }) {
+  return (
+    <Image
+      source={{ uri }}
+      placeholder={{ blurhash: BLURHASH }}
+      style={{ width: size, height: size, borderRadius: size / 2 }}
+      contentFit="cover"
+      transition={200}
+      recyclingKey={uri}       // Recycle the view when URI changes
+      cachePolicy="memory-disk"
+    />
+  );
+}
+```
+
+```tsx
+// ❌ DON'T — React Native Image has no cache, no placeholder, no transitions
+import { Image } from "react-native";
+
+<Image source={{ uri }} style={{ width: 48, height: 48 }} />
+// No disk cache, no blurhash, no fade-in — flash of blank content on every mount
+```
+
+---
+
+## Rule 4 — Expo Router v4 File-Based Routing
+
+Expo Router v4 uses file-based routing. Keep route files as thin shells that delegate to feature screens. Use route groups `(name)` for layout segmentation and auth-gating.
+
+```tsx
+// ✅ DO — app/(tabs)/profile.tsx (thin shell)
+import { ProfileScreen } from "@/features/profile/screens/ProfileScreen";
+export default function ProfileRoute() {
+  return <ProfileScreen />;
+}
+
+// ✅ DO — app/(tabs)/_layout.tsx (auth guard + tab bar)
+import { Redirect, Tabs } from "expo-router";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+
+export default function TabsLayout() {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Redirect href="/(auth)/sign-in" />;
+
+  return (
+    <Tabs screenOptions={{ tabBarActiveTintColor: "#0066FF", headerShown: false }}>
+      <Tabs.Screen name="index" options={{ title: "Home" }} />
+      <Tabs.Screen name="profile" options={{ title: "Profile" }} />
+    </Tabs>
+  );
+}
+
+// ✅ DO — typed route params with useLocalSearchParams
+// app/post/[id].tsx
+import { useLocalSearchParams } from "expo-router";
+
+export default function PostRoute() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  return <PostScreen postId={id} />;
+}
+```
+
+```tsx
+// ❌ DON'T — business logic in route files
+// app/(tabs)/profile.tsx
+export default function ProfileRoute() {
+  const [profile, setProfile] = useState(null);
+  useEffect(() => { fetchProfile().then(setProfile); }, []);
+  // 200 lines of UI + logic — impossible to test or reuse
+}
+
+// ❌ DON'T — passing objects through route params (must be serializable strings)
+router.push({ pathname: "/post/[id]", params: { id: "123", data: JSON.stringify(bigObj) } });
+```
+
+---
+
+## Rule 5 — Gesture Handler v2 API (Gesture.Pan, not PanGestureHandler)
+
+Expo SDK 52 ships with `react-native-gesture-handler` v2. The legacy `PanGestureHandler` component API is deprecated. Use `Gesture.*` + `GestureDetector`.
+
+```tsx
+// ✅ DO — Gesture API v2 with Reanimated shared values
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, {
+  useSharedValue, useAnimatedStyle, withSpring, runOnJS,
+} from "react-native-reanimated";
+
+function SwipeableCard({ onDismiss }: { onDismiss: () => void }) {
+  const translateX = useSharedValue(0);
+
+  const pan = Gesture.Pan()
+    .onUpdate((e) => { translateX.value = e.translationX; })
+    .onEnd((e) => {
+      if (Math.abs(e.translationX) > 150) {
+        translateX.value = withSpring(e.translationX > 0 ? 500 : -500);
+        runOnJS(onDismiss)();
+      } else {
+        translateX.value = withSpring(0);
+      }
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
+  return (
+    <GestureDetector gesture={pan}>
+      <Animated.View style={[styles.card, animatedStyle]}>
+        <Text>Swipe to dismiss</Text>
+      </Animated.View>
+    </GestureDetector>
+  );
+}
+```
+
+```tsx
+// ❌ DON'T — legacy component-based gesture API
+import { PanGestureHandler } from "react-native-gesture-handler";
+
+<PanGestureHandler onGestureEvent={handler}>
+  <Animated.View />
+</PanGestureHandler>
+```
+
+---
+
+## Rule 6 — SafeAreaView from react-native-safe-area-context
+
+The `SafeAreaView` from `react-native` is iOS-only and has no edge control. Always use the one from `react-native-safe-area-context`.
+
+```tsx
+// ✅ DO — safe-area-context SafeAreaView with edge control
+import { SafeAreaView } from "react-native-safe-area-context";
+
+export function Screen({ children }: { children: React.ReactNode }) {
+  return (
+    <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
+      {children}
+    </SafeAreaView>
+  );
+}
+
+// ✅ DO — useSafeAreaInsets for manual control
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+export function CustomHeader() {
+  const insets = useSafeAreaInsets();
+  return (
+    <View style={{ paddingTop: insets.top + 8, paddingHorizontal: 16 }}>
+      <Text style={styles.title}>My App</Text>
+    </View>
+  );
+}
+```
+
+```tsx
+// ❌ DON'T — react-native SafeAreaView (iOS-only, no edge control)
+import { SafeAreaView } from "react-native";
+
+<SafeAreaView style={{ flex: 1 }}>
+  {/* Notch bleeds on Android */}
+</SafeAreaView>
+```
+
+---
+
+## Rule 7 — Zustand for UI State, TanStack Query for Server State
+
+Don't use a global store for server/async data. TanStack Query handles caching, deduplication, and background refetch. Zustand is for local UI state only.
+
+```tsx
+// ✅ DO — TanStack Query for server data
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+function usePost(id: string) {
+  return useQuery({
+    queryKey: ["post", id],
+    queryFn: () => api.posts.get(id),
+    staleTime: 1000 * 60 * 5,    // 5 minutes
+  });
+}
+
+function useCreatePost() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: api.posts.create,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
+  });
+}
+
+// ✅ DO — Zustand for UI-only state (modal open, selected tab, etc.)
+import { create } from "zustand";
+
+interface UIStore {
+  isFilterOpen: boolean;
+  openFilter: () => void;
+  closeFilter: () => void;
+}
+
+export const useUIStore = create<UIStore>((set) => ({
+  isFilterOpen: false,
+  openFilter: () => set({ isFilterOpen: true }),
+  closeFilter: () => set({ isFilterOpen: false }),
+}));
+```
+
+```tsx
+// ❌ DON'T — storing fetched data in Zustand (duplicates React Query's job)
+export const usePostStore = create((set) => ({
+  posts: [],
+  loading: false,
+  fetchPosts: async () => {
+    set({ loading: true });
+    const posts = await api.posts.list();
+    set({ posts, loading: false });
+  },
+}));
+```
+
+---
+
+## Rule 8 — Reanimated Shared Values for Animations
+
+`useSharedValue` + `useAnimatedStyle` run on the UI thread. Never use React state for animation values — it causes JS-thread jank.
+
+```tsx
+// ✅ DO — Reanimated shared values + withSpring
+import Animated, {
+  useSharedValue, useAnimatedStyle, withSpring, withTiming,
+} from "react-native-reanimated";
+
+function ExpandableCard({ isExpanded }: { isExpanded: boolean }) {
+  const height = useSharedValue(80);
+
+  useEffect(() => {
+    height.value = withSpring(isExpanded ? 240 : 80, { damping: 15 });
+  }, [isExpanded]);
+
+  const animatedStyle = useAnimatedStyle(() => ({ height: height.value }));
+
+  return (
+    <Animated.View style={[styles.card, animatedStyle]}>
+      <Text>Content</Text>
+    </Animated.View>
+  );
+}
+```
+
+```tsx
+// ❌ DON'T — React state for animation (JS thread, causes dropped frames)
+function ExpandableCard({ isExpanded }: { isExpanded: boolean }) {
+  const [height, setHeight] = useState(80);
+
+  useEffect(() => {
+    // Runs on JS thread — can drop frames on heavy lists
+    setHeight(isExpanded ? 240 : 80);
+  }, [isExpanded]);
+
+  return <View style={[styles.card, { height }]}><Text>Content</Text></View>;
+}
+```
+
+---
+
+**Full 8-rule set with detailed examples:** https://github.com/thebuilderlabs/ship-with-ai
