@@ -365,3 +365,5 @@ Please ensure your contribution is original or properly credited if based on exi
 - [coderabbit.ai](https://coderabbit.ai/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules) - Cut code review time and bugs in half.
 - [Unblocked MCP](https://getunblocked.com/unblocked-mcp/?utm_source=oss&utm_medium=sponsorship&utm_campaign=awesome-cursorrules) - Team knowledge for Cursor workflows.
 - [Warp](https://go.warp.dev/awesome-cursorrules) - Terminal workflows for coding with multiple AI agents.
+ 
+- **[Xiao Luo Student](https://github.com/haihui121/xiao-luo-student)** - Wellness companion that reminds you to take breaks, eat meals, and rest during AI coding sessions. Auto-detects time and language. 
