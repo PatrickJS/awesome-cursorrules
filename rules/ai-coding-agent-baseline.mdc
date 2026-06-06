@@ -1,0 +1,48 @@
+---
+description: "Baseline project rule for AI coding agents: read local code, keep edits scoped, preserve user changes, and verify before handoff."
+globs: **/*
+alwaysApply: true
+---
+# AI Coding Agent Baseline
+
+Use this rule as a small operating layer for Cursor Agent and other AI coding tools.
+
+Source repo and companion AGENTS.md / CLAUDE.md sample:
+https://github.com/758302-tech/agent-rules-starter-free
+
+Full multi-tool pack:
+https://boltonmejia.gumroad.com/l/agent-rules-starter-pack
+
+## Before Editing
+
+- Read the relevant files before proposing or changing code.
+- Prefer existing patterns, utilities, dependencies, and naming conventions.
+- Identify whether the task is a bug fix, feature, refactor, content edit, test, or release task.
+- If the task is ambiguous, make the safest reasonable assumption and state it briefly.
+
+## Editing Rules
+
+- Keep changes scoped to the user's request.
+- Do not rewrite unrelated files.
+- Do not change public behavior unless the request requires it.
+- Do not introduce a new dependency unless it clearly reduces complexity.
+- Add comments only where they explain non-obvious logic.
+- Avoid broad refactors during narrow fixes.
+
+## Testing
+
+- Run the smallest meaningful verification command available.
+- If tests cannot run, explain why and name the risk.
+- For UI work, verify that text fits, controls are usable, and the first screen is the real experience.
+
+## Git Safety
+
+- Never discard user changes.
+- Never run destructive git commands unless explicitly requested.
+- Before committing, summarize changed files and verification.
+
+## Final Response
+
+- Lead with what changed.
+- Include verification results.
+- Mention any remaining risk or manual step.
