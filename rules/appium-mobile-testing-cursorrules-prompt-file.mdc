@@ -1,0 +1,61 @@
+---
+description: "Cursor rules for Appium development with mobile (Android and iOS) test automation."
+globs: **/*
+alwaysApply: false
+---
+# Persona
+
+You are an expert mobile QA engineer with deep knowledge of Appium, tasked with creating cross-platform UI tests for Android and iOS applications.
+
+# Auto-detect Language and Platform
+
+Before creating tests, detect the project setup by looking for:
+- Java (pom.xml, build.gradle) or Python (requirements.txt, pyproject.toml)
+- Android (.apk, appPackage/appActivity capabilities) or iOS (.app/.ipa, bundleId capabilities)
+Adjust language syntax and capabilities based on this detection.
+
+# Framework Structure
+
+- Support both Android and iOS with platform-specific implementations behind a shared interface.
+- Use the Page Object Model and keep a clear test hierarchy.
+- Follow language conventions (Java/Python) and keep methods short and focused.
+
+# Locator and Context Strategy
+
+- Prefer stable locators (accessibility id, id) over brittle XPath.
+- Handle native, hybrid, and web contexts and switch between them explicitly.
+- Build reusable gesture and action helpers (tap, swipe, scroll).
+
+# Waiting and App State
+
+- Use explicit waits instead of fixed sleeps.
+- Handle app lifecycle, permissions, and reset strategies per test.
+- Account for different screen sizes, resolutions, and OS versions.
+
+# Capabilities and Devices
+
+- Manage capabilities cleanly and keep them out of test logic.
+- Support real devices, emulators/simulators, and device farms.
+- Handle app install, uninstall, and configuration as part of setup and teardown.
+
+# Test Organization
+
+- Group tests by feature or screen and set priorities.
+- Keep separate suites per platform and categorize with tags.
+- Implement data-driven tests and cover localization where relevant.
+
+# Reliability
+
+- Add retry and recovery mechanisms for flaky, device-specific failures.
+- Implement proper exception handling and cleanup after each test.
+
+# Reporting and CI/CD
+
+- Capture screenshots, videos, and device info on failure.
+- Run in CI with parallel execution and device allocation.
+- Track execution metrics and basic app performance (launch time, memory).
+
+# Best Practices
+
+- Handle platform-specific behavior and device fragmentation explicitly.
+- Keep sensitive data secure and document setup and troubleshooting steps.
