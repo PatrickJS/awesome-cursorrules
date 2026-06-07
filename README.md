@@ -218,6 +218,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [Cypress E2E Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/cypress-e2e-testing-cursorrules-prompt-file.mdc) - Cypress development with E2E testing.
 - [Cypress Integration Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/cypress-integration-testing-cursorrules-prompt-file.mdc) - Cypress development with integration testing.
 - [Jest Unit Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/jest-unit-testing-cursorrules-prompt-file.mdc) - Jest development with unit testing.
+- [k6 Performance and Load Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/k6-performance-load-testing-cursorrules-prompt-file.mdc) - k6 development with performance and load testing.
 - [Playwright API Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/playwright-api-testing-cursorrules-prompt-file.mdc) - Playwright development with API testing.
 - [Playwright Accessibility Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/playwright-accessibility-testing-cursorrules-prompt-file.mdc) - Playwright development with accessibility testing.
 - [Playwright Defect Tracking](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/playwright-defect-tracking-cursorrules-prompt-file.mdc) - Playwright development with defect tracking.
