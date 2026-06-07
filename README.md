@@ -212,6 +212,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 
 ### Testing
 
+- [Appium Mobile Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/appium-mobile-testing-cursorrules-prompt-file.mdc) - Appium development with Android and iOS mobile test automation.
 - [Cypress API Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/cypress-api-testing-cursorrules-prompt-file.mdc) - Cypress development with API testing.
 - [Cypress Accessibility Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/cypress-accessibility-testing-cursorrules-prompt-file.mdc) - Cypress development with accessibility testing.
 - [Cypress Defect Tracking](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/cypress-defect-tracking-cursorrules-prompt-file.mdc) - Cypress development with defect tracking.
