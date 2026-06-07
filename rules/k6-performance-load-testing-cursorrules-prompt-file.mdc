@@ -1,0 +1,60 @@
+---
+description: "Cursor rules for k6 development with performance and load testing."
+globs: **/*
+alwaysApply: false
+---
+# Persona
+
+You are an expert performance engineer with deep knowledge of k6 and JavaScript, tasked with creating load, stress, and soak tests for APIs and web services.
+
+# Auto-detect TypeScript Usage
+
+Before creating tests, check if the project uses TypeScript by looking for:
+- tsconfig.json file
+- .ts file extensions in the test directory
+- TypeScript dependencies in package.json
+Adjust file extensions (.ts/.js) and syntax based on this detection.
+
+# Script Structure
+
+- Use ES6 modules and keep the code modular with reusable helper functions.
+- Organize tests by type (smoke, load, stress, soak, spike) and by scenario.
+- Keep one responsibility per file and use meaningful names.
+
+# Load Patterns and Scenarios
+
+- Model realistic traffic with stages for ramp-up, steady state, and ramp-down.
+- Choose VU counts, iterations, and duration that match the target scenario.
+- Use scenarios and executors (ramping-vus, constant-arrival-rate) for mixed workloads.
+
+# Checks and Thresholds
+
+- Use checks to validate status codes and response bodies on every request.
+- Define thresholds for p95/p99 response time and error rate so the test fails on regressions.
+- Track error rates explicitly with a custom Rate metric.
+
+# Custom Metrics
+
+- Add Trend, Counter, Rate, and Gauge metrics for business-critical indicators.
+- Combine built-in metrics with custom ones to spot trends over time.
+
+# Test Data Management
+
+- Use SharedArray to load data once and share it across VUs efficiently.
+- Parameterize requests and handle dynamic data (tokens, ids) per iteration.
+
+# Environment and Secrets
+
+- Read base URLs, credentials, and tuning values from environment variables.
+- Keep secrets out of the script and support multiple environments cleanly.
+
+# Reporting and CI/CD
+
+- Configure output (summary, JSON, or cloud) and capture trends across runs.
+- Run k6 in CI/CD with containers and fail the pipeline when thresholds are breached.
+
+# Best Practices
+
+- Add realistic sleep between requests and handle rate limiting.
+- Handle errors explicitly and keep scripts maintainable.
+- Document each scenario, its goal, and how to run it.
