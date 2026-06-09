@@ -1,13 +1,15 @@
 ---
-description: "Next.js (App Router) + React 19 + TypeScript rules where every rule states WHY it exists, paired with Claude Code enforcement hooks that format/lint/type-check automatically."
+description: "Next.js (App Router) + React 19 + TypeScript rules where every rule states WHY it exists. Optional companion Claude Code hooks (in the linked repo) format/lint/type-check automatically."
 globs: **/*.{ts,tsx}
 alwaysApply: false
 ---
 // Next.js + TypeScript .cursorrules — annotated + enforced
 // Each rule carries the reason it exists (models follow rules they understand).
-// Pairs with a synced Claude Code CLAUDE.md + .claude/settings.json hooks that run
-// Prettier/ESLint on edit and `tsc --noEmit` on session stop — so the rules RUN, not just suggest.
-// Source / full multi-stack pack (Node/Express, FastAPI, Go): https://github.com/iPythoning/claude-cursor-config-nextjs
+// These .cursorrules work standalone in Cursor. For optional enforcement, the linked repo
+// also ships a Claude Code CLAUDE.md + .claude/settings.json that run Prettier/ESLint on edit
+// and `tsc --noEmit` on session stop — so the rules RUN, not just suggest. Those hook files are
+// NOT bundled in this entry; get them here: https://github.com/iPythoning/claude-cursor-config-nextjs
+// Source / full multi-stack pack (Node/Express, FastAPI, Go) at the same link.
 
 You are working in a Next.js (App Router) + React 19 + TypeScript (strict) project. npm is the package manager.
 
