@@ -1,0 +1,55 @@
+---
+description: "Next.js (App Router) + React 19 + TypeScript rules where every rule states WHY it exists. Optional companion Claude Code hooks (in the linked repo) format/lint/type-check automatically."
+globs: **/*.{ts,tsx}
+alwaysApply: false
+---
+// Next.js + TypeScript .cursorrules — annotated + enforced
+// Each rule carries the reason it exists (models follow rules they understand).
+// These .cursorrules work standalone in Cursor. For optional enforcement, the linked repo
+// also ships a Claude Code CLAUDE.md + .claude/settings.json that run Prettier/ESLint on edit
+// and `tsc --noEmit` on session stop — so the rules RUN, not just suggest. Those hook files are
+// NOT bundled in this entry; get them here: https://github.com/iPythoning/claude-cursor-config-nextjs
+// Source / full multi-stack pack (Node/Express, FastAPI, Go) at the same link.
+
+You are working in a Next.js (App Router) + React 19 + TypeScript (strict) project. npm is the package manager.
+
+## Scope discipline
+- Change only what the task requires. Do NOT refactor, rename, or reformat unrelated code. Why: unrequested edits bury the real diff and break unrelated work.
+- Do NOT add a new dependency, pattern, or abstraction without asking. Prefer what the codebase already uses. Why: a second state library or HTTP client is a tax forever.
+- No speculative generality — build for the current requirement only (YAGNI).
+
+## TypeScript
+- strict mode. NEVER use `any` — use `unknown` and narrow. Why: `any` silently disables the type system exactly where bugs hide; `unknown` forces a deliberate check.
+- Prefer `type` for unions/objects; `interface` only for declaration merging.
+- PascalCase type names, no `I` prefix.
+- Derive types from one source of truth (z.infer, ReturnType, `as const`) — never maintain parallel shapes by hand.
+
+## React / Next.js
+- Server Components by default. Add "use client" ONLY for state, effects, or browser APIs. Why: shipping client JS you don't need is the most common Next.js performance regression.
+- Fetch data in Server Components or route handlers, NOT in useEffect. Why: useEffect fetching causes request waterfalls and loading-flash; server fetching is parallel and cache-aware.
+- PascalCase components, useCamelCase hooks, one component per file.
+- Co-locate by feature, not by file type. Why: feature folders keep related code together and make deletion safe.
+- Keep server-only secrets out of any module a Client Component imports (use `server-only`).
+
+## State
+- Server data: RSC or TanStack Query. Shared client state: a small store, only when prop-passing hurts. URL state: search params. Forms: React Hook Form + schema validation.
+- NEVER copy server data into a client store. Why: two sources of truth drift; derive instead of duplicate.
+
+## Error handling
+- Handle errors explicitly at every boundary. NEVER swallow them with empty catch blocks. Why: a silent `catch {}` turns a clear failure into a mystery bug three screens away.
+- Validate all external input (form data, params, API responses) with a schema at the edge. Why: trusting unvalidated external data is the root of most runtime crashes and injection bugs.
+- User surfaces show friendly messages; the server logs full context.
+
+## Code style
+- Immutable by default — return new objects, don't mutate inputs. Why: hidden mutation is the hardest class of bug to trace.
+- Early returns over deep nesting (max ~3 levels). Named constants over magic numbers.
+- Functions < ~50 lines, files < ~400 (hard cap 800). Why: small units are reviewable, testable, and reusable.
+- No console.log, commented-out code, or context-free TODOs in committed code.
+
+## Security
+- No hardcoded secrets (env vars; validate at startup). No unsanitized HTML / raw dangerouslySetInnerHTML.
+- Parameterize every DB query. CSRF + rate limiting on state-changing routes.
+
+## Testing & done
+- New logic ships with AAA tests covering edge cases. Descriptive test names.
+- Before declaring done: `npm run build`, `npm run lint`, and tests must pass. No `any`, no swallowed errors, no hardcoded secrets, no stray console.log. Diff contains only the required change. Why: "it compiles in my head" is not verification.
