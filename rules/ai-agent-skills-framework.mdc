@@ -1,0 +1,19 @@
+---
+description: Apply contract-driven development, strict CSS style isolation, and auto-DoD verification for modern coding agents.
+globs: ["**/*.html", "**/*.css", "**/*.js"]
+alwaysApply: false
+---
+
+# AI Agent Skills Framework (.mdc)
+
+This rule enforces strict architectural separation of visual style tokens, structural layouts, and dynamic behaviors inside web projects to prevent style leaks and agent task evasion.
+
+## Core Requirements
+1. **State Lock**: Every modification must follow stage-by-stage execution in `.pipeline_state.json`.
+2. **CSS Decoupling**: No raw colors (hex, rgb, hsl) inside layout files or inline style attributes. Run verification:
+   ```bash
+   python scripts/pipeline_validator.py
+3. Self-Healing: Run diagnostic healing up to 3 times upon runtime errors before requesting human help.
+
+Full specifications and CLI compiler scripts can be found at: 
+https://github.com/luoning/agent-skills
