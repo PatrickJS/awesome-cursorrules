@@ -239,7 +239,6 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 ### Build Tools and Development
 
 - [AI Agent Specialist](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/ai-agent-specialist.mdc) - TypeScript, React, Node.js, clean architecture, testing, and WHY-oriented engineering guidance.
-- [AI Agent Skills Framework](https://github.com/luoning/agent-skills) - Contract-driven development, visual style isolation, and auto-DoD self-healing sandbox for modern coding agents (Cursor MDC supported).
 - [Alpha Skills](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/alpha-skills-quant-factor-research.mdc) - Quantitative factor research skills for Cursor. Evaluate factors, run backtests, mine new alpha through natural language.
 - [Anti-Over-Engineering](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/anti-overengineering.mdc) - Keeping changes scoped, simple, and directly tied to the user's request.
 - [Anti-Sycophancy Code Discipline](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/anti-sycophancy-code-discipline-cursorrules-prompt-file.mdc) - 17 directives blocking the most common LLM coding honesty failures: hallucinated APIs, invented signatures, false-confidence validation, manufactured-urgency capitulation, authority-driven softening, and self-referential comments. Drop the `.mdc` in `.cursor/rules/`.
