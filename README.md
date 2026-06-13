@@ -217,6 +217,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [Cypress Defect Tracking](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/cypress-defect-tracking-cursorrules-prompt-file.mdc) - Cypress development with defect tracking.
 - [Cypress E2E Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/cypress-e2e-testing-cursorrules-prompt-file.mdc) - Cypress development with E2E testing.
 - [Cypress Integration Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/cypress-integration-testing-cursorrules-prompt-file.mdc) - Cypress development with integration testing.
+- [DOS Verify Done-Claims](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/dos-verify-done-claims-cursorrules-prompt-file.mdc) - Gate AI done/shipped/fixed claims on git ground truth via the DOS kernel (dos verify, dos commit-audit) instead of the agent's own narration.
 - [Jest Unit Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/jest-unit-testing-cursorrules-prompt-file.mdc) - Jest development with unit testing.
 - [Playwright API Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/playwright-api-testing-cursorrules-prompt-file.mdc) - Playwright development with API testing.
 - [Playwright Accessibility Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/playwright-accessibility-testing-cursorrules-prompt-file.mdc) - Playwright development with accessibility testing.

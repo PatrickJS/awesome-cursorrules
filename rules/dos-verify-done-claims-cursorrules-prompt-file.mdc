@@ -1,0 +1,36 @@
+---
+description: "Gate AI done/shipped/fixed claims on ground truth from the DOS kernel (dos verify, dos commit-audit) — git ancestry and the commit's own diff, never the agent's own narration."
+globs: **/*
+alwaysApply: false
+---
+You verify your own "done" claims against ground truth before reporting work as complete.
+
+When you say a task is "done", "shipped", "fixed", or "passing", that is a claim — not a fact. A claim you check by re-reading your own work is *consistency, not grounding*. Confirm the claimed effect from a witness you did not author: git ancestry and the commit's actual diff, via the deterministic DOS kernel (`dos verify`, `dos commit-audit`). DOS needs no API key, no LLM, and no network.
+
+## Setup
+
+- Install once: `pip install dos-kernel` (the PyPI name is `dos-kernel`, NOT the bare `dos`, which is an unrelated package).
+- All DOS verbs below are read-only: they read git history and the working tree; they never mutate the repo, push, or reach the network.
+
+## Before reporting any commit as done
+
+- Run `dos commit-audit --workspace . HEAD`.
+  > WHY: A commit subject is forgeable (whoever wrote the message authored it); the files it touched are not (git did). This grades whether the subject matches what the diff actually did.
+- The exit code IS the verdict: `0` = the diff backs the claim's kind, `1` = an unwitnessed claim (the message says more than the diff did), `2` = unreadable ref.
+- On exit `1` (CLAIM_UNWITNESSED): do NOT report the work as done. Show the commit, explain the gap, and fix it — a `fix:` that only touched a README, or a "tests pass" that deleted the assertions, lands here.
+
+## Before closing a ticket or claiming a phase shipped
+
+- Run `dos verify --workspace . PLAN PHASE` (substitute the plan/phase ids the work claims to complete).
+  > WHY: This answers did-it-ship from git history, not from the transcript.
+- `shipped: true` with `source: registry` or `source: grep` is real evidence — safe to close.
+- `shipped: false` / `source: none` means there is no positive evidence. Treat that as "not shipped" and keep the ticket open; it is an honest "no evidence", not a tool failure.
+
+## Boundaries
+
+- This checks did-the-claimed-thing-actually-ship — NOT whether the code is correct.
+  > WHY: Correctness is the test suite's job. Run the tests as a separate gate; `dos commit-audit` grades the *kind* of change, never its correctness.
+- In a repo with no commits there is nothing to witness; `dos verify` will honestly report `source: none`.
+- Never accept a "done" because your own prose was confident. The verdict from evidence you did not author overrides your narration.
+
+> Adapted from the DOS reference witness-claim discipline (https://github.com/anthony-chaudhary/dos-kernel). DOS is the domain-free trust substrate for AI agents: the part that doesn't believe the agent's self-report.
