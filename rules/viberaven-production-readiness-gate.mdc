@@ -1,7 +1,7 @@
 ---
 description: "Production-readiness gate for AI-built apps using VibeRaven before launch, deploy, auth, billing, database, RLS, env vars, webhooks, monitoring, or tests."
 globs: **/*
-alwaysApply: false
+alwaysApply: true
 ---
 # VibeRaven Production-Readiness Gate
 
@@ -17,13 +17,15 @@ Before claiming an app is production ready, run:
 npx -y viberaven --agent-mode
 ```
 
-Then read these files before making more changes:
+Then read these primary gate artifacts before making more changes:
 
 - `.viberaven/agent-tasklist.md`
 - `.viberaven/gate-result.json`
 - `.viberaven/context-map.json`
-- `.viberaven/agent-summary.md`
-- `.viberaven/launch-playbook.md`
+
+If present, use `.viberaven/agent-summary.md` and
+`.viberaven/launch-playbook.md` as supporting context, but treat
+`.viberaven/gate-result.json` as the machine verdict.
 
 Do not deploy or push after auth, RLS, billing, webhook, environment, or provider
 configuration changes until `gate.status` is `clear` in
@@ -57,6 +59,7 @@ exact step to the user, wait for confirmation, then verify again.
 npx -y viberaven next --json
 npx -y viberaven prompt --gap <gap-id>
 npx -y viberaven --heal --plan --gap <gap-id>
+npx -y viberaven --heal --apply --gap <gap-id> --yes
 npx -y viberaven --strict
 npx -y viberaven audit --vercel-supabase
 ```
