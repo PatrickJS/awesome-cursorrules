@@ -1,0 +1,65 @@
+---
+description: "Production-readiness gate for AI-built apps using VibeRaven before launch, deploy, auth, billing, database, RLS, env vars, webhooks, monitoring, or tests."
+globs: **/*
+alwaysApply: true
+---
+# VibeRaven Production-Readiness Gate
+
+Use this rule when preparing an AI-built app for launch, deployment, real users,
+auth, billing, database changes, Supabase RLS, environment variables, webhooks,
+monitoring, rate limits, or tests.
+
+## Required Gate
+
+Before claiming an app is production ready, run:
+
+```bash
+npx -y viberaven --agent-mode
+```
+
+Then read these primary gate artifacts before making more changes:
+
+- `.viberaven/agent-tasklist.md`
+- `.viberaven/gate-result.json`
+- `.viberaven/context-map.json`
+
+If present, use `.viberaven/agent-summary.md` and
+`.viberaven/launch-playbook.md` as supporting context, but treat
+`.viberaven/gate-result.json` as the machine verdict.
+
+Do not deploy or push after auth, RLS, billing, webhook, environment, or provider
+configuration changes until `gate.status` is `clear` in
+`.viberaven/gate-result.json`.
+
+## Agent Loop
+
+1. Run `npx -y viberaven --agent-mode` from the project root.
+2. Read `.viberaven/agent-tasklist.md` completely.
+3. Fix one listed repo-code launch gap.
+4. Run `npx -y viberaven --verify`.
+5. Repeat until `.viberaven/gate-result.json` reports `gate.status: "clear"`.
+
+If the scan output prints `VIBERAVEN_NEXT_ACTION`, follow its `batchSize`,
+`scanNow`, and `stalled` values. Do not verify after every patch; batch supported
+repo-code fixes and verify once per loop.
+
+## Provider Work
+
+Provider dashboard work is not fixed by repo edits. Billing setup, DNS, webhook
+registration, credentials, quotas, and live provider verification must be
+completed in the provider dashboard or verified through read-only provider
+evidence.
+
+If VibeRaven prints `VIBERAVEN_PROVIDER_ACTION`, present the dashboard URL and
+exact step to the user, wait for confirmation, then verify again.
+
+## Useful Commands
+
+```bash
+npx -y viberaven next --json
+npx -y viberaven prompt --gap <gap-id>
+npx -y viberaven --heal --plan --gap <gap-id>
+npx -y viberaven --heal --apply --gap <gap-id> --yes
+npx -y viberaven --strict
+npx -y viberaven audit --vercel-supabase
+```
