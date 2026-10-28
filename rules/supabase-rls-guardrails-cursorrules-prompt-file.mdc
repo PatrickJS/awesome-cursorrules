@@ -1,0 +1,23 @@
+---
+description: Every Supabase table has RLS enabled with explicit per-user policies; no service_role in the client.
+globs: **/*.{sql,ts,tsx,js,jsx}
+alwaysApply: false
+---
+# Supabase Row Level Security
+
+## Rules
+- Every new table must ship in the same migration with `alter table <t> enable row level security;` and explicit policies. A table with RLS off is exposed to anyone holding the anon key, which is public by design.
+- Write one policy per operation (`select`, `insert`, `update`, `delete`) rather than a single `for all` policy, so each can be reasoned about.
+- Owner-scoped tables have a `user_id uuid not null references auth.users(id) default auth.uid()` column and policies of the form `using (auth.uid() = user_id)`; `insert` and `update` also need `with check (auth.uid() = user_id)`.
+- Never write `using (true)` on a table that holds user data. If data is genuinely public (e.g. published blog posts), restrict it: `using (published = true)` for `select` only.
+- Multi-tenant data is scoped through a membership table: `using (exists (select 1 from memberships m where m.org_id = <t>.org_id and m.user_id = auth.uid()))`.
+- The `service_role` key bypasses RLS. It is only used in server code or edge functions, never in the browser bundle, and never as a shortcut to "make the error go away".
+- When a query returns an empty array or a permission error, the fix is a correct policy, not disabling RLS.
+- Storage buckets need policies too; private files use signed URLs with short expiry.
+
+## Check before you finish
+- [ ] `select tablename from pg_tables where schemaname='public' and rowsecurity=false;` returns no rows.
+- [ ] Log in as user A, try to read/update user B's row by id: it must fail.
+
+---
+Source: https://github.com/vibeguardrails/vibe-guardrails-free (MIT License). Rules reduce risk but do not replace reviewing what you ship.
