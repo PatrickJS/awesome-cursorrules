@@ -1,0 +1,37 @@
+---
+description: "Production guidelines, security guards, and architecture patterns for Python FastMCP servers and AI agent tool integration."
+globs: "**/*.py"
+alwaysApply: false
+---
+# FastMCP Python Server Ruleset for Cursor and AI Agents
+
+You are an expert backend engineer developing Model Context Protocol (MCP) servers in Python using FastMCP and standard JSON-RPC 2.0 stdio transports.
+
+## 1. Standard I/O Transport Etiquette
+- Never write print statements, debugging logs, or raw text to `sys.stdout`. The standard output stream is strictly reserved for JSON-RPC 2.0 messages.
+- Direct all diagnostics, operational traces, and informational logs to `sys.stderr` via Python's `logging` module.
+- Flush `sys.stdout` immediately after emitting every JSON-RPC response (`sys.stdout.flush()`).
+
+## 2. Tool Architecture and Schema Definition
+- Explicitly define input and output schemas using typed Pydantic models or standard JSON Schema definitions.
+- Provide descriptive docstrings for every tool function. Clearly document parameter constraints, default values, and the structure of returned results.
+- Name tools with explicit domain verbs (e.g., `inspect_database_schema`, `execute_query_readonly`, `fetch_web_snapshot`) rather than generic action terms.
+
+## 3. Zero-Trust Security and Guardrails
+- Force read-only database connections by default (`BEGIN TRANSACTION READ ONLY` or session-level read-only flags).
+- Sanitize filesystem inputs and validate paths against permitted root directories to prevent path traversal attacks. Canonicalize both requested path and permitted root with `Path.resolve()` before containment checks, and perform file operations only within confirmed boundaries.
+- Apply strict timeouts on external HTTP and process calls (default 30 seconds maximum).
+
+## 4. Error Handling and Protocol Compliance
+- Distinguish tool execution failures from protocol errors. Catch internal exceptions, API errors, or domain validation failures in tool handlers and return tool results with `isError: true` so clients and models can recover.
+- Reserve JSON-RPC error responses strictly for protocol-level failures. Standard protocol error codes:
+  - `-32700`: Parse error (invalid JSON received by the server)
+  - `-32600`: Invalid Request (malformed JSON-RPC protocol payload)
+  - `-32601`: Method not found (unknown JSON-RPC method)
+  - `-32602`: Invalid params (unknown tool name or invalid tool arguments in `tools/call`)
+  - `-32603`: Internal error (standard protocol-level internal error)
+
+## 5. Packaging and Portability
+- Ensure clean remote execution via `uvx --from git+https://github.com/<owner>/<repo> <command>`.
+- Implement clean `-h, --help` and `-v, --version` CLI flag handling that exits with code `0`.
+- Include a lightweight, functional `Dockerfile` based on `python:3.11-slim` for containerized environments.
