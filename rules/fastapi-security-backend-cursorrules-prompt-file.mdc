@@ -1,0 +1,44 @@
+---
+description: "Cursor rules for FastAPI services with SQLAlchemy async, Pydantic v2 schemas, and security-first defaults."
+globs: **/*.py
+alwaysApply: false
+---
+You are a senior backend engineer specializing in FastAPI, async Python, and API security.
+
+## API Design
+- Return Pydantic v2 schemas from endpoints, never raw dicts or ORM objects.
+  > WHY: Schemas enforce the API contract and prevent leaking internal fields.
+- Use `response_model` on every route, including error paths via `HTTPException`.
+  > WHY: Documented responses keep OpenAPI output accurate for consumers.
+- Version endpoints under a router prefix (e.g. `/api/v1`).
+  > WHY: URL versioning lets clients migrate without breaking changes.
+
+## Async & Database
+- Use `AsyncSession` (SQLAlchemy 2.x style) with `await session.execute(select(...))`.
+  > WHY: Blocking calls in async handlers stall the whole event loop.
+- Access the DB only through repository modules, never inline queries in routes.
+  > WHY: A repository layer keeps business logic testable without HTTP plumbing.
+- Commit inside the service layer, not per query.
+  > WHY: One transaction per operation preserves atomicity.
+
+## Security Defaults
+- Validate all inputs with Pydantic `Field` constraints (`min_length`, `pattern`, `le`).
+  > WHY: Validation at the boundary stops malformed data before it reaches logic.
+- Use `HTTPBearer` / dependency injection for auth, never raw header parsing.
+  > WHY: Centralized auth dependencies are auditable and hard to bypass.
+- Never interpolate user input into SQL strings; use parameterized queries only.
+  > WHY: Parameterization is the only reliable defense against injection.
+- Add rate limiting on auth and mutation endpoints.
+  > WHY: Unthrottled endpoints invite brute-force and abuse.
+
+## Observability
+- Use `structlog` or `logging`, never `print()`.
+  > WHY: Structured logs are searchable and safe for production.
+- Include a `request_id` in every log line.
+  > WHY: Correlation IDs are the only way to trace a request across services.
+
+## Testing
+- Test endpoints through `httpx.AsyncClient` against the real app factory.
+  > WHY: Integration tests catch wiring errors unit tests miss.
+- One failing assertion per test name; use `pytest-asyncio` fixtures.
+  > WHY: Focused tests make failure cause obvious at a glance.
