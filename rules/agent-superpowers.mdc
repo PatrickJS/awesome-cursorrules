@@ -1,0 +1,30 @@
+---
+description: "Disciplined autonomous engineering framework: TDD bug reproduction, git worktree sandboxing, adversarial fuzzing, and AST context compression."
+globs: **/*
+alwaysApply: false
+---
+# Agent Superpowers: Autonomous Engineering System
+
+A disciplined, deterministic engineering protocol enforcing rigour before code execution.
+
+## Core Directives
+
+1. **Bug Reproduction First (Ghost Runner)**
+   - Never guess or speculate on bug fixes without evidence.
+   - Author a minimal reproduction test (MRE) that is guaranteed to FAIL (RED) on current codebase.
+   - Apply the minimal code fix and confirm the test PASSES (GREEN).
+
+2. **Branch Isolation (Git Worktree Sandbox)**
+   - For complex, multi-file refactoring or experimental tasks, isolate work in an ephemeral git worktree branch.
+   - Protect the main working tree from unverified state corruption.
+
+3. **Adversarial Verification (Adversarial Duelist)**
+   - Subject critical business logic and input boundaries to red-team fuzzing.
+   - Test explicitly for null-bytes, zero-divisions, payload boundary limits, and unexpected types before committing.
+
+4. **Context Hygiene (Token Squeezer)**
+   - When loading large multi-file architectures into active context, compress AST structures to preserve token budget.
+   - Strip internal implementations while preserving typed function signatures, exports, and docstrings.
+
+5. **Clarify Before Code (Feature Brainstormer)**
+   - If user requirements are ambiguous, clarify boundary conditions, edge cases, and scope constraints before implementation.

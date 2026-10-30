@@ -238,6 +238,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 
 ### Build Tools and Development
 
+- [Agent Superpowers (Autonomous Engineering Suite)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/agent-superpowers.mdc) - Disciplined autonomous software engineering framework with TDD bug reproduction, worktree sandboxing, adversarial fuzzing, and AST context compression.
 - [AI Agent Specialist](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/ai-agent-specialist.mdc) - TypeScript, React, Node.js, clean architecture, testing, and WHY-oriented engineering guidance.
 - [Alpha Skills](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/alpha-skills-quant-factor-research.mdc) - Quantitative factor research skills for Cursor. Evaluate factors, run backtests, mine new alpha through natural language.
 - [Anti-Over-Engineering](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/anti-overengineering.mdc) - Keeping changes scoped, simple, and directly tied to the user's request.
