@@ -262,6 +262,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [Tauri (Svelte, TypeScript Guide)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/tauri-svelte-typescript-guide-cursorrules-prompt-f.mdc) - Tauri development with Svelte and TypeScript guide integration.
 - [TypeScript Code Convention](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/typescript-code-convention-cursorrules-prompt-file.mdc) - TypeScript development with code convention integration.
 - [VSCode Extension (Electron/TypeScript)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/vscode-extension-dev-typescript-cursorrules-prompt-file.mdc) - VSCode extension development with Electron and TypeScript integration.
+- [Vicem Context Baton & AST Diet](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/vicem-context-baton-cursorrules-prompt-file.mdc) - Cross-agent context handoff, deterministic AST code skeletonization, and lossless MCP symbol rehydration.
 - [Web App Optimization](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/web-app-optimization-cursorrules-prompt-file.mdc) - Web app development with optimization integration.
 - [Ankra CLI (Kubernetes Cluster Management)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/ankra-cli.mdc) - Ankra CLI development with Kubernetes cluster management integration.
     
