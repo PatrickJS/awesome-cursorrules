@@ -284,6 +284,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [R Best Practices](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/r-cursorrules-prompt-file-best-practices.mdc) - R development with best practices integration.
 - [Rust](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/rust-general.mdc) - Safe, idiomatic Rust application and library development.
 - [Solidity (Foundry)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/solidity-foundry-cursorrules-prompt-file.mdc) - Solidity development with Foundry integration.
+- [Solidity (Foundry, verify before done)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/solidity-foundry-verify-before-done.mdc) - Build, test and lint Solidity changes with Forge and Solhint, fix without weakening checks, and report what is still open.
 - [Solidity (Hardhat)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/solidity-hardhat-cursorrules-prompt-file.mdc) - Solidity development with Hardhat integration.
 - [Solidity (React Blockchain Apps)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/solidity-react-blockchain-apps-cursorrules-prompt-.mdc) - Solidity development with React Blockchain apps integration.
 - [Solana Wallet-Aware Coding](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/solana-wallet-aware.mdc) - Solana wallet safety, isolated signers, program allowlists, MEV-aware transaction handling, and operational guardrails.
