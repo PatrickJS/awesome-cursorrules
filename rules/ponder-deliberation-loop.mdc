@@ -1,0 +1,20 @@
+---
+description: "Convergent deliberation loop for coding agents: multi-pass, coverage-gated review and planning"
+globs: ["**/*"]
+alwaysApply: false
+---
+
+# Ponder Deliberation Loop
+
+Protocol for systematic multi-pass code review, architecture audits, and plan verification in Cursor.
+
+## Deliberation Principles
+
+1. **Unit Enumeration**: Before reviewing or refactoring, enumerate all target files, interfaces, or functions as discrete audit units.
+2. **Coverage-Gated Evaluation**: Do not declare review complete or approve changes while units remain ungraded. Every unit must receive an explicit verdict.
+3. **Four-Perspective Verification**:
+   - **Skeptic**: Probe failure modes, boundary conditions, edge cases, and missing input validation.
+   - **Builder**: Verify architectural coherence, maintainability, type correctness, and execution simplicity.
+   - **Dreamer**: Identify unaddressed capabilities, extensibility paths, and high-impact optimizations.
+   - **Empath**: Assess developer ergonomics, operator debuggability, error messages, and documentation clarity.
+4. **Convergence and Stabilization**: Re-grade modified units across repeated passes. Stop only when coverage reaches 1.00 and consecutive quiet passes show zero churn in findings.
