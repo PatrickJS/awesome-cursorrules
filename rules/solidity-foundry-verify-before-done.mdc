@@ -1,0 +1,18 @@
+---
+description: Make the agent build, test and lint Solidity changes in a Foundry project, fix what fails without weakening checks, and report what is still open.
+globs: **/*.sol, foundry.toml
+alwaysApply: false
+---
+# Solidity (Foundry): check before calling it done
+
+After you change any Solidity file:
+
+1. Build and run the relevant tests: `forge build`, then `forge test` (narrow with `--match-test` or `--match-contract` while iterating, run the full suite at the end). If a Foundry test MCP server is configured, you may use its tools instead.
+2. If the build fails or the tests did not run (compile error, no tests matched, timeout), say so. Never report that as passing, even if the output shows 0 failed.
+3. Lint with Solhint using the project's config: `npx solhint 'src/**/*.sol'` (quote the glob). If the project has no `.solhint.json`, Solhint stops with "Failed to load a solhint's config file": ask the user before creating one with `npx solhint --init`. Apply Solhint's own fixes only after the user agrees, with `npx solhint --fix --noPrompt 'src/**/*.sol'` (without `--noPrompt` it waits for a y/n answer), or fix by hand. If a Solhint MCP server is configured, you may use its tools instead.
+4. Repeat until tests pass and lint shows no errors. Stop after 5 rounds and report what remains.
+5. Never make a check pass by weakening it: no `solhint-disable` comments, no skipped or deleted tests, no lowered fuzz runs, no loosened `.solhint.json` or `foundry.toml`, unless the user agrees.
+6. For contracts that hold value, add fuzz or invariant tests.
+7. End with a short report: what you ran, what passed, what you fixed, and what is still open.
+8. Passing tests and a clean lint do not prove a contract is secure. Say so in the report and recommend an independent review before real value is deployed.
+9. Never send transactions, deploy, or handle private keys. Leave that to the user.
