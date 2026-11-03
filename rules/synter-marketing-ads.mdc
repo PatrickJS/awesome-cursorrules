@@ -24,7 +24,7 @@ Add to `.cursor/mcp.json`:
   "mcpServers": {
     "synter": {
       "command": "npx",
-      "args": ["-y", "@synterai/mcp-server", "--read-only"]
+      "args": ["-y", "@synterai/mcp-server@^1.4.7", "--read-only"]
     }
   }
 }
