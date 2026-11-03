@@ -226,6 +226,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [PR Review (security / performance / tests / architecture)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/pr-review-cursorrules-prompt-file.mdc) - Focused PR reviews with severity ranking, file and line citations, and separate review angles for security, performance, tests, and architecture.
 - [PR Template](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/pr-template-cursorrules-prompt-file.mdc) - PR development with template integration.
 - [QA Bug Report](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/qa-bug-report-cursorrules-prompt-file.mdc) - QA development with bug report integration.
+- [TestMu AI Test Case](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/testmu-ai-test-case-cursorrules-prompt-file.mdc) - Manual test cases as single-row CSV files for TestMu AI (formerly LambdaTest) Test Manager import.
 - [TestRail Test Case](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/testrail-test-case-cursorrules-prompt-file.mdc) - TestRail development with test case integration.
 - [Vitest Unit Testing](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/vitest-unit-testing-cursorrules-prompt-file.mdc) - Vitest development with unit testing.
 - [Xray Test Case](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/xray-test-case-cursorrules-prompt-file.mdc) - Xray development with test case integration.
