@@ -1,0 +1,35 @@
+---
+description: Layered (domain/application/infrastructure/interfaces) architecture for TypeScript backends split into modules. Keeps dependencies pointing inward, the core framework-free, and modules coupled only through types.
+globs: src/modules/**/*.ts, src/modules/**/*.tsx
+alwaysApply: false
+---
+# Layered Architecture for TypeScript Modules
+
+Each feature area is a module under `src/modules/<module>/` with four layers.
+Adjust the glob above if your modules live elsewhere.
+
+| Layer | Contains | May import |
+| --- | --- | --- |
+| `domain/` | Entities, value objects, repository interfaces, domain errors | Nothing outside `domain/` |
+| `application/` | Use cases, ports (interfaces), DTOs | Its own `domain/` |
+| `infrastructure/` | ORM repositories, HTTP clients, SDK wrappers (adapters) | Its own `domain/` and `application/` |
+| `interfaces/` | Controllers, routes, request/response schemas | Its own `application/` and `infrastructure/` |
+
+## Rules
+
+- Dependencies point inward. `domain/` never imports `application/`, `infrastructure/` or `interfaces/`. `application/` never imports `infrastructure/` or `interfaces/`.
+- Keep the core framework-free. No web framework, ORM or vendor SDK in `domain/` or `application/`. When a use case needs I/O, declare a port (interface) in `application/`, implement it in `infrastructure/`, and inject it from `interfaces/`.
+- Enforce invariants in the domain. Entities validate themselves in the constructor or a factory; use cases orchestrate, they do not re-validate.
+- Modules talk through types. A module may `import type` another module's shapes. It must not import another module's functions, classes or repositories at runtime; if module A needs module B to do something, A owns a port and B's adapter implements it.
+- Controllers and route handlers stay thin: validate input, call one use case, map the result. No database access in them.
+- New module: create the four folders first, then the entity, its repository interface, one use case and the adapter.
+
+## When a rule seems in the way
+
+- Do not move logic into a controller or adapter to get around a layer rule; add a port instead.
+- Do not add `eslint-disable`, `@ts-ignore` or `any` to silence a boundary check.
+- If the code genuinely belongs to another layer, move the file.
+
+## Back it with a linter
+
+A rule file guides the agent; it does not stop it. Enforce the same boundaries with ESLint `no-restricted-imports` (layers) and `@typescript-eslint/no-restricted-imports` with `allowTypeImports: true` (cross-module), and run lint + typecheck before considering a task done.
