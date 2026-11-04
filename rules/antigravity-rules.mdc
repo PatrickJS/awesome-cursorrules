@@ -1,6 +1,7 @@
- description: Ultra-lean system constraints, token reduction, and surgical execution rules for
+ ---
+    description: Ultra-lean system constraints, token reduction, and surgical execution rules for
     Google Antigravity & AI coding agents
-    globs: *
+    globs: **/*
     alwaysApply: false
     ---
 
