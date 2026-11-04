@@ -1,0 +1,21 @@
+ ---
+    description: Ultra-lean system constraints, token reduction, and surgical execution rules for
+    Google Antigravity & AI coding agents
+    globs: **/*
+    alwaysApply: false
+    ---
+
+    # Antigravity Rules
+
+    Global operational constraints and token economy standards for AI coding agents:
+
+    - Zero-Emoji: Never use emojis in code, comments, commit messages, or documentation.
+    - Zero AI Slop: Eliminate conversational filler, pleasantries, and meta-announcements.
+    - Targeted Reading: Inspect specific files and line ranges only; no blind directory scans.
+    - Plan Threshold: For tasks touching > 2 files, output a 5-line plan and wait for confirmation.
+    - Terminal Output Cap: Cap CLI logs to 40 lines and append quiet flags (`--quiet`, `-q`).
+    - Two-Strike Debugging: Stop after 2 consecutive failed attempts and analyze root causes.
+    - Anti-Placeholder: Zero incomplete stubs or `// TODO` stubs in production paths.
+
+    Full configuration kit, on-demand skills, and installers:
+    https://github.com/davidyehuda45-byte/antigravity-rules
