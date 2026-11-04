@@ -136,6 +136,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [Kotlin Ktor Development](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/kotlin-ktor-development-cursorrules-prompt-file.mdc) - Kotlin development with Ktor integration.
 - [Laravel (PHP 8.3)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/laravel-php-83-cursorrules-prompt-file.mdc) - Laravel development with PHP 8.3 integration.
 - [Laravel (TALL Stack)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/laravel-tall-stack-best-practices-cursorrules-prom.mdc) - Laravel development with TALL Stack best practices.
+- [Layered Architecture (TypeScript modules)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/layered-architecture-typescript.mdc) - Domain/application/infrastructure/interfaces layers with inward dependencies, a framework-free core, and type-only imports between modules.
 - [Manifest](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/manifest-yaml-cursorrules-prompt-file.mdc) - YAML-based configuration and metadata files.
 - [Momen.app (Backend-as-a-Service)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/momen-cursurrules-prompt-file.mdc) - Building custom frontends with Momen.app as headless BaaS with GraphQL API, actionflows, AI agents, and Stripe integration.
 - [Node.js (MongoDB)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/nodejs-mongodb-cursorrules-prompt-file-tutorial.mdc) - Node.js development with MongoDB integration.
