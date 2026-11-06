@@ -1,0 +1,32 @@
+---
+description: Kintsugi deterministic safety, security, and reliability guardrails
+globs: **/*
+alwaysApply: true
+---
+
+## Kintsugi Machine-Language Guardrail Index (`@KML/1`)
+
+> `@GATE: kintsugi scan --staged --fail-on HIGH | @CORPUS: .kintsugi/scars.kml | @SKILLS: .claude/skills/kintsugi-guardrails/SKILL.md`
+
+| ID | SEV | CAT | KML/1 Symbolic Opcode (`@OP/1`) |
+| :--- | :--- | :--- | :--- |
+| `KS-001` | `CRITICAL` | `security` | `@OP/1[ID:KS-001|SEV:CRITICAL|CAT:security|LANG:py,js,ts,go,rs,sh|OP:secret!=literal->os.environ]` |
+| `KS-002` | `CRITICAL` | `safety` | `@OP/1[ID:KS-002|SEV:CRITICAL|CAT:safety|LANG:sh,py,js,ts|OP:sh!no_force_push_or_rm_rf]` |
+| `KS-006` | `CRITICAL` | `security` | `@OP/1[ID:KS-006|SEV:CRITICAL|CAT:security|LANG:py|OP:no_eval_exec_pickle->literal_eval]` |
+| `KS-007` | `CRITICAL` | `security` | `@OP/1[ID:KS-007|SEV:CRITICAL|CAT:security|LANG:py,js,ts|OP:sql!fstring->param_query]` |
+| `KS-012` | `CRITICAL` | `security` | `@OP/1[ID:KS-012|SEV:CRITICAL|CAT:security|LANG:mark,py,js,ts|OP:prompt!no_system_override_injection]` |
+| `KS-014` | `CRITICAL` | `security` | `@OP/1[ID:KS-014|SEV:CRITICAL|CAT:security|LANG:js,ts,sh|OP:tls!rejectUnauthorized=true]` |
+| `KS-003` | `HIGH` | `security` | `@OP/1[ID:KS-003|SEV:HIGH|CAT:security|LANG:py|OP:subprocess!shell=True->argv_list]` |
+| `KS-005` | `HIGH` | `reliability` | `@OP/1[ID:KS-005|SEV:HIGH|CAT:reliability|LANG:py|OP:py!bare_except_pass->log_raise]` |
+| `KS-008` | `HIGH` | `reliability` | `@OP/1[ID:KS-008|SEV:HIGH|CAT:reliability|LANG:py|OP:http!no_timeout->timeout=10]` |
+| `KS-011` | `HIGH` | `security` | `@OP/1[ID:KS-011|SEV:HIGH|CAT:security|LANG:py|OP:crypto!random->secrets]` |
+| `KS-013` | `HIGH` | `security` | `@OP/1[ID:KS-013|SEV:HIGH|CAT:security|LANG:js,ts|OP:js!exec_interp->execFile]` |
+| `KS-015` | `HIGH` | `security` | `@OP/1[ID:KS-015|SEV:HIGH|CAT:security|LANG:py,js,ts|OP:cors!no_wildcard_with_credentials]` |
+| `KS-016` | `HIGH` | `reliability` | `@OP/1[ID:KS-016|SEV:HIGH|CAT:reliability|LANG:go|OP:go!http_client_timeout]` |
+| `KS-OSS-1000` | `HIGH` | `reliability` | `@OP/1[ID:KS-OSS-1000|SEV:HIGH|CAT:reliability|LANG:py|OP:fn:fetcher!unsafe_call->verified_call(timeout=10)]` |
+| `KS-OSS-1001` | `HIGH` | `reliability` | `@OP/1[ID:KS-OSS-1001|SEV:HIGH|CAT:reliability|LANG:py|OP:fn:run!unsafe_call->verified_call(timeout=10)]` |
+| `KS-OSS-1002` | `HIGH` | `reliability` | `@OP/1[ID:KS-OSS-1002|SEV:HIGH|CAT:reliability|LANG:py|OP:fn:exchange!unsafe_call->verified_call(timeout=10)]` |
+| `KS-OSS-1003` | `HIGH` | `reliability` | `@OP/1[ID:KS-OSS-1003|SEV:HIGH|CAT:reliability|LANG:py|OP:fn:main_backtest!unsafe_call->verified_call(timeout=10)]` |
+| `KS-OSS-1004` | `HIGH` | `reliability` | `@OP/1[ID:KS-OSS-1004|SEV:HIGH|CAT:reliability|LANG:py|OP:fn:RL_tuner!unsafe_call->verified_call(timeout=10)]` |
+
+*`@DEFERRED_RECORDS: +1672 in .kintsugi/scars.kml & .claude/skills/`*
