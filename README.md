@@ -323,6 +323,9 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
 
+- [Meto Rules Catalog](https://www.metoctx.com/rules) - Searchable catalog of production `.cursor/rules/*.mdc` rules with multi-IDE sync and live MCP context.
+- [Cursor to CLAUDE.md Converter](https://www.metoctx.com/tools/cursor-to-claude) - Free browser tool to convert `.cursor/rules/*.mdc` into `CLAUDE.md` and `.windsurfrules` with token bloat linter.
+
 ## How to Use
 
 ### Project Rules
