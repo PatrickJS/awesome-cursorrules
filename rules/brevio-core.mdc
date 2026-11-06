@@ -1,0 +1,26 @@
+---
+description: "Zero-token PR invariants & code guard: catches the mistakes coding agents repeat before they merge (eval sinks, silent errors, untyped escapes, brittle tests)."
+globs: ["**/*"]
+alwaysApply: true
+---
+# Brevio Core Invariants
+
+Code edits in this workspace are checked by `brevio-core scan`: 8 scanned rules, line patterns on the lines you add. The other 115 documented rules on its rule pages are for review.
+
+## Rules Checked
+- **R2.8 No unsafe code or HTML sinks**: No `eval` or `new Function` on strings; `dangerouslySetInnerHTML` only with sanitized HTML.
+- **R5.4 No silent exception swallowing**: Log or surface errors; never use empty `catch` blocks or ignore errors silently.
+- **R6.3 Deterministic condition waits**: Never use `waitForTimeout` or hardcoded `sleep` in tests; await deterministic state or conditions.
+- **R9.1 No untyped escape hatches**: No `as any` casts or `z.any()` schemas in production source.
+- **R9.2 No silenced type errors**: No `@ts-ignore`; every `@ts-expect-error` requires an explanation.
+- **R13.1 No secrets in code**: Never put secrets, private keys, or API tokens in literals or constants.
+
+## Usage
+Install and configure locally or in CI:
+```bash
+pip install brevio-core
+brevio-core scan --diff origin/main
+brevio-core init --with hook,mcp
+```
+
+Details & docs: https://github.com/Brevio-Ventures/brevio-core
