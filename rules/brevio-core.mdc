@@ -5,22 +5,63 @@ alwaysApply: true
 ---
 # Brevio Core Invariants
 
-Code edits in this workspace are checked by `brevio-core scan`: 8 scanned rules, line patterns on the lines you add. The other 115 documented rules on its rule pages are for review.
+This rule file provides guidance only and does not install Brevio Core or register Cursor hooks. Once `brevio-core` is installed and its hook is initialized, code edits in this workspace are checked by `brevio-core scan`: 8 scanned rules, line patterns on the lines you add. The other 115 documented rules on its rule pages are for review.
 
 ## Rules Checked
 - **R2.8 No unsafe code or HTML sinks**: No `eval` or `new Function` on strings; `dangerouslySetInnerHTML` only with sanitized HTML.
 - **R5.4 No silent exception swallowing**: Log or surface errors; never use empty `catch` blocks or ignore errors silently.
 - **R6.3 Deterministic condition waits**: Never use `waitForTimeout` or hardcoded `sleep` in tests; await deterministic state or conditions.
 - **R9.1 No untyped escape hatches**: No `as any` casts or `z.any()` schemas in production source.
-- **R9.2 No silenced type errors**: No `@ts-ignore`; every `@ts-expect-error` requires an explanation.
+- **R9.2 No silenced type errors**: No `@ts-ignore`; every `@ts-expect-error` requires an explanation (`brevio-core scan` v0.6.0 detects `@ts-ignore` but does not detect `@ts-expect-error` directives missing explanations).
 - **R13.1 No secrets in code**: Never put secrets, private keys, or API tokens in literals or constants.
+- **R18.1 Image alternative text**: Always include an `alt` attribute on `<img>` elements.
+- **R18.5 Interactive elements on clickable divs**: Use an interactive element or add a `role` attribute on clickable `<div>` elements.
 
 ## Usage
-Install and configure locally or in CI:
+Prerequisites:
+- Install `uv` and ensure `uvx` is available on the MCP client's `PATH` before starting the generated MCP server or running `uvx`-based hooks.
+- Ensure the base reference passed to `brevio-core scan --diff` (such as `origin/main`) is fetched and resolves in both local and CI checkouts before scanning; do not rely on the scanner's fallback to `HEAD` for pull-request validation.
+
+Install and configure interactively:
 ```bash
 pip install brevio-core
+git fetch origin main
 brevio-core scan --diff origin/main
 brevio-core init --with hook,mcp
+```
+
+In non-interactive CI environments, explicitly opt into confirmation bypass with `--yes` so `init` writes the workflow and agent configuration instead of running as a dry run:
+```bash
+brevio-core init --with hook,mcp --yes
+```
+
+### Configuring Cursor Hooks When Files Are Already Tracked
+If `.cursor/rules/brevio-core.mdc` or `.cursor/hooks.json` is already tracked in git, `brevio-core init --with hook,mcp` skips Cursor hook setup (and running `brevio-core hook install --target cursor` overwrites `.cursor/rules/brevio-core.mdc`). To configure the Cursor post-edit hook and stop-check without overwriting the existing rule file, add the `postToolUse` and `stop` entries directly to `.cursor/hooks.json`:
+```json
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "command": "uvx brevio-core==0.6.0 hook run --event post-edit --client cursor",
+        "matcher": "Write",
+        "timeout": 30
+      },
+      {
+        "command": "uvx brevio-core==0.6.0 hook run --event post-command --client cursor",
+        "matcher": "Shell",
+        "timeout": 30
+      }
+    ],
+    "stop": [
+      {
+        "command": "uvx brevio-core==0.6.0 hook run --event stop --client cursor",
+        "loop_limit": 1,
+        "timeout": 30
+      }
+    ]
+  }
+}
 ```
 
 Details & docs: https://github.com/Brevio-Ventures/brevio-core
