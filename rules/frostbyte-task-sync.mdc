@@ -1,0 +1,54 @@
+---
+description: "Keep a Frostbyte project board in sync while coding: read the linked project, start and complete tasks, log decisions and blockers, and reference tasks in commits through the Frostbyte MCP server."
+globs: **/.frostbyte.json
+alwaysApply: false
+---
+1. **FIND THE PROJECT FIRST**: Use the nearest `.frostbyte.json` from the working directory up to the repository root. It must be valid JSON with a string `projectId`; never use one above the repository. If it sets `"grounding": false`, only act on explicit Frostbyte requests. Without the file, use the project the user names or call `list_projects` and ask. Never invent project, task, release or area IDs.
+
+2. **READ BEFORE YOU WRITE**: Call `get_task` before changing a task, and keep reads scoped: `list_tasks` with `releaseId`, `areaId` or `search` instead of loading the whole board. A task can be passed by its number (`FB-42` or `42`).
+
+3. **MOVE TASKS AS THE WORK MOVES**:
+   - When the work clearly matches a `todo` task, call `task_start` and mention it in passing.
+   - Break large tasks down with `task_spawn_subtasks`. Never rewrite a human-written description or subtask; put technical notes in `agentContext`.
+   - Record non-obvious choices (one approach over another, a changed data shape, a deferred problem) with `task_log_decision`. Skip routine steps.
+   - If something blocks the task, call `task_add_blocker` with a short reason.
+
+4. **COMPLETE ONLY FINISHED WORK**: Call `task_complete` when the agreed work is done and its checks pass, with a 1-2 sentence `summary` of what changed and why, and repo-relative `filesTouched`. Written code or an open PR alone is not finished. If unchecked subtasks remain, pass `completionPolicy: "complete-subtasks"` only when their work is done. If the boundary is unclear, ask one question and leave the task in progress. Never start the next task automatically.
+
+5. **NEW WORK**: When substantial work (multi-step, multi-file, or framed as a deliverable) matches no task, offer once to `create_task`, after checking `list_tasks` for a duplicate. One-line fixes and chores get no task.
+
+6. **WHAT'S NEXT**: Call `whats_next` before suggesting work. The user's own choice beats the ranking, and a recommendation never authorises starting, assigning or shipping anything.
+
+7. **COMMITS AND PRS**: Reference the task as `FB-<n>` in commit messages and PR titles, and name the branch after it (`fb-42-expire-sessions`). Never write a bare `#42` for a task; on GitHub that means issue or PR 42.
+
+8. **SAFE BY DEFAULT**: Never delete a task, area or release unless the user says yes to that exact item in the conversation. If a tool reports a plan limit, tell the user and stop; don't retry or delete other items to make room. If the Frostbyte tools are not connected, say so once and keep working without tracking.
+
+## Setup
+
+Add the hosted MCP server to `~/.cursor/mcp.json`, using a token from Frostbyte under Settings → Connections → Connect your agent:
+
+```json
+{
+  "mcpServers": {
+    "frostbyte": {
+      "url": "https://getfrostbyte.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-token>",
+        "X-Frostbyte-Client": "cursor"
+      }
+    }
+  }
+}
+```
+
+Link a repository to a project with a `.frostbyte.json` at its root:
+
+```json
+{ "projectId": "your-project-id" }
+```
+
+## Resources
+
+- MCP tool reference: https://getfrostbyte.dev/docs/mcp-server
+- Connecting an agent: https://getfrostbyte.dev/docs/connect-your-agent
+- Source skills this rule is adapted from: https://github.com/Sky-Enterprises/frostbyte-plugin (MIT)
