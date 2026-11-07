@@ -20,22 +20,36 @@ This rule file provides guidance only and does not install Brevio Core or regist
 ## Usage
 Prerequisites:
 - Install `uv` and ensure `uvx` is available on the MCP client's `PATH` before starting the generated MCP server or running `uvx`-based hooks.
-- Ensure the base reference passed to `brevio-core scan --diff` (such as `origin/main`) is fetched and resolves in both local and CI checkouts before scanning; do not rely on the scanner's fallback to `HEAD` for pull-request validation.
-- Account for `.brevio/baseline.json` during initialization: running `brevio-core init` on a dirty feature branch records uncommitted or branch-specific findings into `.brevio/baseline.json`, which causes later hook and diff scans to hide those findings. Establish the baseline on a clean base branch (`main`) first, or pass `--without baseline` (`brevio-core init --with hook,mcp --without baseline`) if no baseline is wanted.
+- Ensure the base reference passed to `brevio-core scan --diff` (the pull request's target branch, such as `origin/$GITHUB_BASE_REF` in CI or `origin/<target-branch>` locally) is fetched and resolves in both local and CI checkouts before scanning; do not rely on the scanner's fallback to `HEAD` for pull-request validation.
+- Account for `.brevio/baseline.json` during initialization: running `brevio-core init` on a dirty feature branch records uncommitted or branch-specific findings into `.brevio/baseline.json`, which causes later hook and diff scans to hide those findings. Furthermore, because the generated pull-request workflow rejects newly added suppression entries by default, any `.brevio/baseline.json` changes must be generated on a clean base branch and merged in a separate, reviewed PR before enabling `.github/workflows/brevio-core.yml` (or skipped entirely with `--without baseline`).
 
-Install and configure interactively (then commit the generated `.github/workflows/brevio-core.yml` file so GitHub Actions registers the pull-request check):
+Install and configure interactively:
 ```bash
 pip install brevio-core
-git fetch origin main
-brevio-core scan --diff origin/main
-brevio-core init --with hook,mcp
-git add .github/workflows/brevio-core.yml AGENTS.md .brevio/baseline.json
-git commit -m "ci: add brevio-core pull-request workflow and baseline"
+# Fetch the pull request target branch (for example, main) before scanning:
+git fetch origin <target-branch>
+brevio-core scan --diff origin/<target-branch>
 ```
 
-In non-interactive environments (such as scripted repository bootstrapping), explicitly opt into confirmation bypass with `--yes` so `init` writes the workflow and agent configuration instead of running as a dry run. Running `init` only inside an ephemeral CI runner does not register a pull-request check—commit and push the generated `.github/workflows/brevio-core.yml` to the repository before relying on the check, and run `git fetch origin main && brevio-core scan --diff origin/main` inside CI validation steps:
+If your repository needs an initial baseline, generate and merge `.brevio/baseline.json` in a dedicated, reviewed PR before enabling the workflow:
 ```bash
-brevio-core init --with hook,mcp --yes
+brevio-core init --with baseline --without workflow,agent,hook,mcp
+git add -- .brevio/baseline.json
+git commit --only .brevio/baseline.json -m "chore: establish reviewed brevio-core baseline"
+```
+
+Once the baseline PR is merged (or immediately if no baseline is needed), generate and stage the pull-request workflow and agent configuration without staging `.brevio/baseline.json`:
+```bash
+brevio-core init --with hook,mcp --without baseline
+git add -- .github/workflows/brevio-core.yml AGENTS.md
+git commit --only .github/workflows/brevio-core.yml AGENTS.md -m "ci: add brevio-core pull-request workflow"
+```
+
+In non-interactive environments (such as scripted repository bootstrapping), explicitly opt into confirmation bypass with `--yes` so `init` writes the workflow and agent configuration instead of running as a dry run. Running `init` only inside an ephemeral CI runner does not register a pull-request check—commit and push the generated `.github/workflows/brevio-core.yml` to the repository before relying on the check. In CI validation steps, fetch the pull request's target branch and pass its resolved reference to `brevio-core scan --diff`:
+```bash
+brevio-core init --with hook,mcp --without baseline --yes
+git fetch origin "$GITHUB_BASE_REF"
+brevio-core scan --diff "origin/$GITHUB_BASE_REF"
 ```
 
 ### Configuring Cursor Hooks When Files Are Already Tracked
@@ -66,6 +80,6 @@ If `.cursor/rules/brevio-core.mdc` or `.cursor/hooks.json` is already tracked in
   }
 }
 ```
-Note: Cursor's `Write` hook only scans edits made with the `Write` tool, the `Shell` (`post-command`) hook only inspects commit messages, and the `stop` hook only scans uncommitted changes when the turn ends. If an agent modifies files through `Shell` commands, it must run `git fetch origin main && brevio-core scan --diff origin/main` after the shell edits and before committing them so shell-applied changes are not committed unscanned.
+Note: Cursor's `Write` hook only scans edits made with the `Write` tool, the `Shell` (`post-command`) hook only inspects commit messages, and the `stop` hook only scans uncommitted changes when the turn ends. If an agent modifies files through `Shell` commands, it must fetch the pull request's target branch and run `brevio-core scan --diff origin/<target-branch>` with its resolved reference after the shell edits and before committing them so shell-applied changes are not committed unscanned.
 
 Details & docs: https://github.com/Brevio-Ventures/brevio-core
