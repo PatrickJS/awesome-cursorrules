@@ -6,7 +6,7 @@ alwaysApply: true
 
 ## Kintsugi Machine-Language Guardrail Index (`@KML/1`)
 
-> `@SETUP: kintsugi init && kintsugi install-pack kintsugi-complete-pro-1688 | @GATE: git diff --quiet && kintsugi --ledger .kintsugi/scars.json scan --staged --fail-on HIGH | @LEDGER: .kintsugi/scars.json | @SKILLS: .claude/skills/kintsugi-guardrails/SKILL.md`
+> `@SETUP: kintsugi init && kintsugi install-pack kintsugi-complete-pro-1688 && kintsugi install-hooks --git | @GATE: git diff --quiet && kintsugi --ledger .kintsugi/scars.json scan --staged --fail-on HIGH | @LEDGER: .kintsugi/scars.json | @SKILLS: .claude/skills/kintsugi-guardrails/SKILL.md`
 
 | ID | SEV | CAT | KML/1 Symbolic Opcode (`@OP/1`) |
 | :--- | :--- | :--- | :--- |
