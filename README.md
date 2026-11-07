@@ -133,6 +133,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [HTMX (Django)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/htmx-django-cursorrules-prompt-file.mdc) - HTMX development with Django integration.
 - [Java (Spring Boot, JPA)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/java-springboot-jpa-cursorrules-prompt-file.mdc) - Java development with Spring Boot and JPA integration.
 - [Knative (Istio, Typesense, GPU)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/knative-istio-typesense-gpu-cursorrules-prompt-fil.mdc) - Knative development with Istio, Typesense, and GPU integration.
+- [Kintsugi Deterministic Verification Guardrails](./rules/kintsugi-deterministic-guardrails.mdc) - Deterministic security, safety, and reliability guardrail opcodes (`KS-001`–`KS-016`) with Kintsugi pre-commit verification setup.
 - [Kotlin Ktor Development](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/kotlin-ktor-development-cursorrules-prompt-file.mdc) - Kotlin development with Ktor integration.
 - [Laravel (PHP 8.3)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/laravel-php-83-cursorrules-prompt-file.mdc) - Laravel development with PHP 8.3 integration.
 - [Laravel (TALL Stack)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/laravel-tall-stack-best-practices-cursorrules-prom.mdc) - Laravel development with TALL Stack best practices.

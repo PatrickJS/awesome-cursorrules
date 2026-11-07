@@ -1,0 +1,27 @@
+---
+description: Kintsugi deterministic safety, security, and reliability guardrails
+globs: "**/*"
+alwaysApply: true
+---
+
+## Kintsugi Machine-Language Guardrail Index (`@KML/1`)
+
+> `@SETUP: pip install --force-reinstall git+https://github.com/tunguyen1993/kintsugi-harness.git@ad3f519 && kintsugi init --no-compile && kintsugi install-hooks --git | @GATE: kintsugi scan . --ledger .kintsugi/scars.json --staged --fail-on HIGH | @LEDGER: .kintsugi/scars.json`
+
+| ID | SEV | CAT | KML/1 Symbolic Opcode (`@OP/1`) |
+| :--- | :--- | :--- | :--- |
+| `KS-001` | `CRITICAL` | `security` | `@OP/1[ID:KS-001|SEV:CRITICAL|CAT:security|LANG:py,js,ts,go,rs,sh|OP:secret!=literal->os.environ]` |
+| `KS-002` | `CRITICAL` | `safety` | `@OP/1[ID:KS-002|SEV:CRITICAL|CAT:safety|LANG:sh,py,js,ts|OP:sh!no_force_push_or_rm_rf]` |
+| `KS-006` | `CRITICAL` | `security` | `@OP/1[ID:KS-006|SEV:CRITICAL|CAT:security|LANG:py|OP:no_eval_exec_pickle->literal_eval]` |
+| `KS-007` | `CRITICAL` | `security` | `@OP/1[ID:KS-007|SEV:CRITICAL|CAT:security|LANG:py,js,ts|OP:sql!fstring->param_query]` |
+| `KS-012` | `CRITICAL` | `security` | `@OP/1[ID:KS-012|SEV:CRITICAL|CAT:security|LANG:mark,py,js,ts|OP:prompt!no_system_override_injection]` |
+| `KS-014` | `CRITICAL` | `security` | `@OP/1[ID:KS-014|SEV:CRITICAL|CAT:security|LANG:js,ts,sh|OP:tls!rejectUnauthorized=true]` |
+| `KS-003` | `HIGH` | `security` | `@OP/1[ID:KS-003|SEV:HIGH|CAT:security|LANG:py|OP:subprocess!shell=True->argv_list]` |
+| `KS-005` | `HIGH` | `reliability` | `@OP/1[ID:KS-005|SEV:HIGH|CAT:reliability|LANG:py|OP:py!bare_except_pass->log_raise]` |
+| `KS-008` | `HIGH` | `reliability` | `@OP/1[ID:KS-008|SEV:HIGH|CAT:reliability|LANG:py|OP:http!no_timeout->timeout=10]` |
+| `KS-011` | `HIGH` | `security` | `@OP/1[ID:KS-011|SEV:HIGH|CAT:security|LANG:py|OP:crypto!random->secrets]` |
+| `KS-013` | `HIGH` | `security` | `@OP/1[ID:KS-013|SEV:HIGH|CAT:security|LANG:js,ts|OP:js!exec_interp->execFile]` |
+| `KS-015` | `HIGH` | `security` | `@OP/1[ID:KS-015|SEV:HIGH|CAT:security|LANG:py,js,ts|OP:cors!no_wildcard_with_credentials]` |
+| `KS-016` | `HIGH` | `reliability` | `@OP/1[ID:KS-016|SEV:HIGH|CAT:reliability|LANG:go|OP:go!http_client_timeout]` |
+
+*`@STARTER_LEDGER: 16 verified records (KS-001..KS-016, including MEDIUM KS-004, KS-009, KS-010) seeded in .kintsugi/scars.json by kintsugi init and scanned from the Git index via kintsugi scan . --ledger .kintsugi/scars.json --staged --fail-on HIGH`*
