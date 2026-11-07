@@ -38,10 +38,10 @@ git add -- .brevio/baseline.json
 git commit --only .brevio/baseline.json -m "chore: establish reviewed brevio-core baseline"
 ```
 
-Once the baseline PR is merged (or immediately if no baseline is needed), generate the pull-request workflow and agent configuration (`init` writes `.cursor/rules/brevio-core-agents.mdc` when `.cursor/` exists, `CLAUDE.md` when `CLAUDE.md` exists, or `AGENTS.md` otherwise), review which files were generated with `git status`, and stage/commit those generated files without `.brevio/baseline.json`:
+Once the baseline PR is merged (or immediately if no baseline is needed), generate the pull-request workflow and agent configuration (`init` adds rules to `AGENTS.md` if needed, may add an `@AGENTS.md` reference to an existing `CLAUDE.md`, and may create `.cursor/rules/brevio-core-agents.mdc` when Cursor is detected), review which files were generated with `git status`, and stage/commit those generated files without `.brevio/baseline.json`:
 ```bash
 brevio-core init --with hook,mcp --without baseline
-git status --short .github/workflows/brevio-core.yml AGENTS.md CLAUDE.md .cursor/rules/brevio-core-agents.mdc
+git status --short --ignored .github/workflows/brevio-core.yml AGENTS.md CLAUDE.md .cursor/rules/brevio-core-agents.mdc
 # Include whichever agent configuration files were generated (AGENTS.md, CLAUDE.md, and/or .cursor/rules/brevio-core-agents.mdc):
 git add -- .github/workflows/brevio-core.yml AGENTS.md
 git commit --only .github/workflows/brevio-core.yml AGENTS.md -m "ci: add brevio-core pull-request workflow"
