@@ -6,7 +6,7 @@ alwaysApply: true
 
 ## Kintsugi Machine-Language Guardrail Index (`@KML/1`)
 
-> `@GATE: kintsugi scan --staged --fail-on HIGH | @CORPUS: .kintsugi/scars.kml | @SKILLS: .claude/skills/kintsugi-guardrails/SKILL.md`
+> `@SETUP: kintsugi init && kintsugi install-pack kintsugi-complete-pro-1688 | @GATE: git diff --quiet && kintsugi --ledger .kintsugi/scars.json scan --staged --fail-on HIGH | @LEDGER: .kintsugi/scars.json | @SKILLS: .claude/skills/kintsugi-guardrails/SKILL.md`
 
 | ID | SEV | CAT | KML/1 Symbolic Opcode (`@OP/1`) |
 | :--- | :--- | :--- | :--- |
@@ -29,4 +29,4 @@ alwaysApply: true
 | `KS-OSS-1003` | `HIGH` | `reliability` | `@OP/1[ID:KS-OSS-1003|SEV:HIGH|CAT:reliability|LANG:py|OP:fn:main_backtest!unsafe_call->verified_call(timeout=10)]` |
 | `KS-OSS-1004` | `HIGH` | `reliability` | `@OP/1[ID:KS-OSS-1004|SEV:HIGH|CAT:reliability|LANG:py|OP:fn:RL_tuner!unsafe_call->verified_call(timeout=10)]` |
 
-*`@DEFERRED_RECORDS: +1672 in .kintsugi/scars.kml & .claude/skills/`*
+*`@DEFERRED_RECORDS: +1672 in .kintsugi/scars.json (seeded via kintsugi init && kintsugi install-pack kintsugi-complete-pro-1688; consumed via kintsugi --ledger .kintsugi/scars.json scan)`*
