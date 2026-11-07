@@ -1,11 +1,12 @@
 ---
 description: Kintsugi deterministic safety, security, and reliability guardrails
+globs: "**/*"
 alwaysApply: true
 ---
 
 ## Kintsugi Machine-Language Guardrail Index (`@KML/1`)
 
-> `@SETUP: pip install --force-reinstall git+https://github.com/tunguyen1993/kintsugi-harness.git@86e51f2 && kintsugi init && kintsugi install-hooks --git | @GATE: kintsugi scan . --ledger .kintsugi/scars.json --staged --fail-on HIGH | @LEDGER: .kintsugi/scars.json`
+> `@SETUP: pip install --force-reinstall git+https://github.com/tunguyen1993/kintsugi-harness.git@d0e7bed && kintsugi init && kintsugi install-hooks --git | @GATE: kintsugi scan . --ledger .kintsugi/scars.json --staged --fail-on HIGH | @LEDGER: .kintsugi/scars.json`
 
 | ID | SEV | CAT | KML/1 Symbolic Opcode (`@OP/1`) |
 | :--- | :--- | :--- | :--- |
