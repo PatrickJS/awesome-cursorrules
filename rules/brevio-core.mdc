@@ -1,0 +1,87 @@
+---
+description: "Zero-token PR invariants & code guard: catches the mistakes coding agents repeat before they merge (eval sinks, silent errors, untyped escapes, brittle tests)."
+globs: ["**/*"]
+alwaysApply: true
+---
+# Brevio Core Invariants
+
+This rule file provides guidance only and does not install Brevio Core or register Cursor hooks. Once `brevio-core` is installed and its hook is initialized, code edits in this workspace are checked by `brevio-core scan`: 8 scanned rules, line patterns on the lines you add. The other 115 documented rules on its rule pages are for review.
+
+## Rules Checked
+- **R2.8 No unsafe code or HTML sinks**: No `eval` or `new Function` on strings; `dangerouslySetInnerHTML` only with sanitized HTML.
+- **R5.4 No silent exception swallowing**: Log or surface errors; never use empty `catch` blocks or ignore errors silently.
+- **R6.3 Deterministic condition waits**: Never use `waitForTimeout` or hardcoded `sleep` in tests; await deterministic state or conditions.
+- **R9.1 No untyped escape hatches**: No `as any` casts or `z.any()` schemas in production source.
+- **R9.2 No silenced type errors**: No `@ts-ignore`; every `@ts-expect-error` requires an explanation (`brevio-core scan` v0.6.0 detects `@ts-ignore` but does not detect `@ts-expect-error` directives missing explanations).
+- **R13.1 No secrets in code**: Never put secrets, private keys, or API tokens in literals or constants.
+- **R18.1 Image alternative text**: Always include an `alt` attribute on `<img>` elements.
+- **R18.5 Interactive elements on clickable divs**: Use an interactive element or add a `role` attribute on clickable `<div>` elements.
+
+## Usage
+Prerequisites:
+- Install `uv` and ensure `uvx` is available on the MCP client's `PATH` before starting the generated MCP server or running `uvx`-based hooks.
+- Ensure the base reference passed to `brevio-core scan --diff` (the pull request's target branch, such as `origin/$GITHUB_BASE_REF` in CI or `origin/<target-branch>` locally) is fetched and resolves in both local and CI checkouts before scanning; do not rely on the scanner's fallback to `HEAD` for pull-request validation.
+- Account for `.brevio/baseline.json` during initialization: running `brevio-core init` on a dirty feature branch records uncommitted or branch-specific findings into `.brevio/baseline.json`, which causes later hook and diff scans to hide those findings. Furthermore, because the generated pull-request workflow rejects newly added suppression entries by default, any `.brevio/baseline.json` changes must be generated on a clean base branch and merged in a separate, reviewed PR before enabling `.github/workflows/brevio-core.yml` (or skipped entirely with `--without baseline`).
+
+Install and configure interactively:
+```bash
+pip install brevio-core
+# Fetch the pull request target branch (for example, main) before scanning:
+git fetch origin <target-branch>
+brevio-core scan --diff origin/<target-branch>
+```
+
+If your repository needs an initial baseline, generate and merge `.brevio/baseline.json` in a dedicated, reviewed PR before enabling the workflow:
+```bash
+brevio-core init --with baseline --without action,agents-md,hook,mcp
+git add -- .brevio/baseline.json
+git commit --only .brevio/baseline.json -m "chore: establish reviewed brevio-core baseline"
+```
+
+Once the baseline PR is merged (or immediately if no baseline is needed), generate the pull-request workflow and agent configuration (`init` adds rules to `AGENTS.md` if needed, may add an `@AGENTS.md` reference to an existing `CLAUDE.md`, and may create `.cursor/rules/brevio-core-agents.mdc` when Cursor is detected), review which files were generated with `git status`, and stage/commit those generated files without `.brevio/baseline.json`:
+```bash
+brevio-core init --with hook,mcp --without baseline
+git status --short --ignored .github/workflows/brevio-core.yml AGENTS.md CLAUDE.md .cursor/rules/brevio-core-agents.mdc
+# Include whichever agent configuration files were generated (AGENTS.md, CLAUDE.md, and/or .cursor/rules/brevio-core-agents.mdc):
+git add -- .github/workflows/brevio-core.yml AGENTS.md
+git commit --only .github/workflows/brevio-core.yml AGENTS.md -m "ci: add brevio-core pull-request workflow"
+```
+
+In non-interactive environments (such as scripted repository bootstrapping), explicitly opt into confirmation bypass with `--yes` so `init` writes the workflow and agent configuration instead of running as a dry run. Running `init` only inside an ephemeral CI runner does not register a pull-request check—commit and push the generated `.github/workflows/brevio-core.yml` to the repository before relying on the check. In CI validation steps, fetch the pull request's target branch and pass its resolved reference to `brevio-core scan --diff`:
+```bash
+brevio-core init --with hook,mcp --without baseline --yes
+git fetch origin "$GITHUB_BASE_REF"
+brevio-core scan --diff "origin/$GITHUB_BASE_REF"
+```
+
+### Configuring Cursor Hooks When Files Are Already Tracked
+If `.cursor/rules/brevio-core.mdc` or `.cursor/hooks.json` is already tracked in git, `brevio-core init --with hook,mcp` skips Cursor hook setup (and running `brevio-core hook install --target cursor` overwrites `.cursor/rules/brevio-core.mdc`). To configure the Cursor post-edit hook and stop-check without overwriting the existing rule file, add the `postToolUse` and `stop` entries directly to `.cursor/hooks.json`:
+```json
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "command": "uvx brevio-core==0.6.0 hook run --event post-edit --client cursor",
+        "matcher": "Write",
+        "timeout": 30
+      },
+      {
+        "command": "uvx brevio-core==0.6.0 hook run --event post-command --client cursor",
+        "matcher": "Shell",
+        "timeout": 30
+      }
+    ],
+    "stop": [
+      {
+        "command": "uvx brevio-core==0.6.0 hook run --event stop --client cursor",
+        "loop_limit": 1,
+        "timeout": 30
+      }
+    ]
+  }
+}
+```
+Note: Cursor's `Write` hook only scans edits made with the `Write` tool, the `Shell` (`post-command`) hook only inspects commit messages, and the `stop` hook only scans uncommitted changes when the turn ends. If an agent modifies files through `Shell` commands, it must fetch the pull request's target branch and run `brevio-core scan --diff origin/<target-branch>` with its resolved reference after the shell edits and before committing them so shell-applied changes are not committed unscanned.
+
+Details & docs: https://github.com/Brevio-Ventures/brevio-core
