@@ -1,0 +1,28 @@
+---
+description: Token efficiency, fail-fast circuit breaker, and repository micro-facts guardrails for Cursor AI
+globs: **/*
+alwaysApply: true
+---
+
+# Token Optimization & Anti-Loop Guardrails
+
+Enforces disciplined token usage, circuit breaking on repetitive errors, and persistent context management across coding sessions.
+
+## 1. Fail-Fast Circuit Breaker
+- **Stop after 2 consecutive identical failures:** If a tool call, terminal command, or file edit fails twice with the same symptom, stop immediately.
+  > WHY: LLMs in tool loops can consume hundreds of thousands of tokens retrying identical commands. Diagnose root cause or inspect file contents before attempting a third time.
+- **Inspect before retrying:** Run diagnostic commands (`cat`, `ls`, syntax check) rather than re-running the same failing payload.
+
+## 2. Context Minimization & Anti-Bloat
+- **Targeted file inspection:** Read specific line ranges rather than loading whole multi-thousand-line files into the prompt.
+  > WHY: Context bloat degrades model attention ("lost in the middle") and exponentially multiplies per-turn token costs.
+- **Structured output:** Keep agent responses focused and concise. Avoid echoing full files when a diff or summary suffices.
+
+## 3. Persistent Repository Micro-Facts
+- **Record non-obvious repository quirks:** Maintain a micro-facts ledger (e.g., via [centsible](https://github.com/ntrieuvi97/centsible) or `.cursorrules`) for discovered environment quirks, non-standard flags, and test runners.
+  > WHY: Prevents repeated expensive discovery cycles across conversation restarts.
+- **Zero-waste learning:** Never store standard commands known to general LLMs (`npm test`, `git status`, `pytest`). Only record unique project-specific gotchas discovered after >= 2 failures.
+
+## 4. Deterministic Verification
+- **Validate immediately after modification:** Run syntax check (e.g. `py_compile`, `tsc --noEmit`) and targeted tests immediately after touching code.
+  > WHY: Catch regressions at turn zero rather than discovering breakage 5 turns later when context has drifted.
