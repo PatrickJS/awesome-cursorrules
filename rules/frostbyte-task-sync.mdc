@@ -1,9 +1,9 @@
 ---
 description: "Keep a Frostbyte project board in sync while coding: read the linked project, start and complete tasks, log decisions and blockers, and reference tasks in commits through the Frostbyte MCP server."
-globs: **/.frostbyte.json
+globs: **/*
 alwaysApply: false
 ---
-1. **FIND THE PROJECT FIRST**: Use the nearest `.frostbyte.json` from the working directory up to the repository root. It must be valid JSON with a string `projectId`; never use one above the repository. If it sets `"grounding": false`, only act on explicit Frostbyte requests. Without the file, use the project the user names or call `list_projects` and ask. Never invent project, task, release or area IDs.
+1. **FIND THE PROJECT FIRST**: Use the nearest `.frostbyte.json` from the working directory up to the repository root. It must be valid JSON with a string `projectId`; never use one above the repository. If it sets `"grounding": false`, only act on explicit Frostbyte requests. Without the file, ignore this rule unless the user asks about Frostbyte; then use the project they name or call `list_projects` and ask. Never invent project, task, release or area IDs.
 
 2. **READ BEFORE YOU WRITE**: Call `get_task` before changing a task, and keep reads scoped: `list_tasks` with `releaseId`, `areaId` or `search` instead of loading the whole board. A task can be passed by its number (`FB-42` or `42`).
 
@@ -51,4 +51,4 @@ Link a repository to a project with a `.frostbyte.json` at its root:
 
 - MCP tool reference: https://getfrostbyte.dev/docs/mcp-server
 - Connecting an agent: https://getfrostbyte.dev/docs/connect-your-agent
-- Source skills this rule is adapted from: https://github.com/Sky-Enterprises/frostbyte-plugin (MIT)
+- Adapted from the tasks skill in https://github.com/Sky-Enterprises/frostbyte-plugin by its copyright holder. Copyright (c) 2026 Sky Enterprises. Released under the MIT License: https://github.com/Sky-Enterprises/frostbyte-plugin/blob/main/LICENSE
