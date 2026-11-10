@@ -1,0 +1,31 @@
+---
+description: "OneMira MCP and Mira CLI rules for querying spoken meeting context, speaker-attributed transcripts, and OKF Markdown Wiki in Cursor"
+globs: **/*.md, **/*.ts, **/*.tsx, **/*.py, .cursor/mcp.json
+alwaysApply: false
+---
+# OneMira MCP & Mira CLI Best Practices
+
+OneMira connects spoken meeting context captured on the standalone OneMira C1 recorder (and transcribed locally in OneMira Desktop on a supported macOS or Windows computer) into Cursor via the official Model Context Protocol server (`io.github.onemira-space/onemira-mcp`) and the `mira` CLI.
+
+## Cursor MCP Configuration (`.cursor/mcp.json`)
+
+- Prefer `npx -y @onemira-space/onemira-mcp` in `.cursor/mcp.json` so Cursor agents can query local transcripts, speaker labels, and OKF Markdown Wiki notes without cloud uploads.
+- Never hardcode personal vault paths in committed repository files; rely on OneMira Desktop local discovery or environment variables.
+
+```json
+{
+  "mcpServers": {
+    "onemira": {
+      "command": "npx",
+      "args": ["-y", "@onemira-space/onemira-mcp"]
+    }
+  }
+}
+```
+
+## Querying Spoken Context Before Implementation
+
+- Search recent decisions and requirements first with `mira_search` or `mira_sessions` (`action: "list"`) before reading full raw segments.
+- Retrieve exact verbatim quotes and speaker attribution (`Speaker ID`) with `mira_segments` on the relevant session ID rather than guessing spoken requirements.
+- Read structured topic and project pages via `mira_wiki_read` / `mira_wiki_search` (Google Native OKF Markdown with YAML frontmatter and deterministic links).
+- Keep generated action items, ADR summaries, and Wiki updates concise, deterministic, and grounded strictly in verified transcript segments.
