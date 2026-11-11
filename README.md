@@ -264,6 +264,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [VSCode Extension (Electron/TypeScript)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/vscode-extension-dev-typescript-cursorrules-prompt-file.mdc) - VSCode extension development with Electron and TypeScript integration.
 - [Web App Optimization](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/web-app-optimization-cursorrules-prompt-file.mdc) - Web app development with optimization integration.
 - [Ankra CLI (Kubernetes Cluster Management)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/ankra-cli.mdc) - Ankra CLI development with Kubernetes cluster management integration.
+- [OneMira MCP & Mira CLI (Spoken Meeting Context)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/onemira-mcp-cli.mdc) - Spoken meeting context, local AI transcription on macOS/Windows, Speaker ID, and OKF Markdown Wiki integration via OneMira MCP.
     
 ### Language-Specific
 

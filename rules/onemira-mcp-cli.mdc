@@ -1,0 +1,33 @@
+---
+description: "OneMira MCP and Mira CLI rules for querying spoken meeting context, speaker-attributed transcripts, and OKF Markdown Wiki in Cursor"
+globs: **/*.md, **/*.ts, **/*.tsx, **/*.py, .cursor/mcp.json
+alwaysApply: false
+---
+# OneMira MCP & Mira CLI Rules for Cursor
+
+OneMira connects spoken meeting context captured on the standalone OneMira C1 recorder (and transcribed locally in OneMira Desktop on a supported macOS or Windows computer) into Cursor via the official Model Context Protocol server (`io.github.onemira-space/onemira-mcp`) and the `mira` CLI.
+
+## Cursor MCP Configuration (`.cursor/mcp.json`)
+
+- Copy the local MCP configuration snippet from **OneMira Desktop → Settings → MCP & CLI** (which writes the full absolute executable path automatically), or use `"command": "mira"` below only when the `mira` CLI executable installed by OneMira Desktop is already on Cursor's `PATH`.
+- OneMira Desktop transcribes audio and stores transcripts and OKF Markdown Wiki files locally on disk without uploading recordings to a recorder cloud; note that when Cursor invokes MCP tools during a chat or agent turn, selected transcript or Wiki excerpts returned to Cursor are sent to the model provider configured in Cursor under that provider's data terms.
+- Never hardcode personal local vault paths or machine-specific user directories in committed repository files; rely on OneMira Desktop local discovery or environment variables.
+
+```json
+{
+  "mcpServers": {
+    "mira": {
+      "command": "mira",
+      "args": ["mcp", "serve"]
+    }
+  }
+}
+```
+*(Requires `mira` on Cursor's `PATH`; if Cursor cannot resolve `mira` on `PATH`, paste the absolute-path snippet generated in **OneMira Desktop → Settings → MCP & CLI** into your local user MCP config.)*
+
+## Querying Spoken Context Before Implementation
+
+- Search recent spoken decisions, architecture discussions, and Wiki notes first with `mira_search` or `mira_sessions` (`action: "list"`) before reading full raw transcript segments.
+- Retrieve exact verbatim quotes and speaker attribution (`Speaker ID`) with `mira_segments` on the relevant session ID rather than guessing spoken requirements.
+- Search structured topic and project pages via `mira_search` and read canonical pages via `mira_wiki_read` (Google Native OKF Markdown with YAML frontmatter and deterministic links).
+- Keep generated action items, ADR summaries, and Wiki updates concise, deterministic, and grounded strictly in verified transcript segments.
