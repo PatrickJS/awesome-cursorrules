@@ -9,7 +9,7 @@ OneMira connects spoken meeting context captured on the standalone OneMira C1 re
 
 ## Cursor MCP Configuration (`.cursor/mcp.json`)
 
-- Copy the local MCP configuration snippet from **OneMira Desktop → Settings → MCP & CLI** (or enable Desktop's automatic Cursor configuration) so Cursor starts the local `mira mcp serve` server installed by OneMira Desktop.
+- Copy the local MCP configuration snippet from **OneMira Desktop → Settings → MCP & CLI** (which writes the full absolute executable path automatically), or use `"command": "mira"` below only when the `mira` CLI executable installed by OneMira Desktop is already on Cursor's `PATH`.
 - OneMira Desktop transcribes audio and stores transcripts and OKF Markdown Wiki files locally on disk without uploading recordings to a recorder cloud; note that when Cursor invokes MCP tools during a chat or agent turn, selected transcript or Wiki excerpts returned to Cursor are sent to the model provider configured in Cursor under that provider's data terms.
 - Never hardcode personal local vault paths or machine-specific user directories in committed repository files; rely on OneMira Desktop local discovery or environment variables.
 
@@ -23,6 +23,7 @@ OneMira connects spoken meeting context captured on the standalone OneMira C1 re
   }
 }
 ```
+*(Requires `mira` on Cursor's `PATH`; if Cursor cannot resolve `mira` on `PATH`, paste the absolute-path snippet generated in **OneMira Desktop → Settings → MCP & CLI** into your local user MCP config.)*
 
 ## Querying Spoken Context Before Implementation
 
