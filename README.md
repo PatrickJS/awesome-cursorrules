@@ -322,6 +322,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 
 - [CursorList](https://cursorlist.com)
 - [CursorDirectory](https://cursor.directory/)
+- [Warplogic AI](https://www.warplogicai.com) - Production AI coding rules directory, multi-harness compiler, and free AST rule linter.
 
 ## How to Use
 
