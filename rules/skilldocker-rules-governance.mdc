@@ -1,0 +1,27 @@
+---
+description: "Clean rules governance architecture to prevent multi-rule collision, token bloat, and drift across Cursor rules and agent skills"
+globs: "**/*.mdc, **/.cursor/rules/**/*.mdc, **/SKILL.md, **/.agents/skills/**/SKILL.md, **/.claude/skills/**/SKILL.md, **/.codex/skills/**/SKILL.md, **/AGENTS.md, **/CLAUDE.md, **/GEMINI.md, **/.cursorrules"
+alwaysApply: false
+---
+# Clean Rules Governance Architecture for Cursor
+
+When managing multiple Cursor `.mdc` rules and AI coding agent skills across complex repositories, unmanaged rule accumulation often causes context bloat, conflicting system instructions, and unexpected model regressions.
+
+This rule provides a standardized governance pattern to keep project rules modular, scoped, and deterministic.
+
+---
+
+## 1. Modular Scoping vs. Universal Injection
+- **Avoid Global `alwaysApply: true` Bloat**: Set `alwaysApply: false` on domain-specific rules (e.g. database schemas, CSS frameworks, testing suites). Only universal guidelines (security, code style, repository invariants) should have `alwaysApply: true`.
+- **Precise Globs**: Scope rules tightly to matching file patterns (`**/*.tsx`, `src/api/**/*.ts`, `tests/**/*.py`). Prevent unrelated files from pulling in hundreds of irrelevant instruction tokens.
+
+## 2. Anti-Collision Protocols
+- **Single Source of Truth**: When defining styling or state patterns, declare one canonical pattern per domain. Never keep conflicting rules (e.g. Tailwind v3 and Tailwind v4, or Redux and Zustand) active simultaneously in the same file scope.
+- **Explicit Conflict Resolution**: Document any project-approved exception in the specialized rule's body and keep its scope narrow. Do not assume a custom frontmatter field establishes precedence; ask the user when applicable instructions conflict.
+
+## 3. Grounded Instruction Quality
+- **Actionable Constraints**: Prefer negative constraints ("Never commit `.env`", "Do not modify files outside `src/`") and concrete code examples over vague adjectives ("write clean code").
+- **Verification Gates**: End rules with a self-verification command or checklist that the agent can run before marking tasks complete (e.g. `npm run lint`, `pytest`, `cargo check`).
+
+## 4. Local Rules Management
+For repositories managing dozens of cross-tool directives (.cursor/rules, Claude skills, and workspace configurations), maintain an inventory of active rules and toggle them per workspace context to keep prompt windows clean.
