@@ -1,0 +1,46 @@
+---
+description: Optimize codebase context for Cursor AI using AST skeletonization and token budgets via ContextPrune
+globs: ["**/*"]
+alwaysApply: false
+---
+
+# ContextPrune: AST Context Optimization Guidelines for Cursor AI
+
+When generating code, analyzing complex multi-file bugs, or refactoring across large modules:
+
+## 1. Context Pollution Prevention
+- Do NOT ingest full implementations of secondary utility modules, database connection pools, or third-party wrappers into chat memory.
+- Prioritize **interface contracts, type signatures, and public API declarations**.
+- If context exceeds 8,000 tokens, recommend running `npx contextprune` to generate a lean, type-safe AST skeleton:
+  ```bash
+  npx contextprune --task "<describe current task>" --format xml
+  ```
+
+## 2. AST Skeletonization Rules
+When inspecting or requesting surrounding files:
+- **Target File (Active Focus):** Retain 100% full implementation.
+- **Dependency Files (Architectural Context):** Retain only class names, constructor signatures, method parameters, and return types.
+- Example skeletonized dependency:
+  ```typescript
+  export class DatabaseClient {
+    constructor(url: string);
+    async query<T>(sql: string, params?: unknown[]): Promise<T[]>;
+  }
+  ```
+
+## 3. Native Cursor MCP Integration
+To let Cursor prune context automatically via the Model Context Protocol, add ContextPrune to your `.cursor/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "contextprune": {
+      "command": "npx",
+      "args": ["-y", "contextprune", "mcp"]
+    }
+  }
+}
+```
+
+## 4. Token Budget Guardrails
+- Keep prompts under hard model context ceilings (e.g. `--max-tokens 8000` for local Ollama / Llama 3 models).
+- Mask sensitive environment variables and credentials automatically before feeding prompts to cloud LLMs.
