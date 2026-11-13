@@ -1,6 +1,6 @@
 ---
 description: "Clean rules governance architecture to prevent multi-rule collision, token bloat, and drift across Cursor rules and agent skills"
-globs: "**/*"
+globs: "**/*.mdc, **/.cursor/rules/**/*.mdc, **/SKILL.md, **/.agents/skills/**/SKILL.md, **/.claude/skills/**/SKILL.md, **/.codex/skills/**/SKILL.md, **/AGENTS.md, **/CLAUDE.md, **/GEMINI.md, **/.cursorrules"
 alwaysApply: false
 ---
 # Clean Rules Governance Architecture for Cursor
@@ -17,7 +17,7 @@ This rule provides a standardized governance pattern to keep project rules modul
 
 ## 2. Anti-Collision Protocols
 - **Single Source of Truth**: When defining styling or state patterns, declare one canonical pattern per domain. Never keep conflicting rules (e.g. Tailwind v3 and Tailwind v4, or Redux and Zustand) active simultaneously in the same file scope.
-- **Explicit Priority Overrides**: If a sub-directory requires specialized conventions that differ from the root, explicitly state the precedence in the sub-rule's frontmatter and instructions.
+- **Explicit Conflict Resolution**: Document any project-approved exception in the specialized rule's body and keep its scope narrow. Do not assume a custom frontmatter field establishes precedence; ask the user when applicable instructions conflict.
 
 ## 3. Grounded Instruction Quality
 - **Actionable Constraints**: Prefer negative constraints ("Never commit `.env`", "Do not modify files outside `src/`") and concrete code examples over vague adjectives ("write clean code").
