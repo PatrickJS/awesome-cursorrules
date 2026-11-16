@@ -1,0 +1,20 @@
+---
+description: LGPD & ECA Digital privacy engineering for Brazilian data protection compliance — automated audits, consent ledgers, DSAR endpoints, and LINDDUN threat modeling
+globs: "**/*.ts, **/*.js, **/*.py, **/*.prisma"
+alwaysApply: false
+---
+
+# LGPD & ECA Digital Privacy Engineering Skills
+
+A modular Agent Skills toolkit compatible with **Claude Code**, **Codex**, **Cursor**, **Gemini CLI**, and **OpenCode**, designed for LGPD and ECA Digital compliance.
+
+## Features
+- Automated LGPD compliance audits
+- Consent ledger management
+- DSAR (Data Subject Access Request) endpoints
+- LINDDUN threat modeling
+- Privacy Impact Assessment (RIPD/DPIA)
+- Audit log generation
+
+## Source
+https://github.com/goul4rt/lgpd-skills
