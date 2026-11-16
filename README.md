@@ -311,6 +311,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 ### Security
 
 - [DevSecOps, SSDLC, and AppSec](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/security-devsecops-ssdls-appsec.mdc) - Secure coding, secret handling, dependency hygiene, authentication, authorization, security testing, and compliance documentation.
+- [lgpd-privacy-engineering](rules/lgpd-privacy-engineering.mdc) - LGPD & ECA Digital privacy engineering for Brazilian data protection compliance — automated audits, consent ledgers, DSAR endpoints, and LINDDUN threat modeling
 
 ### Documentation
 
