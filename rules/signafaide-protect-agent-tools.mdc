@@ -1,0 +1,17 @@
+---
+description: Protect AI agent tools that pay, delete, send messages, run commands, push code, or edit secrets or config with signafaide protect(), so each call is checked against a rule before it runs and is signed and recorded locally.
+globs: **/*.ts, **/*.tsx, **/*.js, **/*.mjs, **/*.py
+alwaysApply: false
+---
+
+# Protect risky AI agent tools with signafaide
+
+Apply this when adding or changing a tool that an AI agent can call and that pays, deletes, sends messages, runs commands, pushes code, or edits secrets or config.
+
+- Wrap the tool with `protect()`: it runs only when the rules a person set allow it, and each call is signed and recorded in `.signafaide/` on the machine. Nothing is sent and no account is created until a person opts in.
+- Install in the project: `npm install signafaide` (TypeScript, JavaScript) or `uv add signafaide` (Python; `pip install signafaide` inside the project's virtual environment also works).
+- Wrap: `protect(payout, { args: ["payee", "amount"], agent: "my-agent" })` from "signafaide", or `@signafaide.protect(agent="my-agent")` above the function in Python. Framework tools (Vercel AI SDK, OpenAI Agents, LangChain): `wrapTool(tool, { name, agent, strict: true })`.
+- Use the same agent name for every tool of one agent, and keep personal data out of tool and agent names.
+- A person runs `npx signafaide protect` (or `signafaide protect` in Python) once in a terminal to choose the rules; protected tools stop until then. Without a terminal, `npx signafaide protect --yes --tool <name> --limit-field amount --above 1000` writes the code and a rule that starts Calibrating: it blocks nothing until a person turns it On.
+- Commit `signafaide.checks.json`. `npx signafaide check --ci` fails a pull request that adds a risky tool without protection.
+- Do not turn a rule On, create an account or set an API key on the user's behalf; say what the person needs to run.
