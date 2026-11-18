@@ -311,6 +311,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 ### Security
 
 - [DevSecOps, SSDLC, and AppSec](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/security-devsecops-ssdls-appsec.mdc) - Secure coding, secret handling, dependency hygiene, authentication, authorization, security testing, and compliance documentation.
+- [AI Agent Tool Protection (signafaide)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/signafaide-protect-agent-tools.mdc) - Rule checks and signed local records for agent tools that pay, delete, send, run commands or push code.
 
 ### Documentation
 
