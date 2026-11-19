@@ -283,6 +283,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [PyTorch (scikit-learn)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/pytorch-scikit-learn-cursorrules-prompt-file.mdc) - PyTorch development with scikit-learn integration.
 - [R Best Practices](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/r-cursorrules-prompt-file-best-practices.mdc) - R development with best practices integration.
 - [Rust](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/rust-general.mdc) - Safe, idiomatic Rust application and library development.
+- [SAP ABAP](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/sap-abap.mdc) - Release-aware ABAP syntax, ABAP SQL strict mode and FOR ALL ENTRIES guard, no invented SAP objects.
 - [Solidity (Foundry)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/solidity-foundry-cursorrules-prompt-file.mdc) - Solidity development with Foundry integration.
 - [Solidity (Hardhat)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/solidity-hardhat-cursorrules-prompt-file.mdc) - Solidity development with Hardhat integration.
 - [Solidity (React Blockchain Apps)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/solidity-react-blockchain-apps-cursorrules-prompt-.mdc) - Solidity development with React Blockchain apps integration.
