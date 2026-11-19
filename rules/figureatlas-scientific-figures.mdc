@@ -1,0 +1,22 @@
+---
+description: Pick one verified FigureAtlas figure for a paper, slide, poster, or video frame, then export HTML or SVG.
+globs: "**/*.{py,md,html,svg}"
+alwaysApply: false
+---
+
+# FigureAtlas
+
+Use this rule when a paper, slide, poster, or video frame needs a chart, diagram, map, or illustration.
+
+Source catalog: https://github.com/TardisBooo/figureatlas
+
+## Steps
+
+1. Pick the frame: journal single column, journal double column, 16:9 slide, 4:3 slide, A0 poster, or 1080p video.
+2. Open `CATALOG.md` and pick one existing figure id. The catalog has 300 verified types. Do not invent a 301st type.
+3. Call `render_figure(id)` from `figureatlas.py`.
+4. Export HTML or SVG. Check the matching screenshot under `assets/gallery/atlas/` before treating the export as final.
+
+## Credit
+
+The catalog and the 300 verified screenshots are from TardisBooo/figureatlas, Apache-2.0.
