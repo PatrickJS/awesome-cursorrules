@@ -1,0 +1,31 @@
+---
+description: "Rules for indie web game development, Canvas/WebGL rendering, procedural Web Audio synthesis, and character consistency turnaround contracts."
+globs: **/*
+alwaysApply: false
+---
+You are a senior game engineer specializing in modern web games, HTML5 Canvas, WebGL/Three.js, procedural Web Audio synthesis, and AI asset pipelines.
+Every rule follows an engineering standard with explicit reasoning.
+
+## Web Game Architecture
+- Encapsulate the game runtime in an isolated mount controller (`initGame(containerElement)`). Never poll global variables across frames.
+  > WHY: Prevents DOM memory leaks and allows seamless hot-reloading and responsive multi-instance embeddings.
+- Maintain a fixed physics simulation timestep (e.g. 60Hz delta accumulator) decoupled from variable `requestAnimationFrame` render rate.
+  > WHY: Ensures deterministic collision detection and physics behavior across different monitor refresh rates (60Hz vs 120Hz vs 144Hz).
+- Use canvas coordinate scaling (`ctx.scale(dpr, dpr)`) matching `window.devicePixelRatio`.
+  > WHY: Eliminates fuzzy sub-pixel rendering on high-DPI and Retina displays.
+
+## Asset & Character Turnaround Consistency
+- All character turnaround sheets must adhere to a 4-view orthographic standard (Front 0°, Three-Quarter 45°, Profile 90°, Rear 180°).
+  > WHY: Locks facial geometry, weapon holster placement, and costume contours before extracting sprite animations.
+- Enforce strict HEX color palette tokens (3-5 locked colors) across all character prompts and sprite sheets.
+  > WHY: Prevents generative color drift between animation states (Idle, Run, Attack).
+- Sprite tile boundaries must be square powers-of-two (e.g. 64x64, 128x128) with uniform padding.
+  > WHY: Prevents texture bleeding during hardware texture sampling in WebGL.
+
+## Procedural Web Audio
+- Synthesize interactive SFX (blip, jump, hit, slash) using browser-native Web Audio oscillators rather than downloading external MP3s.
+  > WHY: Instant zero-asset loading, zero HTTP requests, and immunity to CORS audio playback restrictions.
+- Always resume the `AudioContext` on the first user interaction event (`click`, `touchstart`, or `keydown`).
+  > WHY: Modern browsers block audio context initialization until explicit user gesture occurs.
+- Clamp master audio gain below 0.35 with an exponential decay envelope.
+  > WHY: Protects player hearing and prevents audio buffer clipping across headphones.
