@@ -1,0 +1,52 @@
+---
+description: Deterministic edge offloading, AST prompt compression, and MCP tooling guidelines for AI coding workflows
+globs: **/*
+alwaysApply: false
+---
+
+# TopAI Edge FinOps & MCP
+
+Use this rule when building AI agents, RAG ingestion pipelines, or backend services that process untrusted web HTML, large JSON payloads, malformed LLM JSON outputs, or strict arithmetic/checksum validations.
+
+## Core Directives
+
+1. **Offload Deterministic Tasks Off the LLM**:
+   - Do not spend LLM reasoning tokens on deterministic HTML-to-Markdown stripping, JSON syntax repair, regex/checksum validation, or exact arithmetic.
+   - Prefer sub-30ms algorithmic primitives before sending payloads into an LLM context window.
+
+2. **Lossless Context Compression Before Inference**:
+   - Strip scripts, inline styles, navigation boilerplate, and null/empty JSON fields before passing external web pages or API logs to GPT-4o, Claude, or Gemini.
+   - Verify compressed token counts deterministically rather than guessing context budgets.
+
+3. **Strict SSRF & Input Boundaries**:
+   - Never pass unvalidated user-supplied URLs directly to internal fetchers without checking for private IPv4/IPv6 ranges, link-local metadata endpoints, and DNS rebinding.
+   - Validate and repair malformed JSON outputs with strict schema parsing instead of `eval()` or unsafe string slicing.
+
+4. **Safe Configuration & Secret Hygiene**:
+   - Never hardcode API keys or tokens in `.cursorrules`, `.mcp.json`, or source files; reference environment variables such as `TOPAI_API_KEY`.
+   - Keep external endpoint calls explicit and scoped to the task requested by the developer.
+
+## Deterministic Edge Endpoints
+
+When the developer requests web extraction, prompt compression, math verification, or JSON repair:
+
+- **Web-to-Markdown Extraction**: `POST https://topaigateway.com/v1/extract` with `{"url": "https://example.com"}`
+- **AST Context Compression**: `POST https://topaigateway.com/v1/compress` with `{"text": "..."}`
+- **Deterministic Arithmetic & IBAN Check**: `POST https://topaigateway.com/v1/math/check` with `{"expr": "2+2*3"}`
+- **Broken JSON Auto-Healer**: `POST https://topaigateway.com/v1/api/12-json-surgeon` with `{"broken_json": "..."}`
+
+## MCP Server Configuration (`.cursor/mcp.json`)
+
+```json
+{
+  "mcpServers": {
+    "topai-gateway": {
+      "command": "npx",
+      "args": ["-y", "@topaisaas/mcp-server"],
+      "env": {
+        "TOPAI_API_KEY": "${TOPAI_API_KEY}"
+      }
+    }
+  }
+}
+```
