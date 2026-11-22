@@ -8,6 +8,9 @@ alwaysApply: false
 
 Source and full docs: https://github.com/orchesterra/cloud-drift-report
 
+Use this rule only when the user asks to check drift, make a drift report, or find resources that are not in
+Terraform or CloudFormation. For anything else (writing IaC, planning, deploying), ignore it.
+
 Run the `cloud-drift-report` CLI (`pip install cloud-drift-report`, or `python3 <repo>/skills/cloud-drift-report/scripts/drift_report.py`):
 
 - Terraform/OpenTofu directory: `cloud-drift-report terraform --dir <dir> --format md`
@@ -19,7 +22,7 @@ Run the `cloud-drift-report` CLI (`pip install cloud-drift-report`, or `python3 
   directory; `--all-regions` for every region). Ask where the state lives; never print state contents.
 - Other formats: `--format html|csv|json -o <file>`; `--fail-on-drift` exits 2 for CI.
 
-Rules: read-only. Never run `apply`, `import`, `state` or `refresh` commands, never edit state files, never
-change AWS resources. CloudFormation `DetectStackDrift` is allowed; the not-in-IaC scan only lists and describes. Ask for the AWS profile and region if
+While doing a drift check, stay read-only: never run `apply`, `import`, `state` or `refresh` commands, never
+edit state files, never change AWS resources. CloudFormation `DetectStackDrift` is allowed; the not-in-IaC scan only lists and describes. Ask for the AWS profile and region if
 unclear. Summarise counts by severity first, then explain high rows (security groups, IAM, public access,
 encryption, KMS) and suggest a fix: revert in AWS or update the code. Keep the report's footer line as is.
