@@ -12,6 +12,7 @@ When the workspace contains an `*.wrf.md` file whose frontmatter declares `forma
 
 1. Read the frontmatter, then `ACTIVE.activeStepId`, then that step's `handoff` block.
 2. Before doing any work, state the file's absolute path and summarize to the user: project goal, last completed step, active step + status, next planned action.
+3. A `command_ledger` entry left at `status: "pending"` means a command may have died mid-flight. Do NOT rerun it blindly — first verify whether it already took effect. If it did, resolve the entry to `"executed"`; if it cannot be verified, ask the user; if it is abandoned, resolve it to `"blocked-by-user"`.
 
 ## Command Ledger Law — log before execute
 
@@ -24,7 +25,7 @@ Before ANY terminal/shell command, file deletion, or system-mutating action, FIR
   status: "pending"
 ```
 
-Destructive patterns MUST be classified `dangerous` — examples (not exhaustive): `rm -rf`, `del /f /s`, `format`, `mkfs`, `dd`, `DROP TABLE`, `git reset --hard`, `shutdown`, or any other irreversible/destructive operation. If risk is `dangerous`: STOP after logging, surface the command, and wait for explicit user confirmation; if the user declines, resolve the pending entry's `status` to `"blocked-by-user"` instead of executing. Execute only after the entry exists, then update that same entry's `status` to `"executed"` (`"failed"` if the command errors) — the `pending` entry is the gate record and must be resolved, not left dangling. Never run an unlogged command.
+Destructive patterns MUST be classified `dangerous` — examples (not exhaustive): `rm -rf`, `del /f /s`, `format`, `mkfs`, `dd`, `DROP TABLE`, `git reset --hard`, `shutdown`, or any other irreversible/destructive operation. If risk is `dangerous`: STOP after logging, surface the command, and wait for explicit user confirmation; if the user declines, resolve the pending entry's `status` to `"blocked-by-user"` instead of executing. Execute only after the entry exists, then update that same entry's `status` to `"executed"` — if the command errors, still resolve it to `"executed"` and record the failure in `now_executing` (the status enum is `pending`/`executed`/`blocked-by-user`). The `pending` entry is the gate record and must be resolved, not left dangling. Never run an unlogged command.
 
 ## Write-back loop
 
@@ -39,7 +40,7 @@ After each stable change, update inside the same file:
 
 - NEVER change `ACTIVE.activeStepId` without explicit user instruction; never set it to a branch-task id.
 - Mark a step `status: done` only when every `doneWhen` condition passes, then fill `evidence.summary`, stop, and report.
-- Out-of-scope request → set `handoff.is_branch_active: true` and append to `handoff.branch_tasks`; never advance the main step for branch work.
+- Out-of-scope request → set `handoff.is_branch_active: true` and append to `handoff.branch_tasks`; never advance the main step for branch work. Close a branch task by updating its own `status`/`completed_at`/`evidence` (entries are never removed); when every branch task in the step is done, set `is_branch_active: false` before returning to the main step.
 
 ## YAML write safety
 
