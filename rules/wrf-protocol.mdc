@@ -1,0 +1,49 @@
+---
+description: "WRF protocol: keep AI coding sessions resumable via a single .wrf.md state file — log-before-execute command ledger, step checkpoints, branch sandboxing, and safe handoff"
+globs: "**/*.wrf.md"
+alwaysApply: false
+---
+
+# WRF Protocol — Execution Track Discipline
+
+When the workspace contains an `*.wrf.md` file whose frontmatter declares `format: WRF`, that file is the single source of truth for execution state. If several files match, ask the user which one is the active track before proceeding — never treat multiple files as simultaneous sources of truth. Apply this contract for the whole session — if a `.wrf.md` file enters the workspace mid-session (created or opened), apply it from that point forward.
+
+## Cold start / resume
+
+1. Read the frontmatter, then `ACTIVE.activeStepId`, then that step's `handoff` block.
+2. Before doing any work, state the file's absolute path and summarize to the user: project goal, last completed step, active step + status, next planned action.
+3. A `command_ledger` entry left at `status: "pending"` means a command may have died mid-flight. Do NOT rerun it blindly — first verify whether it already took effect. If it did, resolve the entry to `"executed"`; if it cannot be verified, ask the user; if it is abandoned, resolve it to `"blocked-by-user"`.
+
+## Command Ledger Law — log before execute
+
+Before ANY terminal/shell command, file deletion, or system-mutating action, FIRST append to `steps[activeStepId].handoff.command_ledger`:
+
+```yaml
+- command: "<exact command string>"
+  risk: "safe | caution | dangerous"
+  logged_at: "<ISO 8601>"
+  status: "pending"
+```
+
+Destructive patterns MUST be classified `dangerous` — examples (not exhaustive): `rm -rf`, `del /f /s`, `format`, `mkfs`, `dd`, `DROP TABLE`, `git reset --hard`, `shutdown`, or any other irreversible/destructive operation. If risk is `dangerous`: STOP after logging, surface the command, and wait for explicit user confirmation; if the user declines, resolve the pending entry's `status` to `"blocked-by-user"` instead of executing. Execute only after the entry exists, then update that same entry's `status` to `"executed"` — if the command errors, FIRST record the failure in `now_executing` and `completed_checkpoints`, THEN resolve the entry to `"executed"` — persisting before resolving keeps the failure in the audit trail even if the session stops mid-write (`now_executing` alone is overwritten by the next write-back; the status enum is `pending`/`executed`/`blocked-by-user`). The `pending` entry is the gate record and must be resolved, not left dangling. Never run an unlogged command.
+
+## Write-back loop
+
+After each stable change, update inside the same file:
+
+- `steps[activeStepId].handoff.now_executing` — current action
+- `steps[activeStepId].handoff.completed_checkpoints` += `"[action] — [result]"` (append only)
+- `steps[activeStepId].handoff.next_handoff_action` — what comes next
+- `steps[activeStepId].updatedAt` — ISO timestamp
+
+## Step state machine
+
+- NEVER change `ACTIVE.activeStepId` without explicit user instruction; never set it to a branch-task id.
+- Mark a step `status: done` only when every `doneWhen` condition passes, then fill `evidence.summary`, stop, and report.
+- Out-of-scope request → set `handoff.is_branch_active: true` and append a branch-task entry `{ id: "B-<short-description>" (kebab-case, unique within the step), description, status: "active", started_at, completed_at: null, evidence: "" }` to `handoff.branch_tasks`; never advance the main step for branch work. Close a branch task by updating its own `status`/`completed_at`/`evidence` (entries are never removed); when every branch task in the step is done, set `is_branch_active: false` before returning to the main step.
+
+## YAML write safety
+
+Only modify values of existing keys — never add, rename, or delete keys. `completed_checkpoints`, `command_ledger`, and `branch_tasks` are append-only. Keep all edits inside ` ```yaml ` fences and always close the fence. Never modify `# SECTION` headers. Quote values containing `:` or `#`; use block scalar `|` for multiline text, preferring `|-` for `command` values so no stray trailing newline is appended. Inside a quoted `command` value, escape embedded `"` and `\` (`\"`, `\\`) so the entry stays valid YAML.
+
+Spec & template: https://github.com/quanliangdaima/1G10K-wrf-protocol
