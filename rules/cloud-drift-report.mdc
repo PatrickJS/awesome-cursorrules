@@ -1,6 +1,6 @@
 ---
 description: "Read-only cloud drift report: Terraform/OpenTofu drift on any cloud, CloudFormation drift and AWS resources not in IaC, via the cloud-drift-report CLI"
-globs: **/*.tf, **/*.tfvars, **/*.tofu, **/*.tfstate
+globs: **/*
 alwaysApply: false
 ---
 
