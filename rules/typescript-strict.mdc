@@ -104,7 +104,7 @@ function isUser(value: unknown): value is { id: string; name: string } {
     return false
   }
   const record = value as Record<string, unknown>
-  return typeof record.id === "string" && typeof record.name === "string"
+  return typeof record["id"] === "string" && typeof record["name"] === "string"
 }
 
 const data = await readJson(response)
