@@ -1,0 +1,120 @@
+---
+description: Next.js App Router, Server/Client Components, and shared UI or data modules (Next.js 16, checked November 2026).
+globs: app/**,src/app/**,components/**,src/components/**,lib/**,src/lib/**,next.config.*,middleware.ts,middleware.js,src/middleware.ts,src/middleware.js,proxy.ts,proxy.js,src/proxy.ts,src/proxy.js
+alwaysApply: false
+---
+
+# Next.js App Router
+
+Checked against official Next.js App Router docs on 2026-11-20. Target **Next.js 16** (stable line as of this date; GitHub published `v16.4.6` on 2026-11-09). Proxy versus `middleware.ts` / Edge runtime wording was rechecked against the official Next.js 16 upgrade guide and Migration to Proxy docs on 2026-11-23. This is a documentation snapshot, not a lifetime policy and not an official Vercel partnership.
+
+The App Router (`app/`) is the current documented default for new Next.js apps. Do not present the Pages Router (`pages/`) as the 2026 default. If you are editing a legacy Pages Router app, say so explicitly and do not mix Pages Router data APIs into App Router files.
+
+## Version notes (15 vs 16)
+
+- Next.js 15 introduced async Request APIs (`params`, `searchParams`, `cookies()`, `headers()`, `draftMode()`) with a temporary synchronous compatibility period.
+- Next.js 16 **removes synchronous access**. Always `await` these APIs (or use React `use()` in a Client Component where that is the documented option). This style is also the forward-compatible choice on 15.
+- Next.js 16 requires **Node.js 20.9+** and **TypeScript 5.1+**. Turbopack is stable and is the default for `next dev` and `next build`. You no longer need `--turbopack` / `--turbo` flags for that default.
+- If a project still has a custom webpack config, `next build` (Turbopack by default) can fail; follow the official upgrade guide rather than inventing a workaround.
+- To migrate leftover sync access, the official docs mention: `npx @next/codemod@canary next-async-request-api .`
+
+## Server vs Client Components
+
+Layouts and pages are Server Components by default. Use `'use client'` only when you need:
+
+- State or event handlers (`onClick`, `onChange`)
+- Lifecycle logic (`useEffect`)
+- Browser-only APIs (`window`, `localStorage`, `navigator`)
+- Custom hooks that depend on the above
+
+Use Server Components to fetch data close to the source, keep API keys and other secrets on the server, and reduce client JavaScript.
+
+Pattern: fetch in a Server Component, pass **safe, already-sanitized props** into a small Client Component for interactivity. Never pass secret env values, service credentials, or raw privileged tokens into a Client Component (they travel in the RSC payload).
+
+Mark modules that must stay server-only with:
+
+```ts
+import 'server-only'
+```
+
+Next.js treats this import as a boundary: importing that module into a Client Component is a build-time error. Use the matching `client-only` package for browser-only modules. Installing the npm packages is optional; Next.js documents that it handles these imports internally.
+
+## Async `params` and `searchParams`
+
+Type and await dynamic APIs. Official page example:
+
+```tsx
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  // ...
+}
+```
+
+- `params` is a Promise in `layout.js`, `page.js`, `route.js`, `default.js`, and in the default export of metadata image / icon files (`opengraph-image`, `twitter-image`, `icon`, `apple-icon`).
+- `searchParams` is a Promise in `page.js`.
+- Do not read `params.id` or `searchParams.q` synchronously in Next.js 16.
+- Exception: `generateImageMetadata` still receives a plain `params` object, not a Promise. Official Next.js 16 docs (API and the upgrade guide, rechecked 2026-11-23) keep this synchronous. Do not type that argument as `Promise` or call `params.then`. The default image-generation function still receives Promise `params` and, when `generateImageMetadata` is used, a Promise `id` that must be awaited.
+
+## `cookies()` and `headers()`
+
+Both are async functions from `next/headers`:
+
+```ts
+import { cookies, headers } from 'next/headers'
+
+const cookieStore = await cookies()
+const theme = cookieStore.get('theme')
+
+const headersList = await headers()
+const userAgent = headersList.get('user-agent')
+```
+
+- `headers()` returns a **read-only** Web `Headers` object. You cannot `set` or `delete` outgoing headers through it.
+- Cookie `.set()` / `.delete()` only belong in a Server Function (`'use server'`) or a Route Handler, not during Server Component render.
+- Prefer `httpOnly`, `secure` (HTTPS), and an explicit `sameSite` when setting auth or session cookies. The only documented default among the options is `path: '/'`.
+- These are request-time APIs. Without Cache Components, using them in a layout or page opts the route into dynamic rendering.
+
+## Route Handlers
+
+Use `app/**/route.ts` (or `src/app/**/route.ts`) with the Web Request/Response APIs. Supported methods: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`.
+
+```ts
+import type { NextRequest } from 'next/server'
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ team: string }> }
+) {
+  const { team } = await params
+  return Response.json({ team })
+}
+```
+
+- After type generation (`next dev`, `next build`, or `next typegen`), `RouteContext<'/users/[id]'>` is a globally available helper for typed `params`.
+- If `OPTIONS` is not defined, Next.js documents that it will implement `OPTIONS` and set `Allow` from the other exported methods.
+- Default caching for `GET` handlers changed in the 15 RC from static to dynamic; do not assume GET handlers are statically cached.
+
+## Proxy vs deprecated middleware (Next.js 16)
+
+In Next.js 16 the `middleware` file convention is **deprecated and renamed to `proxy`**. Place `proxy.ts` (or `proxy.js`) at the project root or inside `src/`, at the same level as `app` or `pages`. Export a function named `proxy` (or a default export). Official migration:
+
+```bash
+npx @next/codemod@canary middleware-to-proxy .
+```
+
+The official upgrade guide states that the `edge` runtime is **not** supported in `proxy`. The `proxy` runtime is `nodejs` and **cannot be configured**. Setting `runtime` in a Proxy file causes `next build` to fail, even when set to `'nodejs'`. If you still need the Edge runtime, **keep `middleware.ts` (or `middleware.js`)** instead of renaming it to `proxy`. Official docs still allow `middleware.ts` for Edge use cases, but it is deprecated and will be removed in a future version.
+
+The official upgrade checklist warns: do not blindly rename Edge middleware to `proxy`. Read the current "Migration to Proxy" docs if the existing file depends on Edge-only behavior, and preserve required routing behavior.
+
+Without a `matcher`, Proxy runs on every request, including `_next/static`, `_next/image`, and `public/` assets. Use `config.matcher` so auth or redirects do not block CSS, JS, or images.
+
+## Pitfalls to avoid
+
+- Do not leak `process.env` secrets into Client Components or into props you pass across the server/client boundary.
+- Do not use Pages Router APIs (`getServerSideProps`, `getStaticProps`, `getInitialProps`) in App Router files.
+- Do not invent new `fetch` cache option names. If you need caching or revalidation, follow the official data-fetching docs for the installed Next.js version.
+- Prefer the official upgrade path (`npx next upgrade` on 16.1+, or the documented `@next/codemod` flow) over hand-waving version jumps.
