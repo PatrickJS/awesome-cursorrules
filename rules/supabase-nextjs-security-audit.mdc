@@ -6,23 +6,24 @@ alwaysApply: false
 
 # Supabase & Next.js Pre-Launch Security Guardrails
 
-Apply this checklist before deploying AI-assisted Next.js, React, Vite, or Supabase applications to production. Keep checks read-only unless explicitly asked to apply a migration or config change.
+Apply this checklist before deploying AI-assisted Next.js, React, Vite, or Supabase applications to production. Keep checks read-only unless explicitly asked to apply a migration or configuration change.
 
 ## 1. Client Bundle Secret Hygiene
 
 - Never reference server-only credentials (`SUPABASE_SERVICE_ROLE_KEY`, `DATABASE_URL`, `STRIPE_SECRET_KEY`, `OPENAI_API_KEY`, private signing keys) inside files without `import 'server-only'` or inside variables prefixed with `NEXT_PUBLIC_` / `VITE_`.
-- Disable production source maps (`productionBrowserSourceMaps: false` in `next.config.*`, `build.sourcemap: false` in `vite.config.*`) unless uploaded privately to an error tracker and stripped from public CDN assets.
-- Audit compiled client chunks (or run `npx github:zColdWater/vibeshield-cli <deployed-url>`) to confirm zero high-entropy tokens leak into browser bundles.
+- Disable production browser source maps (`productionBrowserSourceMaps: false` in `next.config.*`, `build.sourcemap: false` in `vite.config.*`) unless uploaded privately to an error tracker and stripped from public CDN assets.
+- Audit all compiled client build artifacts (`.next/static/**`, `dist/assets/**`) for accidental high-entropy tokens or leaked server imports; treat automated secret scanners as supplemental checks rather than proof that every generated chunk is clean.
 
-## 2. Supabase Row-Level Security (RLS) & Storage
+## 2. Supabase Row-Level Security (RLS), Views & Storage
 
 - Every table in the `public` schema exposed through PostgREST MUST have Row-Level Security enabled (`ALTER TABLE public.<table_name> ENABLE ROW LEVEL SECURITY;`).
-- Never ship permissive placeholder policies such as `USING (true)` on `UPDATE`, `DELETE`, or sensitive `SELECT`/`INSERT` operations for the `anon` role.
-- Restrict `anon` grants on views and RPC functions (`SECURITY DEFINER` functions must explicitly set `search_path = public` and validate `auth.uid()`).
-- Verify public vs. authenticated Supabase Storage bucket policies so user uploads cannot enumerate or overwrite other tenants' objects.
+- Inspect policies for both `anon` and `authenticated` roles: reject unrestricted conditions such as `USING (true)` or `WITH CHECK (true)` on sensitive `SELECT`, `INSERT`, `UPDATE`, and `DELETE` operations, and require explicit tenant or owner scoping (e.g., `(select auth.uid()) = user_id`).
+- Harden `SECURITY DEFINER` RPC functions against temporary-schema shadowing by setting `SET search_path = ''` with fully schema-qualified object references (or placing `pg_temp` last in a trusted path) and explicitly validating `auth.uid()` / caller privileges inside the function body.
+- Audit exposed SQL views for both `anon` and `authenticated` grants: flag owner-privileged views that bypass underlying table RLS, and require `security_invoker = true` (PostgreSQL 15+) or revoked PostgREST role grants where tenant isolation is needed.
+- Require private Supabase Storage buckets for confidential or tenant-owned uploads; verify `storage.objects` `SELECT`, `INSERT`, `UPDATE`, and `DELETE` policies prevent cross-tenant downloads as well as unauthorized listing or overwrites.
 
-## 3. HTTP Security Headers & Transport
+## 3. HTTP Security Headers & Webhook Integrity
 
-- Configure `Strict-Transport-Security` (`max-age=63072000; includeSubDomains; preload`), `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and frame protections (`frame-ancestors 'none'` or `X-Frame-Options: DENY`).
+- Configure `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and frame protections (`Content-Security-Policy: frame-ancestors 'none'` or `X-Frame-Options: DENY`). Enable `Strict-Transport-Security` (`max-age=63072000`), adding `includeSubDomains` only after confirming every subdomain serves valid HTTPS and treating `preload` as an explicit opt-in.
 - Avoid wildcard `Access-Control-Allow-Origin: *` combined with cookie or bearer authentication on API routes.
 - Validate webhook signatures (Stripe, GitHub, Clerk, Supabase) against the raw unparsed request body before executing state mutations.
