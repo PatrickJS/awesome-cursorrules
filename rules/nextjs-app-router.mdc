@@ -1,0 +1,27 @@
+---
+description: Next.js 16 App Router standards (async APIs, proxy.ts, Server Components)
+globs: app/**/*.{ts,tsx}, proxy.ts
+alwaysApply: false
+---
+
+# Next.js 16 App Router Conventions (November 2026)
+
+## Core Principles
+- Treat all components inside `/app` as Server Components by default unless `'use client'` is explicitly required.
+- Do not make a component a Client Component just for data fetching; fetch in Server Components.
+
+## Next.js 16 Breaking Patterns
+1. **Async Request Data**:
+   - `params`, `searchParams`, `cookies()`, and `headers()` are strictly asynchronous.
+   - Always `await` them before access:
+     ```tsx
+     // Correct
+     export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+       const { id } = await params;
+       return <div>ID: {id}</div>;
+     }
+     ```
+2. **Routing & Edge Middleware**:
+   - Standard routing middleware uses `proxy.ts` (replacing legacy `middleware.ts`).
+3. **Data Fetching & Cache**:
+   - Use the native `fetch` cache options or `use cache` directives according to latest App Router standards.
