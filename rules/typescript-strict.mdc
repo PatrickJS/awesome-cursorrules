@@ -1,0 +1,18 @@
+---
+description: Strict TypeScript coding standards and type safety rules for AI generation
+globs: **/*.{ts,tsx}
+alwaysApply: false
+---
+
+# TypeScript Strict Mode Guidelines (November 2026)
+
+## Core Type Safety Rules
+- **No `any`**: Never generate `any`. Use `unknown` with type narrowing/guards when the shape is truly dynamic.
+- **Strict Null Checks**: Explicitly handle `null` and `undefined`. Avoid non-null assertions (`!`) unless strictly guaranteed.
+- **Explicit Return Types**: Provide explicit return types on exported functions, API handlers, and React server actions.
+- **Type Discrimination**: Prefer discriminated unions over optional bag properties for state management.
+- **Immutability**: Prefer `readonly` arrays and properties where mutations are not intended.
+
+## Modern TypeScript Idioms
+- Use the `satisfies` operator to validate types without widening the inferred literal types.
+- Prefer `type` for unions/primitives and `interface` for extendable object contracts.
