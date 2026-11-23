@@ -111,6 +111,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [Vue 3 (Nuxt 3, TypeScript)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/vue-3-nuxt-3-typescript-cursorrules-prompt-file.mdc) - Vue 3 development with TypeScript integration.
 - [Vue 3 (Composition API)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/vue3-composition-api-cursorrules-prompt-file.mdc) - Vue 3 development with Composition API integration.
 - [Vue/Nuxt Full AI Stack](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/vue-claude-stack.mdc) - Complete AI coding setup for Vue 3 & Nuxt 3 with Cursor Project Rules, CLAUDE.md, Copilot instructions, and generation skills.
+- [AI Search Visibility](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/ai-search-visibility.mdc) - Server-rendered text for AI crawlers that do not run JavaScript, robots.txt for AI search bots, and no secret keys in front-end code.
 
 ### Backend and Full-Stack
 
