@@ -1,0 +1,67 @@
+---
+description: Make public web pages readable by AI search crawlers (ChatGPT, Claude, Perplexity) that do not run JavaScript, set robots.txt for AI search bots, and keep secret API keys out of front-end code.
+globs: **/*.html, **/*.tsx, **/*.jsx, **/*.vue, **/*.svelte, **/*.astro, **/robots.txt, **/sitemap.xml, **/llms.txt
+alwaysApply: false
+---
+
+# Make this site visible to AI (ChatGPT, Claude, Perplexity)
+
+Many AI crawlers read only the HTML the server sends and do not run JavaScript. In its December 2024 study, Vercel observed that the crawlers of OpenAI and Anthropic did not render JavaScript, while Google Gemini (via Googlebot) and AppleBot did (https://vercel.com/blog/the-rise-of-the-ai-crawler). A React or Vue app that builds its page only in the browser can therefore look empty to them.
+
+Our own scan (2026-11-23, Show HN launches of the previous 7 days, home pages only) found 108 pages with heuristic markers of a single-page app (a Vite asset bundle, or an element with `id="root"` or `id="app"`). For 54 of them, a simple HTML text filter extracted fewer than 50 words. Method and limits: https://github.com/galeaxe5/ai-visible/blob/main/METHOD.md.
+
+When you create or change public pages (home, landing, pricing, docs, blog), follow these rules.
+
+## 1. Real text in the HTML
+- Public pages must contain their main text in the HTML response, before any JavaScript runs.
+- For a Vite / Create React App single-page app, prerender the public routes at build time. Use a maintained static-generation option (for example, a prerender step in the build, or moving the marketing pages to Next.js, Astro or another framework with static output). Check the package is maintained before you add it, and tell the user what you chose.
+- Next.js: keep public pages server-rendered or static. `"use client"` alone does not stop Next.js from prerendering HTML. The problem is content that appears only after the browser runs code, for example data fetched in `useEffect`, or a page that shows only a spinner until it loads.
+- Leave the logged-in app part of the site as it is. It does not need to be visible.
+
+## 2. Basic tags on every public page
+- A unique `<title>` and a `<meta name="description">` written in plain words.
+- One `<h1>` that says what the product does.
+- Open Graph tags (`og:title`, `og:description`, `og:image`).
+- Optional: JSON-LD (`application/ld+json`) for the organization or product.
+
+## 3. Let AI search crawlers in, and respect the owner's choices
+- Search crawlers put a site into AI answers: `OAI-SearchBot` (ChatGPT search), `Claude-SearchBot` (Claude), `PerplexityBot` (Perplexity). Check that `robots.txt` does not block them, unless the owner chose to.
+- Training crawlers (`GPTBot`, `ClaudeBot`) collect data for model training. Being found in AI search does not require them. Do not add or remove rules for them without the owner's explicit decision.
+- Never remove an existing block that the owner set on purpose. Ask first.
+- Add a `sitemap.xml` and link it from `robots.txt`.
+- Optional: add `/llms.txt`, a short markdown summary of the site and its key pages (proposal: https://llmstxt.org). Not every AI tool reads it yet.
+
+## 4. No secret keys in the front end
+- Anything in `VITE_*`, `NEXT_PUBLIC_*`, `REACT_APP_*` or in client code is sent to every visitor's browser.
+- Never put OpenAI, Anthropic, Stripe secret (`sk_live_`), Supabase `service_role` or similar secret keys there. Call those APIs from a server function instead.
+
+## 5. Check the result before you say it is done
+After a build or deploy, run this quick diagnostic. It fetches the page without running JavaScript and looks for a phrase that must be visible on the page (for example, the main headline) in the text of the `<body>`. Put the page address in `URL` and the phrase in `EXPECT`:
+
+```bash
+URL="https://YOUR-SITE.com/"; EXPECT="Your main headline"
+(
+  [ -n "$(printf %s "$EXPECT" | tr -d '[:space:]')" ] || { echo "Set EXPECT to a phrase that must be visible on the page" >&2; exit 1; }
+  f=$(mktemp) || exit 1
+  trap 'rm -f "$f"' EXIT
+  ct=$(curl -sSL --fail --max-time 20 --max-filesize 5000000 -H "Accept: text/html" -o "$f" -w "%{content_type}" "$URL") || { echo "Check failed: the page did not load or returned an error" >&2; exit 1; }
+  case "$ct" in *text/html*) ;; *) echo "Check failed: the response is not HTML ($ct)" >&2; exit 1 ;; esac
+  EXPECT="$EXPECT" node -e '
+    const h = require("fs").readFileSync(process.argv[1], "utf8");
+    const m = h.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    const body = m ? m[1] : h.replace(/<head[\s\S]*?<\/head>/i, " ");
+    const t = body.replace(/<(script|style|noscript|template|svg)[\s\S]*?<\/\1>/gi, " ").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    const norm = (x) => x.toLowerCase().replace(/\s+/g, " ").trim();
+    console.log("About " + t.split(" ").filter(Boolean).length + " words in the body text before JavaScript (rough filter count)");
+    if (norm(t).includes(norm(process.env.EXPECT))) { console.log("Phrase found in the extracted body text"); }
+    else { console.error("Phrase not found in the body text before JavaScript"); process.exit(1); }
+  ' "$f"
+)
+```
+
+- The command ends with an error status if the page did not load, is not HTML, `EXPECT` is empty or only spaces, or the phrase is not in the body text.
+- What it reads: only the `<body>`. The `<head>` (including `<title>`), `<script>`, `<style>`, `<noscript>`, `<template>` and `<svg>` contents are skipped. It is a simple text filter, not a browser. It does not apply CSS, so text hidden with CSS still counts, and HTML entities are not decoded. Pick a phrase without quotes or special characters.
+- The word count is only a rough hint: a very low number (for example, under 50) usually means an empty app shell, but a page can also be short on purpose.
+- This diagnostic does not replace a real check. Also confirm the main text is visible with JavaScript disabled in a browser. If you cannot do that, tell the user the result is not fully confirmed.
+- Report what you measured to the user (phrase found or not, and the rough word count). Do not guess it.
+- Limits: this shows the HTML a client without JavaScript receives. It does not prove a real AI crawler is allowed in, because a firewall or CDN bot protection can still block it. If the user wants certainty, check the server or CDN logs for the crawler's requests.
