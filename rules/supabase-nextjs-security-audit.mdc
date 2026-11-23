@@ -1,0 +1,28 @@
+---
+description: Pre-launch security guardrails for Next.js, Supabase RLS, client JS bundles, and security headers
+globs: **/*.{ts,tsx,js,jsx,mjs,sql}
+alwaysApply: false
+---
+
+# Supabase & Next.js Pre-Launch Security Guardrails
+
+Apply this checklist before deploying AI-assisted Next.js, React, Vite, or Supabase applications to production. Keep checks read-only unless explicitly asked to apply a migration or config change.
+
+## 1. Client Bundle Secret Hygiene
+
+- Never reference server-only credentials (`SUPABASE_SERVICE_ROLE_KEY`, `DATABASE_URL`, `STRIPE_SECRET_KEY`, `OPENAI_API_KEY`, private signing keys) inside files without `import 'server-only'` or inside variables prefixed with `NEXT_PUBLIC_` / `VITE_`.
+- Disable production source maps (`productionBrowserSourceMaps: false` in `next.config.*`, `build.sourcemap: false` in `vite.config.*`) unless uploaded privately to an error tracker and stripped from public CDN assets.
+- Audit compiled client chunks (or run `npx github:zColdWater/vibeshield-cli <deployed-url>`) to confirm zero high-entropy tokens leak into browser bundles.
+
+## 2. Supabase Row-Level Security (RLS) & Storage
+
+- Every table in the `public` schema exposed through PostgREST MUST have Row-Level Security enabled (`ALTER TABLE public.<table_name> ENABLE ROW LEVEL SECURITY;`).
+- Never ship permissive placeholder policies such as `USING (true)` on `UPDATE`, `DELETE`, or sensitive `SELECT`/`INSERT` operations for the `anon` role.
+- Restrict `anon` grants on views and RPC functions (`SECURITY DEFINER` functions must explicitly set `search_path = public` and validate `auth.uid()`).
+- Verify public vs. authenticated Supabase Storage bucket policies so user uploads cannot enumerate or overwrite other tenants' objects.
+
+## 3. HTTP Security Headers & Transport
+
+- Configure `Strict-Transport-Security` (`max-age=63072000; includeSubDomains; preload`), `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and frame protections (`frame-ancestors 'none'` or `X-Frame-Options: DENY`).
+- Avoid wildcard `Access-Control-Allow-Origin: *` combined with cookie or bearer authentication on API routes.
+- Validate webhook signatures (Stripe, GitHub, Clerk, Supabase) against the raw unparsed request body before executing state mutations.
