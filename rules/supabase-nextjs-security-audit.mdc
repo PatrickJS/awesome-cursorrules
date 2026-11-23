@@ -12,13 +12,13 @@ Apply this checklist before deploying AI-assisted Next.js, React, Vite, or Supab
 
 - Never reference server-only credentials (`SUPABASE_SERVICE_ROLE_KEY`, `DATABASE_URL`, `STRIPE_SECRET_KEY`, `OPENAI_API_KEY`, private signing keys) inside files without `import 'server-only'` or inside variables prefixed with `NEXT_PUBLIC_` / `VITE_`.
 - Disable production browser source maps (`productionBrowserSourceMaps: false` in `next.config.*`, `build.sourcemap: false` in `vite.config.*`) unless uploaded privately to an error tracker and stripped from public CDN assets.
-- Audit all compiled client build artifacts (`.next/static/**`, `dist/assets/**`) for accidental high-entropy tokens or leaked server imports; treat automated secret scanners as supplemental checks rather than proof that every generated chunk is clean.
+- Audit all deployed client build outputs and static assets (`.next/static/**`, Next.js `public/**`, and the full configured Vite output directory `dist/**` including `dist/index.html` and copied `public/` files) for accidental high-entropy tokens or leaked server imports; treat automated secret scanners as supplemental checks rather than proof that every generated chunk is clean.
 
 ## 2. Supabase Row-Level Security (RLS), Views & Storage
 
 - Every table in the `public` schema exposed through PostgREST MUST have Row-Level Security enabled (`ALTER TABLE public.<table_name> ENABLE ROW LEVEL SECURITY;`).
 - Inspect policies for both `anon` and `authenticated` roles: reject unrestricted conditions such as `USING (true)` or `WITH CHECK (true)` on sensitive `SELECT`, `INSERT`, `UPDATE`, and `DELETE` operations, and require explicit tenant or owner scoping (e.g., `(select auth.uid()) = user_id`).
-- Harden `SECURITY DEFINER` RPC functions against temporary-schema shadowing by setting `SET search_path = ''` with fully schema-qualified object references (or placing `pg_temp` last in a trusted path) and explicitly validating `auth.uid()` / caller privileges inside the function body.
+- Harden `SECURITY DEFINER` RPC functions against temporary-schema shadowing by setting `SET search_path = ''` with fully schema-qualified object references (or placing `pg_temp` last in a trusted path) and enforcing explicit row- and operation-level authorization against the caller's identity (`auth.uid()` and tenant/role membership) for every accessed record rather than only checking for a non-null `auth.uid()`.
 - Audit exposed SQL views for both `anon` and `authenticated` grants: flag owner-privileged views that bypass underlying table RLS, and require `security_invoker = true` (PostgreSQL 15+) or revoked PostgREST role grants where tenant isolation is needed.
 - Require private Supabase Storage buckets for confidential or tenant-owned uploads; verify `storage.objects` `SELECT`, `INSERT`, `UPDATE`, and `DELETE` policies prevent cross-tenant downloads as well as unauthorized listing or overwrites.
 
