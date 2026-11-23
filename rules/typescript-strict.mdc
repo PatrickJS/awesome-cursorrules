@@ -1,5 +1,5 @@
 ---
-description: Strict TypeScript: no casual any, official strict-family flags, narrowing for JSON and fetch.
+description: "Strict TypeScript: no casual any, official strict-family flags, narrowing for JSON and fetch."
 globs: **/*.ts,**/*.tsx
 alwaysApply: false
 ---
@@ -100,14 +100,11 @@ async function readJson(res: Response): Promise<unknown> {
 }
 
 function isUser(value: unknown): value is { id: string; name: string } {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "id" in value &&
-    "name" in value &&
-    typeof value.id === "string" &&
-    typeof value.name === "string"
-  )
+  if (typeof value !== "object" || value === null) {
+    return false
+  }
+  const record = value as Record<string, unknown>
+  return typeof record.id === "string" && typeof record.name === "string"
 }
 
 const data = await readJson(response)

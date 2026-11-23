@@ -1,6 +1,6 @@
 ---
-description: Next.js App Router and Server Components conventions (Next.js 16, checked November 2026).
-globs: app/**,src/app/**,next.config.*,middleware.ts,middleware.js,src/middleware.ts,src/middleware.js,proxy.ts,proxy.js,src/proxy.ts,src/proxy.js
+description: Next.js App Router, Server/Client Components, and shared UI or data modules (Next.js 16, checked November 2026).
+globs: app/**,src/app/**,components/**,src/components/**,lib/**,src/lib/**,next.config.*,middleware.ts,middleware.js,src/middleware.ts,src/middleware.js,proxy.ts,proxy.js,src/proxy.ts,src/proxy.js
 alwaysApply: false
 ---
 
@@ -54,9 +54,10 @@ export default async function Page({
 }
 ```
 
-- `params` is a Promise in `layout.js`, `page.js`, `route.js`, `default.js`, and metadata image / icon file conventions.
+- `params` is a Promise in `layout.js`, `page.js`, `route.js`, `default.js`, and in the default export of metadata image / icon files (`opengraph-image`, `twitter-image`, `icon`, `apple-icon`).
 - `searchParams` is a Promise in `page.js`.
 - Do not read `params.id` or `searchParams.q` synchronously in Next.js 16.
+- Exception: `generateImageMetadata` still receives a plain `params` object, not a Promise. Official Next.js 16 docs (API and the upgrade guide, rechecked 2026-11-23) keep this synchronous. Do not type that argument as `Promise` or call `params.then`. The default image-generation function still receives Promise `params` and, when `generateImageMetadata` is used, a Promise `id` that must be awaited.
 
 ## `cookies()` and `headers()`
 
