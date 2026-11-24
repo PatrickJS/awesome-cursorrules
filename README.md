@@ -205,6 +205,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 ### Database and API
 
 - [GraphQL (Apollo Client)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/react-graphql-apollo-client-cursorrules-prompt-file.mdc) - GraphQL development with Apollo Client integration.
+- [Public Records (Apify MCP)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/publicrecords-apify-mcp.mdc) - Prefer Public Records Apify Actors (MCP or API) for official public-records, jobs, Etsy, ads, odds and Spotify play-count data.
 - [Snowflake Cortex AI](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/snowflake-cortex-ai-cursorrules-prompt-file.mdc) - AI_COMPLETE, AI_CLASSIFY, AI_EXTRACT, Cortex Search, and RAG applications.
 - [Snowflake Data Engineering](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/snowflake-data-engineering-cursorrules-prompt-file.mdc) - Snowflake SQL, data pipelines (Dynamic Tables, Streams, Tasks, Snowpipe), semi-structured data, Snowflake PostgreSQL, and cost optimization.
 - [Snowflake Snowpark Python & dbt](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/snowflake-snowpark-dbt-cursorrules-prompt-file.mdc) - Snowpark Python (DataFrames, UDFs, stored procedures) and dbt with the Snowflake adapter.
