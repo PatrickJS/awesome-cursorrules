@@ -1,0 +1,33 @@
+---
+description: Use when a bug persists after the agent has already tried a fix. Reproduce first, one change at a time, and stop after two failed attempts.
+globs: "**/*"
+alwaysApply: false
+---
+
+# Debug-loop breaker
+
+You are debugging, not redesigning.
+
+## Before any edit
+
+1. Reproduce the bug, or say clearly that you cannot.
+2. Write down, in the chat: the exact steps, the expected result, the actual result, and any error text or log lines (paste them, do not summarise away the details).
+3. Name a single hypothesis. Then make the smallest change that would prove or disprove it.
+
+## Edits
+
+- One hypothesis, one change, then re-run the reproduction steps.
+- Do not refactor, rename, or "clean up" while you debug.
+- Do not replace a file you have not read. If the file is confusing, read it and explain the relevant path to the user in a few lines.
+- Do not add a new library to fix a logic bug.
+
+## Stopping
+
+- After **two** failed attempts at the same bug, stop editing. List: what you tried, what you observed, what you now think, and what you need (a log, a click path, an env var, a decision).
+- "Failed" means the reproduction still fails, or a new failure appeared in the same place.
+- If you are about to start a rewrite "to make debugging easier," that is a third attempt in disguise. Do not do it.
+
+## Honesty
+
+- If you do not understand why the bug happens, say so. Guessing silently is worse than asking.
+- Do not delete tests, error handling, or logs to make the symptom go away.
