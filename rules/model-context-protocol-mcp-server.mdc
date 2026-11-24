@@ -1,0 +1,34 @@
+---
+description: "Build safe, reliable Model Context Protocol (MCP) servers in TypeScript and Python with strict schemas, stdio/HTTP transport discipline, and least-privilege guardrails"
+globs: "**/*.ts, **/*.py"
+alwaysApply: false
+---
+# Model Context Protocol (MCP) Server Development
+
+Guidelines for authoring, testing, and hardening Model Context Protocol (MCP) servers using `@modelcontextprotocol/sdk` (TypeScript) and the Python MCP SDK (`pip install "mcp>=1,<2"` for `FastMCP`, or `MCPServer` in `mcp>=2`).
+
+## Transport and Protocol Discipline
+
+- Never write debug logs, banners, or print statements to `stdout` when using the `stdio` transport; `stdout` is reserved exclusively for JSON-RPC 2.0 frames. Route all operational logging to `stderr` or structured log files.
+- Prefer the Streamable HTTP transport over deprecated standalone SSE endpoints for remote servers (`StreamableHTTPServerTransport` in TypeScript SDK v1; confirm the transport class and package for your SDK major version before upgrading); require caller authentication (such as OAuth 2.1 Bearer tokens) and per-tool authorization on protected remote servers, and validate `Origin` headers to mitigate browser-based DNS rebinding.
+- Keep tool, resource, and prompt registration deterministic at startup so clients receive consistent capability manifests.
+
+## Tool Design and Input Schemas
+
+- Define explicit Zod (TypeScript) or Pydantic / type-annotated schemas (Python) for every tool parameter, including concise `.describe(...)` metadata, allowed enums, numeric bounds, and sensible defaults.
+- Name tools with clear `verb_noun` snake_case identifiers and write descriptions that state both what the tool does and when an agent should prefer or avoid calling it.
+- Keep tool responses compact and structured: paginate list endpoints, bound maximum output size, and return actionable error messages (`isError: true`) rather than crashing the server process on recoverable user or upstream errors.
+- Separate read-only lookups (`Resources` or read-only `Tools` annotated with `readOnlyHint: true`) from state-mutating or destructive operations (`destructiveHint: true`, `idempotentHint`).
+
+## Security and Least Privilege
+
+- Canonicalize and validate every filesystem path against configured allowed root directories (`realpath` + prefix boundary check) then open files with root-confined resolution (for example Linux `openat2` with `RESOLVE_BENEATH | RESOLVE_NO_SYMLINKS`, or a component-by-component `openat` walk with `O_NOFOLLOW` from an opened root directory descriptor); a single `O_NOFOLLOW` open only protects the final path component. Where neither is available, ensure untrusted users cannot modify any directory under the allowed root. This blocks path traversal (`..`) and TOCTOU symlink escapes.
+- Use parameterized SQL queries and strict URL allowlists (`https:` only, disabling redirects or revalidating every redirect hop, blocking loopback/private/cloud-metadata IPs such as `169.254.169.254`, and connecting to the validated resolved IP address) to prevent SQL injection, SSRF, and DNS rebinding.
+- Load API keys, OAuth tokens, and database credentials exclusively from environment variables or OS secret stores; never echo secrets in tool outputs, error traces, or resource listings.
+- Enforce bounded timeouts and concurrency limits on every external subprocess or HTTP request so a stalled upstream dependency cannot hang the MCP host.
+
+## Verification Checklist
+
+- Confirm `stdio` startup emits zero non-JSON bytes on `stdout`.
+- Test tool calls with valid inputs, missing required fields, out-of-range values, and path/URL boundary violations.
+- Verify graceful shutdown on `SIGINT` / `SIGTERM` and clean disposal of child processes, database pools, and open handles.
