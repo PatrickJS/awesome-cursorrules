@@ -5,12 +5,12 @@ alwaysApply: false
 ---
 # Model Context Protocol (MCP) Server Development
 
-Guidelines for authoring, testing, and hardening Model Context Protocol (MCP) servers using `@modelcontextprotocol/sdk` (TypeScript) and `mcp` / `FastMCP` (Python).
+Guidelines for authoring, testing, and hardening Model Context Protocol (MCP) servers using `@modelcontextprotocol/sdk` (TypeScript) and the Python MCP SDK (`pip install "mcp>=1,<2"` for `FastMCP`, or `MCPServer` in `mcp>=2`).
 
 ## Transport and Protocol Discipline
 
 - Never write debug logs, banners, or print statements to `stdout` when using the `stdio` transport; `stdout` is reserved exclusively for JSON-RPC 2.0 frames. Route all operational logging to `stderr` or structured log files.
-- Prefer Streamable HTTP transport (`StreamableHTTPServerTransport`) over deprecated standalone SSE endpoints for remote servers, and validate `Origin` headers to prevent DNS rebinding attacks.
+- Prefer Streamable HTTP transport (`StreamableHTTPServerTransport`) over deprecated standalone SSE endpoints for remote servers; require caller authentication (such as OAuth 2.1 Bearer tokens) and per-tool authorization on protected remote servers, and validate `Origin` headers to mitigate browser-based DNS rebinding.
 - Keep tool, resource, and prompt registration deterministic at startup so clients receive consistent capability manifests.
 
 ## Tool Design and Input Schemas
@@ -22,8 +22,8 @@ Guidelines for authoring, testing, and hardening Model Context Protocol (MCP) se
 
 ## Security and Least Privilege
 
-- Canonicalize and validate every filesystem path against configured allowed root directories before reading or writing (`realpath` + prefix boundary check) to block path traversal (`..`) and symlink escapes.
-- Use parameterized SQL queries and strict URL allowlists (`https:` only, blocking loopback and cloud metadata IPs such as `169.254.169.254` on untrusted URL inputs) to prevent SQL injection and SSRF.
+- Canonicalize and validate every filesystem path against configured allowed root directories (`realpath` + prefix boundary check) and open files with root-confined or no-follow primitives (or ensure untrusted users cannot modify directory ancestors under the allowed root) to block path traversal (`..`) and TOCTOU symlink escapes.
+- Use parameterized SQL queries and strict URL allowlists (`https:` only, disabling redirects or revalidating every redirect hop, blocking loopback/private/cloud-metadata IPs such as `169.254.169.254`, and connecting to the validated resolved IP address) to prevent SQL injection, SSRF, and DNS rebinding.
 - Load API keys, OAuth tokens, and database credentials exclusively from environment variables or OS secret stores; never echo secrets in tool outputs, error traces, or resource listings.
 - Enforce bounded timeouts and concurrency limits on every external subprocess or HTTP request so a stalled upstream dependency cannot hang the MCP host.
 
