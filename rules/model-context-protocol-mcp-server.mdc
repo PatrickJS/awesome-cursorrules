@@ -10,7 +10,7 @@ Guidelines for authoring, testing, and hardening Model Context Protocol (MCP) se
 ## Transport and Protocol Discipline
 
 - Never write debug logs, banners, or print statements to `stdout` when using the `stdio` transport; `stdout` is reserved exclusively for JSON-RPC 2.0 frames. Route all operational logging to `stderr` or structured log files.
-- Prefer Streamable HTTP transport (`StreamableHTTPServerTransport`) over deprecated standalone SSE endpoints for remote servers; require caller authentication (such as OAuth 2.1 Bearer tokens) and per-tool authorization on protected remote servers, and validate `Origin` headers to mitigate browser-based DNS rebinding.
+- Prefer the Streamable HTTP transport over deprecated standalone SSE endpoints for remote servers (`StreamableHTTPServerTransport` in TypeScript SDK v1; confirm the transport class and package for your SDK major version before upgrading); require caller authentication (such as OAuth 2.1 Bearer tokens) and per-tool authorization on protected remote servers, and validate `Origin` headers to mitigate browser-based DNS rebinding.
 - Keep tool, resource, and prompt registration deterministic at startup so clients receive consistent capability manifests.
 
 ## Tool Design and Input Schemas
@@ -22,7 +22,7 @@ Guidelines for authoring, testing, and hardening Model Context Protocol (MCP) se
 
 ## Security and Least Privilege
 
-- Canonicalize and validate every filesystem path against configured allowed root directories (`realpath` + prefix boundary check) and open files with root-confined or no-follow primitives (or ensure untrusted users cannot modify directory ancestors under the allowed root) to block path traversal (`..`) and TOCTOU symlink escapes.
+- Canonicalize and validate every filesystem path against configured allowed root directories (`realpath` + prefix boundary check) then open files with root-confined resolution (for example Linux `openat2` with `RESOLVE_BENEATH | RESOLVE_NO_SYMLINKS`, or a component-by-component `openat` walk with `O_NOFOLLOW` from an opened root directory descriptor); a single `O_NOFOLLOW` open only protects the final path component. Where neither is available, ensure untrusted users cannot modify any directory under the allowed root. This blocks path traversal (`..`) and TOCTOU symlink escapes.
 - Use parameterized SQL queries and strict URL allowlists (`https:` only, disabling redirects or revalidating every redirect hop, blocking loopback/private/cloud-metadata IPs such as `169.254.169.254`, and connecting to the validated resolved IP address) to prevent SQL injection, SSRF, and DNS rebinding.
 - Load API keys, OAuth tokens, and database credentials exclusively from environment variables or OS secret stores; never echo secrets in tool outputs, error traces, or resource listings.
 - Enforce bounded timeouts and concurrency limits on every external subprocess or HTTP request so a stalled upstream dependency cannot hang the MCP host.
