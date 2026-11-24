@@ -12,7 +12,8 @@ Apply this checklist before deploying AI-assisted Next.js, React, Vite, or Supab
 
 - Never reference server-only credentials (`SUPABASE_SERVICE_ROLE_KEY`, `DATABASE_URL`, `STRIPE_SECRET_KEY`, `OPENAI_API_KEY`, private signing keys) inside files without `import 'server-only'` or inside variables prefixed with `NEXT_PUBLIC_` / `VITE_`.
 - Disable production browser source maps (`productionBrowserSourceMaps: false` in `next.config.*`, `build.sourcemap: false` in `vite.config.*`) unless uploaded privately to an error tracker and stripped from public CDN assets.
-- Audit all deployed client build outputs and static assets (`.next/static/**`, Next.js `public/**`, and the full configured Vite output directory `dist/**` including `dist/index.html` and copied `public/` files) for accidental high-entropy tokens or leaked server imports; treat automated secret scanners as supplemental checks rather than proof that every generated chunk is clean.
+- Audit all deployed client build outputs and static assets (`.next/static/**`, Next.js `public/**`, and the full configured Vite output directory `dist/**` including `dist/index.html` and copied `public/` files) for any exposed credentials regardless of entropy—including short passwords or connection URLs in copied public configuration—as well as leaked server imports; treat automated secret scanners as supplemental checks rather than conclusive proof that every generated chunk is clean.
+- Separately inspect rendered HTML responses and serialized Client Component props (including React Server Components flight payloads and `__NEXT_DATA__`) for server credentials read at request time that may never appear in static build artifacts.
 
 ## 2. Supabase Row-Level Security (RLS), Views & Storage
 
