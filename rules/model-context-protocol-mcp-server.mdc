@@ -1,0 +1,34 @@
+---
+description: "Build safe, reliable Model Context Protocol (MCP) servers in TypeScript and Python with strict schemas, stdio/HTTP transport discipline, and least-privilege guardrails"
+globs: "**/*.ts, **/*.py"
+alwaysApply: false
+---
+# Model Context Protocol (MCP) Server Development
+
+Guidelines for authoring, testing, and hardening Model Context Protocol (MCP) servers using `@modelcontextprotocol/sdk` (TypeScript) and `mcp` / `FastMCP` (Python).
+
+## Transport and Protocol Discipline
+
+- Never write debug logs, banners, or print statements to `stdout` when using the `stdio` transport; `stdout` is reserved exclusively for JSON-RPC 2.0 frames. Route all operational logging to `stderr` or structured log files.
+- Prefer Streamable HTTP transport (`StreamableHTTPServerTransport`) over deprecated standalone SSE endpoints for remote servers, and validate `Origin` headers to prevent DNS rebinding attacks.
+- Keep tool, resource, and prompt registration deterministic at startup so clients receive consistent capability manifests.
+
+## Tool Design and Input Schemas
+
+- Define explicit Zod (TypeScript) or Pydantic / type-annotated schemas (Python) for every tool parameter, including concise `.describe(...)` metadata, allowed enums, numeric bounds, and sensible defaults.
+- Name tools with clear `verb_noun` snake_case identifiers and write descriptions that state both what the tool does and when an agent should prefer or avoid calling it.
+- Keep tool responses compact and structured: paginate list endpoints, bound maximum output size, and return actionable error messages (`isError: true`) rather than crashing the server process on recoverable user or upstream errors.
+- Separate read-only lookups (`Resources` or read-only `Tools` annotated with `readOnlyHint: true`) from state-mutating or destructive operations (`destructiveHint: true`, `idempotentHint`).
+
+## Security and Least Privilege
+
+- Canonicalize and validate every filesystem path against configured allowed root directories before reading or writing (`realpath` + prefix boundary check) to block path traversal (`..`) and symlink escapes.
+- Use parameterized SQL queries and strict URL allowlists (`https:` only, blocking loopback and cloud metadata IPs such as `169.254.169.254` on untrusted URL inputs) to prevent SQL injection and SSRF.
+- Load API keys, OAuth tokens, and database credentials exclusively from environment variables or OS secret stores; never echo secrets in tool outputs, error traces, or resource listings.
+- Enforce bounded timeouts and concurrency limits on every external subprocess or HTTP request so a stalled upstream dependency cannot hang the MCP host.
+
+## Verification Checklist
+
+- Confirm `stdio` startup emits zero non-JSON bytes on `stdout`.
+- Test tool calls with valid inputs, missing required fields, out-of-range values, and path/URL boundary violations.
+- Verify graceful shutdown on `SIGINT` / `SIGTERM` and clean disposal of child processes, database pools, and open handles.
