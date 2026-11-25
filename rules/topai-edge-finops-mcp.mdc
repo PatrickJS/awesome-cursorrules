@@ -29,12 +29,12 @@ Use this rule when building AI agents, RAG ingestion pipelines, or backend servi
 
 ## Deterministic Edge Endpoints
 
-When the developer requests web extraction, prompt compression, math verification, or JSON repair, pass `Authorization: Bearer ${TOPAI_API_KEY}` (or `X-TopAI-Key: ${TOPAI_API_KEY}`) from your environment for authenticated quotas. Up to 25 free unauthenticated sandbox calls per day also work out of the box when the header is omitted:
+Host: `topaigateway.com` (HTTPS). When the developer requests web extraction, prompt compression, math verification, or JSON repair, pass `Authorization: Bearer ${TOPAI_API_KEY}` (or `X-TopAI-Key: ${TOPAI_API_KEY}`) from the environment for authenticated quotas; up to 25 free unauthenticated sandbox calls per day also work out of the box when the header is omitted:
 
-- **Web-to-Markdown Extraction**: `POST https://topaigateway.com/v1/extract` with header `Authorization: Bearer ${TOPAI_API_KEY}` and JSON body `{"url": "https://example.com"}`
-- **AST Context Compression**: `POST https://topaigateway.com/v1/compress` with header `Authorization: Bearer ${TOPAI_API_KEY}` and JSON body `{"text": "..."}`
-- **Deterministic Arithmetic & IBAN Check**: `POST https://topaigateway.com/v1/math/check` with header `Authorization: Bearer ${TOPAI_API_KEY}` and JSON body `{"expr": "2+2*3"}`
-- **Broken JSON Auto-Healer**: `POST https://topaigateway.com/v1/api/12-json-surgeon` with header `Authorization: Bearer ${TOPAI_API_KEY}` and JSON body `{"broken_json": "..."}`
+- **Web-to-Markdown Extraction**: `POST /v1/extract` with header `Authorization: Bearer ${TOPAI_API_KEY}` and JSON body `{"url": "<public-url>"}`
+- **AST Context Compression**: `POST /v1/compress` with header `Authorization: Bearer ${TOPAI_API_KEY}` and JSON body `{"text": "<payload>"}`
+- **Deterministic Arithmetic & IBAN Check**: `POST /v1/math/check` with header `Authorization: Bearer ${TOPAI_API_KEY}` and JSON body `{"expr": "2+2*3"}`
+- **Broken JSON Auto-Healer**: `POST /v1/api/12-json-surgeon` with header `Authorization: Bearer ${TOPAI_API_KEY}` and JSON body `{"broken_json": "<malformed-json>"}`
 
 ## MCP Server Configuration (`.cursor/mcp.json`)
 
