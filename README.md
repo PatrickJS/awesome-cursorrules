@@ -246,6 +246,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [Code Guidelines](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/code-guidelines-cursorrules-prompt-file.mdc) - Code development with guidelines integration.
 - [Code Pair Interviews](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/code-pair-interviews.mdc) - Interview practice and collaborative coding sessions.
 - [Code Style Consistency](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/code-style-consistency-cursorrules-prompt-file.mdc) - Code development with style consistency integration.
+- [Dopamine Talk](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/dopamine-talk.mdc) - Communication rules that cut file-path recaps, boilerplate hedging, and unasked critic-gates from coding agent replies.
 - [Embedded MCU / STM32 / HAL](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/embedded-stm32-hal.mdc) - Embedded C/C++ development with STM32 HAL, interrupts, DMA, memory constraints, and hardware-focused testing.
 - [Engineering Ticket Template](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/engineering-ticket-template-cursorrules-prompt-file.mdc) - Engineering development with ticket template integration.
 - [GitHub Code Quality](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/github-code-quality-cursorrules-prompt-file.mdc) - GitHub development with code quality integration.
