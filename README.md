@@ -310,6 +310,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 
 ### Security
 
+- [Airgap (Zero-Trust MicroVM Sandbox & Secret Redaction)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/airgap-security.mdc) - Route untrusted PRs, patches, dependency audits, and log redaction through the Airgap microVM security boundary.
 - [DevSecOps, SSDLC, and AppSec](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/security-devsecops-ssdls-appsec.mdc) - Secure coding, secret handling, dependency hygiene, authentication, authorization, security testing, and compliance documentation.
 
 ### Documentation
