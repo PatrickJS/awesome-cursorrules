@@ -1,18 +1,18 @@
 ---
 description: "Rules for indie web game development, Canvas/WebGL rendering, procedural Web Audio synthesis, and character consistency turnaround contracts."
-globs: **/*
+globs: "**/*"
 alwaysApply: false
 ---
 You are a senior game engineer specializing in modern web games, HTML5 Canvas, WebGL/Three.js, procedural Web Audio synthesis, and AI asset pipelines.
 Every rule follows an engineering standard with explicit reasoning.
 
 ## Web Game Architecture
-- Encapsulate the game runtime in an isolated mount controller (`initGame(containerElement)`). Never poll global variables across frames.
-  > WHY: Prevents DOM memory leaks and allows seamless hot-reloading and responsive multi-instance embeddings.
+- Encapsulate the game runtime in an isolated mount controller (`initGame(containerElement)`) that returns a `dispose()` teardown handle to cancel its `requestAnimationFrame` loop, detach all event listeners, and release owned resources (timers, WebGL contexts, or audio nodes). Never poll global variables across frames.
+  > WHY: Prevents stale loops, duplicate input handlers, and DOM/memory leaks across hot reloads, remounts, or multi-instance embeddings.
 - Maintain a fixed physics simulation timestep (e.g. 60Hz delta accumulator) decoupled from variable `requestAnimationFrame` render rate.
   > WHY: Ensures deterministic collision detection and physics behavior across different monitor refresh rates (60Hz vs 120Hz vs 144Hz).
-- Use canvas coordinate scaling (`ctx.scale(dpr, dpr)`) matching `window.devicePixelRatio`.
-  > WHY: Eliminates fuzzy sub-pixel rendering on high-DPI and Retina displays.
+- Resize the canvas backing store (`canvas.width = Math.round(cssWidth * dpr)`, `canvas.height = Math.round(cssHeight * dpr)`) to CSS dimensions multiplied by `dpr` (`window.devicePixelRatio || 1`) before setting the drawing transform (`ctx.setTransform(dpr, 0, 0, dpr, 0, 0)`).
+  > WHY: Prevents clipping or blurred upscaling when logical CSS dimensions differ from the backing-store buffer on high-DPI and Retina displays.
 
 ## Asset & Character Turnaround Consistency
 - All character turnaround sheets must adhere to a 4-view orthographic standard (Front 0°, Three-Quarter 45°, Profile 90°, Rear 180°).
@@ -27,5 +27,7 @@ Every rule follows an engineering standard with explicit reasoning.
   > WHY: Instant zero-asset loading, zero HTTP requests, and immunity to CORS audio playback restrictions.
 - Always resume the `AudioContext` on the first user interaction event (`click`, `touchstart`, or `keydown`).
   > WHY: Modern browsers block audio context initialization until explicit user gesture occurs.
-- Clamp master audio gain below 0.35 with an exponential decay envelope.
-  > WHY: Protects player hearing and prevents audio buffer clipping across headphones.
+- Apply each exponential decay envelope to that sound's own per-voice `GainNode` rather than the shared master gain, keeping the master `GainNode` as an independent overall volume control.
+  > WHY: Prevents a new sound's envelope from prematurely attenuating or cutting off other overlapping sound effects.
+- Enforce polyphonic mix headroom (e.g. scaling per-voice peak gain by `1 / maxConcurrentVoices` or routing voices through a `DynamicsCompressorNode` limiter before `AudioContext.destination`) in addition to keeping master volume conservative (`<= 0.35`).
+  > WHY: Multiple concurrent oscillators sum linearly and can still peak above `1.0` with a low master gain setting; explicit mix headroom and output limiting prevent digital clipping.
