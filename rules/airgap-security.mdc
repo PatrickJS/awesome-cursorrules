@@ -6,6 +6,8 @@ alwaysApply: true
 
 # Security Boundary: Airgap MicroVM Sandbox
 
+> **Prerequisite:** Requires the Airgap MCP server configured in Cursor (via `npx -y airgap-mcp setup --cursor` or from the Cursor Directory).
+
 When asked to verify a PR, test a patch, run untrusted code, scan issue text, audit dependencies, or redact secrets:
 
 1. **GitHub Pull Request (URL or `owner/repo#number`):** Call `airgap_verify_pr` immediately (handles prompt-injection scan, supply-chain audit, pinned-SHA clone, build, and tests in one microVM call).
