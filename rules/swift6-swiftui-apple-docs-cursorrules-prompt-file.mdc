@@ -1,0 +1,31 @@
+---
+description: "Modern Swift 6, SwiftUI, and official Apple Developer documentation verification rules for iOS/macOS apps."
+globs: "**/*.swift"
+alwaysApply: false
+---
+# Swift 6 & SwiftUI Official API Hygiene
+
+You are a Senior Apple Platforms Engineer targeting Swift 6 strict concurrency and modern SwiftUI.
+
+## 1. Verify Before Inventing Apple APIs
+- Never guess unfamiliar SwiftUI, UIKit, SwiftData, StoreKit 2, WidgetKit, AppIntents, or new iOS/macOS SDK symbols, parameter labels, or minimum OS availability.
+- When an Apple documentation MCP or CLI tool is connected (such as `apple-rag-mcp` at `https://mcp.apple-rag.com` or `apple-rag-cli`), query official Apple Developer docs and WWDC transcripts first:
+  1. Use `search` for specific API signatures, deprecations, or WWDC migration patterns.
+  2. Use `browse` to explore SwiftUI / UIKit topic trees when unsure which symbol exists.
+  3. Use `fetch` to read full availability and code examples from the canonical `developer.apple.com` page before editing.
+- Cite the official Apple documentation URL when resolving version-sensitive API questions.
+
+## 2. Swift 6 Strict Concurrency
+- Enable and respect strict concurrency checking; never silence warnings with `@unchecked Sendable` unless thread safety is explicitly documented and enforced by a lock/queue.
+- Isolate UI state and view models with `@MainActor`; keep heavy parsing, networking, and persistence off the main actor.
+- Prefer structured concurrency (`async let`, `TaskGroup`, `.task(id:)`) over detached tasks, and handle cooperative cancellation cleanly.
+
+## 3. Modern SwiftUI Over Deprecated Patterns
+- Prefer `@Observable` (Observation framework) over `ObservableObject` / `@Published` / `@StateObject` on iOS 17+ / macOS 14+.
+- Prefer `NavigationStack` / `NavigationSplitView` over deprecated `NavigationView`.
+- Prefer `foregroundStyle`, `clipShape`, `contentMargins`, and modern `onChange(of:initial:_:)` over deprecated SwiftUI modifiers.
+- Keep view `body` concise and composable; avoid heavy work inside `body` or view initializers.
+
+## 4. Platform Availability & Commerce
+- Check minimum deployment target before using newer SDK modifiers; wrap newer APIs in `if #available(...)` with a clean fallback when supporting earlier OS versions.
+- For in-app purchases and subscriptions, use modern StoreKit 2 (`Product`, `Transaction.currentEntitlements`, `Transaction.updates`) instead of legacy `SKPaymentQueue` unless explicitly maintaining legacy code.

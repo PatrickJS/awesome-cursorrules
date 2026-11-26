@@ -167,6 +167,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 - [NativeScript](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/nativescript-cursorrules-prompt-file.mdc) - Cross-platform mobile app development.
 - [React Native Expo](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/react-native-expo-cursorrules-prompt-file.mdc) - Expo-based mobile app development.
 - [SwiftUI Guidelines](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/swiftui-guidelines-cursorrules-prompt-file.mdc) - SwiftUI development guidelines.
+- [Swift 6 & SwiftUI (Official Docs Verified)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/swift6-swiftui-apple-docs-cursorrules-prompt-file.mdc) - Modern Swift 6 strict concurrency, SwiftUI best practices, and Apple documentation verification workflow.
 - [TypeScript (Expo, Jest, Detox)](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/typescript-expo-jest-detox-cursorrules-prompt-file.mdc) - TypeScript development with Expo, Jest, and Detox integration.
 - [UIKit Guidelines](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/uikit-guidelines-cursorrules-prompt-file.mdc) - UIKit development guidelines.
 
