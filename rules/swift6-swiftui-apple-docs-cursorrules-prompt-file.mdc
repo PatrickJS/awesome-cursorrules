@@ -13,6 +13,7 @@ You are a Senior Apple Platforms Engineer targeting Swift 6 strict concurrency a
   1. Use `search` for specific API signatures, deprecations, or WWDC migration patterns.
   2. Use `browse` to explore SwiftUI / UIKit topic trees when unsure which symbol exists.
   3. Use `fetch` to read full availability and code examples from the canonical `developer.apple.com` page before editing.
+- If no Apple documentation MCP or CLI tool is connected, consult official Apple documentation via web search/fetch or local Xcode SDK headers — or ask the user to provide documentation access or the relevant API signature before writing code that depends on an unfamiliar API.
 - Cite the official Apple documentation URL when resolving version-sensitive API questions.
 
 ## 2. Swift 6 Strict Concurrency
