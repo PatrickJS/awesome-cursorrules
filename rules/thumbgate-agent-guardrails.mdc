@@ -1,0 +1,64 @@
+---
+description: Guardrails for Cursor Agent - stop before destructive shell, git, cloud, and database commands, treat a thumbs-down or correction as a stop signal for the next action, and only report work as done with evidence from this turn. Optional hook-level enforcement with ThumbGate.
+globs: **/*
+alwaysApply: true
+---
+
+# Agent Guardrails (ThumbGate)
+
+Use this rule when Cursor Agent runs terminal commands, calls MCP tools, or reports progress. The goal is simple: the agent should not destroy work it cannot restore, should not repeat an action the user just rejected, and should not claim results it did not check.
+
+## Before Any Destructive Command
+
+Do not run these without the user's explicit approval for that exact command in this conversation:
+
+- `git push --force` / `git push -f`, `git reset --hard`, `git clean -f` (any flag set that includes `-f`)
+- `rm -rf` on `~`, `/`, or any path outside the project
+- `DROP TABLE`, `DROP DATABASE`, `TRUNCATE` on a non-test database
+- `terraform destroy`, `terraform apply -destroy`
+- `kubectl delete` in any form
+- `aws s3 rm`, `aws s3 rb --force`, and other bulk cloud deletes
+
+When one of these looks necessary:
+
+1. Say what the command would delete or overwrite, and whether it can be undone.
+2. Offer the non-destructive path first: `git diff` / `git status` to inspect, `git stash` to set changes aside, a new branch and a new push instead of rewriting a pushed one, a migration instead of a drop, `terraform plan`, `kubectl get` / `--dry-run=server`.
+3. Wait for the user to approve the exact command. Approval for one command does not cover a reworded or broader one.
+
+## When The User Gives Negative Feedback
+
+A thumbs-down, "no", "wrong", "stop", or "don't do that" is a stop signal, not a score.
+
+1. Do not run the next tool call or send the next message as planned.
+2. Restate in one sentence what the user rejected.
+3. Fix the previous answer or action in place instead of piling a new attempt on top of it.
+4. Do not retry the rejected command with different wording. Ask before trying a different approach to the same goal.
+5. Save the lesson where the project keeps agent notes (for example a line in `.cursor/rules/`), so the same mistake is not repeated in the next session.
+
+## Claims About Results
+
+- Say "done", "fixed", "passing", "deployed", or "live" only when this turn ran the check, and include the command and its output.
+- An earlier log, a cached result, or an HTTP 200 from a health endpoint is not proof that the change works.
+- If a check was skipped or failed, say so plainly and label the work as partial.
+
+## Never In Commands Or Output
+
+- Do not print, echo, or post secrets, tokens, `.env` values, or private keys, and do not paste them into a URL, commit, or chat message.
+- Do not use `--no-verify` or disable hooks to get past a failing check.
+
+## Optional: Enforce These Rules With Hooks
+
+Rules in `.cursor/rules/` are instructions the model can still ignore. To have Cursor refuse these actions before they run, install [ThumbGate](https://github.com/IgorGanapolsky/ThumbGate), an MIT-licensed npm package:
+
+```bash
+npx thumbgate init --agent cursor
+```
+
+This writes seven Cursor hooks to `~/.cursor/hooks.json` (`beforeShellExecution`, `beforeSubmitPrompt`, `beforeMCPExecution`, `afterShellExecution`, `afterMCPExecution`, `afterAgentResponse`, `stop`) and adds a ThumbGate MCP server to the project's `.cursor/mcp.json`. Restart Cursor afterwards. With the hooks in place:
+
+- `beforeShellExecution` denies, by default: `git push --force` (including `--force-with-lease`), `git reset --hard`, `git clean -f`, `rm -rf` on `/`, `~`, or `$HOME`, `DROP TABLE` on a non-test table, `terraform destroy`, `kubectl delete`, and `aws s3 rm`. Everyday commands such as `git status` and `npm test` pass through.
+- `rm -rf` on other paths, such as another project folder, is not denied by default. For those, the written rule above (ask first) is the only guard.
+- Typing `thumbs down` in the Cursor chat holds the agent's next outgoing MCP message until the previous message is edited in place, and `thumbs up` releases the hold.
+- Feedback is stored locally in the project's `.thumbgate/` folder, and repeated thumbs-downs become project-specific prevention rules.
+
+Commands that are reworded to avoid a pattern are not guaranteed to be caught, so keep the written rules above even with the hooks installed.
