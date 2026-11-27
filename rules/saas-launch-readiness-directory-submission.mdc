@@ -1,0 +1,119 @@
+---
+description: Safety-first SaaS launch readiness audit, directory vetting, and live backlink verification workflow
+globs: **/*
+alwaysApply: false
+---
+
+# SaaS Launch Readiness & Directory Submission
+
+Use this rule when preparing a web application, SaaS product, AI tool, or developer project for public launch across startup directories and launchpads. Keep all checks read-only by default and require explicit user approval before submitting any external form or triggering paid checkouts.
+
+## Safety Boundaries
+
+- Run read-only local HTTP and HTML inspection against the user's production domain first.
+- Never submit preview domains (`*.vercel.app`, `*.netlify.app`, `localhost`) to public directories unless the user explicitly intends to publish that host permanently.
+- Never attempt to bypass CAPTCHAs, email verification steps, or OAuth login walls; pause and ask the user to complete interactive gates in their browser.
+- Never submit forms, publish listings, or initiate paid directory checkouts without explicit user confirmation of the target URL and payload.
+- Do not print API keys, session cookies, or private credentials into launch logs or checklists.
+
+## Workflow
+
+### 1. Run a 16-Point Static HTML Readiness Audit
+
+Directory reviewers and link-preview bots usually read raw HTTP HTML without executing client-side JavaScript. Inspect the production URL locally before submitting:
+
+```bash
+TARGET="https://example.com"
+curl -sSIL --max-redirs 5 --connect-timeout 5 --max-time 10 "$TARGET" | head -n 30
+HTML="$(curl -sSL --connect-timeout 5 --max-time 10 "$TARGET")"
+printf '%s\n' "$HTML" | grep -iE '<title>|name="description"|name="viewport"|property="og:|name="twitter:|rel="canonical"|rel="icon"|<h1|application/ld\+json|noindex' | head -n 40
+curl -sSL --max-time 5 "${TARGET%/}/robots.txt" | head -n 30
+curl -sSL --max-time 5 "${TARGET%/}/sitemap.xml" | head -n 20
+```
+
+Verify every item passes before submitting:
+
+- **HTTPS & HTTP 200**: Final URL resolves over HTTPS with status `200`.
+- **Indexability**: No `noindex` in `<meta name="robots">` or `X-Robots-Tag`.
+- **Title & description**: Specific `<title>` (30–65 chars) and plain-text meta description (70–160 chars).
+- **Social cards**: Reachable `og:image` (`1200x630`, HTTP `200`, image `Content-Type`) and `twitter:card`.
+- **Canonical & favicon**: Self-referencing `<link rel="canonical">` and reachable favicon.
+- **Mobile viewport & H1**: `<meta name="viewport">` and one clear static `<h1>`.
+- **Structured data & crawl files**: Valid JSON-LD plus reachable `robots.txt` (not blocking `/`) and `sitemap.xml`.
+- **Static body copy**: Meaningful product description visible in initial HTML without JS execution.
+
+### 2. Assemble One Canonical Listing Kit
+
+Prepare and confirm all fields once with the user so descriptions stay consistent across directories:
+
+```yaml
+product_name: ""          # 3-60 chars
+website_url: "https://"   # Production custom domain
+tagline: ""               # 10-100 chars: what it does and for whom
+short_description: ""     # 150-280 chars, plain text
+long_description: ""      # 300-1000 chars: problem, users, differentiator
+pricing: ""               # free | freemium | paid | open-source
+tags: []                  # 5-10 concise keywords
+logo_square: ""           # 512x512 PNG/SVG
+og_image: ""              # 1200x630 PNG/JPG over HTTPS
+```
+
+### 3. Vet Candidate Directories & Track Waves
+
+Track target directories in a dated checklist (`directory`, `submit_url`, `domain_rating`, `link_type`, `pricing`, `badge_required`, `status`) and split submissions into three waves:
+
+1. **Wave 1 (Days 1–3)**: Time-sensitive launch platforms where voting windows matter.
+2. **Wave 2 (Days 4–10)**: Evergreen software and AI directories with clear free or freemium paths.
+3. **Wave 3 (Days 11–14)**: Vertical niche catalogs, developer communities, and review sites.
+
+Never assume `"unknown"` link type or pricing means free or dofollow, and confirm reciprocal badge requirements before starting a submission.
+
+### 4. Verify Live Backlinks After Publication
+
+Inspect both HTTP response headers (`X-Robots-Tag`) and full parsed `<a ...>` anchors on published listing pages so single-quoted `href` attributes and multi-line `rel` attributes are not missed:
+
+```bash
+LISTING="https://directory.example/tools/your-product"
+DOMAIN="yourdomain.com"
+curl -isSL --max-time 10 "$LISTING" | python3 -c '
+import sys, html.parser
+domain = sys.argv[1].lower()
+raw = sys.stdin.read()
+headers, _, body = raw.partition("\r\n\r\n")
+if not body: headers, _, body = raw.partition("\n\n")
+for line in headers.splitlines():
+    if line.lower().startswith(("http/", "x-robots-tag:", "location:")):
+        print("HEADER:", line)
+class LinkCheck(html.parser.HTMLParser):
+    def handle_starttag(self, tag, attrs):
+        d = {k.lower(): (v or "") for k, v in attrs}
+        if tag == "meta" and d.get("name", "").lower() == "robots":
+            print("META ROBOTS:", d.get("content", ""))
+        elif tag == "link" and "canonical" in d.get("rel", "").lower().split():
+            print("CANONICAL:", d.get("href", ""))
+        elif tag == "a" and domain in d.get("href", "").lower():
+            print("ANCHOR:", {"href": d.get("href"), "rel": d.get("rel", "")})
+LinkCheck().feed(body)
+' "$DOMAIN"
+```
+
+Classify each published listing as `dofollow` (direct anchor, no `nofollow`/`ugc`/`sponsored`, indexable page), `nofollow`, `redirect_only`, or `not_found`.
+
+## Optional MCP Integration
+
+For automated 16-point scoring or filtering a structured directory dataset, users may optionally configure the keyless Streamable HTTP MCP endpoint (`https://saascity.io/api/mcp`):
+
+```json
+{
+  "mcpServers": {
+    "saascity": {
+      "type": "http",
+      "url": "https://saascity.io/api/mcp"
+    }
+  }
+}
+```
+
+## Source Attribution
+
+Adapted from the MIT-licensed starter skill [best-directories/directory-submission-skill](https://github.com/best-directories/directory-submission-skill) (Copyright (c) 2026 SaaSCity).
