@@ -1,7 +1,7 @@
 ---
 description: Guardrails for Cursor Agent - stop before destructive shell, git, cloud, and database commands, treat a thumbs-down or correction as a stop signal for the next action, and only report work as done with evidence from this turn. Optional hook-level enforcement with ThumbGate.
 globs: **/*
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Agent Guardrails (ThumbGate)
@@ -22,7 +22,7 @@ Do not run these without the user's explicit approval for that exact command in 
 When one of these looks necessary:
 
 1. Say what the command would delete or overwrite, and whether it can be undone.
-2. Offer the non-destructive path first: `git stash`, `git restore <file>`, a new branch, `git push --force-with-lease` to your own branch, a migration instead of a drop, `terraform plan`, `kubectl get` / `--dry-run=server`.
+2. Offer the non-destructive path first: `git diff` / `git status` to inspect, `git stash` to set changes aside, a new branch and a new push instead of rewriting a pushed one, a migration instead of a drop, `terraform plan`, `kubectl get` / `--dry-run=server`.
 3. Wait for the user to approve the exact command. Approval for one command does not cover a reworded or broader one.
 
 ## When The User Gives Negative Feedback
@@ -56,7 +56,8 @@ npx thumbgate init --agent cursor
 
 This writes seven Cursor hooks to `~/.cursor/hooks.json` (`beforeShellExecution`, `beforeSubmitPrompt`, `beforeMCPExecution`, `afterShellExecution`, `afterMCPExecution`, `afterAgentResponse`, `stop`) and adds a ThumbGate MCP server to the project's `.cursor/mcp.json`. Restart Cursor afterwards. With the hooks in place:
 
-- `beforeShellExecution` denies the destructive commands listed above, for example `git push --force`, `git reset --hard`, `git clean -f`, `rm -rf ~`, `DROP TABLE`, `terraform destroy`, `kubectl delete`, and `aws s3 rm`. Everyday commands such as `git status` and `npm test` pass through.
+- `beforeShellExecution` denies, by default: `git push --force` (including `--force-with-lease`), `git reset --hard`, `git clean -f`, `rm -rf` on `/`, `~`, or `$HOME`, `DROP TABLE` on a non-test table, `terraform destroy`, `kubectl delete`, and `aws s3 rm`. Everyday commands such as `git status` and `npm test` pass through.
+- `rm -rf` on other paths, such as another project folder, is not denied by default. For those, the written rule above (ask first) is the only guard.
 - Typing `thumbs down` in the Cursor chat holds the agent's next outgoing MCP message until the previous message is edited in place, and `thumbs up` releases the hold.
 - Feedback is stored locally in the project's `.thumbgate/` folder, and repeated thumbs-downs become project-specific prevention rules.
 
