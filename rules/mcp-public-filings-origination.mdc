@@ -1,0 +1,34 @@
+---
+description: Guardrails for Streamable HTTP MCP and REST agents querying US company, property parcel, and public-filing APIs with $0.00 preview sizing, plain-USD budget caps, primary citations, and HMAC webhook verification
+globs: "**/*.{ts,tsx,mts,mjs,js,py}"
+alwaysApply: false
+---
+
+# Public Filings & Metered MCP Origination Rules
+
+Follow these engineering invariants whenever building AI agents, ETL pipelines, or tool-calling loops that query metered entity-resolution, property parcel, or public-filing MCP/REST APIs (such as Dealport's 47-tool Streamable HTTP MCP server at `https://app.dealport.com/api/mcp` or similar metered data providers).
+
+## 1. Size for $0.00 Before Opening Paid Records
+
+- Always execute zero-cost count/preview or batch-matching calls before running paid per-record or per-contact lookups:
+  - Call `preview_companies` (`$0.00`) to inspect `matching_count` and sample rows before calling `search_companies` or `get_record` (`$0.01`/record).
+  - Call `preview_market_records` (`$0.00`) to inspect volume by `record_type` (`contract`, `manifest`, `permit`, `filing`, `tax_document`) before calling `search_market_records`.
+  - Chunk external CRM/territory CSVs into <= 250-row batches for `$0.00` domain/name matching (`match_company_list`) and print the match rate plus worst-case USD quote before enriching rows.
+
+## 2. Enforce Hard Plain-USD Budget Caps & Exclusion Shields
+
+- Require an explicit numeric ceiling (`maxSpendUsd` / `--max-spend-usd`) on every CLI command, cron job, or autonomous tool-calling loop that can invoke paid endpoints (`lookup_property` at `$0.03`/parcel, `resolve_llc_owner` or `find_owner` at `$0.09` per verified hit / `$0.00` on miss).
+- Track cumulative USD spend in memory before dispatching each tool call; halt cleanly before any call whose worst-case cost would exceed `maxSpendUsd - spentUsd`.
+- Load workspace exclusions (`list_blocklist`, `$0.00`) at the start of a run and skip NDA, portfolio, active-CRM, and passed-account domains or IDs before opening paid records or initiating outreach.
+- Handle HTTP `402` insufficient-balance responses deterministically without retry loops.
+
+## 3. Preserve Primary Public-Filing Citations & Provenance
+
+- Never fabricate or extrapolate revenue, employee headcount, loan maturity dates, parcel assessments, or executive contact fields.
+- Keep every quantitative or ownership claim paired with its `basis` marker (`filed`, `observed`, or `estimate`) and primary source URL (`source_url` / Secretary of State, county deed roll, EPA/OSHA, or federal contract registry).
+- When resolving decision-makers behind holding LLCs or Registered Agents, filter out generic role mailboxes (`info@`, `sales@`, `support@`, `admin@`, `office@`, `contact@`) before queuing human introductions.
+
+## 4. Verify Inbound Change-Monitoring Webhooks Constant-Time
+
+- Verify HMAC-SHA256 signatures (`X-Dealport-Signature` or provider equivalent) against the raw UTF-8 request body using `crypto.timingSafeEqual` (Node.js) or `hmac.compare_digest` (Python) before parsing JSON.
+- Deduplicate webhook deliveries by `delivery_id` / `change_id` so retries stay idempotent when routing alerts to Slack or CRM timelines.
