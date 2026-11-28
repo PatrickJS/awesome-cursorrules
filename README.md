@@ -310,6 +310,7 @@ By adding selected `.mdc` files to `.cursor/rules/`, you can use these rules dir
 
 ### Security
 
+- [Insomnia Security Plugin & Skill](https://github.com/vulnz/insomnia-mcp) - Claude Code / Cursor / Antigravity security plugin & MCP server delivering 160 SAST/taint, live secret validation, SCA/SBOM, Web DAST, OSINT, and 21,100+ 1-Day CVE verification tools (`https://mcp.insom.ai/mcp`, 50 free credits).
 - [DevSecOps, SSDLC, and AppSec](https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/security-devsecops-ssdls-appsec.mdc) - Secure coding, secret handling, dependency hygiene, authentication, authorization, security testing, and compliance documentation.
 
 ### Documentation
